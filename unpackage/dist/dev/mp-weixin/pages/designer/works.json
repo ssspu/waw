@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "作品",
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#f2f2f2",
+  "usingComponents": {
+    "designer-works-service-section": "../../components/DesignerWorksServiceSection",
+    "designer-works-gallery-section": "../../components/DesignerWorksGallerySection"
+  }
+}

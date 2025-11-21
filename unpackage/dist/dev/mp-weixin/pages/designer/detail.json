@@ -1,0 +1,16 @@
+{
+  "navigationBarTitleText": "设计师详情",
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#f2f2f2",
+  "usingComponents": {
+    "designer-detail-header": "../../components/designer/detail/DesignerDetailHeader",
+    "designer-info-card": "../../components/designer/detail/DesignerInfoCard",
+    "designer-tab-switcher": "../../components/DesignerTabSwitcher",
+    "designer-service-tab-content": "../../components/designer/detail/DesignerServiceTabContent",
+    "designer-appointment-tab-content": "../../components/designer/detail/DesignerAppointmentTabContent",
+    "designer-works-tab-content": "../../components/DesignerWorksTabContent",
+    "designer-reviews-tab-content": "../../components/DesignerReviewsTabContent",
+    "designer-portfolio-section": "../../components/designer/detail/DesignerPortfolioSection"
+  }
+}

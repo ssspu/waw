@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "点评",
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#f2f2f2",
+  "usingComponents": {
+    "designer-reviews-page-section": "../../components/DesignerReviewsPageSection",
+    "designer-reviews-list-section": "../../components/DesignerReviewsListSection"
+  }
+}

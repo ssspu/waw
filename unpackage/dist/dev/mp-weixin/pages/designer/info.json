@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "设计师信息",
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#f2f2f2",
+  "usingComponents": {
+    "designer-info-profile-section": "../../components/designer/info/DesignerInfoProfileSection",
+    "designer-info-services-section": "../../components/designer/info/DesignerInfoServicesSection"
+  }
+}

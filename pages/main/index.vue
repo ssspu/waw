@@ -1,0 +1,436 @@
+<template>
+	<view class="screen">
+		<!-- 背景图片 -->
+		<image 
+			class="bg-image-1" 
+			:src="currentHeaderBg" 
+			mode="aspectFill"
+		></image>
+		<!-- <image 
+			v-if="currentMainBg"
+			class="bg-image-2" 
+			:src="currentMainBg" 
+			mode="aspectFill"
+		></image> -->
+		
+		<!-- 状态栏和头部 -->
+		<view class="header-wrapper">
+			<!-- 导航栏 -->
+			<view class="nav-bar">
+				<view class="nav-left">
+					<view class="back-btn" @tap="goBack">
+						<image class="back-icon" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-4.svg" mode="aspectFit"></image>
+					</view>
+					<text class="nav-title">美发</text>
+				</view>
+				<view class="nav-bar-right">
+					<!-- 标签选择 -->
+					<view class="badge-container">
+						<view class="category-badge">
+							<image class="badge-icon" :src="currentBadgeIcon" mode="aspectFit"></image>
+							<text class="badge-text">设计师</text>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+		
+		<!-- Tabs -->
+		<view class="tabs-wrapper">
+			<view class="tabs-list">
+				<view 
+					v-for="(tab, index) in tabItems" 
+					:key="index"
+					class="tab-item"
+					:class="{ active: activeTab === tab.value }"
+					@tap="switchTab(tab.value)"
+				>
+					<text class="tab-label" :class="{ active: activeTab === tab.value }">{{ tab.label }}</text>
+					<image 
+						v-if="activeTab === tab.value"
+						class="tab-indicator" 
+						src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-215.svg" 
+						mode="aspectFit"
+					></image>
+				</view>
+			</view>
+		</view>
+		
+		<!-- 主内容 -->
+		<view class="main-content">
+			<!-- 设计师板块 -->
+			<view v-if="activeTab === 'designer'" :key="'designer'" class="designer-content animate-fade-up">
+				<design-section></design-section>
+			</view>
+
+			<!-- 优服务板块 -->
+			<view v-if="activeTab === 'service'" :key="'service'" class="service-content animate-fade-up">
+				<featured-services-section></featured-services-section>
+				<recommendations-section></recommendations-section>
+				<vip-section></vip-section>
+				<service-gallery-section></service-gallery-section>
+			</view>
+
+			<!-- 品牌馆板块 -->
+			<view v-if="activeTab === 'brand'" :key="'brand'" class="brand-content animate-fade-up">
+				<view class="featured-section">
+					<brand-featured-items-section></brand-featured-items-section>
+				</view>
+			</view>
+		</view>
+		
+	</view>
+</template>
+
+<script>
+import DesignSection from '../../components/main/index/DesignSection.vue'
+import ServiceOptionsSection from '../../components/main/index/ServiceOptionsSection.vue'
+import FeaturedServicesSection from '../../components/main/index/FeaturedServicesSection.vue'
+import RecommendationsSection from '../../components/RecommendationsSection.vue'
+import VIPSection from '../../components/main/index/VIPSection.vue'
+import ServiceGallerySection from '../../components/main/index/ServiceGallerySection.vue'
+import BrandFeaturedItemsSection from '../../components/BrandFeaturedItemsSection.vue'
+
+export default {
+	components: {
+		DesignSection,
+		ServiceOptionsSection,
+		FeaturedServicesSection,
+		RecommendationsSection,
+		VIPSection,
+		ServiceGallerySection,
+		BrandFeaturedItemsSection
+	},
+	data() {
+		return {
+			activeTab: 'designer',
+			tabItems: [
+				{ value: "designer", label: "设计师" },
+				{ value: "service", label: "优服务" },
+				{ value: "brand", label: "品牌馆" },
+			],
+			// Assets configuration
+			assets: {
+				designer: {
+					headerBg: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-217.png",
+					mainBg: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/group-33.png",
+					badgeIcon: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-1.svg"
+				},
+				service: {
+					headerBg: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-217.png",
+					mainBg: null,
+					badgeIcon: "https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-3.svg"
+				},
+				brand: {
+					headerBg: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-217.png",
+					mainBg: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/group-33.png",
+					badgeIcon: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-4.svg"
+				}
+			}
+		}
+	},
+	computed: {
+		currentHeaderBg() {
+			return this.assets[this.activeTab].headerBg
+		},
+		currentMainBg() {
+			return this.assets[this.activeTab].mainBg
+		},
+		currentBadgeIcon() {
+			return this.assets[this.activeTab].badgeIcon
+		}
+	},
+	onLoad(options) {
+		console.log('main页面 onLoad, 接收到的参数:', options)
+		if (options.tab) {
+			// Ensure the tab exists
+			const validTabs = ['designer', 'service', 'brand'];
+			if (validTabs.includes(options.tab)) {
+				this.activeTab = options.tab;
+				console.log('切换到标签:', options.tab)
+			} else {
+				console.warn('无效的标签:', options.tab)
+			}
+		} else {
+			console.log('没有接收到tab参数，使用默认标签: designer')
+		}
+	},
+	methods: {
+		goBack() {
+			uni.navigateBack()
+		},
+		switchTab(value) {
+			this.activeTab = value
+		}
+	}
+}
+</script>
+
+<style scoped lang="scss">
+.screen {
+	width: 100%;
+	min-height: 100vh;
+	background-color: #f2f2f2;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.bg-image-1 {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 772rpx;
+	object-fit: cover;
+	z-index: 0;
+	transition: opacity 0.3s ease;
+}
+
+.bg-image-2 {
+	position: absolute;
+	top: 570rpx;
+	left: 0;
+	width: 100%;
+	height: 2236rpx;
+	object-fit: cover;
+	z-index: 0;
+	transition: opacity 0.3s ease;
+}
+
+.header-wrapper {
+	position: relative;
+	z-index: 10;
+	width: 100%;
+}
+
+.nav-bar {
+	position: relative;
+	padding: 62rpx 30rpx;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.nav-bar-right {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
+}
+
+.nav-left {
+	display: flex;
+	align-items: center;
+	gap: 48rpx;
+}
+
+.back-btn {
+	width: 32rpx;
+	height: 32rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.back-icon {
+	width: 32rpx;
+	height: 32rpx;
+}
+
+.nav-title {
+	font-family: 'DIN_Black-Regular', Helvetica;
+	font-size: 30rpx;
+	color: #ffffff;
+	font-weight: normal;
+}
+
+.logo-group {
+	width: 256rpx;
+	height: 144rpx;
+}
+
+.badge-container {
+	position: relative;
+	padding: 0;
+	margin: 0;
+}
+
+.category-badge {
+	background-color: rgba(0, 0, 0, 0.4);
+	color: #e6e6e6;
+	border-radius: 52rpx;
+	height: 60rpx;
+	margin-right: 400rpx;
+	padding: 0 20rpx;
+	display: inline-flex;
+	align-items: center;
+	gap: 4rpx;
+	border: 0;
+}
+
+.badge-icon {
+	width: 36rpx;
+	height: 36rpx;
+	margin-right: 4rpx;
+}
+
+.badge-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 22rpx;
+	color: #e6e6e6;
+}
+
+.tabs-wrapper {
+	position: relative;
+	z-index: 10;
+	margin-top: 438rpx;
+	margin-bottom: -25rpx;
+	width: 100%;
+	height: 125rpx;
+	background-color: #f2f2f2;
+	padding: 0;
+	box-sizing: border-box;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+}
+
+.tabs-list {
+	width: calc(100% - 24rpx);
+	height: 100%;
+	background-color: transparent;
+	border: 0;
+	border-radius: 0;
+	padding: 0;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	gap: 0;
+	position: relative;
+}
+
+.tab-item {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 6rpx;
+	padding: 20rpx 0 0 0;
+	height: 125rpx;
+	width: calc((100% - 290rpx) / 2);
+	cursor: pointer;
+	box-sizing: border-box;
+	transition: width 0.3s ease, height 0.3s ease, background-color 0.3s ease;
+	
+	&.active {
+		width: 290rpx;
+		height: 125rpx;
+		background-color: #ffffff;
+		border-top-left-radius: 50rpx;
+		border-top-right-radius: 50rpx;
+		top: -20rpx;
+		clip-path: polygon(5% 0%, 95% 0%, 100% 100%, 0% 100%);
+	}
+}
+
+.tab-label {
+	font-size: 28rpx;
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	color: #666666;
+	font-weight: normal;
+	line-height: 1.2;
+	white-space: nowrap;
+	transition: color 0.3s ease;
+	
+	&.active {
+		font-family: 'DIN_Black-Regular', Helvetica;
+		font-weight: 700;
+		color: #000000;
+	}
+}
+
+.tab-indicator {
+	width: 34rpx;
+	height: 10rpx;
+	position: absolute;
+	bottom: 40rpx;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.main-content {
+	position: relative;
+	z-index: 10;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	// align-items: stretch; // Removed to avoid stretching fixed width items if any
+	gap: 18rpx;
+	padding-bottom: 100rpx;
+	top: -15rpx;
+}
+
+// Brand specific styles
+.brand-content {
+	position: relative;
+	width: 100%;
+}
+
+.item-list-section-wrapper {
+	// Adjusted for relative flow in this merged page, unless we want to keep absolute
+	// In the original brand page it was absolute. Here we are inside main-content.
+	// If we make it relative, it will stack.
+	position: relative; 
+	width: 100%;
+	padding: 0 12rpx;
+	box-sizing: border-box;
+}
+
+.footer {
+	position: relative;
+	z-index: 10;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16rpx 240rpx;
+	height: 68rpx;
+	margin-top: auto;
+}
+
+.indicator-bar {
+	width: 268rpx;
+	height: 10rpx;
+	background-color: #000000;
+	border-radius: 200rpx;
+}
+
+/* 内容容器 */
+.designer-content,
+.service-content,
+.brand-content {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 18rpx;
+}
+
+/* 动画 */
+@keyframes fade-up {
+	0% {
+		opacity: 0;
+		transform: translateY(20rpx);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+.animate-fade-up {
+	animation: fade-up 0.5s ease forwards;
+}
+</style>
+

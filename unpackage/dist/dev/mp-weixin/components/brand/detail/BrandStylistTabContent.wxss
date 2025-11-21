@@ -1,0 +1,308 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.brand-stylist-content.data-v-133e0aa7 {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: flex-start;
+  gap: 12rpx;
+}
+.category-nav.data-v-133e0aa7 {
+  display: inline-flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+.category-btn.data-v-133e0aa7 {
+  height: auto;
+  padding: 8rpx 20rpx;
+  border-radius: 4rpx;
+  background-color: #ffffff;
+  color: #a6a6a6;
+  font-size: 26rpx;
+  font-family: "PingFang_SC-Regular", Helvetica;
+  font-weight: normal;
+  cursor: pointer;
+}
+.category-btn.active.data-v-133e0aa7 {
+  background-color: #333333;
+  color: #ffffff;
+}
+.stylist-list.data-v-133e0aa7 {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 12rpx;
+}
+.stylist-card.data-v-133e0aa7 {
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 12rpx;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+.stylist-content.data-v-133e0aa7 {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  padding: 20rpx;
+  box-sizing: border-box;
+}
+.stylist-image.data-v-133e0aa7 {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 4rpx;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.stylist-info.data-v-133e0aa7 {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex: 1;
+  align-self: stretch;
+  min-width: 0;
+}
+.stylist-details.data-v-133e0aa7 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6rpx;
+  flex: 1;
+  min-width: 0;
+}
+.stylist-header.data-v-133e0aa7 {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+.stylist-name.data-v-133e0aa7 {
+  font-family: "PingFang_SC-Medium", Helvetica;
+  font-weight: 500;
+  color: #000000;
+  font-size: 28rpx;
+}
+.stylist-badges.data-v-133e0aa7 {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+.role-badge.data-v-133e0aa7 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rpx 8rpx;
+  background-color: #f6f6f6;
+  border-radius: 4rpx;
+  font-family: "PingFang_SC-Medium", Helvetica;
+  font-weight: 500;
+  color: #666666;
+  font-size: 20rpx;
+}
+.level-badge.data-v-133e0aa7 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rpx 8rpx;
+  background-color: #dacbb1;
+  border-radius: 4rpx;
+  font-family: "PingFang_SC-Medium", Helvetica;
+  font-weight: 500;
+  color: #645e57;
+  font-size: 20rpx;
+}
+.stylist-position.data-v-133e0aa7 {
+  font-family: "PingFang_SC-Medium", Helvetica;
+  font-weight: 500;
+  color: #a6a6a6;
+  font-size: 22rpx;
+}
+.stylist-specialties.data-v-133e0aa7 {
+  display: inline-flex;
+  align-items: center;
+  gap: 6rpx;
+  flex-wrap: wrap;
+}
+.specialty-label.data-v-133e0aa7 {
+  font-family: "PingFang_SC-Regular", Helvetica;
+  font-weight: normal;
+  color: #a6a6a6;
+  font-size: 22rpx;
+}
+.specialty-badge.data-v-133e0aa7 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rpx 8rpx;
+  background-color: #f6f6f6;
+  border-radius: 4rpx;
+  font-family: "PingFang_SC-Regular", Helvetica;
+  font-weight: normal;
+  color: #a6a6a6;
+  font-size: 20rpx;
+}
+.stylist-stats.data-v-133e0aa7 {
+  display: inline-flex;
+  align-items: center;
+  gap: 4rpx;
+}
+.rating-group.data-v-133e0aa7 {
+  display: inline-flex;
+  align-items: center;
+  gap: 2rpx;
+}
+.rating-score.data-v-133e0aa7 {
+  font-family: "PingFang_SC-Semibold", Helvetica;
+  font-weight: normal;
+  color: #333333;
+  font-size: 24rpx;
+}
+.star-icon.data-v-133e0aa7 {
+  width: 20rpx;
+  height: 20rpx;
+  background-color: #333333;
+  border-radius: 14rpx;
+  padding: 2rpx;
+}
+.count-group.data-v-133e0aa7 {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2rpx;
+}
+.count-label.data-v-133e0aa7 {
+  font-family: "PingFang_SC-Regular", Helvetica;
+  font-weight: normal;
+  color: #a6a6a6;
+  font-size: 22rpx;
+}
+.count-value.data-v-133e0aa7 {
+  font-family: "PingFang_SC-Medium", Helvetica;
+  font-weight: 500;
+  color: #666666;
+  font-size: 24rpx;
+}
+.stat-divider.data-v-133e0aa7 {
+  font-family: "PingFang_SC-Medium", Helvetica;
+  font-weight: 500;
+  color: #a6a6a6;
+  font-size: 24rpx;
+}
+.stylist-tags.data-v-133e0aa7 {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  flex-wrap: wrap;
+  margin-top: 4rpx;
+}
+.tag-item.data-v-133e0aa7 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rpx 8rpx;
+  border: 2rpx solid #a6a6a6;
+  border-radius: 4rpx;
+  background-color: #ffffff;
+  font-family: "PingFang_SC-Regular", Helvetica;
+  font-weight: normal;
+  color: #a6a6a6;
+  font-size: 20rpx;
+}
+.stylist-pricing.data-v-133e0aa7 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  min-width: 0;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+.price-section.data-v-133e0aa7 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2rpx;
+}
+.price-row.data-v-133e0aa7 {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 6rpx;
+}
+.price-symbol.data-v-133e0aa7 {
+  font-size: 28rpx;
+  font-family: "PingFang_SC-Semibold", Helvetica;
+  font-weight: normal;
+  color: #333333;
+}
+.price-value.data-v-133e0aa7 {
+  font-family: "FZChaoCuHei-M10T-Regular", Helvetica;
+  font-weight: normal;
+  color: #333333;
+  font-size: 36rpx;
+  white-space: nowrap;
+}
+.discount-badge.data-v-133e0aa7 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rpx 8rpx;
+  background-color: #ffffff;
+  border-radius: 4rpx;
+}
+.discount-text.data-v-133e0aa7 {
+  font-family: "PingFang_SC-Regular", Helvetica;
+  font-weight: normal;
+  color: #ffa77b;
+  font-size: 20rpx;
+}
+.sales-section.data-v-133e0aa7 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8rpx;
+  margin-top: 8rpx;
+}
+.sales-count.data-v-133e0aa7 {
+  font-family: "PingFang_SC-Regular", Helvetica;
+  font-weight: normal;
+  color: #a6a6a6;
+  font-size: 22rpx;
+}
+.book-btn.data-v-133e0aa7 {
+  height: 60rpx;
+  padding: 16rpx 30rpx;
+  background-color: #333333;
+  border-radius: 4rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.book-text.data-v-133e0aa7 {
+  font-family: "PingFang_SC-Semibold", Helvetica;
+  font-weight: normal;
+  color: #ffa77b;
+  font-size: 22rpx;
+}

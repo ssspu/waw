@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "designer-profile-section": "../../DesignerProfileSection",
+    "brand-service-info-section": "./BrandServiceInfoSection"
+  }
+}

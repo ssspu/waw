@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "私人领地",
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#f2f2f2",
+  "usingComponents": {
+    "territory-header-section": "../../components/territory/index/TerritoryHeaderSection",
+    "territory-user-profile-section": "../../components/territory/index/TerritoryUserProfileSection",
+    "territory-service-card-section": "../../components/territory/index/TerritoryServiceCardSection",
+    "territory-service-list-section": "../../components/territory/index/TerritoryServiceListSection",
+    "territory-booking-section": "../../components/territory/index/TerritoryBookingSection"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "WAW style",
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#f2f2f2",
+  "usingComponents": {
+    "profile-section": "../../components/index/index/ProfileSection",
+    "gallery-section": "../../components/index/index/GallerySection"
+  }
+}

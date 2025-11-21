@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "预约",
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#f2f2f2",
+  "usingComponents": {
+    "designer-booking-section": "../../components/DesignerBookingSection",
+    "designer-booking-profile-section": "../../components/DesignerBookingProfileSection"
+  }
+}

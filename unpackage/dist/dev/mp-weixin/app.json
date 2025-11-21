@@ -1,0 +1,21 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/main/index",
+    "pages/designer/detail",
+    "pages/designer/info",
+    "pages/mine/index",
+    "pages/order/index",
+    "pages/coupon/index",
+    "pages/territory/index",
+    "pages/setting/index",
+    "pages/brand/detail"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "usingComponents": {}
+}

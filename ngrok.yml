@@ -1,0 +1,18 @@
+version: "2"
+# authtoken: YOUR_AUTH_TOKEN_HERE
+# 请先执行: ngrok config add-authtoken YOUR_AUTH_TOKEN
+# 然后将 authtoken 添加到上面的配置中（可选）
+
+tunnels:
+  # uni-app 开发服务器 (HBuilderX 默认端口 8090)
+  uni-app-dev:
+    addr: 8090
+    proto: http
+    # subdomain: your-project-name  # 需要付费账号，取消注释并设置子域名
+  
+  # uni-app H5 预览端口 (默认 8080)
+  uni-app-h5:
+    addr: 8080
+    proto: http
+    # subdomain: your-project-h5  # 需要付费账号，取消注释并设置子域名
+

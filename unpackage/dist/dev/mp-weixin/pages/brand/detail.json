@@ -1,0 +1,15 @@
+{
+  "navigationBarTitleText": "品牌详情",
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#f2f2f2",
+  "usingComponents": {
+    "brand-detail-header": "../../components/brand/detail/BrandDetailHeader",
+    "brand-info-card": "../../components/brand/detail/BrandInfoCard",
+    "designer-tab-switcher": "../../components/DesignerTabSwitcher",
+    "brand-stylist-tab-content": "../../components/brand/detail/BrandStylistTabContent",
+    "brand-service-tab-content": "../../components/brand/detail/BrandServiceTabContent",
+    "designer-works-tab-content": "../../components/DesignerWorksTabContent",
+    "brand-reviews-tab-content": "../../components/brand/detail/BrandReviewsTabContent"
+  }
+}

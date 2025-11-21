@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "服务订单",
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#f2f2f2",
+  "usingComponents": {
+    "order-navigation-bar": "../../components/order/index/OrderNavigationBar",
+    "order-service-list": "../../components/order/index/OrderServiceList"
+  }
+}
