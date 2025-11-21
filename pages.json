@@ -63,17 +63,26 @@
 				"navigationBarBackgroundColor": "#f2f2f2"
 			}
 		},
-		{
-			"path": "pages/territory/index",
-			"style": {
-				"navigationBarTitleText": "私人领地",
-				"navigationStyle": "custom",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#f2f2f2"
-			}
-		},
-		{
-			"path": "pages/setting/index",
+	{
+		"path": "pages/territory/index",
+		"style": {
+			"navigationBarTitleText": "私人领地",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/territory/brand-store",
+		"style": {
+			"navigationBarTitleText": "品牌馆",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/setting/index",
 			"style": {
 				"navigationBarTitleText": "设置",
 				"navigationStyle": "custom",
@@ -81,16 +90,97 @@
 				"navigationBarBackgroundColor": "#f2f2f2"
 			}
 		},
-		{
-			"path": "pages/brand/detail",
-			"style": {
-				"navigationBarTitleText": "品牌详情",
-				"navigationStyle": "custom",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#f2f2f2"
-			}
+	{
+		"path": "pages/brand/detail",
+		"style": {
+			"navigationBarTitleText": "品牌详情",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
 		}
-	],
+	},
+	{
+		"path": "pages/setting/personal-info",
+		"style": {
+			"navigationBarTitleText": "个人信息",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/setting/account-security",
+		"style": {
+			"navigationBarTitleText": "账号安全",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/setting/apply-certification",
+		"style": {
+			"navigationBarTitleText": "申请认证",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/setting/address-management",
+		"style": {
+			"navigationBarTitleText": "收货地址",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/setting/payment-settings",
+		"style": {
+			"navigationBarTitleText": "支付设置",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/setting/privacy-settings",
+		"style": {
+			"navigationBarTitleText": "隐私设置",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/setting/feedback",
+		"style": {
+			"navigationBarTitleText": "反馈意见",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/setting/about",
+		"style": {
+			"navigationBarTitleText": "关于众美",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/setting/agreement",
+		"style": {
+			"navigationBarTitleText": "协议与条款",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	}
+],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
