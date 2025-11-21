@@ -1,0 +1,163 @@
+<template>
+	<view class="setting-detail-page">
+		<SettingDetailHeader title="隐私设置" />
+		
+		<view class="main-content">
+			<!-- 隐私设置卡片 -->
+			<view class="settings-card">
+				<view class="card-content">
+					<view 
+						v-for="(item, index) in privacyItems" 
+						:key="index"
+						class="setting-item-wrapper"
+					>
+						<view v-if="index > 0" class="separator-line"></view>
+						<view class="setting-item">
+							<view class="item-info">
+								<text class="setting-label">{{ item.label }}</text>
+								<text class="setting-desc">{{ item.desc }}</text>
+							</view>
+							
+							<switch 
+								:checked="item.checked"
+								@change="(e) => handleToggleChange(item, e)"
+								color="#927eff"
+								class="setting-switch"
+							></switch>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+import SettingDetailHeader from '@/components/setting/SettingDetailHeader.vue'
+
+export default {
+	components: {
+		SettingDetailHeader
+	},
+	data() {
+		return {
+			privacyItems: [
+				{
+					label: '开启地理位置',
+					desc: '开启后，其他用户可通过位置搜索到您',
+					checked: true
+				},
+				{
+					label: '允许访问相册',
+					desc: '开启后，可以访问您的相册信息',
+					checked: false
+				},
+				{
+					label: '允许访问相机',
+					desc: '开启后，可以访问您的相机',
+					checked: false
+				},
+				{
+					label: '允许访问麦克风',
+					desc: '开启后，可以访问您的麦克风',
+					checked: false
+				}
+			]
+		}
+	},
+	methods: {
+		handleToggleChange(item, event) {
+			const checked = event.detail.value || event.target.checked
+			item.checked = checked
+			console.log('Toggle changed:', item.label, checked)
+		}
+	}
+}
+</script>
+
+<style scoped lang="scss">
+.setting-detail-page {
+	width: 100%;
+	min-height: 100vh;
+	background-color: #f2f2f2;
+	display: flex;
+	flex-direction: column;
+	overflow-x: hidden;
+	box-sizing: border-box;
+}
+
+.main-content {
+	flex: 1;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	padding: 12rpx;
+	gap: 12rpx;
+	padding-bottom: 160rpx;
+	box-sizing: border-box;
+}
+
+.settings-card {
+	width: 100%;
+	max-width: 726rpx;
+	background-color: #ffffff;
+	border-radius: 8rpx;
+	box-sizing: border-box;
+	margin: 0 auto;
+}
+
+.card-content {
+	padding: 30rpx;
+	box-sizing: border-box;
+}
+
+.setting-item-wrapper {
+	display: flex;
+	flex-direction: column;
+}
+
+.separator-line {
+	width: 100%;
+	height: 1rpx;
+	background-color: #f0f0f0;
+	margin: 24rpx 0;
+}
+
+.setting-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	padding: 0;
+	background-color: transparent;
+	border: none;
+	box-sizing: border-box;
+}
+
+.item-info {
+	display: flex;
+	flex-direction: column;
+	gap: 8rpx;
+	flex: 1;
+}
+
+.setting-label {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: normal;
+	color: #000000;
+	font-size: 28rpx;
+}
+
+.setting-desc {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: normal;
+	color: #a6a6a6;
+	font-size: 24rpx;
+	line-height: 1.4;
+}
+
+.setting-switch {
+	transform: scale(0.85);
+	flex-shrink: 0;
+}
+</style>

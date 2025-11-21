@@ -1,0 +1,66 @@
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Build outputs
+dist/
+build/
+*.local
+.nuxt
+.cache
+.vuepress/dist
+
+# Dependencies
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# IDE and editor configs
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Uni-app specific
+unpackage/dist/
+unpackage/cache/
+
+# HBuilderX
+.hbuilderx/
+
+# Temporary files
+*.tmp
+*.temp
+.tmpignore
+
+# OS specific
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Log files
+logs
+*.log
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Misc
+.eslintcache
+.stylelintcache
+
