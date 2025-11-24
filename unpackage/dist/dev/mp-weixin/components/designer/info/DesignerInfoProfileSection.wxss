@@ -25,51 +25,54 @@
 /* 文章场景相关 */
 .profile-section.data-v-dfe2c6b2 {
   width: 100%;
-  padding: 32rpx 32rpx 24rpx;
-  transform: translateY(-32rpx);
+  padding: 0 24rpx;
 }
 .tabs-container.data-v-dfe2c6b2 {
   width: 100%;
 }
 .tabs-list.data-v-dfe2c6b2 {
   width: 100%;
-  height: auto;
+  height: 98rpx;
   background-color: transparent;
-  padding: 0;
+  padding: 0 0 6rpx;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 32rpx;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0;
 }
 .tab-trigger.data-v-dfe2c6b2 {
   flex: 1;
-  height: auto;
+  height: 100%;
+  min-width: 0;
   background-color: transparent;
-  padding: 0;
+  padding: 0 0 10rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20rpx;
+  justify-content: flex-end;
   position: relative;
 }
 .tab-label.data-v-dfe2c6b2 {
   font-family: "PingFang_SC-Semibold", Helvetica;
-  font-size: 28rpx;
+  font-size: 30rpx;
   text-align: center;
   letter-spacing: 0;
-  line-height: normal;
-  transition: color 0.3s;
+  line-height: 44rpx;
+  transition: color 0.2s;
+  width: 100%;
+  color: #b0b0b0;
 }
 .tab-label.active.data-v-dfe2c6b2 {
   font-weight: 600;
-  color: #000000;
-}
-.tab-label.data-v-dfe2c6b2:not(.active) {
-  font-family: "PingFang_SC-Medium", Helvetica;
-  font-weight: 500;
-  color: #a6a6a6;
+  color: #111111;
 }
 .tab-indicator.data-v-dfe2c6b2 {
-  width: 20rpx;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 38rpx;
   height: 6rpx;
+  border-radius: 3rpx;
+  display: block;
 }

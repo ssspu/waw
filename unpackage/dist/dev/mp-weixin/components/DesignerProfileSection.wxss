@@ -207,22 +207,39 @@
 }
 .book-btn.data-v-d3c57a56 {
   height: 60rpx;
-  padding: 16rpx 30rpx;
+  min-width: 148rpx;
+  padding: 0 30rpx;
   background-color: #333333;
   border-radius: 4rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.expand-btn.data-v-d3c57a56 {
+  height: 60rpx;
+  min-width: 148rpx;
+  padding: 0;
+  background-color: #333333;
+  border-radius: 4rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-sizing: border-box;
 }
 .book-text.data-v-d3c57a56 {
   font-family: "PingFang_SC-Semibold", Helvetica;
   font-weight: normal;
   color: #ffa77b;
   font-size: 22rpx;
+  white-space: nowrap;
 }
 .options-icon.data-v-d3c57a56 {
-  width: 148rpx;
-  height: 60rpx;
+  width: 40rpx;
+  height: 40rpx;
+  filter: brightness(0) invert(1);
 }
 .options-section.data-v-d3c57a56 {
   display: flex;
@@ -278,11 +295,33 @@
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
+  cursor: pointer;
+  padding: 12rpx 0;
 }
 .brand-info.data-v-d3c57a56 {
   display: flex;
   align-items: center;
   gap: 20rpx;
+}
+.brand-radio.data-v-d3c57a56 {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  border: 2rpx solid #e5e5e5;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.brand-radio.checked.data-v-d3c57a56 {
+  border-color: #333333;
+  background-color: #333333;
+}
+.check-icon.data-v-d3c57a56 {
+  width: 24rpx;
+  height: 24rpx;
+  filter: brightness(0) invert(1);
 }
 .brand-icon.data-v-d3c57a56 {
   width: 44rpx;
@@ -303,14 +342,22 @@
   align-items: center;
 }
 .book-btn-large.data-v-d3c57a56 {
-  height: 84rpx;
+  height: 88rpx;
   width: 100%;
-  padding: 16rpx 30rpx;
+  padding: 0;
   background-color: #333333;
-  border-radius: 4rpx;
+  border-radius: 8rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.book-btn-large .book-text.data-v-d3c57a56 {
+  font-family: "PingFang_SC-Semibold", Helvetica;
+  font-weight: normal;
+  color: #ffa77b;
+  font-size: 32rpx;
 }
 
 /* 动画 */

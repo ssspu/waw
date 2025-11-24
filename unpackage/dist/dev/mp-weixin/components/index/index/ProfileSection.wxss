@@ -132,8 +132,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20rpx 30rpx;
-  border-top: 2rpx solid #f3f3f3;
+  padding: 0 30rpx 20rpx;
 }
 .bottom-action-item.data-v-304e509b {
   display: flex;
@@ -394,6 +393,9 @@
 .brands-scroll.data-v-304e509b {
   width: 100%;
   white-space: nowrap;
+  box-sizing: border-box;
+  /* 确保回弹效果正常 */
+  -webkit-overflow-scrolling: touch;
 }
 .brands-container.data-v-304e509b {
   display: flex;
@@ -453,18 +455,31 @@
 .brand-address.data-v-304e509b {
   display: flex;
   align-items: center;
-  gap: 8rpx;
-  justify-content: space-between;
+  gap: 6rpx;
+  justify-content: flex-start;
   width: 100%;
 }
 .location-icon.data-v-304e509b {
-  font-size: 28rpx;
+  width: 28rpx;
+  height: 28rpx;
+  flex-shrink: 0;
 }
 .address-text.data-v-304e509b {
   font-family: "PingFang_SC-Medium", Helvetica;
   font-size: 22rpx;
   color: #666666;
   font-weight: 500;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.brand-address .distance.data-v-304e509b {
+  margin-left: 8rpx;
+  font-family: "PingFang_SC-Regular", Helvetica;
+  font-size: 22rpx;
+  color: #a6a6a6;
+  white-space: nowrap;
 }
 .brand-overlay.data-v-304e509b {
   position: absolute;

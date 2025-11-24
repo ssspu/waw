@@ -20,8 +20,10 @@
 			<!-- 设计师信息 -->
 			<view class="designer-card">
 				<view class="designer-info">
-					<!-- 头像 -->
+				<!-- 头像 -->
+				<view class="avatar-wrapper">
 					<view class="avatar" :style="{ backgroundImage: `url(${designerInfo.avatar})` }"></view>
+				</view>
 					
 					<!-- 基本信息 -->
 					<view class="info-content">
@@ -300,7 +302,7 @@ export default {
 .designer-card {
 	position: relative;
 	width: 100%;
-	padding: 7rpx 30rpx;
+	padding: 7rpx 30rpx 20rpx 30rpx;
 	box-sizing: border-box;
 	background-color: transparent;
 	overflow: hidden;
@@ -330,13 +332,34 @@ export default {
 	z-index: 4;
 }
 
-.avatar {
+.avatar-wrapper {
+	position: relative;
 	width: 158rpx;
 	height: 157rpx;
+	flex-shrink: 0;
+	background-image: url('/static/background-image/avatar-shape.png');
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.avatar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
 	background-size: cover;
 	background-position: center;
 	border-radius: 8rpx;
-	flex-shrink: 0;
+	mask-image: url('/static/background-image/avatar-shape.png');
+	mask-size: contain;
+	mask-position: center;
+	mask-repeat: no-repeat;
+	-webkit-mask-image: url('/static/background-image/avatar-shape.png');
+	-webkit-mask-size: contain;
+	-webkit-mask-position: center;
+	-webkit-mask-repeat: no-repeat;
 }
 
 .info-content {
@@ -742,8 +765,8 @@ export default {
 
 .separator-line {
 	width: 100%;
-	height: 2rpx;
-	background-color: #e5e5e5;
+	height: 0;
+	border-top: 2rpx dashed #e5e5e5;
 	margin: 20rpx 0;
 	position: relative;
 	z-index: 4;
@@ -755,6 +778,9 @@ export default {
 	gap: 20rpx;
 	position: relative;
 	z-index: 4;
+	margin-top: -4rpx;
+	margin-bottom: 0;
+	padding-bottom: 0;
 }
 
 .promo-icon {

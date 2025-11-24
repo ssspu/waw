@@ -27,27 +27,4 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 12rpx;
-}
-.sub-tabs-section.data-v-1b0a56c7 {
-  display: flex;
-  align-items: center;
-  gap: 40rpx;
-  padding: 0 30rpx;
-  margin-bottom: 12rpx;
-  width: 100%;
-  box-sizing: border-box;
-}
-.sub-tab-item.data-v-1b0a56c7 {
-  font-size: 28rpx;
-  text-align: center;
-  font-family: "PingFang_SC-Medium", Helvetica;
-  font-weight: 500;
-  color: #a6a6a6;
-  cursor: pointer;
-}
-.sub-tab-item.active.data-v-1b0a56c7 {
-  font-family: "PingFang_SC-Semibold", Helvetica;
-  font-weight: normal;
-  color: #333333;
 }

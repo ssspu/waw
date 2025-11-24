@@ -26,33 +26,10 @@
 .reviews-tab-content.data-v-cd62d4c5 {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: calc(100% + 24rpx);
+  margin: 0 -12rpx;
   gap: 16rpx;
-}
-.filter-tabs-section.data-v-cd62d4c5 {
-  display: flex;
-  align-items: flex-start;
-  gap: 40rpx;
-  padding: 0 30rpx 24rpx;
-  width: 100%;
+  background-color: #f2f2f2;
+  padding-bottom: 20rpx;
   box-sizing: border-box;
-}
-.filter-tab.data-v-cd62d4c5 {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10rpx;
-  cursor: pointer;
-}
-.filter-label.data-v-cd62d4c5 {
-  font-family: "PingFang_SC-Regular", Helvetica;
-  font-weight: normal;
-  color: #a6a6a6;
-  font-size: 28rpx;
-  text-align: center;
-}
-.filter-label.active.data-v-cd62d4c5 {
-  font-family: "PingFang_SC-Semibold", Helvetica;
-  font-weight: normal;
-  color: #000000;
 }

@@ -21,7 +21,7 @@ const _sfc_main = {
   },
   onLoad(options) {
     if (options.id) {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:99", "Designer ID:", options.id);
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:118", "Designer ID:", options.id);
     }
     if (options.tab) {
       this.activeTab = options.tab;
@@ -30,12 +30,43 @@ const _sfc_main = {
   data() {
     return {
       activeTab: "service",
+      activeSubTabs: {
+        service: "hair",
+        appointment: "today",
+        works: "female",
+        reviews: "all"
+      },
       tabs: [
         { id: "service", label: "服务" },
         { id: "appointment", label: "预约" },
         { id: "works", label: "作品" },
         { id: "reviews", label: "点评" }
       ],
+      subTabs: {
+        service: [
+          { id: "hair", title: "美发师" },
+          { id: "beauty", title: "美容师" }
+        ],
+        appointment: [
+          { id: "today", title: "今天", subtitle: "周一" },
+          { id: "tomorrow", title: "明天", subtitle: "周二" },
+          { id: "1205", title: "12.05", subtitle: "周三" },
+          { id: "1206", title: "12.06", subtitle: "周四" },
+          { id: "1207", title: "12.07", subtitle: "周五" },
+          { id: "1208", title: "12.08", subtitle: "周六" },
+          { id: "1209", title: "12.09", subtitle: "周日" }
+        ],
+        works: [
+          { id: "female", title: "女士" },
+          { id: "male", title: "男士" },
+          { id: "kids", title: "儿童" }
+        ],
+        reviews: [
+          { id: "all", title: "全部" },
+          { id: "with-image", title: "有图(71)" },
+          { id: "bad", title: "差评(9)" }
+        ]
+      },
       designerInfo: {
         avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-153.png",
         name: "朱一龙",
@@ -83,27 +114,42 @@ const _sfc_main = {
       }
     };
   },
+  computed: {
+    currentSubTabs() {
+      return this.subTabs[this.activeTab] || [];
+    },
+    isCompactSubTabs() {
+      return ["appointment", "works", "reviews"].includes(this.activeTab);
+    }
+  },
   methods: {
     handleTabChange(tabId) {
       this.activeTab = tabId;
+      const tabs = this.subTabs[tabId];
+      if (tabs && tabs.length && !this.activeSubTabs[tabId]) {
+        this.$set(this.activeSubTabs, tabId, tabs[0].id);
+      }
+    },
+    handleSubTabClick(subTabId) {
+      this.$set(this.activeSubTabs, this.activeTab, subTabId);
     },
     handleMoreInfo() {
       common_vendor.index.navigateTo({ url: "/pages/designer/info" });
     },
     handleFollow() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:170", "Follow clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:235", "Follow clicked");
     },
     handlePhone() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:173", "Phone clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:238", "Phone clicked");
     },
     handleNavigation() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:176", "Navigation clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:241", "Navigation clicked");
     },
     handleShare() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:179", "Share clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:244", "Share clicked");
     },
     handleBooking() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:182", "Booking clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:247", "Booking clicked");
     }
   }
 };
@@ -139,20 +185,57 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       ["active-tab"]: $data.activeTab,
       tabs: $data.tabs
     }),
-    i: $data.activeTab === "service"
-  }, $data.activeTab === "service" ? {} : {}, {
-    j: $data.activeTab === "appointment"
-  }, $data.activeTab === "appointment" ? {} : {}, {
-    k: $data.activeTab === "works"
-  }, $data.activeTab === "works" ? {} : {}, {
-    l: $data.activeTab === "reviews"
-  }, $data.activeTab === "reviews" ? {} : {}, {
-    m: $data.activeTab === "service"
-  }, $data.activeTab === "service" ? {} : {}, {
+    i: $options.currentSubTabs.length
+  }, $options.currentSubTabs.length ? {
+    j: common_vendor.f($options.currentSubTabs, (subTab, index, i0) => {
+      return common_vendor.e({
+        a: common_vendor.t(subTab.title),
+        b: subTab.subtitle
+      }, subTab.subtitle ? {
+        c: common_vendor.t(subTab.subtitle)
+      } : {}, {
+        d: index,
+        e: $data.activeSubTabs[$data.activeTab] === subTab.id ? 1 : "",
+        f: common_vendor.o(($event) => $options.handleSubTabClick(subTab.id), index)
+      });
+    }),
+    k: common_vendor.n({
+      "compact-sub-tabs": $options.isCompactSubTabs,
+      "appointment-sub-tabs": $data.activeTab === "appointment"
+    })
+  } : {}, {
+    l: $data.activeTab === "service"
+  }, $data.activeTab === "service" ? {
+    m: common_vendor.p({
+      ["active-sub-tab"]: $data.activeSubTabs.service
+    })
+  } : {}, {
     n: $data.activeTab === "appointment"
   }, $data.activeTab === "appointment" ? {
-    o: common_vendor.o((...args) => $options.handleBooking && $options.handleBooking(...args))
-  } : {});
+    o: common_vendor.p({
+      ["active-sub-tab"]: $data.activeSubTabs.appointment
+    })
+  } : {}, {
+    p: $data.activeTab === "works"
+  }, $data.activeTab === "works" ? {
+    q: common_vendor.p({
+      ["active-sub-tab"]: $data.activeSubTabs.works
+    })
+  } : {}, {
+    r: $data.activeTab === "reviews"
+  }, $data.activeTab === "reviews" ? {
+    s: common_vendor.p({
+      ["active-sub-tab"]: $data.activeSubTabs.reviews
+    })
+  } : {}, {
+    t: $data.activeTab === "service"
+  }, $data.activeTab === "service" ? {} : {}, {
+    v: $data.activeTab === "appointment"
+  }, $data.activeTab === "appointment" ? {
+    w: common_vendor.o((...args) => $options.handleBooking && $options.handleBooking(...args))
+  } : {}, {
+    x: $data.activeTab === "reviews" ? 1 : ""
+  });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-d0e7643f"]]);
 wx.createPage(MiniProgramPage);

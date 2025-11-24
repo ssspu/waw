@@ -5,18 +5,10 @@ const _sfc_main = {
   components: {
     DesignerProfileSection
   },
-  data() {
-    return {
-      activeSubTab: "hair",
-      subTabs: [
-        { id: "hair", label: "美发师" },
-        { id: "beauty", label: "美容师" }
-      ]
-    };
-  },
-  methods: {
-    handleSubTabClick(id) {
-      this.activeSubTab = id;
+  props: {
+    activeSubTab: {
+      type: String,
+      default: "hair"
     }
   }
 };
@@ -26,13 +18,8 @@ if (!Array) {
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_vendor.f($data.subTabs, (subTab, index, i0) => {
-      return {
-        a: common_vendor.t(subTab.label),
-        b: index,
-        c: $data.activeSubTab === subTab.id ? 1 : "",
-        d: common_vendor.o(($event) => $options.handleSubTabClick(subTab.id), index)
-      };
+    a: common_vendor.p({
+      ["active-sub-tab"]: $props.activeSubTab
     })
   };
 }

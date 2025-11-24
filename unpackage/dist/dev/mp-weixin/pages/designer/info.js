@@ -29,8 +29,10 @@ if (!Array) {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_vendor.o((...args) => $options.goBack && $options.goBack(...args)),
-    b: common_vendor.o((...args) => $options.goBack && $options.goBack(...args)),
-    c: common_vendor.o($options.handleTabChange),
+    b: common_vendor.o($options.handleTabChange),
+    c: common_vendor.p({
+      ["active-tab"]: $data.activeTab
+    }),
     d: common_vendor.p({
       ["active-tab"]: $data.activeTab
     })

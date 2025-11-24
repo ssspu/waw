@@ -8,7 +8,7 @@
 						v-for="(nav, index) in navTabs" 
 						:key="index" 
 						class="nav-item"
-						:class="{ active: index === 0 }"
+						:class="{ active: activeNavTab === index }"
 						@tap="switchNav(index)"
 					>
 						<text>{{ nav }}</text>
@@ -17,10 +17,10 @@
 				<image class="chevron-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-8.svg" mode="aspectFit"></image>
 			</view>
 			
-			<!-- 服务信息列表 -->
-			<view class="info-list">
+			<!-- 服务须知列表 -->
+			<view v-if="activeNavTab === 0" class="info-list">
 				<view 
-					v-for="(item, index) in serviceInfoData" 
+					v-for="(item, index) in currentInfoData" 
 					:key="index" 
 					class="info-item"
 				>
@@ -31,7 +31,39 @@
 							<text v-if="item.extra" class="info-extra">{{ item.extra }}</text>
 						</view>
 					</view>
-					<view class="separator-line"></view>
+					<view v-if="index < currentInfoData.length - 1" class="separator-line"></view>
+				</view>
+			</view>
+			
+			<!-- 服务特色标签式布局 -->
+			<view v-if="activeNavTab === 1" class="features-content">
+				<view v-for="(section, sectionIndex) in serviceFeaturesData" :key="sectionIndex" class="feature-section">
+					<text v-if="section.title" class="section-title">{{ section.title }}</text>
+					<view class="tags-grid">
+						<view 
+							v-for="(tag, tagIndex) in section.tags" 
+							:key="tagIndex" 
+							class="feature-tag"
+						>
+							<text>{{ tag }}</text>
+						</view>
+					</view>
+				</view>
+			</view>
+			
+			<!-- 环境设施标签式布局 -->
+			<view v-if="activeNavTab === 2" class="features-content">
+				<view v-for="(section, sectionIndex) in environmentData" :key="sectionIndex" class="feature-section">
+					<text v-if="section.title" class="section-title">{{ section.title }}</text>
+					<view class="tags-grid">
+						<view 
+							v-for="(tag, tagIndex) in section.tags" 
+							:key="tagIndex" 
+							class="feature-tag"
+						>
+							<text>{{ tag }}</text>
+						</view>
+					</view>
 				</view>
 			</view>
 		</view>
@@ -41,7 +73,7 @@
 			<view class="card-header">
 				<text class="card-title">顾客点评</text>
 				<view class="more-btn" @tap="handleViewMoreReviews">
-					<text class="more-text">123条点评</text>
+					<text class="more-text">{{ totalReviewCount }}条点评</text>
 					<image class="chevron-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-8.svg" mode="aspectFit"></image>
 				</view>
 			</view>
@@ -61,46 +93,51 @@
 			</view>
 			
 			<!-- 点评列表 -->
-			<view class="reviews-list">
-				<view class="review-item">
-					<image 
-						class="review-image" 
-						src="https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png" 
-						mode="aspectFill"
-					></image>
-					<view class="review-content">
-						<text class="review-title">环境特别好</text>
-						<view class="review-rating">
-							<text class="rating-score">5.0</text>
-							<view class="stars">
-								<image 
-									v-for="i in 5" 
-									:key="i" 
-									class="star-icon" 
-									src="https://c.animaapp.com/mi5d4lp0csJxnR/img/star-1.svg" 
-									mode="aspectFit"
-								></image>
+			<view class="reviews-scroll-wrapper">
+				<scroll-view 
+					class="reviews-scroll" 
+					scroll-x 
+					show-scrollbar="false"
+					@scroll="handleReviewScroll"
+					ref="reviewsScroll"
+				>
+					<view class="reviews-list" ref="reviewsList">
+						<view 
+							v-for="(review, index) in displayedReviews" 
+							:key="index" 
+							class="review-item"
+						>
+							<image 
+								class="review-image" 
+								:src="review.image" 
+								mode="aspectFill"
+							></image>
+							<view class="review-content">
+								<text class="review-title">{{ review.title }}</text>
+								<view class="review-rating">
+									<text class="rating-score">{{ review.rating }}</text>
+									<view class="stars">
+										<image 
+											v-for="i in 5" 
+											:key="i" 
+											class="star-icon" 
+											src="https://c.animaapp.com/mi5d4lp0csJxnR/img/star-1.svg" 
+											mode="aspectFit"
+										></image>
+									</view>
+								</view>
+								<text class="review-text">{{ review.content }}</text>
+								<view class="review-author">
+									<view class="author-avatar" :style="{ backgroundImage: `url(${review.avatar})` }"></view>
+									<text class="author-name">{{ review.author }}</text>
+									<text class="review-date">{{ review.date }}</text>
+								</view>
 							</view>
 						</view>
-						<text class="review-text">环境特别好环境特别好环境特别好环境特别好环境特别好环境特别好环境...</text>
-						<view class="review-author">
-							<view class="author-avatar" :style="{ backgroundImage: `url(https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg)` }"></view>
-							<text class="author-name">加菲猫</text>
-							<text class="review-date">2019-12-25</text>
-						</view>
 					</view>
-				</view>
-				
-				<view class="review-item fade-overlay">
-					<image 
-						class="review-image-small" 
-						src="https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187-1.png" 
-						mode="aspectFill"
-					></image>
-					<view class="fade-gradient"></view>
-				</view>
-				
-				<view class="fade-gradient-end"></view>
+				</scroll-view>
+				<view class="scroll-fade-left" :class="{ 'visible': showReviewLeftFade, 'fading': reviewFadeOut && showReviewLeftFade }"></view>
+				<view class="scroll-fade-right" :class="{ 'visible': showReviewRightFade, 'fading': reviewFadeOut && showReviewRightFade }"></view>
 			</view>
 		</view>
 		
@@ -144,6 +181,7 @@
 export default {
 	data() {
 		return {
+			activeNavTab: 0,
 			navTabs: ["服务须知", "服务特色", "环境设施"],
 			serviceInfoData: [
 				{ label: "职位", value: "店长" },
@@ -153,20 +191,187 @@ export default {
 				{ label: "从业时间", value: "12年" },
 				{ label: "预约时间", value: "提前3小时" },
 			],
+			serviceFeaturesData: [
+				{
+					title: "",
+					tags: [
+						"全预约制", "免费茶点",
+						"头皮检测", "免费停车",
+						"烫染专业店", "免费修眉",
+						"一对一服务", "免费按摩",
+						"没有隐形消费", "可上门服务"
+					]
+				},
+				{
+					title: "其他",
+					tags: [
+						"不可携带宠物", "服务区不可吸烟"
+					]
+				}
+			],
+			environmentData: [
+				{
+					title: "",
+					tags: [
+						"储物柜", "免费Wifi",
+						"充电宝", "可看电视",
+						"VIP专区", "沙发座"
+					]
+				},
+				{
+					title: "通用设施",
+					tags: [
+						"特定吸烟区", "电梯",
+						"有停车位", "空调",
+						"先进/刷卡支付"
+					]
+				}
+			],
 			reviewTags: [
 				{ text: "技术很好", count: "232", active: true },
 				{ text: "效果满意", count: "321", active: false },
 				{ text: "服务态度", count: "321", active: false },
 			],
+			reviews: [
+				{
+					id: 1,
+					title: "环境特别好",
+					rating: "5.0",
+					content: "环境特别好环境特别好环境特别好环境特别好环境特别好环境特别好环境...",
+					author: "加菲猫",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-25",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+				{
+					id: 2,
+					title: "服务很专业",
+					rating: "4.8",
+					content: "服务很专业，发型设计很满意，下次还会再来...",
+					author: "小可爱",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-24",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+				{
+					id: 3,
+					title: "效果超出预期",
+					rating: "5.0",
+					content: "效果超出预期，非常满意，推荐给大家...",
+					author: "美少女",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-23",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+				{
+					id: 4,
+					title: "技术很棒",
+					rating: "4.9",
+					content: "技术很棒，服务态度也很好，值得推荐...",
+					author: "时尚达人",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-22",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+				{
+					id: 5,
+					title: "性价比很高",
+					rating: "4.7",
+					content: "性价比很高，服务周到，环境舒适...",
+					author: "追求者",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-21",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+				{
+					id: 6,
+					title: "非常满意",
+					rating: "5.0",
+					content: "非常满意，下次还会再来，强烈推荐...",
+					author: "忠实客户",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-20",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+				{
+					id: 7,
+					title: "环境优雅",
+					rating: "4.8",
+					content: "环境优雅，服务专业，体验很好...",
+					author: "品味生活",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-19",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+				{
+					id: 8,
+					title: "发型设计很赞",
+					rating: "4.9",
+					content: "发型设计很赞，技术精湛，推荐...",
+					author: "时尚先锋",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-18",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+				{
+					id: 9,
+					title: "服务态度很好",
+					rating: "5.0",
+					content: "服务态度很好，技术也很专业，满意...",
+					author: "满意客户",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-17",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+				{
+					id: 10,
+					title: "体验很棒",
+					rating: "4.8",
+					content: "体验很棒，下次还会再来，推荐给大家...",
+					author: "体验者",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-16",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+			],
 			questions: [
 				"只烫不染的短发多少钱？头发比较干，不知道能不能做？",
 				"刘海发际线太高怎么办？",
 			],
+			// 滚动虚化效果相关
+			reviewScrollLeft: 0,
+			lastReviewScrollLeft: 0,
+			showReviewLeftFade: false,
+			showReviewRightFade: false,
+			reviewFadeOut: false,
+			reviewFadeTimeout: null,
+			reviewFadeStartTimeout: null,
+			reviewScrollContainerWidth: 0,
+			reviewScrollContentWidth: 0,
+		}
+	},
+	computed: {
+		currentInfoData() {
+			if (this.activeNavTab === 0) {
+				return this.serviceInfoData
+			} else if (this.activeNavTab === 1) {
+				return this.serviceFeaturesData
+			} else {
+				return this.environmentData
+			}
+		},
+		totalReviewCount() {
+			// 计算总评价数量（可以从所有标签的count中计算，或者使用reviews数组长度）
+			return this.reviews.length || this.reviewTags.reduce((sum, tag) => sum + parseInt(tag.count || 0), 0)
+		},
+		displayedReviews() {
+			// 最多显示10条评价
+			return this.reviews.slice(0, 10)
 		}
 	},
 	methods: {
 		switchNav(index) {
-			console.log('Switch nav:', index)
+			this.activeNavTab = index
 		},
 		selectTag(index) {
 			this.reviewTags.forEach((tag, i) => {
@@ -174,7 +379,10 @@ export default {
 			})
 		},
 		handleViewMoreReviews() {
-			console.log('View more reviews')
+			// 跳转到评价详情页
+			uni.navigateTo({
+				url: '/pages/designer/reviews'
+			})
 		},
 		handleViewMoreQA() {
 			console.log('View more QA')
@@ -184,6 +392,96 @@ export default {
 		},
 		handleJoin() {
 			console.log('Join clicked')
+		},
+		handleReviewScroll(e) {
+			const scrollLeft = e.detail.scrollLeft || 0
+			const maxScroll = this.getReviewMaxScroll()
+			const direction = scrollLeft - this.lastReviewScrollLeft
+
+			// 清除之前的淡出定时器
+			if (this.reviewFadeTimeout) {
+				clearTimeout(this.reviewFadeTimeout)
+			}
+			if (this.reviewFadeStartTimeout) {
+				clearTimeout(this.reviewFadeStartTimeout)
+			}
+
+			// 滚动时，取消淡出状态
+			this.reviewFadeOut = false
+
+			if (direction > 0) {
+				// 向左滑动，显示右侧虚化
+				this.showReviewRightFade = scrollLeft < maxScroll - 2
+				this.showReviewLeftFade = false
+			} else if (direction < 0) {
+				// 向右滑动，显示左侧虚化
+				this.showReviewLeftFade = scrollLeft > 2
+				this.showReviewRightFade = false
+			}
+
+			this.lastReviewScrollLeft = scrollLeft
+			this.reviewScrollLeft = scrollLeft
+			this.updateReviewFadeEdges(scrollLeft)
+
+			// 检测停止滚动：如果300ms内没有新的滚动事件，则认为停止，立即开始淡出
+			this.reviewFadeStartTimeout = setTimeout(() => {
+				// 立即开始淡出（1.5秒内线性淡化）
+				this.reviewFadeOut = true
+				// 1.5秒后完全隐藏
+				this.reviewFadeTimeout = setTimeout(() => {
+					this.showReviewLeftFade = false
+					this.showReviewRightFade = false
+					this.reviewFadeOut = false
+				}, 1500)
+			}, 300)
+		},
+		getReviewMaxScroll() {
+			return Math.max(this.reviewScrollContentWidth - this.reviewScrollContainerWidth, 0)
+		},
+		updateReviewFadeEdges(scrollLeft = 0) {
+			const maxScroll = this.getReviewMaxScroll()
+			if (maxScroll <= 0) {
+				this.showReviewLeftFade = false
+				this.showReviewRightFade = false
+				return
+			}
+
+			if (scrollLeft <= 2) {
+				this.showReviewLeftFade = false
+			}
+			if (scrollLeft >= maxScroll - 2) {
+				this.showReviewRightFade = false
+			}
+		},
+		measureReviewScroll() {
+			this.$nextTick(() => {
+				const query = uni.createSelectorQuery().in(this)
+				query.select('.reviews-scroll').boundingClientRect(rect => {
+					this.reviewScrollContainerWidth = rect ? rect.width : 0
+				})
+				query.select('.reviews-list').boundingClientRect(rect => {
+					this.reviewScrollContentWidth = rect ? rect.width : 0
+				})
+				query.exec(() => {
+					this.updateReviewFadeEdges(this.reviewScrollLeft)
+				})
+			})
+		}
+	},
+	watch: {
+		displayedReviews() {
+			this.measureReviewScroll()
+		}
+	},
+	mounted() {
+		this.measureReviewScroll()
+	},
+	beforeDestroy() {
+		if (this.reviewFadeTimeout) {
+			clearTimeout(this.reviewFadeTimeout)
+		}
+		if (this.reviewFadeStartTimeout) {
+			clearTimeout(this.reviewFadeStartTimeout)
 		}
 	}
 }
@@ -194,9 +492,10 @@ export default {
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	align-items: center;
+	align-items: stretch;
 	gap: 16rpx;
 	padding: 0 12rpx;
+	box-sizing: border-box;
 }
 
 .info-card {
@@ -205,6 +504,8 @@ export default {
 	border-radius: 12rpx;
 	border: 0;
 	box-shadow: none;
+	box-sizing: border-box;
+	overflow: hidden;
 }
 
 .card-header {
@@ -213,97 +514,179 @@ export default {
 	justify-content: space-between;
 	padding: 20rpx;
 	width: 100%;
+	box-sizing: border-box;
 }
 
 .nav-tabs {
 	display: inline-flex;
 	align-items: center;
-	gap: 30rpx;
+	gap: 40rpx;
+	flex: 1;
 }
 
 .nav-item {
 	font-size: 28rpx;
-	text-align: center;
+	text-align: left;
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
 	color: #666666;
+	cursor: pointer;
+	position: relative;
+	white-space: nowrap;
 }
 
 .nav-item.active {
 	font-family: 'PingFang_SC-Semibold', Helvetica;
-	font-weight: normal;
+	font-weight: 600;
 	color: #000000;
 }
 
 .chevron-icon {
 	width: 28rpx;
 	height: 28rpx;
+	flex-shrink: 0;
+	opacity: 0.6;
 }
 
 .info-list {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: 20rpx;
+	gap: 0;
 	padding: 0 20rpx 20rpx;
 	width: 100%;
+	box-sizing: border-box;
 }
 
 .info-item {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: 20rpx;
+	gap: 0;
 	width: 100%;
+	padding: 10rpx 0;
+	box-sizing: border-box;
 }
 
 .info-row {
 	display: flex;
 	align-items: center;
-	gap: 16rpx;
+	gap: 30rpx;
 	width: 100%;
+	box-sizing: border-box;
 }
 
 .info-label {
-	width: 96rpx;
+	min-width: 96rpx;
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-weight: normal;
 	color: #666666;
 	font-size: 24rpx;
+	flex-shrink: 0;
+	white-space: nowrap;
 }
 
 .info-value-group {
 	display: inline-flex;
 	align-items: center;
 	gap: 16rpx;
+	flex: 1;
+	box-sizing: border-box;
+	min-width: 0;
 }
 
 .info-value {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
-	color: #333333;
+	color: #666666;
 	font-size: 24rpx;
+	flex-shrink: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .info-extra {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
-	color: #333333;
+	color: #666666;
 	font-size: 24rpx;
+	flex-shrink: 0;
 }
 
 .separator-line {
 	width: 100%;
 	height: 2rpx;
-	background-color: #e5e5e5;
+	background-color: #f5f5f5;
+	margin-top: 20rpx;
+	margin-bottom: 20rpx;
+}
+
+/* 服务特色和环境设施标签式布局 */
+.features-content {
+	padding: 0 20rpx 20rpx;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.feature-section {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	margin-bottom: 32rpx;
+}
+
+.feature-section:last-child {
+	margin-bottom: 0;
+}
+
+.section-title {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-weight: 400;
+	color: #666666;
+	font-size: 28rpx;
+	margin-bottom: 20rpx;
+}
+
+.tags-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16rpx;
+	width: 100%;
+}
+
+.feature-tag {
+	flex: 0 0 calc(50% - 8rpx);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16rpx 20rpx;
+	background-color: #f5f5f5;
+	border-radius: 8rpx;
+	box-sizing: border-box;
+	min-height: 72rpx;
+}
+
+.feature-tag text {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-weight: 400;
+	color: #666666;
+	font-size: 26rpx;
+	text-align: center;
 }
 
 .reviews-card {
-	width: 100%;
+	width: calc(100% + 24rpx);
 	background-color: #ffffff;
 	border-radius: 12rpx;
 	border: 0;
 	box-shadow: none;
+	box-sizing: border-box;
+	overflow: hidden;
+	margin-left: -12rpx;
+	margin-right: -12rpx;
+	align-self: stretch;
 }
 
 .card-title {
@@ -334,6 +717,7 @@ export default {
 	gap: 12rpx;
 	padding: 0 20rpx 24rpx;
 	width: 100%;
+	box-sizing: border-box;
 }
 
 .review-tag {
@@ -373,13 +757,58 @@ export default {
 	color: #ffffff;
 }
 
+.reviews-scroll-wrapper {
+	position: relative;
+	width: 100%;
+	overflow: hidden;
+}
+
+.reviews-scroll {
+	width: 100%;
+	white-space: nowrap;
+	box-sizing: border-box;
+}
+
+.scroll-fade-left,
+.scroll-fade-right {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 60rpx;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 1.5s linear;
+	z-index: 10;
+}
+
+.scroll-fade-left {
+	left: 0;
+	background: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.8) 30%, rgba(255, 255, 255, 0) 100%);
+}
+
+.scroll-fade-right {
+	right: 0;
+	background: linear-gradient(to left, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.8) 30%, rgba(255, 255, 255, 0) 100%);
+}
+
+.scroll-fade-left.visible,
+.scroll-fade-right.visible {
+	opacity: 1;
+}
+
+.scroll-fade-left.fading,
+.scroll-fade-right.fading {
+	opacity: 0;
+}
+
 .reviews-list {
-	display: flex;
+	display: inline-flex;
 	align-items: flex-start;
 	gap: 24rpx;
 	padding: 0 20rpx 20rpx;
-	width: 100%;
-	overflow-x: auto;
+	min-width: 100%;
+	box-sizing: border-box;
+	width: auto;
 }
 
 .review-item {
@@ -387,6 +816,8 @@ export default {
 	align-items: flex-start;
 	gap: 16rpx;
 	flex-shrink: 0;
+	width: 600rpx;
+	box-sizing: border-box;
 }
 
 .review-image {
@@ -402,6 +833,8 @@ export default {
 	width: 388rpx;
 	align-items: flex-start;
 	gap: 2rpx;
+	box-sizing: border-box;
+	flex-shrink: 0;
 }
 
 .review-title {
@@ -511,6 +944,8 @@ export default {
 	border-radius: 12rpx;
 	border: 0;
 	box-shadow: none;
+	box-sizing: border-box;
+	overflow: hidden;
 }
 
 .questions-list {
@@ -520,6 +955,8 @@ export default {
 	justify-content: center;
 	gap: 24rpx;
 	padding: 0 20rpx 20rpx;
+	width: 100%;
+	box-sizing: border-box;
 }
 
 .question-item {
@@ -527,6 +964,7 @@ export default {
 	align-items: center;
 	gap: 16rpx;
 	width: 100%;
+	box-sizing: border-box;
 }
 
 .question-badge {
@@ -554,6 +992,15 @@ export default {
 	color: #333333;
 	font-size: 24rpx;
 	text-align: left;
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	-webkit-box-orient: vertical;
+	white-space: normal;
 }
 
 .join-btn {
@@ -566,6 +1013,7 @@ export default {
 	padding: 16rpx 30rpx;
 	background-color: #ffffff;
 	border-radius: 4rpx;
+	box-sizing: border-box;
 }
 
 .join-text {
@@ -573,13 +1021,9 @@ export default {
 	-webkit-background-clip: text;
 	background-clip: text;
 	-webkit-text-fill-color: transparent;
-	text-fill-color: transparent;
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-weight: normal;
 	font-size: 24rpx;
-}
-
-.join-text {
 	color: #000000;
 }
 

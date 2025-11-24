@@ -37,14 +37,25 @@
 					<text class="section-title">下午</text>
 					
 					<view class="time-slots-grid">
-						<view 
-							v-for="(slot, index) in afternoonSlots" 
-							:key="index"
-							class="time-slot available"
-							@tap="handleSlotClick('afternoon', index)"
-						>
-							<text class="time-text">{{ slot.time }}</text>
-						</view>
+					<view 
+						v-for="(slot, index) in afternoonSlots" 
+						:key="index"
+						class="time-slot"
+						:class="{ 
+							selected: slot.status === 'selected',
+							booked: slot.status === 'booked',
+							available: slot.status === 'available'
+						}"
+						@tap="handleSlotClick('afternoon', index)"
+					>
+						<text 
+							class="time-text"
+							:class="{ 
+								selected: slot.status === 'selected',
+								booked: slot.status === 'booked'
+							}"
+						>{{ slot.time }}</text>
+					</view>
 					</view>
 				</view>
 				
@@ -126,13 +137,13 @@ export default {
 	flex-direction: column;
 	width: 100%;
 	align-items: center;
-	padding: 0 12rpx;
+	padding: 0 4rpx;
 	box-sizing: border-box;
 }
 
 .card {
 	width: 100%;
-	max-width: 726rpx;
+	max-width: 760rpx;
 	margin: 0 auto;
 	background-color: #ffffff;
 	border-radius: 16rpx;
@@ -142,8 +153,8 @@ export default {
 .card-content {
 	display: flex;
 	flex-direction: column;
-	gap: 20rpx;
-	padding: 30rpx 24rpx;
+	gap: 24rpx;
+	padding: 32rpx 30rpx;
 	box-sizing: border-box;
 }
 
@@ -164,8 +175,8 @@ export default {
 
 .time-slots-grid {
 	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: 12rpx;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 14rpx;
 	width: 100%;
 }
 
@@ -176,6 +187,7 @@ export default {
 	align-items: center;
 	justify-content: center;
 	padding: 16rpx 0;
+}
 	background-color: #f6f6f6;
 	border-radius: 8rpx;
 	border: 2rpx solid #f6f6f6;

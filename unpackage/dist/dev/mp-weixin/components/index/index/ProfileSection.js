@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../../common/vendor.js");
+const common_assets = require("../../../common/assets.js");
 const _sfc_main = {
   data() {
     return {
@@ -901,14 +902,14 @@ const _sfc_main = {
         url = "/pages/main/index?tab=brand";
       }
       if (url) {
-        common_vendor.index.__f__("log", "at components/index/index/ProfileSection.vue:1163", "准备跳转到:", url);
+        common_vendor.index.__f__("log", "at components/index/index/ProfileSection.vue:1164", "准备跳转到:", url);
         common_vendor.index.navigateTo({
           url,
           success: (res) => {
-            common_vendor.index.__f__("log", "at components/index/index/ProfileSection.vue:1167", "跳转成功:", res);
+            common_vendor.index.__f__("log", "at components/index/index/ProfileSection.vue:1168", "跳转成功:", res);
           },
           fail: (err) => {
-            common_vendor.index.__f__("error", "at components/index/index/ProfileSection.vue:1170", "跳转失败:", err);
+            common_vendor.index.__f__("error", "at components/index/index/ProfileSection.vue:1171", "跳转失败:", err);
             common_vendor.index.showToast({
               title: "跳转失败: " + (err.errMsg || "未知错误"),
               icon: "none",
@@ -928,14 +929,14 @@ const _sfc_main = {
         url = "/pages/main/index?tab=brand";
       }
       if (url) {
-        common_vendor.index.__f__("log", "at components/index/index/ProfileSection.vue:1192", "准备跳转到:", url);
+        common_vendor.index.__f__("log", "at components/index/index/ProfileSection.vue:1193", "准备跳转到:", url);
         common_vendor.index.navigateTo({
           url,
           success: (res) => {
-            common_vendor.index.__f__("log", "at components/index/index/ProfileSection.vue:1196", "跳转成功:", res);
+            common_vendor.index.__f__("log", "at components/index/index/ProfileSection.vue:1197", "跳转成功:", res);
           },
           fail: (err) => {
-            common_vendor.index.__f__("error", "at components/index/index/ProfileSection.vue:1199", "跳转失败:", err);
+            common_vendor.index.__f__("error", "at components/index/index/ProfileSection.vue:1200", "跳转失败:", err);
             common_vendor.index.showToast({
               title: "跳转失败: " + (err.errMsg || "未知错误"),
               icon: "none",
@@ -967,6 +968,19 @@ const _sfc_main = {
       common_vendor.index.navigateTo({
         url: `/pages/brand/detail?id=${brand.id || 1}&name=${encodeURIComponent(brand.name || "")}`
       });
+    },
+    handleBottomAction(action, index) {
+      if (action.title === "优惠券") {
+        common_vendor.index.navigateTo({
+          url: "/pages/coupon/index"
+        });
+      } else if (action.title === "预约单") {
+        common_vendor.index.__f__("log", "at components/index/index/ProfileSection.vue:1245", "跳转到预约单页面");
+      } else if (action.title === "会员") {
+        common_vendor.index.__f__("log", "at components/index/index/ProfileSection.vue:1248", "跳转到会员页面");
+      } else if (action.title === "入驻中") {
+        common_vendor.index.__f__("log", "at components/index/index/ProfileSection.vue:1251", "跳转入驻页面");
+      }
     }
   }
 };
@@ -986,7 +1000,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         a: action.icon,
         b: common_vendor.t(action.title),
         c: common_vendor.t(action.subtitle),
-        d: index
+        d: index,
+        e: common_vendor.o(($event) => $options.handleBottomAction(action, index), index)
       };
     }),
     c: common_vendor.f($data.portfolioItems, (item, index, i0) => {
@@ -1083,8 +1098,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         o: common_vendor.o(($event) => $options.handleBrandClick(brand), index)
       });
     }),
-    m: common_vendor.o(($event) => $options.handleSectionHeaderClick("service")),
-    n: common_vendor.f($data.serviceTabs, (tab, index, i0) => {
+    m: common_assets._imports_0$2,
+    n: common_vendor.o(($event) => $options.handleSectionHeaderClick("service")),
+    o: common_vendor.f($data.serviceTabs, (tab, index, i0) => {
       return common_vendor.e({
         a: common_vendor.t(tab),
         b: $data.activeServiceTab === tab
@@ -1094,7 +1110,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         e: common_vendor.o(($event) => $options.handleServiceTabClick(tab), index)
       });
     }),
-    o: common_vendor.f($options.filteredServices, (service, index, i0) => {
+    p: common_vendor.f($options.filteredServices, (service, index, i0) => {
       return {
         a: service.image,
         b: common_vendor.t(service.title),

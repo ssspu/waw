@@ -28,33 +28,37 @@
   flex-direction: column;
   width: 100%;
   align-items: center;
-  gap: 16rpx;
+  gap: 24rpx;
   position: relative;
+  padding: 0 32rpx 48rpx;
+  box-sizing: border-box;
 }
 .profile-image.data-v-0e1e0928 {
   position: relative;
   width: 100%;
-  height: 444rpx;
+  height: 360rpx;
   object-fit: cover;
+  border-radius: 20rpx;
 }
 .card.data-v-0e1e0928 {
   width: 100%;
   max-width: 726rpx;
   background-color: #ffffff;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 12rpx 30rpx rgba(0, 0, 0, 0.04);
 }
 .card-content.data-v-0e1e0928 {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 20rpx;
-  padding: 30rpx;
+  gap: 24rpx;
+  padding: 34rpx 32rpx;
 }
 .card-title.data-v-0e1e0928 {
   font-family: "PingFang_SC-Semibold", Helvetica;
-  font-weight: normal;
-  color: #000000;
-  font-size: 28rpx;
+  font-weight: 600;
+  color: #111111;
+  font-size: 30rpx;
 }
 .overview-list.data-v-0e1e0928 {
   display: flex;
@@ -78,7 +82,7 @@
   width: 100%;
 }
 .overview-label.data-v-0e1e0928 {
-  width: 96rpx;
+  width: 140rpx;
   font-family: "PingFang_SC-Regular", Helvetica;
   font-weight: normal;
   color: #666666;
@@ -102,7 +106,8 @@
   font-family: "PingFang_SC-Medium", Helvetica;
   font-weight: 500;
   color: #333333;
-  font-size: 24rpx;
+  font-size: 26rpx;
+  line-height: 38rpx;
 }
 .overview-extra.data-v-0e1e0928 {
   font-family: "PingFang_SC-Medium", Helvetica;
@@ -132,7 +137,7 @@
   font-weight: 500;
   color: #333333;
   font-size: 24rpx;
-  line-height: 36rpx;
+  line-height: 40rpx;
 }
 .badges-container.data-v-0e1e0928 {
   display: flex;

@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../common/vendor.js");
+const common_assets = require("../common/assets.js");
 const _sfc_main = {
   data() {
     return {
@@ -22,8 +23,7 @@ const _sfc_main = {
           salesCount: "1234",
           price: "799",
           discount: "预约优惠10%",
-          image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png",
-          hasOptions: false
+          image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png"
         },
         {
           id: 2,
@@ -33,8 +33,7 @@ const _sfc_main = {
           salesCount: "1234",
           price: "799",
           discount: "预约优惠10%",
-          image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png",
-          hasOptions: false
+          image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png"
         },
         {
           id: 3,
@@ -44,8 +43,7 @@ const _sfc_main = {
           salesCount: "1234",
           price: "799",
           discount: "预约优惠10%",
-          image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png",
-          hasOptions: true
+          image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png"
         },
         {
           id: 4,
@@ -55,10 +53,15 @@ const _sfc_main = {
           salesCount: "1234",
           price: "799",
           discount: "预约优惠10%",
-          image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png",
-          hasOptions: false
+          image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png"
         }
       ],
+      expandedServices: [],
+      // 展开的服务ID列表
+      selectedBrands: {},
+      // 每个服务选中的品牌 { serviceId: brandId }
+      selectedHairLengths: {},
+      // 每个服务选中的头发长度 { serviceId: lengthId }
       hairLengthOptions: [
         { id: "short", label: "短发", active: true },
         { id: "medium", label: "中发", active: false },
@@ -99,8 +102,37 @@ const _sfc_main = {
     selectHairLength(id) {
       this.selectedHairLength = id;
     },
+    toggleExpand(serviceId) {
+      const index = this.expandedServices.indexOf(serviceId);
+      if (index > -1) {
+        this.expandedServices.splice(index, 1);
+      } else {
+        this.expandedServices.push(serviceId);
+        if (!this.selectedHairLengths[serviceId]) {
+          this.$set(this.selectedHairLengths, serviceId, "short");
+        }
+        if (!this.selectedBrands[serviceId] && this.brandOptions && this.brandOptions.length > 0) {
+          this.$set(this.selectedBrands, serviceId, this.brandOptions[0].id);
+        }
+      }
+    },
+    isExpanded(serviceId) {
+      return this.expandedServices.includes(serviceId);
+    },
+    getSelectedHairLength(serviceId) {
+      return this.selectedHairLengths[serviceId] || "short";
+    },
+    selectHairLengthForService(serviceId, lengthId) {
+      this.$set(this.selectedHairLengths, serviceId, lengthId);
+    },
+    selectBrand(serviceId, brandId) {
+      this.$set(this.selectedBrands, serviceId, brandId);
+    },
+    getSelectedBrand(serviceId) {
+      return this.selectedBrands[serviceId] || (this.brandOptions && this.brandOptions.length > 0 ? this.brandOptions[0].id : null);
+    },
     handleBook(service) {
-      common_vendor.index.__f__("log", "at components/DesignerProfileSection.vue:210", "Book service:", service);
+      common_vendor.index.__f__("log", "at components/DesignerProfileSection.vue:245", "Book service:", service);
     }
   }
 };
@@ -124,34 +156,39 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         f: common_vendor.t(service.salesCount),
         g: common_vendor.t(service.price),
         h: common_vendor.t(service.discount),
-        i: !service.hasOptions
-      }, !service.hasOptions ? {
-        j: common_vendor.o(($event) => $options.handleBook(service), service.id)
-      } : {}, {
-        k: service.hasOptions ? 1 : "",
-        l: service.hasOptions ? 1 : "",
-        m: service.hasOptions
-      }, service.hasOptions ? {
-        n: common_vendor.f($data.hairLengthOptions, (option, k1, i1) => {
+        i: !$options.isExpanded(service.id)
+      }, !$options.isExpanded(service.id) ? {
+        j: common_vendor.o(($event) => $options.toggleExpand(service.id), service.id)
+      } : {
+        k: common_assets._imports_0$4,
+        l: common_vendor.o(($event) => $options.toggleExpand(service.id), service.id)
+      }, {
+        m: $options.isExpanded(service.id) ? 1 : "",
+        n: $options.isExpanded(service.id) ? 1 : "",
+        o: $options.isExpanded(service.id)
+      }, $options.isExpanded(service.id) ? {
+        p: common_vendor.f($data.hairLengthOptions, (option, k1, i1) => {
           return {
             a: common_vendor.t(option.label),
             b: option.id,
-            c: $data.selectedHairLength === option.id ? 1 : "",
-            d: common_vendor.o(($event) => $options.selectHairLength(option.id), option.id)
+            c: $options.getSelectedHairLength(service.id) === option.id ? 1 : "",
+            d: common_vendor.o(($event) => $options.selectHairLengthForService(service.id, option.id), option.id)
           };
         }),
-        o: common_vendor.f($data.brandOptions, (brand, k1, i1) => {
-          return {
-            a: brand.icon,
-            b: brand.name,
+        q: common_vendor.f($data.brandOptions, (brand, k1, i1) => {
+          return common_vendor.e({
+            a: $options.getSelectedBrand(service.id) === brand.id
+          }, $options.getSelectedBrand(service.id) === brand.id ? {} : {}, {
+            b: $options.getSelectedBrand(service.id) === brand.id ? 1 : "",
             c: common_vendor.t(brand.name),
             d: common_vendor.t(brand.price),
-            e: brand.id
-          };
+            e: brand.id,
+            f: common_vendor.o(($event) => $options.selectBrand(service.id, brand.id), brand.id)
+          });
         }),
-        p: common_vendor.o(($event) => $options.handleBook(service), service.id)
+        r: common_vendor.o(($event) => $options.handleBook(service), service.id)
       } : {}, {
-        q: service.id
+        s: service.id
       });
     })
   };

@@ -76,8 +76,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     b: common_vendor.f($data.afternoonSlots, (slot, index, i0) => {
       return {
         a: common_vendor.t(slot.time),
-        b: index,
-        c: common_vendor.o(($event) => $options.handleSlotClick("afternoon", index), index)
+        b: slot.status === "selected" ? 1 : "",
+        c: slot.status === "booked" ? 1 : "",
+        d: index,
+        e: slot.status === "selected" ? 1 : "",
+        f: slot.status === "booked" ? 1 : "",
+        g: slot.status === "available" ? 1 : "",
+        h: common_vendor.o(($event) => $options.handleSlotClick("afternoon", index), index)
       };
     })
   };

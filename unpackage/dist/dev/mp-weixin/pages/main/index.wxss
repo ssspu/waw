@@ -151,17 +151,40 @@
   color: #e6e6e6;
   white-space: nowrap;
 }
-.tabs-wrapper.data-v-d311227b {
+.content-section.data-v-d311227b {
   position: relative;
   z-index: 10;
   margin-top: 438rpx;
+  width: 100%;
+  min-height: calc(100vh - 438rpx);
+  padding-bottom: 60rpx;
+  background-size: 100% auto;
+  background-position: center top;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+.tabs-bg.data-v-d311227b {
+  position: absolute;
+  top: 678rpx;
+  left: 0;
+  right: 0;
+  height: 100rpx;
+  background-color: #e6e6e6;
+  border-radius: 36rpx 36rpx 0 0;
+  box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.08);
+  z-index: 5;
+}
+.tabs-wrapper.data-v-d311227b {
+  position: relative;
+  z-index: 11;
+  margin-top: 0;
   margin-bottom: -25rpx;
   width: 100%;
   height: 125rpx;
-  background-color: #f2f2f2;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-color: transparent;
   padding: 0;
   box-sizing: border-box;
   display: flex;
@@ -169,12 +192,12 @@
   justify-content: center;
 }
 .tabs-list.data-v-d311227b {
-  width: calc(100% - 24rpx);
+  width: 100%;
   height: 100%;
   background-color: transparent;
   border: 0;
   border-radius: 0;
-  padding: 0;
+  padding: 0 30rpx;
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -188,22 +211,15 @@
   align-items: center;
   justify-content: flex-start;
   gap: 6rpx;
-  padding: 20rpx 0 0 0;
+  padding: 20rpx 0 0;
   height: 125rpx;
-  width: calc((100% - 290rpx) / 2);
+  flex: 1;
   cursor: pointer;
   box-sizing: border-box;
-  transition: width 0.3s ease, height 0.3s ease, background-color 0.3s ease;
+  transition: color 0.3s ease;
 }
 .tab-item.active.data-v-d311227b {
-  width: 290rpx;
-  height: 125rpx;
-  background-color: #ffffff;
-  border-top-left-radius: 50rpx;
-  border-top-right-radius: 50rpx;
-  top: -20rpx;
-  -webkit-clip-path: polygon(5% 0%, 95% 0%, 100% 100%, 0% 100%);
-          clip-path: polygon(5% 0%, 95% 0%, 100% 100%, 0% 100%);
+  top: -10rpx;
 }
 .tab-label.data-v-d311227b {
   font-size: 28rpx;
@@ -213,6 +229,9 @@
   line-height: 1.2;
   white-space: nowrap;
   transition: color 0.3s ease;
+  position: relative;
+  top: 16rpx;
+  z-index: 2;
 }
 .tab-label.active.data-v-d311227b {
   font-family: "DIN_Black-Regular", Helvetica;
@@ -234,11 +253,13 @@
   display: flex;
   flex-direction: column;
   gap: 18rpx;
-  padding-bottom: 100rpx;
+  padding: 20rpx 12rpx 100rpx;
   top: -15rpx;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  width: 100%;
+}
+.main-content.reviews-fullwidth.data-v-d311227b {
+  padding-left: 0;
+  padding-right: 0;
 }
 .brand-content.data-v-d311227b {
   position: relative;
