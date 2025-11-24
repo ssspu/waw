@@ -24,7 +24,7 @@
 						<view class="avatar-bg"></view>
 						<image 
 							class="avatar" 
-							src="https://c.animaapp.com/mi5ng54v4eM3X6/img/rectangle-153-2.png" 
+							:src="avatarSrc" 
 							mode="aspectFill"
 						></image>
 					</view>
@@ -82,10 +82,18 @@
 				</view>
 			</view>
 			
-			<!-- 底部操作 -->
-			<view class="action-bar">
+		<!-- 底部操作 -->
+		<view class="action-bar">
+			<view class="more-wrapper">
 				<text class="more-link" @tap="handleMore">更多</text>
-				<view class="action-buttons">
+				<!-- 删除菜单 -->
+				<view v-if="showMoreMenu" class="more-menu">
+					<view class="menu-item" @tap="handleDelete">
+						<text>删除</text>
+					</view>
+				</view>
+			</view>
+			<view class="action-buttons">
 					<view class="promote-btn" @tap="handlePromote">
 						<text class="btn-text">推广</text>
 					</view>
@@ -95,11 +103,78 @@
 				</view>
 			</view>
 		</view>
+		
+		<!-- 分享弹窗 -->
+		<view v-if="showShareModal" class="share-modal-overlay" @tap="closeShareModal">
+			<view class="share-modal" @tap.stop="">
+				<view class="share-grid">
+					<view class="share-item" @tap="handleShare('wechat')">
+						<view class="share-icon wechat-icon">
+							<text>微信</text>
+						</view>
+						<text class="share-label">微信</text>
+					</view>
+					<view class="share-item" @tap="handleShare('moments')">
+						<view class="share-icon moments-icon">
+							<text>朋友圈</text>
+						</view>
+						<text class="share-label">朋友圈</text>
+					</view>
+					<view class="share-item" @tap="handleShare('weibo')">
+						<view class="share-icon weibo-icon">
+							<text>微博</text>
+						</view>
+						<text class="share-label">微博</text>
+					</view>
+					<view class="share-item" @tap="handleShare('link')">
+						<view class="share-icon link-icon">
+							<text>链接</text>
+						</view>
+						<text class="share-label">复制链接</text>
+					</view>
+					<view class="share-item" @tap="handleShare('qrcode')">
+						<view class="share-icon qrcode-icon">
+							<text>二维码</text>
+						</view>
+						<text class="share-label">服务二维码</text>
+					</view>
+				</view>
+				<view class="share-cancel" @tap="closeShareModal">
+					<text>取消</text>
+				</view>
+			</view>
+		</view>
+		
+		<!-- 确认删除弹窗 -->
+		<view v-if="showDeleteConfirm" class="confirm-modal-overlay" @tap="closeDeleteConfirm">
+			<view class="confirm-modal" @tap.stop="">
+				<text class="confirm-title">删除服务</text>
+				<text class="confirm-content">确定要删除这个设计师吗？</text>
+				<view class="confirm-buttons">
+					<view class="confirm-btn cancel-btn" @tap="closeDeleteConfirm">
+						<text>取消</text>
+					</view>
+					<view class="confirm-btn delete-btn" @tap="confirmDelete">
+						<text>删除</text>
+					</view>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
 <script>
 export default {
+	props: {
+		isBrandMode: {
+			type: Boolean,
+			default: false
+		},
+		avatarSrc: {
+			type: String,
+			default: 'https://c.animaapp.com/mi5ng54v4eM3X6/img/rectangle-153-2.png'
+		}
+	},
 	data() {
 		return {
 			headerInfo: [
@@ -114,14 +189,37 @@ export default {
 				{ label: "烫发设计" },
 				{ label: "短发造型" },
 			],
+			showShareModal: false,
+			showMoreMenu: false,
+			showDeleteConfirm: false
 		}
 	},
 	methods: {
 		handleMore() {
-			console.log('More clicked')
+			this.showMoreMenu = !this.showMoreMenu
 		},
 		handlePromote() {
-			console.log('Promote clicked')
+			this.showShareModal = true
+		},
+		closeShareModal() {
+			this.showShareModal = false
+		},
+		handleShare(type) {
+			console.log('Share via:', type)
+			this.showShareModal = false
+			// 实现不同渠道的分享逻辑
+		},
+		handleDelete() {
+			this.showMoreMenu = false
+			this.showDeleteConfirm = true
+		},
+		closeDeleteConfirm() {
+			this.showDeleteConfirm = false
+		},
+		confirmDelete() {
+			console.log('Delete confirmed')
+			this.showDeleteConfirm = false
+			// 实现删除逻辑
 		},
 		handleBookAgain() {
 			console.log('Book again clicked')
@@ -382,21 +480,25 @@ export default {
 }
 
 .action-buttons {
-	display: inline-flex;
+	display: flex;
 	align-items: center;
 	gap: 12rpx;
+	flex: 1;
+	justify-content: flex-end;
 }
 
-.promote-btn, .book-again-btn {
+.promote-btn,
+.book-again-btn {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 148rpx;
+	min-width: 220rpx;
 	height: 60rpx;
-	padding: 16rpx 30rpx;
+	padding: 0 30rpx;
 	border-radius: 4rpx;
 	cursor: pointer;
 	box-sizing: border-box;
+	flex-shrink: 0;
 }
 
 .promote-btn {
@@ -412,12 +514,221 @@ export default {
 	font-weight: 500;
 	color: #666666;
 	font-size: 22rpx;
+	white-space: nowrap;
+	display: block;
 	
 	&.primary {
 		font-family: 'PingFang_SC-Semibold', Helvetica;
 		font-weight: normal;
 		color: #ffffff;
+		white-space: nowrap;
 	}
+}
+
+.share-modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: flex-end;
+	z-index: 1000;
+}
+
+.share-modal {
+	width: 100%;
+	background-color: #ffffff;
+	border-radius: 16rpx 16rpx 0 0;
+	padding: 30rpx 0;
+	box-sizing: border-box;
+}
+
+.share-grid {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	padding: 30rpx 20rpx;
+	flex-wrap: wrap;
+	gap: 20rpx;
+}
+
+.share-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 16rpx;
+	cursor: pointer;
+}
+
+.share-icon {
+	width: 80rpx;
+	height: 80rpx;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #ffffff;
+	font-size: 24rpx;
+	font-weight: 500;
+}
+
+.wechat-icon {
+	background-color: #09b81f;
+}
+
+.moments-icon {
+	background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+}
+
+.weibo-icon {
+	background-color: #e6162d;
+}
+
+.link-icon {
+	background-color: #999999;
+}
+
+.qrcode-icon {
+	background-color: #333333;
+}
+
+.share-label {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: normal;
+	color: #666666;
+	font-size: 24rpx;
+	text-align: center;
+}
+
+.share-cancel {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20rpx;
+	border-top: 1rpx solid #f0f0f0;
+	cursor: pointer;
+}
+
+.share-cancel text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: normal;
+	color: #999999;
+	font-size: 28rpx;
+}
+
+.more-wrapper {
+	position: relative;
+}
+
+.more-menu {
+	position: absolute;
+	bottom: 100%;
+	left: 0;
+	background-color: #ffffff;
+	border-radius: 4rpx;
+	border: 1rpx solid #e5e5e5;
+	min-width: 100rpx;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+	z-index: 100;
+	margin-bottom: 8rpx;
+}
+
+.menu-item {
+	padding: 12rpx 20rpx;
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: normal;
+	color: #e6162d;
+	font-size: 26rpx;
+	cursor: pointer;
+	text-align: center;
+}
+
+.menu-item:active {
+	background-color: #f5f5f5;
+}
+
+.confirm-modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1001;
+}
+
+.confirm-modal {
+	background-color: #ffffff;
+	border-radius: 12rpx;
+	padding: 40rpx 30rpx;
+	width: 80%;
+	max-width: 540rpx;
+	text-align: center;
+	box-sizing: border-box;
+}
+
+.confirm-title {
+	display: block;
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-weight: normal;
+	color: #000000;
+	font-size: 32rpx;
+	margin-bottom: 16rpx;
+}
+
+.confirm-content {
+	display: block;
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: normal;
+	color: #666666;
+	font-size: 28rpx;
+	margin-bottom: 40rpx;
+	line-height: 1.4;
+}
+
+.confirm-buttons {
+	display: flex;
+	gap: 16rpx;
+	justify-content: center;
+}
+
+.confirm-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 200rpx;
+	height: 60rpx;
+	border-radius: 4rpx;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+.cancel-btn {
+	background-color: #f6f6f6;
+	border: 1rpx solid #e5e5e5;
+}
+
+.cancel-btn text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: normal;
+	color: #666666;
+	font-size: 28rpx;
+}
+
+.delete-btn {
+	background-color: #333333;
+}
+
+.delete-btn text {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-weight: normal;
+	color: #ffffff;
+	font-size: 28rpx;
 }
 </style>
 

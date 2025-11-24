@@ -1,18 +1,5 @@
 <template>
 	<view class="territory-header-section">
-		<!-- 顶部导航 -->
-		<view class="top-nav">
-			<view 
-				v-for="(item, index) in topNavItems" 
-				:key="index" 
-				class="top-nav-item"
-				:class="{ active: activeTopTab === item.id }"
-				@tap="handleTopNavClick(item.id)"
-			>
-				<text class="top-nav-label" :class="{ active: activeTopTab === item.id }">{{ item.label }}</text>
-			</view>
-		</view>
-		
 		<!-- Tab导航 -->
 		<view class="tab-nav">
 			<view 
@@ -77,41 +64,19 @@ export default {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: 20rpx;
-	padding: 190rpx 30rpx 0;
+	gap: 24rpx;
+	padding: 24rpx 30rpx;
 	width: 100%;
-	max-width: 726rpx;
+	background-color: #ffffff;
 	box-sizing: border-box;
-}
-
-.top-nav {
-	display: flex;
-	align-items: center;
-	gap: 40rpx;
-	width: 100%;
-}
-
-.top-nav-item {
-	cursor: pointer;
-}
-
-.top-nav-label {
-	font-family: 'PingFang_SC-Semibold', Helvetica;
-	font-weight: normal;
-	color: #666666;
-	font-size: 28rpx;
-	text-align: center;
-	
-	&.active {
-		color: #000000;
-	}
 }
 
 .tab-nav {
 	display: flex;
 	align-items: flex-start;
-	justify-content: space-between;
+	gap: 24rpx;
 	width: 100%;
+	flex-wrap: wrap;
 }
 
 .tab-item {
@@ -134,7 +99,7 @@ export default {
 	
 	&.active {
 		font-family: 'PingFang_SC-Semibold', Helvetica;
-		font-weight: normal;
+		font-weight: 600;
 		color: #000000;
 	}
 }

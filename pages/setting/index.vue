@@ -75,12 +75,17 @@
 									class="setting-switch"
 								></switch>
 								
-								<image 
-									v-if="item.hasChevron" 
-									class="chevron-icon" 
-									src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/chevron-right.svg" 
-									mode="aspectFit"
-								></image>
+								<view 
+									v-if="!item.hasToggle"
+									class="action-button"
+									@tap="handleActionClick(item, $event)"
+								>
+									<image 
+										class="button-icon" 
+										src="/static/icon/gengduo.png" 
+										mode="aspectFit"
+									></image>
+								</view>
 							</view>
 						</view>
 					</view>
@@ -111,29 +116,29 @@ export default {
 			settingsGroups: [
 				{
 					items: [
-						{ label: "个人信息", hasChevron: true },
+						{ label: "个人信息" },
 					],
 				},
 				{
 					items: [
-						{ label: "账号安全", hasChevron: true },
-						{ label: "申请认证", hasChevron: true },
-						{ label: "地址管理", hasChevron: true },
-						{ label: "支付设置", hasChevron: true },
+						{ label: "账号安全" },
+						{ label: "申请认证" },
+						{ label: "地址管理" },
+						{ label: "支付设置" },
 					],
 				},
 				{
 					items: [
 						{ label: "消息通知", hasToggle: true, checked: true },
-						{ label: "隐私设置", hasChevron: true },
+						{ label: "隐私设置" },
 						{ label: "清除缓存", rightText: "365M" },
 					],
 				},
 				{
 					items: [
-						{ label: "反馈意见", hasChevron: true },
-						{ label: "关于众美", hasChevron: true },
-						{ label: "协议与条款", hasChevron: true },
+						{ label: "反馈意见" },
+						{ label: "关于众美" },
+						{ label: "协议与条款" },
 					],
 				},
 			],
@@ -153,7 +158,39 @@ export default {
 			console.log('Setting clicked:', item.label)
 			// 根据不同的设置项进行不同的处理
 			if (item.label === '清除缓存') {
+				// 如果点击到按钮以外的区域，导航到详情页
+				if (!event.target.closest('.action-button')) {
+					this.navigateToDetailPage(item.label)
+				}
+			} else if (item.hasToggle) {
+				// toggle 项不需要导航
+				return
+			} else {
+				this.navigateToDetailPage(item.label)
+			}
+		},
+		handleActionClick(item, event) {
+			event.stopPropagation()
+			if (item.label === '清除缓存') {
 				this.handleClearCache()
+			}
+			console.log('Action button clicked:', item.label)
+		},
+		navigateToDetailPage(label) {
+			const routeMap = {
+				'个人信息': '/pages/setting/personal-info',
+				'账号安全': '/pages/setting/account-security',
+				'申请认证': '/pages/setting/apply-certification',
+				'地址管理': '/pages/setting/address-management',
+				'支付设置': '/pages/setting/payment-settings',
+				'隐私设置': '/pages/setting/privacy-settings',
+				'反馈意见': '/pages/setting/feedback',
+				'关于众美': '/pages/setting/about',
+				'协议与条款': '/pages/setting/agreement'
+			}
+			const url = routeMap[label]
+			if (url) {
+				uni.navigateTo({ url })
 			}
 		},
 		handleToggleChange(item, event) {
@@ -377,10 +414,41 @@ export default {
 	transform: scale(0.8);
 }
 
-.chevron-icon {
-	width: 28rpx;
-	height: 28rpx;
+.action-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32rpx;
+	height: 32rpx;
+	border-radius: 6rpx;
+	background-color: transparent;
+	cursor: pointer;
 	flex-shrink: 0;
+	padding: 4rpx;
+	transition: background-color 0.3s;
+}
+
+.action-button:active {
+	background-color: #f0f0f0;
+}
+
+.button-icon {
+	width: 24rpx;
+	height: 24rpx;
+	flex-shrink: 0;
+}
+
+.button-icon {
+	width: 24rpx;
+	height: 24rpx;
+	flex-shrink: 0;
+}
+
+.chevron-text {
+	font-size: 32rpx;
+	color: #a6a6a6;
+	line-height: 1;
+	font-weight: normal;
 }
 
 .logout-card {

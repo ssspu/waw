@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../../common/vendor.js");
+const common_assets = require("../../../common/assets.js");
 const _sfc_main = {
   props: {
     activeTab: {
@@ -11,6 +12,27 @@ const _sfc_main = {
     return {
       countdownTimer: null,
       serviceOrders: [
+        {
+          orderNumber: "CDD83290895",
+          status: "已确认",
+          statusColor: "#ffa77b",
+          serviceName: "洗剪吹",
+          serviceDetails: "洗护+修剪+造型",
+          duration: "预计1小时",
+          time: "今天11:00",
+          provider: {
+            name: "李天天",
+            badge: "美发师",
+            avatar: "https://c.animaapp.com/mi5lwlq8FxTpMa/img/ellipse-34.svg",
+            rating: "4.8",
+            reviews: "23"
+          },
+          price: "799",
+          quantity: "x1",
+          hasIcon: true,
+          primaryButton: "订单完成",
+          tab: "all"
+        },
         {
           orderNumber: "CDD83290895",
           status: "待付款",
@@ -32,27 +54,6 @@ const _sfc_main = {
           hasIcon: false,
           primaryButton: "立即付款",
           tab: "pending-payment"
-        },
-        {
-          orderNumber: "CDD83290895",
-          status: "已确认",
-          statusColor: "#ffa77b",
-          serviceName: "洗剪吹",
-          serviceDetails: "洗护+修剪+造型",
-          duration: "预计1小时",
-          time: "今天11:00",
-          provider: {
-            name: "李天天",
-            badge: "美发师",
-            avatar: "https://c.animaapp.com/mi5lwlq8FxTpMa/img/ellipse-34.svg",
-            rating: "4.8",
-            reviews: "23"
-          },
-          price: "799",
-          quantity: "x1",
-          hasIcon: true,
-          primaryButton: "订单完成",
-          tab: "all"
         },
         {
           orderNumber: "CDD83290895",
@@ -225,13 +226,15 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         t: common_vendor.o(($event) => $options.handleCancel(order), index),
         v: common_vendor.o(($event) => $options.handlePay(order), index)
       } : common_vendor.e({
-        w: order.hasIcon
-      }, order.hasIcon ? {} : {}, {
-        x: common_vendor.o(($event) => $options.handleDetail(order), index),
-        y: common_vendor.t(order.primaryButton),
-        z: common_vendor.o(($event) => $options.handlePrimaryAction(order), index)
+        w: order.status === "待使用"
+      }, order.status === "待使用" ? {
+        x: common_assets._imports_0$2
+      } : {}, {
+        y: common_vendor.o(($event) => $options.handleDetail(order), index),
+        z: common_vendor.t(order.primaryButton),
+        A: common_vendor.o(($event) => $options.handlePrimaryAction(order), index)
       }), {
-        A: index
+        B: index
       });
     })
   };

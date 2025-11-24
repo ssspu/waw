@@ -37,16 +37,7 @@ const _sfc_main = {
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_vendor.f($data.topNavItems, (item, index, i0) => {
-      return {
-        a: common_vendor.t(item.label),
-        b: $props.activeTopTab === item.id ? 1 : "",
-        c: index,
-        d: $props.activeTopTab === item.id ? 1 : "",
-        e: common_vendor.o(($event) => $options.handleTopNavClick(item.id), index)
-      };
-    }),
-    b: common_vendor.f($data.tabItems, (tab, k0, i0) => {
+    a: common_vendor.f($data.tabItems, (tab, k0, i0) => {
       return common_vendor.e({
         a: common_vendor.t(tab.label),
         b: $props.activeSubTab === tab.id ? 1 : "",
