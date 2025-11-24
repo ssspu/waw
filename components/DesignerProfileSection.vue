@@ -1,15 +1,30 @@
 <template>
 	<view class="profile-section">
-		<!-- 分类标签 -->
-		<view class="category-nav">
-			<view 
-				v-for="category in categories" 
-				:key="category.id" 
-				class="category-btn"
-				:class="{ active: selectedCategory === category.id }"
-				@tap="selectCategory(category.id)"
-			>
-				<text>{{ category.label }}</text>
+		<view class="nav-card">
+			<!-- 次级标签 -->
+			<view class="secondary-nav">
+				<view 
+					v-for="tab in secondaryTabs" 
+					:key="tab.id" 
+					class="secondary-tab"
+					:class="{ active: selectedSecondary === tab.id }"
+					@tap="selectSecondary(tab.id)"
+				>
+					<text>{{ tab.label }}</text>
+				</view>
+			</view>
+			
+			<!-- 分类标签 -->
+			<view class="category-nav">
+				<view 
+					v-for="category in categories" 
+					:key="category.id" 
+					class="category-btn"
+					:class="{ active: selectedCategory === category.id }"
+					@tap="selectCategory(category.id)"
+				>
+					<text>{{ category.label }}</text>
+				</view>
 			</view>
 		</view>
 		
@@ -110,15 +125,19 @@
 export default {
 	data() {
 		return {
+			selectedSecondary: 'hairstylist',
+			secondaryTabs: [
+				{ id: 'hairstylist', label: '美发师' },
+				{ id: 'beautician', label: '美容师' }
+			],
 			selectedCategory: "wash-cut-blow",
 			selectedHairLength: "short",
 			categories: [
-				{ id: "wash-cut-blow", label: "洗剪吹", active: true },
-				{ id: "perm", label: "烫发", active: false },
-				{ id: "dye", label: "染发", active: false },
-				{ id: "care", label: "护发", active: false },
-				{ id: "scalp", label: "头皮", active: false },
-				{ id: "extension", label: "接发", active: false },
+				{ id: "stylist", label: "发型师", active: true },
+				{ id: "chief", label: "首席", active: false },
+				{ id: "senior", label: "资深", active: false },
+				{ id: "director", label: "总监", active: false },
+				{ id: "manager", label: "店长", active: false },
 			],
 			services: [
 				{
@@ -200,6 +219,9 @@ export default {
 		}
 	},
 	methods: {
+		selectSecondary(id) {
+			this.selectedSecondary = id
+		},
 		selectCategory(id) {
 			this.selectedCategory = id
 		},
@@ -220,11 +242,43 @@ export default {
 	width: 100%;
 	max-width: 100%;
 	margin: 0 auto;
-	padding: 0 12rpx;
+	padding: 0;
 	align-items: flex-start;
 	gap: 12rpx;
 	opacity: 0;
 	box-sizing: border-box;
+}
+
+.nav-card {
+	width: 100%;
+	background-color: #ffffff;
+	border-radius: 0 0 12rpx 12rpx;
+
+	box-sizing: border-box;
+	border-top: 2rpx solid #f3f3f3;
+}
+
+.secondary-nav {
+	display: flex;
+	align-items: center;
+	gap: 36rpx;
+	width: 100%;
+	padding-bottom: 12rpx;
+	border-bottom: 2rpx solid #f3f3f3;
+	margin-bottom: 16rpx;
+}
+
+.secondary-tab {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: normal;
+	color: #a6a6a6;
+	font-size: 26rpx;
+	cursor: pointer;
+	
+	&.active {
+		font-family: 'PingFang_SC-Semibold', Helvetica;
+		color: #000000;
+	}
 }
 
 .category-nav {
@@ -236,7 +290,7 @@ export default {
 
 .category-btn {
 	height: auto;
-	padding: 8rpx 20rpx;
+	padding: 0rpx 20rpx;
 	border-radius: 4rpx;
 	background-color: #ffffff;
 	color: #a6a6a6;
