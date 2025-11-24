@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "账号安全",
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#f2f2f2",
+  "usingComponents": {
+    "setting-detail-header": "../../components/setting/SettingDetailHeader"
+  }
+}
