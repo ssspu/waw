@@ -1,34 +1,35 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const common_assets = require("../../common/assets.js");
 const _sfc_main = {
   data() {
     return {
       settingsGroups: [
         {
           items: [
-            { label: "个人信息", hasChevron: true }
+            { label: "个人信息" }
           ]
         },
         {
           items: [
-            { label: "账号安全", hasChevron: true },
-            { label: "申请认证", hasChevron: true },
-            { label: "地址管理", hasChevron: true },
-            { label: "支付设置", hasChevron: true }
+            { label: "账号安全" },
+            { label: "申请认证" },
+            { label: "地址管理" },
+            { label: "支付设置" }
           ]
         },
         {
           items: [
             { label: "消息通知", hasToggle: true, checked: true },
-            { label: "隐私设置", hasChevron: true },
+            { label: "隐私设置" },
             { label: "清除缓存", rightText: "365M" }
           ]
         },
         {
           items: [
-            { label: "反馈意见", hasChevron: true },
-            { label: "关于众美", hasChevron: true },
-            { label: "协议与条款", hasChevron: true }
+            { label: "反馈意见" },
+            { label: "关于众美" },
+            { label: "协议与条款" }
           ]
         }
       ]
@@ -39,21 +40,51 @@ const _sfc_main = {
       common_vendor.index.navigateBack();
     },
     handleMore() {
-      common_vendor.index.__f__("log", "at pages/setting/index.vue:147", "More clicked");
+      common_vendor.index.__f__("log", "at pages/setting/index.vue:152", "More clicked");
     },
     handleScan() {
-      common_vendor.index.__f__("log", "at pages/setting/index.vue:150", "Scan clicked");
+      common_vendor.index.__f__("log", "at pages/setting/index.vue:155", "Scan clicked");
     },
     handleSettingClick(item) {
-      common_vendor.index.__f__("log", "at pages/setting/index.vue:153", "Setting clicked:", item.label);
+      common_vendor.index.__f__("log", "at pages/setting/index.vue:158", "Setting clicked:", item.label);
+      if (item.label === "清除缓存") {
+        if (!event.target.closest(".action-button")) {
+          this.navigateToDetailPage(item.label);
+        }
+      } else if (item.hasToggle) {
+        return;
+      } else {
+        this.navigateToDetailPage(item.label);
+      }
+    },
+    handleActionClick(item, event2) {
+      event2.stopPropagation();
       if (item.label === "清除缓存") {
         this.handleClearCache();
       }
+      common_vendor.index.__f__("log", "at pages/setting/index.vue:177", "Action button clicked:", item.label);
     },
-    handleToggleChange(item, event) {
-      const checked = event.detail.value || event.target.checked;
+    navigateToDetailPage(label) {
+      const routeMap = {
+        "个人信息": "/pages/setting/personal-info",
+        "账号安全": "/pages/setting/account-security",
+        "申请认证": "/pages/setting/apply-certification",
+        "地址管理": "/pages/setting/address-management",
+        "支付设置": "/pages/setting/payment-settings",
+        "隐私设置": "/pages/setting/privacy-settings",
+        "反馈意见": "/pages/setting/feedback",
+        "关于众美": "/pages/setting/about",
+        "协议与条款": "/pages/setting/agreement"
+      };
+      const url = routeMap[label];
+      if (url) {
+        common_vendor.index.navigateTo({ url });
+      }
+    },
+    handleToggleChange(item, event2) {
+      const checked = event2.detail.value || event2.target.checked;
       item.checked = checked;
-      common_vendor.index.__f__("log", "at pages/setting/index.vue:162", "Toggle changed:", item.label, checked);
+      common_vendor.index.__f__("log", "at pages/setting/index.vue:199", "Toggle changed:", item.label, checked);
     },
     handleClearCache() {
       common_vendor.index.showModal({
@@ -61,7 +92,7 @@ const _sfc_main = {
         content: "确定要清除缓存吗？",
         success: (res) => {
           if (res.confirm) {
-            common_vendor.index.__f__("log", "at pages/setting/index.vue:170", "Clear cache");
+            common_vendor.index.__f__("log", "at pages/setting/index.vue:207", "Clear cache");
           }
         }
       });
@@ -72,7 +103,7 @@ const _sfc_main = {
         content: "确定要退出登录吗？",
         success: (res) => {
           if (res.confirm) {
-            common_vendor.index.__f__("log", "at pages/setting/index.vue:182", "Logout");
+            common_vendor.index.__f__("log", "at pages/setting/index.vue:219", "Logout");
             common_vendor.index.reLaunch({ url: "/pages/index/index" });
           }
         }
@@ -99,10 +130,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             f: item.checked !== void 0 ? item.checked : true,
             g: common_vendor.o((e) => $options.handleToggleChange(item, e), itemIndex)
           } : {}, {
-            h: item.hasChevron
-          }, item.hasChevron ? {} : {}, {
-            i: common_vendor.o(($event) => $options.handleSettingClick(item), itemIndex),
-            j: itemIndex
+            h: !item.hasToggle
+          }, !item.hasToggle ? {
+            i: common_assets._imports_0,
+            j: common_vendor.o(($event) => $options.handleActionClick(item, $event), itemIndex)
+          } : {}, {
+            k: common_vendor.o(($event) => $options.handleSettingClick(item), itemIndex),
+            l: itemIndex
           });
         }),
         b: groupIndex

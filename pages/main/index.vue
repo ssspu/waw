@@ -1,5 +1,7 @@
 <template>
 	<view class="screen">
+		<view class="status-bar" style="height: 44rpx;"></view>
+
 		<!-- 背景图片 -->
 		<image 
 			class="bg-image-1" 
@@ -24,19 +26,17 @@
 					<text class="nav-title">美发</text>
 				</view>
 				<view class="nav-bar-right">
-					<!-- 标签选择 -->
-					<view class="badge-container">
-						<view class="category-badge">
-							<image class="badge-icon" :src="currentBadgeIcon" mode="aspectFit"></image>
-							<text class="badge-text">设计师</text>
-						</view>
+					<!-- 搜索栏 -->
+					<view class="search-bar">
+						<image class="search-icon" :src="currentBadgeIcon" mode="aspectFit"></image>
+						<text class="search-text">{{ currentTabLabel }}</text>
 					</view>
 				</view>
 			</view>
 		</view>
 		
 		<!-- Tabs -->
-		<view class="tabs-wrapper">
+		<view class="tabs-wrapper" :style="{ backgroundImage: currentMainBg ? `url(${currentMainBg})` : 'none' }">
 			<view class="tabs-list">
 				<view 
 					v-for="(tab, index) in tabItems" 
@@ -57,7 +57,7 @@
 		</view>
 		
 		<!-- 主内容 -->
-		<view class="main-content">
+		<view class="main-content" :style="{ backgroundImage: currentMainBg ? `url(${currentMainBg})` : 'none' }">
 			<!-- 设计师板块 -->
 			<view v-if="activeTab === 'designer'" :key="'designer'" class="designer-content animate-fade-up">
 				<design-section></design-section>
@@ -113,17 +113,17 @@ export default {
 			assets: {
 				designer: {
 					headerBg: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-217.png",
-					mainBg: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/group-33.png",
+					mainBg: "/static/background-image/mian-background-left.png",
 					badgeIcon: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-1.svg"
 				},
 				service: {
 					headerBg: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-217.png",
-					mainBg: null,
+					mainBg: "/static/background-image/mian-background-mid.png",
 					badgeIcon: "https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-3.svg"
 				},
 				brand: {
 					headerBg: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-217.png",
-					mainBg: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/group-33.png",
+					mainBg: "/static/background-image/mian-background-right.png",
 					badgeIcon: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-4.svg"
 				}
 			}
@@ -138,6 +138,10 @@ export default {
 		},
 		currentBadgeIcon() {
 			return this.assets[this.activeTab].badgeIcon
+		},
+		currentTabLabel() {
+			const currentTab = this.tabItems.find(tab => tab.value === this.activeTab)
+			return currentTab ? currentTab.label : '设计师'
 		}
 	},
 	onLoad(options) {
@@ -193,9 +197,11 @@ export default {
 	top: 570rpx;
 	left: 0;
 	width: 100%;
-	height: 2236rpx;
-	object-fit: cover;
-	z-index: 0;
+	height: auto;
+	min-height: 100vh;
+	object-fit: contain;
+	object-position: top center;
+	z-index: 10;
 	transition: opacity 0.3s ease;
 }
 
@@ -210,7 +216,7 @@ export default {
 	padding: 62rpx 30rpx;
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	white-space: nowrap;
 }
 
 .nav-bar-right {
@@ -218,6 +224,7 @@ export default {
 	display: flex;
 	align-items: center;
 	gap: 12rpx;
+	margin-left: 30rpx;
 }
 
 .nav-left {
@@ -244,6 +251,7 @@ export default {
 	font-size: 30rpx;
 	color: #ffffff;
 	font-weight: normal;
+	white-space: nowrap;
 }
 
 .logo-group {
@@ -282,6 +290,33 @@ export default {
 	color: #e6e6e6;
 }
 
+.search-bar {
+	background-color: rgba(0, 0, 0, 0.4);
+	color: #e6e6e6;
+	border-radius: 52rpx;
+	width: 240rpx;
+	height: 60rpx;
+	padding: 0 20rpx;
+	display: inline-flex;
+	align-items: center;
+	gap: 4rpx;
+	border: 0;
+	white-space: nowrap;
+}
+
+.search-icon {
+	width: 36rpx;
+	height: 36rpx;
+	margin-right: 4rpx;
+}
+
+.search-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 22rpx;
+	color: #e6e6e6;
+	white-space: nowrap;
+}
+
 .tabs-wrapper {
 	position: relative;
 	z-index: 10;
@@ -290,6 +325,9 @@ export default {
 	width: 100%;
 	height: 125rpx;
 	background-color: #f2f2f2;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
 	padding: 0;
 	box-sizing: border-box;
 	display: flex;
@@ -371,6 +409,9 @@ export default {
 	gap: 18rpx;
 	padding-bottom: 100rpx;
 	top: -15rpx;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
 }
 
 // Brand specific styles

@@ -1,6 +1,0 @@
-{
-  "component": true,
-  "usingComponents": {
-    "designer-booking-profile-section": "./DesignerBookingProfileSection"
-  }
-}

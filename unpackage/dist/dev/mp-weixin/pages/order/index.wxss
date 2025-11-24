@@ -38,39 +38,11 @@
   background-color: #ffffff;
   flex-shrink: 0;
 }
-.status-bar.data-v-17a44f9d {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 88rpx;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 32rpx;
-  box-sizing: border-box;
-}
-.time.data-v-17a44f9d {
-  font-family: "Inter", Helvetica;
-  font-size: 28rpx;
-  color: #000000;
-  font-weight: normal;
-}
-.status-icons.data-v-17a44f9d {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-}
-.status-icon.data-v-17a44f9d {
-  width: 35rpx;
-  height: 23rpx;
-  flex-shrink: 0;
-}
 .navbar-content.data-v-17a44f9d {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 112rpx 32rpx 32rpx;
+  padding: 24rpx 32rpx;
   box-sizing: border-box;
 }
 .nav-left.data-v-17a44f9d {
@@ -113,7 +85,7 @@
 }
 .logo.data-v-17a44f9d {
   position: absolute;
-  top: 62rpx;
+  top: 24rpx;
   right: 16rpx;
   width: 256rpx;
   height: 144rpx;

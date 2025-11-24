@@ -1,1 +1,0 @@
-<view class="vip-section data-v-a57373fa"><text class="section-title data-v-a57373fa">附近推荐</text><view class="filter-btn data-v-a57373fa" bindtap="{{a}}"><text class="filter-text data-v-a57373fa">筛选</text><image class="filter-icon data-v-a57373fa" src="https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-1.svg" mode="aspectFit"></image></view></view>

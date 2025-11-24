@@ -33,6 +33,9 @@
   overflow: hidden;
   box-sizing: border-box;
 }
+.status-bar.data-v-d0e7643f {
+  height: 44rpx;
+}
 .main-content.data-v-d0e7643f {
   position: relative;
   width: 100%;

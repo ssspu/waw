@@ -10,8 +10,18 @@ if (!Math) {
   "./pages/order/index.js";
   "./pages/coupon/index.js";
   "./pages/territory/index.js";
+  "./pages/territory/brand-store.js";
   "./pages/setting/index.js";
   "./pages/brand/detail.js";
+  "./pages/setting/personal-info.js";
+  "./pages/setting/account-security.js";
+  "./pages/setting/apply-certification.js";
+  "./pages/setting/address-management.js";
+  "./pages/setting/payment-settings.js";
+  "./pages/setting/privacy-settings.js";
+  "./pages/setting/feedback.js";
+  "./pages/setting/about.js";
+  "./pages/setting/agreement.js";
 }
 const _sfc_main = {
   onLaunch: function() {

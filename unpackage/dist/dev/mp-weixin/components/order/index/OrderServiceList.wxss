@@ -163,7 +163,7 @@
 .provider-avatar.data-v-9f3f6e31 {
   width: 64rpx;
   height: 64rpx;
-  border-radius: 16rpx;
+  border-radius: 50%;
   background-color: #a6a6a6;
   flex-shrink: 0;
 }
@@ -204,15 +204,19 @@
   display: inline-flex;
   align-items: center;
   gap: 4rpx;
+  flex-wrap: nowrap;
 }
 .rating-score.data-v-9f3f6e31 {
   font-family: "PingFang_SC-Semibold", Helvetica;
   font-weight: normal;
   color: #333333;
   font-size: 26rpx;
+  line-height: 1;
 }
 .star-wrapper.data-v-9f3f6e31 {
-  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 20rpx;
   height: 20rpx;
   flex-shrink: 0;
@@ -227,6 +231,7 @@
   font-weight: 500;
   color: #333333;
   font-size: 24rpx;
+  line-height: 1;
 }
 .provider-right.data-v-9f3f6e31 {
   display: inline-flex;
@@ -277,6 +282,8 @@
   display: inline-flex;
   align-items: center;
   gap: 12rpx;
+  flex: 1;
+  justify-content: flex-end;
 }
 .action-icon.data-v-9f3f6e31 {
   width: 60rpx;
@@ -287,51 +294,57 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 148rpx;
+  min-width: 148rpx;
   height: 60rpx;
-  padding: 16rpx 30rpx;
+  padding: 0 30rpx;
   border-radius: 4rpx;
   cursor: pointer;
   box-sizing: border-box;
+  flex-shrink: 0;
 }
 .detail-btn.data-v-9f3f6e31 {
   background-color: #f6f6f6;
 }
 .primary-btn.data-v-9f3f6e31 {
   background-color: #333333;
+  min-width: 200rpx;
 }
 .cancel-btn.data-v-9f3f6e31 {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 148rpx;
+  min-width: 148rpx;
   height: 60rpx;
-  padding: 16rpx 30rpx;
+  padding: 0 30rpx;
   border-radius: 4rpx;
   background-color: #f6f6f6;
   cursor: pointer;
   box-sizing: border-box;
+  flex-shrink: 0;
 }
 .pay-btn.data-v-9f3f6e31 {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 148rpx;
+  min-width: 200rpx;
   height: 60rpx;
-  padding: 16rpx 30rpx;
+  padding: 0 30rpx;
   border-radius: 4rpx;
   background-color: #333333;
   cursor: pointer;
   box-sizing: border-box;
+  flex-shrink: 0;
 }
 .btn-text.data-v-9f3f6e31 {
   font-family: "PingFang_SC-Medium", Helvetica;
   font-weight: 500;
   color: #666666;
   font-size: 22rpx;
+  white-space: nowrap;
 }
 .btn-text.primary.data-v-9f3f6e31 {
   font-family: "PingFang_SC-Semibold", Helvetica;
   font-weight: normal;
   color: #ffffff;
+  white-space: nowrap;
 }

@@ -83,50 +83,64 @@
 						v-for="(tab, index) in designerTabs" 
 						:key="index" 
 						class="tab-item"
-						:class="{ active: index === 0 }"
+						:class="{ active: activeDesignerTab === index }"
+						@tap="handleDesignerTabClick(index)"
 					>
 						<text>{{ tab }}</text>
 					</view>
 				</view>
 			</scroll-view>
-			<scroll-view class="designers-scroll" scroll-x>
-				<view class="designers-container">
-					<view 
-						v-for="(designer, index) in designers" 
-						:key="index" 
-						class="designer-card"
-						@tap="handleDesignerClick(designer)"
-					>
-						<view class="designer-img-wrapper">
-							<view class="designer-img-bg"></view>
-							<image class="designer-img" :src="designer.image" mode="aspectFill"></image>
-						</view>
-						<view class="designer-info">
-							<view class="designer-header">
-								<text class="designer-name">{{ designer.name }}</text>
-								<view class="designer-badge secondary">{{ designer.role }}</view>
-								<view class="designer-badge primary">{{ designer.level }}</view>
+			<swiper 
+				class="designers-swiper"
+				:current="designerSwiperIndex"
+				@change="handleDesignerSwiperChange"
+				:indicator-dots="false"
+				:autoplay="false"
+				:circular="false"
+			>
+				<swiper-item 
+					v-for="(slide, slideIndex) in designerSlides" 
+					:key="slideIndex"
+					class="designers-swiper-item"
+				>
+					<view class="designers-container">
+						<view 
+							v-for="(designer, index) in slide" 
+							:key="index" 
+							class="designer-card"
+							@tap="handleDesignerClick(designer)"
+						>
+							<view class="designer-img-wrapper">
+								<view class="designer-img-bg"></view>
+								<image class="designer-img" :src="designer.image" mode="aspectFill"></image>
 							</view>
-							<text class="designer-title">{{ designer.title }}</text>
-							<view class="designer-footer">
-								<view class="rating-info">
-									<text class="rating-score">{{ designer.rating }}</text>
-									<text class="star">★</text>
-									<text class="review-count">({{ designer.reviews }})</text>
+							<view class="designer-info">
+								<view class="designer-header">
+									<text class="designer-name">{{ designer.name }}</text>
+									<view class="designer-badge secondary">{{ designer.role }}</view>
+									<view class="designer-badge primary">{{ designer.level }}</view>
 								</view>
-								<text class="distance">{{ designer.distance }}</text>
+								<text class="designer-title">{{ designer.title }}</text>
+								<view class="designer-footer">
+									<view class="rating-info">
+										<text class="rating-score">{{ designer.rating }}</text>
+										<text class="star">★</text>
+										<text class="review-count">({{ designer.reviews }})</text>
+									</view>
+									<text class="distance">{{ designer.distance }}</text>
+								</view>
 							</view>
 						</view>
 					</view>
-				</view>
-			</scroll-view>
+				</swiper-item>
+			</swiper>
 			<view class="pagination-dots">
 				<view 
-					v-for="(dot, index) in paginationDots" 
+					v-for="(dot, index) in designerSlides.length" 
 					:key="index" 
 					class="dot"
-					:class="{ active: dot.active }"
-					:style="{ width: dot.width }"
+					:class="{ active: index === designerSwiperIndex }"
+					:style="{ width: index === designerSwiperIndex ? '28rpx' : '10rpx' }"
 				></view>
 			</view>
 		</view>
@@ -143,7 +157,8 @@
 						v-for="(tab, index) in brandTabs" 
 						:key="index" 
 						class="tab-item"
-						:class="{ active: index === 0 }"
+						:class="{ active: activeBrandTab === tab }"
+						@tap="handleBrandTabClick(tab)"
 					>
 						<text>{{ tab }}</text>
 					</view>
@@ -152,15 +167,14 @@
 			<scroll-view class="brands-scroll" scroll-x>
 				<view class="brands-container">
 					<view 
-						v-for="(brand, index) in brands" 
+						v-for="(brand, index) in filteredBrands" 
 						:key="index" 
 						class="brand-card"
-						:style="{ width: brand.width }"
 						@tap="handleBrandClick(brand)"
 					>
-						<view class="brand-img-wrapper" :style="{ width: brand.width }">
-							<view v-if="!brand.hasOverlay" class="brand-img-bg" :style="{ width: brand.width }"></view>
-							<image class="brand-img" :src="brand.image" mode="aspectFill" :style="{ width: brand.width }"></image>
+						<view class="brand-img-wrapper">
+							<view v-if="!brand.hasOverlay" class="brand-img-bg"></view>
+							<image class="brand-img" :src="brand.image" mode="aspectFill"></image>
 						</view>
 						<view class="brand-info">
 							<text class="brand-name">{{ brand.name }}</text>
@@ -201,16 +215,17 @@
 						v-for="(tab, index) in serviceTabs" 
 						:key="index" 
 						class="service-tab-item"
-						:class="{ active: index === 0 }"
+					:class="{ active: activeServiceTab === tab }"
+					@tap="handleServiceTabClick(tab)"
 					>
 						<text>{{ tab }}</text>
-						<image v-if="index === 0" class="tab-indicator" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/vector-15.svg" mode="aspectFit"></image>
+					<image v-if="activeServiceTab === tab" class="tab-indicator" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/vector-15.svg" mode="aspectFit"></image>
 					</view>
 				</view>
 			</scroll-view>
 			<view class="services-grid">
 				<view 
-					v-for="(service, index) in services" 
+					v-for="(service, index) in filteredServices" 
 					:key="index" 
 					class="service-card"
 				>
@@ -308,57 +323,709 @@ export default {
 				},
 			],
 			designerTabs: ["首席创意", "总监店长", "网红名师", "国际导师"],
-			designers: [
-				{
-					id: 13,
-					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-					name: "李天天",
-					role: "美发师",
-					level: "高级",
-					title: "总监｜从业十年",
-					rating: "4.8",
-					reviews: "234",
-					distance: "6.7km",
-				},
-				{
-					id: 14,
-					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-					name: "李天天",
-					role: "美发师",
-					level: "高级",
-					title: "总监｜从业十年",
-					rating: "4.8",
-					reviews: "234",
-					distance: "6.7km",
-				},
-			],
+			activeDesignerTab: 0,
+			designerSwiperIndex: 0,
+			designersByTab: {
+				0: [ // 首席创意
+					{
+						id: 13,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "李天天",
+						role: "美发师",
+						level: "高级",
+						title: "创意总监｜从业十年",
+						rating: "4.8",
+						reviews: "234",
+						distance: "6.7km",
+					},
+					{
+						id: 14,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "张雨辰",
+						role: "美发师",
+						level: "高级",
+						title: "创意导师｜从业八年",
+						rating: "4.8",
+						reviews: "234",
+						distance: "6.7km",
+					},
+					{
+						id: 15,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "王珊珊",
+						role: "美发师",
+						level: "特级",
+						title: "创意造型｜从业八年",
+						rating: "4.9",
+						reviews: "356",
+						distance: "5.2km",
+					},
+					{
+						id: 16,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "林一",
+						role: "美发师",
+						level: "高级",
+						title: "创意导师｜从业九年",
+						rating: "4.8",
+						reviews: "289",
+						distance: "7.1km",
+					},
+					{
+						id: 29,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "陈星",
+						role: "美发师",
+						level: "高级",
+						title: "创意设计｜从业七年",
+						rating: "4.7",
+						reviews: "198",
+						distance: "4.8km",
+					},
+					{
+						id: 30,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "李苒",
+						role: "美发师",
+						level: "特级",
+						title: "创意总监｜从业十一年",
+						rating: "4.9",
+						reviews: "445",
+						distance: "6.3km",
+					},
+					{
+						id: 31,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "孟冬",
+						role: "美发师",
+						level: "高级",
+						title: "创意造型师｜从业六年",
+						rating: "4.8",
+						reviews: "312",
+						distance: "5.7km",
+					},
+					{
+						id: 32,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "孙晓",
+						role: "美发师",
+						level: "高级",
+						title: "创意导师｜从业十年",
+						rating: "4.8",
+						reviews: "378",
+						distance: "7.5km",
+					},
+				],
+				1: [ // 总监店长
+					{
+						id: 17,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "陈曦",
+						role: "美发师",
+						level: "高级",
+						title: "店长｜从业七年",
+						rating: "4.7",
+						reviews: "198",
+						distance: "4.5km",
+					},
+					{
+						id: 18,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "赵一凡",
+						role: "美发师",
+						level: "高级",
+						title: "店长｜从业十一年",
+						rating: "4.8",
+						reviews: "412",
+						distance: "8.3km",
+					},
+					{
+						id: 19,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "韩清",
+						role: "美发师",
+						level: "高级",
+						title: "总监｜从业十年",
+						rating: "4.9",
+						reviews: "287",
+						distance: "5.8km",
+					},
+					{
+						id: 20,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "宋璇",
+						role: "美发师",
+						level: "特级",
+						title: "店长｜从业九年",
+						rating: "4.8",
+						reviews: "356",
+						distance: "6.2km",
+					},
+					{
+						id: 33,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "周成",
+						role: "美发师",
+						level: "高级",
+						title: "总监｜从业十三年",
+						rating: "4.9",
+						reviews: "523",
+						distance: "5.1km",
+					},
+					{
+						id: 34,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "郭雪",
+						role: "美发师",
+						level: "特级",
+						title: "店长｜从业十五年",
+						rating: "4.9",
+						reviews: "678",
+						distance: "7.2km",
+					},
+					{
+						id: 35,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "方野",
+						role: "美发师",
+						level: "高级",
+						title: "总监｜从业八年",
+						rating: "4.8",
+						reviews: "389",
+						distance: "6.8km",
+					},
+					{
+						id: 36,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "许静",
+						role: "美发师",
+						level: "高级",
+						title: "店长｜从业十二年",
+						rating: "4.8",
+						reviews: "456",
+						distance: "4.9km",
+					},
+				],
+				2: [ // 网红名师
+					{
+						id: 21,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "杨沐",
+						role: "美发师",
+						level: "高级",
+						title: "网红造型师｜从业六年",
+						rating: "4.9",
+						reviews: "512",
+						distance: "3.5km",
+					},
+					{
+						id: 22,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "顾明",
+						role: "美发师",
+						level: "高级",
+						title: "名师｜从业十三年",
+						rating: "4.8",
+						reviews: "445",
+						distance: "7.8km",
+					},
+					{
+						id: 23,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "陈牧",
+						role: "美发师",
+						level: "特级",
+						title: "网红导师｜从业十二年",
+						rating: "4.9",
+						reviews: "678",
+						distance: "4.2km",
+					},
+					{
+						id: 24,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "赵然",
+						role: "美发师",
+						level: "高级",
+						title: "名师｜从业十年",
+						rating: "4.7",
+						reviews: "389",
+						distance: "6.5km",
+					},
+					{
+						id: 37,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "蓝川",
+						role: "美发师",
+						level: "高级",
+						title: "网红造型师｜从业五年",
+						rating: "4.8",
+						reviews: "567",
+						distance: "3.8km",
+					},
+					{
+						id: 38,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "任熙",
+						role: "美发师",
+						level: "特级",
+						title: "名师｜从业十四年",
+						rating: "4.9",
+						reviews: "789",
+						distance: "5.6km",
+					},
+					{
+						id: 39,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "洪宇",
+						role: "美发师",
+						level: "高级",
+						title: "网红导师｜从业七年",
+						rating: "4.8",
+						reviews: "623",
+						distance: "4.7km",
+					},
+					{
+						id: 40,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "叶辰",
+						role: "美发师",
+						level: "高级",
+						title: "名师｜从业十一年",
+						rating: "4.8",
+						reviews: "534",
+						distance: "6.1km",
+					},
+				],
+				3: [ // 国际导师
+					{
+						id: 25,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "李想",
+						role: "美发师",
+						level: "特级",
+						title: "国际导师｜从业八年",
+						rating: "5.0",
+						reviews: "234",
+						distance: "9.2km",
+					},
+					{
+						id: 26,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "许澄",
+						role: "美发师",
+						level: "高级",
+						title: "国际造型师｜从业七年",
+						rating: "4.8",
+						reviews: "298",
+						distance: "8.7km",
+					},
+					{
+						id: 27,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "吴迪",
+						role: "美发师",
+						level: "高级",
+						title: "国际导师｜从业九年",
+						rating: "4.9",
+						reviews: "456",
+						distance: "7.3km",
+					},
+					{
+						id: 28,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "秦月",
+						role: "美发师",
+						level: "特级",
+						title: "国际造型导师｜从业八年",
+						rating: "4.8",
+						reviews: "367",
+						distance: "10.1km",
+					},
+					{
+						id: 41,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "许乔",
+						role: "美发师",
+						level: "特级",
+						title: "国际导师｜从业十五年",
+						rating: "5.0",
+						reviews: "892",
+						distance: "8.5km",
+					},
+					{
+						id: 42,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "秦澈",
+						role: "美发师",
+						level: "高级",
+						title: "国际造型师｜从业十年",
+						rating: "4.9",
+						reviews: "645",
+						distance: "9.8km",
+					},
+					{
+						id: 43,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "洛竹",
+						role: "美发师",
+						level: "高级",
+						title: "国际导师｜从业十一年",
+						rating: "4.8",
+						reviews: "523",
+						distance: "7.9km",
+					},
+					{
+						id: 44,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+						name: "沈宴",
+						role: "美发师",
+						level: "特级",
+						title: "国际造型导师｜从业十二年",
+						rating: "4.9",
+						reviews: "712",
+						distance: "10.5km",
+					},
+				],
+			},
 			brandTabs: ["专业店", "品牌店", "工作室", "综合店"],
-			brands: [
-				{
-					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-					name: "成都意念美发造型沙龙",
-					rating: "4.8",
-					reviews: "768",
-					address: "成都青羊区草堂路12号...",
-					distance: "7.5km",
-					width: "420rpx",
-				},
-				{
-					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-3.png",
-					name: "成都意念美发造",
-					rating: "4.8",
-					reviews: "768",
-					address: "成都青羊区草堂路",
-					distance: "",
-					width: "240rpx",
-					hasOverlay: true,
-				},
-			],
+			activeBrandTab: "专业店",
+			allBrands: {
+				"专业店": [
+					{
+						id: 1,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "成都意念美发造型沙龙",
+						rating: "4.8",
+						reviews: "768",
+						address: "成都青羊区草堂路12号...",
+						distance: "7.5km",
+						category: "专业店",
+					},
+					{
+						id: 2,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "专业美发造型店",
+						rating: "4.7",
+						reviews: "520",
+						address: "成都武侯区天府大道...",
+						distance: "5.2km",
+						category: "专业店",
+					},
+					{
+						id: 3,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "专业发型设计工作室",
+						rating: "4.9",
+						reviews: "365",
+						address: "成都锦江区春熙路...",
+						distance: "3.8km",
+						category: "专业店",
+					},
+					{
+						id: 4,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "专业造型美发店",
+						rating: "4.6",
+						reviews: "288",
+						address: "成都成华区建设路...",
+						distance: "6.5km",
+						category: "专业店",
+					},
+					{
+						id: 5,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "专业剪发造型店",
+						rating: "4.8",
+						reviews: "445",
+						address: "成都高新区天府三街...",
+						distance: "4.3km",
+						category: "专业店",
+					},
+					{
+						id: 6,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "专业美发沙龙",
+						rating: "4.7",
+						reviews: "312",
+						address: "成都金牛区沙湾路...",
+						distance: "8.1km",
+						category: "专业店",
+					},
+					{
+						id: 7,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "专业造型设计店",
+						rating: "4.9",
+						reviews: "567",
+						address: "成都青羊区宽窄巷子...",
+						distance: "2.5km",
+						category: "专业店",
+					},
+					{
+						id: 8,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "专业美发工作室",
+						rating: "4.6",
+						reviews: "234",
+						address: "成都武侯区红牌楼...",
+						distance: "9.2km",
+						category: "专业店",
+					},
+				],
+				"品牌店": [
+					{
+						id: 9,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "品牌美发连锁店",
+						rating: "4.8",
+						reviews: "689",
+						address: "成都锦江区太古里...",
+						distance: "3.2km",
+						category: "品牌店",
+					},
+					{
+						id: 10,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "知名品牌美发沙龙",
+						rating: "4.9",
+						reviews: "756",
+						address: "成都武侯区科华路...",
+						distance: "4.8km",
+						category: "品牌店",
+					},
+					{
+						id: 11,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "品牌连锁造型店",
+						rating: "4.7",
+						reviews: "543",
+						address: "成都高新区金融城...",
+						distance: "5.5km",
+						category: "品牌店",
+					},
+					{
+						id: 12,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "国际品牌美发店",
+						rating: "4.8",
+						reviews: "612",
+						address: "成都青羊区骡马市...",
+						distance: "7.3km",
+						category: "品牌店",
+					},
+					{
+						id: 13,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "品牌造型设计店",
+						rating: "4.6",
+						reviews: "389",
+						address: "成都成华区SM广场...",
+						distance: "6.8km",
+						category: "品牌店",
+					},
+					{
+						id: 14,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "知名品牌美发工作室",
+						rating: "4.9",
+						reviews: "478",
+						address: "成都武侯区大悦城...",
+						distance: "5.9km",
+						category: "品牌店",
+					},
+					{
+						id: 15,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "品牌连锁美发店",
+						rating: "4.7",
+						reviews: "425",
+						address: "成都锦江区IFS...",
+						distance: "4.1km",
+						category: "品牌店",
+					},
+					{
+						id: 16,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "品牌美发造型沙龙",
+						rating: "4.8",
+						reviews: "521",
+						address: "成都高新区环球中心...",
+						distance: "8.7km",
+						category: "品牌店",
+					},
+				],
+				"工作室": [
+					{
+						id: 17,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "私人美发工作室",
+						rating: "4.9",
+						reviews: "456",
+						address: "成都青羊区浣花溪...",
+						distance: "2.8km",
+						category: "工作室",
+					},
+					{
+						id: 18,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "创意造型工作室",
+						rating: "4.7",
+						reviews: "334",
+						address: "成都武侯区桐梓林...",
+						distance: "4.5km",
+						category: "工作室",
+					},
+					{
+						id: 19,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "设计美发工作室",
+						rating: "4.8",
+						reviews: "389",
+						address: "成都锦江区九眼桥...",
+						distance: "3.6km",
+						category: "工作室",
+					},
+					{
+						id: 20,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "私人定制工作室",
+						rating: "4.9",
+						reviews: "267",
+						address: "成都高新区银泰城...",
+						distance: "5.3km",
+						category: "工作室",
+					},
+					{
+						id: 21,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "艺术造型工作室",
+						rating: "4.6",
+						reviews: "298",
+						address: "成都成华区东郊记忆...",
+						distance: "7.2km",
+						category: "工作室",
+					},
+					{
+						id: 22,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "高端美发工作室",
+						rating: "4.8",
+						reviews: "412",
+						address: "成都武侯区棕榈泉...",
+						distance: "6.4km",
+						category: "工作室",
+					},
+					{
+						id: 23,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "精品造型工作室",
+						rating: "4.7",
+						reviews: "356",
+						address: "成都青羊区金沙...",
+						distance: "8.3km",
+						category: "工作室",
+					},
+					{
+						id: 24,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "专业造型工作室",
+						rating: "4.9",
+						reviews: "523",
+						address: "成都锦江区水碾河...",
+						distance: "4.7km",
+						category: "工作室",
+					},
+				],
+				"综合店": [
+					{
+						id: 25,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "综合美发造型店",
+						rating: "4.8",
+						reviews: "678",
+						address: "成都武侯区红牌楼广场...",
+						distance: "5.6km",
+						category: "综合店",
+					},
+					{
+						id: 26,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "综合美容美发店",
+						rating: "4.7",
+						reviews: "542",
+						address: "成都锦江区万达广场...",
+						distance: "3.9km",
+						category: "综合店",
+					},
+					{
+						id: 27,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "综合造型美发店",
+						rating: "4.9",
+						reviews: "634",
+						address: "成都高新区凯德广场...",
+						distance: "6.2km",
+						category: "综合店",
+					},
+					{
+						id: 28,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "综合美发沙龙",
+						rating: "4.6",
+						reviews: "487",
+						address: "成都青羊区宽窄巷子...",
+						distance: "2.7km",
+						category: "综合店",
+					},
+					{
+						id: 29,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "综合美容美发沙龙",
+						rating: "4.8",
+						reviews: "556",
+						address: "成都武侯区来福士...",
+						distance: "4.4km",
+						category: "综合店",
+					},
+					{
+						id: 30,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "综合造型设计店",
+						rating: "4.7",
+						reviews: "423",
+						address: "成都成华区建设路...",
+						distance: "7.1km",
+						category: "综合店",
+					},
+					{
+						id: 31,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "综合美发造型中心",
+						rating: "4.9",
+						reviews: "589",
+						address: "成都锦江区春熙路...",
+						distance: "3.3km",
+						category: "综合店",
+					},
+					{
+						id: 32,
+						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+						name: "综合美容美发中心",
+						rating: "4.8",
+						reviews: "512",
+						address: "成都高新区天府大道...",
+						distance: "5.8km",
+						category: "综合店",
+					},
+				],
+			},
 			serviceTabs: ["全部", "洗吹", "剪发", "烫发", "染发", "护发", "头皮", "接发"],
-			services: [
+			activeServiceTab: "全部",
+			allServices: [
 				{
 					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
 					title: "烫发",
+					category: "烫发",
 					description: "发型提案+染发+造型",
 					price: "799",
 					designerName: "李天天",
@@ -370,47 +1037,115 @@ export default {
 				},
 				{
 					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
-					title: "烫发",
-					description: "发型提案+染发+造型",
-					price: "799",
-					designerName: "李天天",
-					designerRole: "美发师",
+					title: "剪发",
+					category: "剪发",
+					description: "专业剪发+造型设计",
+					price: "199",
+					designerName: "张美发",
+					designerRole: "造型师",
+					rating: "4.9",
+					reviews: "520",
+					distance: "3.2km",
+					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
+				},
+				{
+					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
+					title: "染发",
+					category: "染发",
+					description: "专业染发+护理",
+					price: "599",
+					designerName: "王染发",
+					designerRole: "染发师",
+					rating: "4.7",
+					reviews: "365",
+					distance: "5.8km",
+					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
+				},
+				{
+					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
+					title: "洗吹",
+					category: "洗吹",
+					description: "洗发+吹风造型",
+					price: "88",
+					designerName: "刘洗发",
+					designerRole: "助理",
+					rating: "4.6",
+					reviews: "288",
+					distance: "2.1km",
+					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
+				},
+				{
+					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
+					title: "护发",
+					category: "护发",
+					description: "深层护理+滋养",
+					price: "299",
+					designerName: "陈护理",
+					designerRole: "护理师",
 					rating: "4.8",
-					reviews: "768",
-					distance: "6.7km",
+					reviews: "156",
+					distance: "4.5km",
+					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
+				},
+				{
+					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
+					title: "头皮",
+					category: "头皮",
+					description: "头皮护理+清洁",
+					price: "399",
+					designerName: "周头皮",
+					designerRole: "护理师",
+					rating: "4.9",
+					reviews: "234",
+					distance: "6.2km",
+					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
+				},
+				{
+					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
+					title: "接发",
+					category: "接发",
+					description: "专业接发+造型",
+					price: "1299",
+					designerName: "赵接发",
+					designerRole: "接发师",
+					rating: "4.7",
+					reviews: "89",
+					distance: "7.8km",
 					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
 				},
 				{
 					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
 					title: "烫发",
-					description: "发型提案+染发+造型",
-					price: "799",
-					designerName: "李天天",
-					designerRole: "美发师",
+					category: "烫发",
+					description: "造型烫发+护理",
+					price: "899",
+					designerName: "孙烫发",
+					designerRole: "烫发师",
 					rating: "4.8",
-					reviews: "768",
-					distance: "6.7km",
-					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
-				},
-				{
-					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
-					title: "烫发",
-					description: "发型提案+染发+造型",
-					price: "799",
-					designerName: "李天天",
-					designerRole: "美发师",
-					rating: "4.8",
-					reviews: "768",
-					distance: "6.7km",
+					reviews: "445",
+					distance: "3.9km",
 					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
 				},
 			],
-			paginationDots: [
-				{ active: false, width: "10rpx" },
-				{ active: false, width: "10rpx" },
-				{ active: true, width: "28rpx" },
-				{ active: false, width: "10rpx" },
-			],
+		}
+	},
+	computed: {
+		filteredServices() {
+			if (this.activeServiceTab === "全部") {
+				return this.allServices
+			}
+			return this.allServices.filter(service => service.category === this.activeServiceTab)
+		},
+		filteredBrands() {
+			return this.allBrands[this.activeBrandTab] || []
+		},
+		designerSlides() {
+			const currentDesigners = this.designersByTab[this.activeDesignerTab] || []
+			const slides = []
+			for (let i = 0; i < currentDesigners.length; i += 2) {
+				slides.push(currentDesigners.slice(i, i + 2))
+			}
+			return slides
 		}
 	},
 	methods: {
@@ -471,11 +1206,26 @@ export default {
 				})
 			}
 		},
+		handleServiceTabClick(tab) {
+			// 切换服务筛选项
+			this.activeServiceTab = tab
+		},
 		handleDesignerClick(designer) {
 			// 跳转到设计师详情页面，传递设计师ID等信息
 			uni.navigateTo({
 				url: `/pages/designer/detail?id=${designer.id || 1}&name=${encodeURIComponent(designer.name || '')}`
 			})
+		},
+		handleDesignerSwiperChange(e) {
+			this.designerSwiperIndex = e.detail.current
+		},
+		handleDesignerTabClick(index) {
+			this.activeDesignerTab = index
+			this.designerSwiperIndex = 0 // 切换 tab 时重置 swiper 索引
+		},
+		handleBrandTabClick(tab) {
+			// 切换品牌馆标签
+			this.activeBrandTab = tab
 		},
 		handleBrandClick(brand) {
 			// 跳转到品牌详情页面，传递品牌ID等信息
@@ -752,27 +1502,40 @@ export default {
 }
 
 /* 设计师 */
-.designers-scroll {
+.designers-swiper {
 	width: 100%;
-	white-space: nowrap;
+	height: 480rpx;
+}
+
+.designers-swiper-item {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
 }
 
 .designers-container {
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
+	justify-content: space-between;
 	gap: 20rpx;
+	padding: 0 12rpx;
+	box-sizing: border-box;
+	height: 100%;
 }
 
 .designer-card {
-	width: 316rpx;
+	flex: 1;
+	min-width: 0;
+	max-width: calc(50% - 10rpx);
 	border: 2rpx solid #f3f3f3;
 	border-radius: 8rpx;
 	overflow: hidden;
+	box-sizing: border-box;
 }
 
 .designer-img-wrapper {
 	position: relative;
-	width: 316rpx;
+	width: 100%;
 	height: 318rpx;
 }
 
@@ -881,6 +1644,7 @@ export default {
 	align-items: center;
 	gap: 6rpx;
 	justify-content: center;
+
 }
 
 .dot {
@@ -907,6 +1671,8 @@ export default {
 }
 
 .brand-card {
+	flex: 0 0 420rpx;
+	width: 420rpx;
 	border: 2rpx solid #f3f3f3;
 	border-radius: 8rpx;
 	overflow: hidden;
@@ -915,6 +1681,7 @@ export default {
 
 .brand-img-wrapper {
 	position: relative;
+	width: 100%;
 	height: 236rpx;
 }
 
@@ -922,6 +1689,7 @@ export default {
 	position: absolute;
 	top: 0;
 	left: 0;
+	width: 100%;
 	height: 236rpx;
 	border-radius: 8rpx 8rpx 0 0;
 	background: linear-gradient(180deg, rgba(244, 244, 244, 1) 0%);
@@ -931,6 +1699,7 @@ export default {
 	position: absolute;
 	top: 0;
 	left: 0;
+	width: 100%;
 	height: 236rpx;
 }
 
@@ -1039,28 +1808,38 @@ export default {
 .service-tabs-container {
 	display: flex;
 	align-items: flex-start;
-	justify-content: center;
-	gap: 40rpx;
-	width: 100%;
+	justify-content: flex-start;
+	gap: 36rpx;
+	width: auto;
+	min-width: 100%;
+	flex-wrap: nowrap;
+	// padding: 0 11rpx;
 }
 
 .service-tab-item {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 20rpx;
+	gap: 12rpx;
 	position: relative;
 	height: auto;
 	padding: 0;
 	font-size: 28rpx;
-	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: 400;
 	color: #a6a6a6;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+
+.service-tab-item text {
+	white-space: nowrap;
 }
 
 .service-tab-item.active {
 	color: #000000;
-	font-family: 'PingFang_SC-Semibold', Helvetica;
-	font-weight: 600;
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: 400;
 }
 
 .tab-indicator {

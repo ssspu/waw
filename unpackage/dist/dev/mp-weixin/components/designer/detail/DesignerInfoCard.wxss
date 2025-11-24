@@ -25,8 +25,8 @@
 /* 文章场景相关 */
 .designer-info-card.data-v-49229b50 {
   position: relative;
-  width: 100%;
-  margin-bottom: 18rpx;
+  width: calc(100% + 24rpx);
+  margin: 0 -12rpx 18rpx -12rpx;
 }
 .card-wrapper.data-v-49229b50 {
   position: relative;
@@ -34,9 +34,11 @@
 }
 .follow-btn.data-v-49229b50 {
   position: absolute;
-  top: 120rpx;
-  right: 20rpx;
-  z-index: 10;
+  top: 108rpx;
+  right: 10rpx;
+  width: 200rpx;
+  height: 100rpx;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -67,6 +69,7 @@
   font-weight: normal;
   color: rgba(255, 255, 255, 0.6);
   font-size: 18rpx;
+  margin-top: -2rpx;
 }
 .bg-decoration.data-v-49229b50 {
   width: 100%;
@@ -76,15 +79,32 @@
 .designer-card.data-v-49229b50 {
   position: relative;
   width: 100%;
-  padding: 30rpx;
+  padding: 7rpx 30rpx;
   box-sizing: border-box;
   background-color: transparent;
+  overflow: hidden;
+}
+.designer-card.data-v-49229b50::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/png;base64,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");
+  background-size: contain;
+  background-position: center 58rpx;
+  background-repeat: no-repeat;
+  z-index: 3;
+  pointer-events: none;
 }
 .designer-info.data-v-49229b50 {
   display: flex;
   align-items: flex-start;
   gap: 16rpx;
   margin-bottom: 20rpx;
+  position: relative;
+  z-index: 4;
 }
 .avatar.data-v-49229b50 {
   width: 158rpx;
@@ -159,16 +179,32 @@
 .skills-section.data-v-49229b50 {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
+  gap: 10rpx;
   margin-bottom: 20rpx;
+  position: relative;
+  z-index: 4;
 }
 .skill-item.data-v-49229b50 {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12rpx;
   position: relative;
 }
 .skill-badge.data-v-49229b50 {
+  display: inline-flex;
+  align-items: center;
+  height: 44rpx;
+  padding: 4rpx 8rpx;
+  background-color: #f6f6f6;
+  border-radius: 4rpx;
+  font-family: "PingFang_SC-Medium", Helvetica;
+  font-weight: 500;
+  color: #333333;
+  font-size: 22rpx;
+  flex-shrink: 0;
+}
+.skill-badge2.data-v-49229b50 {
+  margin-top: -40rpx;
   display: inline-flex;
   align-items: center;
   height: 44rpx;
@@ -222,6 +258,8 @@
   gap: 10rpx;
   flex-wrap: wrap;
   margin-bottom: 20rpx;
+  position: relative;
+  z-index: 4;
 }
 .service-badge.data-v-49229b50 {
   display: flex;
@@ -230,8 +268,8 @@
   gap: 4rpx;
   padding: 4rpx 8rpx;
   height: 42rpx;
-  flex: 1;
-  min-width: 0;
+  flex-shrink: 0;
+  width: auto;
   background-color: #f6f6f6;
   border-radius: 4rpx;
   box-sizing: border-box;
@@ -247,14 +285,14 @@
   color: #666666;
   font-size: 20rpx;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .stats-container.data-v-49229b50 {
   display: flex;
   align-items: center;
   gap: 10rpx;
   margin-bottom: 20rpx;
+  position: relative;
+  z-index: 4;
 }
 .stat-item.data-v-49229b50 {
   display: flex;
@@ -294,9 +332,11 @@
 }
 .business-info.data-v-49229b50 {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 12rpx;
   margin-bottom: 20rpx;
+  position: relative;
+  z-index: 4;
 }
 .business-card.data-v-49229b50 {
   display: flex;
@@ -308,11 +348,13 @@
   border-radius: 16rpx;
   position: relative;
   box-sizing: border-box;
+  flex: 1;
+  min-width: 0;
 }
 .business-content.data-v-49229b50 {
   display: flex;
   flex-direction: column;
-  gap: 6rpx;
+  gap: 2rpx;
   flex: 1;
   position: relative;
 }
@@ -429,11 +471,15 @@
   height: 2rpx;
   background-color: #e5e5e5;
   margin: 20rpx 0;
+  position: relative;
+  z-index: 4;
 }
 .promotions.data-v-49229b50 {
   display: flex;
   align-items: center;
   gap: 20rpx;
+  position: relative;
+  z-index: 4;
 }
 .promo-icon.data-v-49229b50 {
   width: 40rpx;

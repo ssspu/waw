@@ -52,40 +52,57 @@
 					@tap="switchRankingTab(index)"
 				>
 					<text>{{ tab.label }}</text>
-					<view v-if="tab.hasNew" class="new-badge">
+					<view v-if="tab.new" class="new-badge">
 						<image class="badge-bg" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-216.svg" mode="aspectFit"></image>
 						<text class="new-text">NEW</text>
 					</view>
 				</view>
 			</view>
 			
-			<view class="ranking-list">
-				<view 
-					v-for="(stylist, index) in rankingStylists" 
-					:key="index" 
-					class="ranking-item"
-					@tap="handleStylistClick(stylist)"
+			<swiper 
+				class="ranking-swiper"
+				:current="rankingSwiperIndex"
+				@change="handleRankingSwiperChange"
+				:indicator-dots="false"
+				:autoplay="false"
+				:circular="false"
+			>
+				<swiper-item 
+					v-for="(slide, slideIndex) in currentRankingSlides" 
+					:key="slideIndex"
+					class="ranking-swiper-item"
 				>
-					<view class="stylist-avatar" :style="{ backgroundImage: `url(${stylist.image})` }"></view>
-					<view class="stylist-info">
-						<view class="stylist-header">
-							<text class="stylist-name">{{ stylist.name }}</text>
-							<view class="stylist-badge">{{ stylist.level }}</view>
-						</view>
-						<text class="stylist-role">{{ stylist.role }}</text>
-						<view class="stylist-rating">
-							<text class="rating-score">{{ stylist.rating }}</text>
-							<image class="star-icon" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/star-1.svg" mode="aspectFit"></image>
+					<view class="ranking-list">
+						<view 
+							v-for="(stylist, index) in slide" 
+							:key="index" 
+							class="ranking-item"
+							@tap="handleStylistClick(stylist)"
+						>
+							<view class="stylist-avatar" :style="{ backgroundImage: `url(${stylist.image})` }"></view>
+							<view class="stylist-info">
+								<view class="stylist-header">
+									<text class="stylist-name">{{ stylist.name }}</text>
+									<view class="stylist-badge">{{ stylist.level }}</view>
+								</view>
+								<text class="stylist-role">{{ stylist.role }}</text>
+								<view class="stylist-rating">
+									<text class="rating-score">{{ stylist.rating }}</text>
+									<image class="star-icon" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/star-1.svg" mode="aspectFit"></image>
+								</view>
+							</view>
 						</view>
 					</view>
-				</view>
-			</view>
+				</swiper-item>
+			</swiper>
 			
 			<view class="pagination-dots">
-				<view class="dot"></view>
-				<view class="dot"></view>
-				<view class="dot active"></view>
-				<view class="dot"></view>
+				<view 
+					v-for="(dot, index) in currentRankingSlides.length" 
+					:key="index"
+					class="dot"
+					:class="{ active: index === rankingSwiperIndex }"
+				></view>
 			</view>
 		</view>
 		
@@ -211,60 +228,116 @@ export default {
 				},
 			],
 			rankingTabs: [
-				{ label: "新秀榜", active: true },
-				{ label: "专业榜", active: false },
-				{ label: "服务榜", active: false, hasNew: true },
+				{ label: "新秀榜", active: true, value: "rookie", new: true },
+				{ label: "专业榜", active: false, value: "pro", new: false },
+				{ label: "服务榜", active: false, value: "service", new: true },
 			],
-			rankingStylists: [
-				{
-					id: 1,
-					image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png",
-					name: "李天天",
-					level: "高级",
-					role: "店长｜从业12年",
-					rating: "4.8",
-				},
-				{
-					id: 2,
-					image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-1.png",
-					name: "李天天",
-					level: "高级",
-					role: "店长｜从业12年",
-					rating: "4.8",
-				},
-				{
-					id: 3,
-					image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-2.png",
-					name: "李天天",
-					level: "高级",
-					role: "店长｜从业12年",
-					rating: "4.8",
-				},
-				{
-					id: 4,
-					image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-3.png",
-					name: "李天天",
-					level: "高级",
-					role: "店长｜从业12年",
-					rating: "4.8",
-				},
-				{
-					id: 5,
-					image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-4.png",
-					name: "李天天",
-					level: "高级",
-					role: "店长｜从业12年",
-					rating: "4.8",
-				},
-				{
-					id: 6,
-					image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png",
-					name: "李天天",
-					level: "高级",
-					role: "店长｜从业12年",
-					rating: "4.8",
-				},
-			],
+			activeRankingTab: "rookie",
+			rankingSwiperIndex: 0,
+			rankingSlides: {
+				rookie: [
+					[
+						{ id: 1, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "李天天", level: "高级", role: "店长｜从业12年", rating: "4.8" },
+						{ id: 2, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "张雨辰", level: "高级", role: "发型总监｜从业10年", rating: "4.9" },
+						{ id: 3, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "王珊珊", level: "特级", role: "资深设计｜从业8年", rating: "4.7" },
+						{ id: 4, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "林一", level: "高级", role: "创意导师｜从业9年", rating: "4.8" },
+						{ id: 5, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "陈曦", level: "高级", role: "潮流造型｜从业7年", rating: "4.6" },
+						{ id: 6, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "赵一凡", level: "高级", role: "店长｜从业11年", rating: "4.8" },
+					],
+					[
+						{ id: 7, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "韩清", level: "高级", role: "高级染发｜从业10年", rating: "4.9" },
+						{ id: 8, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "宋璇", level: "特级", role: "明星造型｜从业9年", rating: "4.8" },
+						{ id: 9, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "杨沐", level: "高级", role: "青年导师｜从业6年", rating: "4.6" },
+						{ id: 10, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "顾明", level: "高级", role: "首席剪发｜从业13年", rating: "4.9" },
+						{ id: 11, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "陈牧", level: "高级", role: "烫染专家｜从业12年", rating: "4.8" },
+						{ id: 12, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "赵然", level: "高级", role: "店长｜从业10年", rating: "4.7" },
+					],
+					[
+						{ id: 13, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "李想", level: "高级", role: "潮流导师｜从业8年", rating: "4.8" },
+						{ id: 14, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "许澄", level: "高级", role: "染发顾问｜从业7年", rating: "4.7" },
+						{ id: 15, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "吴迪", level: "高级", role: "短发专家｜从业9年", rating: "4.8" },
+						{ id: 16, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "秦月", level: "高级", role: "造型顾问｜从业8年", rating: "4.6" },
+						{ id: 17, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "周行", level: "高级", role: "日韩造型｜从业7年", rating: "4.8" },
+						{ id: 18, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "顾瞳", level: "高级", role: "氛围感设计｜从业6年", rating: "4.7" },
+					],
+					[
+						{ id: 19, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "任欢", level: "高级", role: "质感剪裁｜从业8年", rating: "4.9" },
+						{ id: 20, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "罗雪", level: "高级", role: "形象改造｜从业9年", rating: "4.8" },
+						{ id: 21, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "郑忆", level: "高级", role: "校园风造型｜从业5年", rating: "4.6" },
+						{ id: 22, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "夏禾", level: "高级", role: "都市时尚｜从业7年", rating: "4.7" },
+						{ id: 23, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "游浅", level: "高级", role: "设计助教｜从业6年", rating: "4.8" },
+						{ id: 24, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "霍笙", level: "高级", role: "创意造型｜从业9年", rating: "4.9" },
+					],
+				],
+				pro: [
+					[
+						{ id: 25, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "陈星", level: "总监", role: "专业导师｜从业15年", rating: "4.9" },
+						{ id: 26, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "李苒", level: "总监", role: "发色专家｜从业12年", rating: "4.9" },
+						{ id: 27, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "孟冬", level: "总监", role: "发型顾问｜从业14年", rating: "4.8" },
+						{ id: 28, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "孙晓", level: "总监", role: "高级设计｜从业16年", rating: "4.9" },
+						{ id: 29, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "周成", level: "总监", role: "时尚造型｜从业13年", rating: "4.8" },
+						{ id: 30, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "郭雪", level: "总监", role: "沙宣导师｜从业15年", rating: "4.9" },
+					],
+					[
+						{ id: 31, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "方野", level: "总监", role: "造型顾问｜从业14年", rating: "4.8" },
+						{ id: 32, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "许静", level: "总监", role: "高级染发｜从业13年", rating: "4.8" },
+						{ id: 33, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "蓝川", level: "总监", role: "光影剪裁｜从业12年", rating: "4.7" },
+						{ id: 34, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "任熙", level: "总监", role: "国际导师｜从业18年", rating: "5.0" },
+						{ id: 35, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "洪宇", level: "总监", role: "首席造型｜从业17年", rating: "4.9" },
+						{ id: 36, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "叶辰", level: "总监", role: "高级顾问｜从业16年", rating: "4.8" },
+					],
+					[
+						{ id: 37, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "许乔", level: "总监", role: "秀场造型｜从业15年", rating: "4.9" },
+						{ id: 38, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "秦澈", level: "总监", role: "高级烫染｜从业14年", rating: "4.8" },
+						{ id: 39, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "洛竹", level: "总监", role: "质感剪裁｜从业13年", rating: "4.8" },
+						{ id: 40, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "沈宴", level: "总监", role: "风格导师｜从业12年", rating: "4.7" },
+						{ id: 41, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "阮潇", level: "总监", role: "潮流研究｜从业11年", rating: "4.8" },
+						{ id: 42, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "盛恒", level: "总监", role: "高奢造型｜从业15年", rating: "4.9" },
+					],
+					[
+						{ id: 43, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "柏庭", level: "总监", role: "私人订制｜从业14年", rating: "4.8" },
+						{ id: 44, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "蒲岚", level: "总监", role: "明星御用｜从业16年", rating: "4.9" },
+						{ id: 45, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "卓一", level: "总监", role: "剧组造型｜从业13年", rating: "4.8" },
+						{ id: 46, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "霍泽", level: "总监", role: "国际赛导师｜从业17年", rating: "5.0" },
+						{ id: 47, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "米澜", level: "总监", role: "学院讲师｜从业12年", rating: "4.8" },
+						{ id: 48, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "柯乔", level: "总监", role: "质感染发｜从业14年", rating: "4.9" },
+					],
+				],
+				service: [
+					[
+						{ id: 49, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "潘黎", level: "高级", role: "五星好评｜从业11年", rating: "4.9" },
+						{ id: 50, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "晋航", level: "高级", role: "回头客王｜从业9年", rating: "4.9" },
+						{ id: 51, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "白芷", level: "高级", role: "超高满意｜从业8年", rating: "4.8" },
+						{ id: 52, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "楚翎", level: "高级", role: "贴心服务｜从业10年", rating: "4.8" },
+						{ id: 53, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "程西", level: "高级", role: "口碑导师｜从业9年", rating: "4.7" },
+						{ id: 54, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "乐瑶", level: "高级", role: "极速响应｜从业7年", rating: "4.8" },
+					],
+					[
+						{ id: 55, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "米朵", level: "高级", role: "礼貌服务｜从业8年", rating: "4.9" },
+						{ id: 56, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "沈沁", level: "高级", role: "好评之星｜从业9年", rating: "4.8" },
+						{ id: 57, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "元启", level: "高级", role: "服务达人｜从业8年", rating: "4.8" },
+						{ id: 58, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "汪言", level: "高级", role: "舒适体验｜从业9年", rating: "4.9" },
+						{ id: 59, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "唐润", level: "高级", role: "预约稳定｜从业10年", rating: "4.8" },
+						{ id: 60, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "柯依", level: "高级", role: "首选服务｜从业9年", rating: "4.9" },
+					],
+					[
+						{ id: 61, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "傅岚", level: "高级", role: "高端礼遇｜从业10年", rating: "4.8" },
+						{ id: 62, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "沈栩", level: "高级", role: "安抚沟通｜从业8年", rating: "4.7" },
+						{ id: 63, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "陆澜", level: "高级", role: "极速排期｜从业7年", rating: "4.8" },
+						{ id: 64, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "季枝", level: "高级", role: "细致讲解｜从业9年", rating: "4.9" },
+						{ id: 65, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "闻笙", level: "高级", role: "客户维护｜从业8年", rating: "4.8" },
+						{ id: 66, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "艾川", level: "高级", role: "安心保障｜从业9年", rating: "4.8" },
+					],
+					[
+						{ id: 67, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "秦韶", level: "高级", role: "回访专员｜从业8年", rating: "4.9" },
+						{ id: 68, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "俞娴", level: "高级", role: "贴心话术｜从业7年", rating: "4.7" },
+						{ id: 69, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "凌笛", level: "高级", role: "加班响应｜从业6年", rating: "4.8" },
+						{ id: 70, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "顾晴", level: "高级", role: "VIP服务｜从业9年", rating: "4.9" },
+						{ id: 71, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "俞牧", level: "高级", role: "满意回访｜从业8年", rating: "4.8" },
+						{ id: 72, image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png", name: "柏真", level: "高级", role: "细心记录｜从业7年", rating: "4.8" },
+					],
+				],
+			},
 			nearbyStylistsData: [
 				{
 					id: 7,
@@ -347,6 +420,12 @@ export default {
 			],
 		}
 	},
+	computed: {
+		currentRankingSlides() {
+			const slides = this.rankingSlides[this.activeRankingTab]
+			return slides || []
+		}
+	},
 	methods: {
 		handleCategoryClick(category) {
 			console.log('Category clicked:', category)
@@ -355,9 +434,19 @@ export default {
 			console.log('Booking clicked:', option)
 		},
 		switchRankingTab(index) {
-			this.rankingTabs.forEach((tab, i) => {
-				tab.active = i === index
+			const tab = this.rankingTabs[index]
+			this.rankingTabs.forEach((t, i) => {
+				t.active = i === index
 			})
+			this.activeRankingTab = tab.value
+			this.rankingSwiperIndex = 0
+			// 点击后清除该标签的 NEW 状态
+			if (tab.new) {
+				tab.new = false
+			}
+		},
+		handleRankingSwiperChange(e) {
+			this.rankingSwiperIndex = e.detail.current
 		},
 		handleStylistClick(stylist) {
 			// 跳转到设计师详情页面，传递设计师ID等信息
@@ -547,7 +636,7 @@ export default {
 .new-badge {
 	position: absolute;
 	top: -14rpx;
-	left: calc(100% + 4rpx);
+	left: calc(80% + 4rpx);
 	width: 50rpx;
 	height: 24rpx;
 }
@@ -569,6 +658,18 @@ export default {
 	font-family: 'PingFang_SC-Semibold', Helvetica;
 	font-weight: normal;
 	color: #ffffff;
+}
+
+.ranking-swiper {
+	width: 100%;
+	height: 470rpx;
+	min-height: 460rpx;
+}
+
+.ranking-swiper-item {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
 }
 
 .ranking-list {
@@ -666,7 +767,8 @@ export default {
 	display: flex;
 	align-items: center;
 	gap: 6rpx;
-	padding: 0 20rpx 20rpx;
+	padding: 0 20rpx;
+	margin-bottom: 24rpx;
 	justify-content: center;
 }
 

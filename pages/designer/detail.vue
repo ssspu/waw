@@ -1,5 +1,8 @@
 <template>
 	<view class="screen">
+		<!-- 状态栏占位 -->
+		<view class="status-bar" style="height: 44rpx;"></view>
+		
 		<!-- 头部 -->
 		<designer-detail-header></designer-detail-header>
 		
@@ -192,6 +195,10 @@ export default {
 	flex-direction: column;
 	overflow: hidden;
 	box-sizing: border-box;
+}
+
+.status-bar {
+	height: 44rpx;
 }
 
 .main-content {

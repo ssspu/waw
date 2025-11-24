@@ -240,20 +240,24 @@
   cursor: pointer;
 }
 .action-buttons.data-v-ebe4f2a9 {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 12rpx;
+  flex: 1;
+  justify-content: flex-end;
 }
-.promote-btn.data-v-ebe4f2a9, .book-again-btn.data-v-ebe4f2a9 {
+.promote-btn.data-v-ebe4f2a9,
+.book-again-btn.data-v-ebe4f2a9 {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 148rpx;
+  min-width: 220rpx;
   height: 60rpx;
-  padding: 16rpx 30rpx;
+  padding: 0 30rpx;
   border-radius: 4rpx;
   cursor: pointer;
   box-sizing: border-box;
+  flex-shrink: 0;
 }
 .promote-btn.data-v-ebe4f2a9 {
   background-color: #f6f6f6;
@@ -266,9 +270,191 @@
   font-weight: 500;
   color: #666666;
   font-size: 22rpx;
+  white-space: nowrap;
+  display: block;
 }
 .btn-text.primary.data-v-ebe4f2a9 {
   font-family: "PingFang_SC-Semibold", Helvetica;
   font-weight: normal;
   color: #ffffff;
+  white-space: nowrap;
+}
+.share-modal-overlay.data-v-ebe4f2a9 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  z-index: 1000;
+}
+.share-modal.data-v-ebe4f2a9 {
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 16rpx 16rpx 0 0;
+  padding: 30rpx 0;
+  box-sizing: border-box;
+}
+.share-grid.data-v-ebe4f2a9 {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 30rpx 20rpx;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+.share-item.data-v-ebe4f2a9 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+  cursor: pointer;
+}
+.share-icon.data-v-ebe4f2a9 {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+.wechat-icon.data-v-ebe4f2a9 {
+  background-color: #09b81f;
+}
+.moments-icon.data-v-ebe4f2a9 {
+  background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+}
+.weibo-icon.data-v-ebe4f2a9 {
+  background-color: #e6162d;
+}
+.link-icon.data-v-ebe4f2a9 {
+  background-color: #999999;
+}
+.qrcode-icon.data-v-ebe4f2a9 {
+  background-color: #333333;
+}
+.share-label.data-v-ebe4f2a9 {
+  font-family: "PingFang_SC-Regular", Helvetica;
+  font-weight: normal;
+  color: #666666;
+  font-size: 24rpx;
+  text-align: center;
+}
+.share-cancel.data-v-ebe4f2a9 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx;
+  border-top: 1rpx solid #f0f0f0;
+  cursor: pointer;
+}
+.share-cancel text.data-v-ebe4f2a9 {
+  font-family: "PingFang_SC-Regular", Helvetica;
+  font-weight: normal;
+  color: #999999;
+  font-size: 28rpx;
+}
+.more-wrapper.data-v-ebe4f2a9 {
+  position: relative;
+}
+.more-menu.data-v-ebe4f2a9 {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  background-color: #ffffff;
+  border-radius: 4rpx;
+  border: 1rpx solid #e5e5e5;
+  min-width: 100rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  margin-bottom: 8rpx;
+}
+.menu-item.data-v-ebe4f2a9 {
+  padding: 12rpx 20rpx;
+  font-family: "PingFang_SC-Regular", Helvetica;
+  font-weight: normal;
+  color: #e6162d;
+  font-size: 26rpx;
+  cursor: pointer;
+  text-align: center;
+}
+.menu-item.data-v-ebe4f2a9:active {
+  background-color: #f5f5f5;
+}
+.confirm-modal-overlay.data-v-ebe4f2a9 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+}
+.confirm-modal.data-v-ebe4f2a9 {
+  background-color: #ffffff;
+  border-radius: 12rpx;
+  padding: 40rpx 30rpx;
+  width: 80%;
+  max-width: 540rpx;
+  text-align: center;
+  box-sizing: border-box;
+}
+.confirm-title.data-v-ebe4f2a9 {
+  display: block;
+  font-family: "PingFang_SC-Semibold", Helvetica;
+  font-weight: normal;
+  color: #000000;
+  font-size: 32rpx;
+  margin-bottom: 16rpx;
+}
+.confirm-content.data-v-ebe4f2a9 {
+  display: block;
+  font-family: "PingFang_SC-Regular", Helvetica;
+  font-weight: normal;
+  color: #666666;
+  font-size: 28rpx;
+  margin-bottom: 40rpx;
+  line-height: 1.4;
+}
+.confirm-buttons.data-v-ebe4f2a9 {
+  display: flex;
+  gap: 16rpx;
+  justify-content: center;
+}
+.confirm-btn.data-v-ebe4f2a9 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 200rpx;
+  height: 60rpx;
+  border-radius: 4rpx;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.cancel-btn.data-v-ebe4f2a9 {
+  background-color: #f6f6f6;
+  border: 1rpx solid #e5e5e5;
+}
+.cancel-btn text.data-v-ebe4f2a9 {
+  font-family: "PingFang_SC-Regular", Helvetica;
+  font-weight: normal;
+  color: #666666;
+  font-size: 28rpx;
+}
+.delete-btn.data-v-ebe4f2a9 {
+  background-color: #333333;
+}
+.delete-btn text.data-v-ebe4f2a9 {
+  font-family: "PingFang_SC-Semibold", Helvetica;
+  font-weight: normal;
+  color: #ffffff;
+  font-size: 28rpx;
 }

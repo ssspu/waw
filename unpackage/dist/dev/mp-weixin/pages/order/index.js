@@ -22,10 +22,10 @@ const _sfc_main = {
       common_vendor.index.navigateBack();
     },
     handleMore() {
-      common_vendor.index.__f__("log", "at pages/order/index.vue:99", "More clicked");
+      common_vendor.index.__f__("log", "at pages/order/index.vue:77", "More clicked");
     },
     handleCircle() {
-      common_vendor.index.__f__("log", "at pages/order/index.vue:102", "Circle clicked");
+      common_vendor.index.__f__("log", "at pages/order/index.vue:80", "Circle clicked");
     },
     handleTabChange(tabId) {
       this.activeTab = tabId;

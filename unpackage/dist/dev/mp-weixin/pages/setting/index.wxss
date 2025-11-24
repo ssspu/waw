@@ -185,10 +185,37 @@
 .setting-switch.data-v-861f37f2 {
   transform: scale(0.8);
 }
-.chevron-icon.data-v-861f37f2 {
-  width: 28rpx;
-  height: 28rpx;
+.action-button.data-v-861f37f2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 6rpx;
+  background-color: transparent;
+  cursor: pointer;
   flex-shrink: 0;
+  padding: 4rpx;
+  transition: background-color 0.3s;
+}
+.action-button.data-v-861f37f2:active {
+  background-color: #f0f0f0;
+}
+.button-icon.data-v-861f37f2 {
+  width: 24rpx;
+  height: 24rpx;
+  flex-shrink: 0;
+}
+.button-icon.data-v-861f37f2 {
+  width: 24rpx;
+  height: 24rpx;
+  flex-shrink: 0;
+}
+.chevron-text.data-v-861f37f2 {
+  font-size: 32rpx;
+  color: #a6a6a6;
+  line-height: 1;
+  font-weight: normal;
 }
 .logout-card.data-v-861f37f2 {
   width: 100%;
