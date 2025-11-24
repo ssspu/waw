@@ -89,18 +89,18 @@
 									</view>
 								</template>
 								<template v-else>
-									<image 
-										v-if="order.hasIcon"
-										class="action-icon" 
-										src="https://c.animaapp.com/mi5lwlq8FxTpMa/img/frame-2142.svg" 
-										mode="aspectFit"
-									></image>
-									<view class="detail-btn" @tap="handleDetail(order)">
-										<text class="btn-text">详情</text>
-									</view>
-									<view class="primary-btn" @tap="handlePrimaryAction(order)">
-										<text class="btn-text primary">{{ order.primaryButton }}</text>
-									</view>
+								<image 
+									v-if="order.hasIcon"
+									class="action-icon" 
+									src="https://c.animaapp.com/mi5lwlq8FxTpMa/img/frame-2142.svg" 
+									mode="aspectFit"
+								></image>
+								<view class="detail-btn" @tap="handleDetail(order)">
+									<text class="btn-text">详情</text>
+								</view>
+								<view class="primary-btn" @tap="handlePrimaryAction(order)">
+									<text class="btn-text primary">{{ order.primaryButton }}</text>
+								</view>
 								</template>
 							</view>
 						</view>

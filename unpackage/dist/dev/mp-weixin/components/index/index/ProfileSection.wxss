@@ -257,24 +257,36 @@
 }
 
 /* 设计师 */
-.designers-scroll.data-v-304e509b {
+.designers-swiper.data-v-304e509b {
   width: 100%;
-  white-space: nowrap;
+  height: 480rpx;
+}
+.designers-swiper-item.data-v-304e509b {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 .designers-container.data-v-304e509b {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 20rpx;
+  padding: 0 12rpx;
+  box-sizing: border-box;
+  height: 100%;
 }
 .designer-card.data-v-304e509b {
-  width: 316rpx;
+  flex: 1;
+  min-width: 0;
+  max-width: calc(50% - 10rpx);
   border: 2rpx solid #f3f3f3;
   border-radius: 8rpx;
   overflow: hidden;
+  box-sizing: border-box;
 }
 .designer-img-wrapper.data-v-304e509b {
   position: relative;
-  width: 316rpx;
+  width: 100%;
   height: 318rpx;
 }
 .designer-img-bg.data-v-304e509b {
@@ -389,6 +401,8 @@
   gap: 20rpx;
 }
 .brand-card.data-v-304e509b {
+  flex: 0 0 420rpx;
+  width: 420rpx;
   border: 2rpx solid #f3f3f3;
   border-radius: 8rpx;
   overflow: hidden;
@@ -396,12 +410,14 @@
 }
 .brand-img-wrapper.data-v-304e509b {
   position: relative;
+  width: 100%;
   height: 236rpx;
 }
 .brand-img-bg.data-v-304e509b {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
   height: 236rpx;
   border-radius: 8rpx 8rpx 0 0;
   background: linear-gradient(180deg, #f4f4f4 0%);
@@ -410,6 +426,7 @@
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
   height: 236rpx;
 }
 .brand-info.data-v-304e509b {
@@ -503,26 +520,34 @@
 .service-tabs-container.data-v-304e509b {
   display: flex;
   align-items: flex-start;
-  justify-content: center;
-  gap: 40rpx;
-  width: 100%;
+  justify-content: flex-start;
+  gap: 36rpx;
+  width: auto;
+  min-width: 100%;
+  flex-wrap: nowrap;
 }
 .service-tab-item.data-v-304e509b {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20rpx;
+  gap: 12rpx;
   position: relative;
   height: auto;
   padding: 0;
   font-size: 28rpx;
-  font-family: "PingFang_SC-Medium", Helvetica;
+  font-family: "PingFang_SC-Regular", Helvetica;
+  font-weight: 400;
   color: #a6a6a6;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.service-tab-item text.data-v-304e509b {
+  white-space: nowrap;
 }
 .service-tab-item.active.data-v-304e509b {
   color: #000000;
-  font-family: "PingFang_SC-Semibold", Helvetica;
-  font-weight: 600;
+  font-family: "PingFang_SC-Regular", Helvetica;
+  font-weight: 400;
 }
 .tab-indicator.data-v-304e509b {
   width: 20rpx;

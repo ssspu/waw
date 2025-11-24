@@ -29,17 +29,17 @@ const _sfc_main = {
       assets: {
         designer: {
           headerBg: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-217.png",
-          mainBg: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/group-33.png",
+          mainBg: "/static/background-image/mian-background-left.png",
           badgeIcon: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-1.svg"
         },
         service: {
           headerBg: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-217.png",
-          mainBg: null,
+          mainBg: "/static/background-image/mian-background-mid.png",
           badgeIcon: "https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-3.svg"
         },
         brand: {
           headerBg: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-217.png",
-          mainBg: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/group-33.png",
+          mainBg: "/static/background-image/mian-background-right.png",
           badgeIcon: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-4.svg"
         }
       }
@@ -54,20 +54,24 @@ const _sfc_main = {
     },
     currentBadgeIcon() {
       return this.assets[this.activeTab].badgeIcon;
+    },
+    currentTabLabel() {
+      const currentTab = this.tabItems.find((tab) => tab.value === this.activeTab);
+      return currentTab ? currentTab.label : "设计师";
     }
   },
   onLoad(options) {
-    common_vendor.index.__f__("log", "at pages/main/index.vue:144", "main页面 onLoad, 接收到的参数:", options);
+    common_vendor.index.__f__("log", "at pages/main/index.vue:148", "main页面 onLoad, 接收到的参数:", options);
     if (options.tab) {
       const validTabs = ["designer", "service", "brand"];
       if (validTabs.includes(options.tab)) {
         this.activeTab = options.tab;
-        common_vendor.index.__f__("log", "at pages/main/index.vue:150", "切换到标签:", options.tab);
+        common_vendor.index.__f__("log", "at pages/main/index.vue:154", "切换到标签:", options.tab);
       } else {
-        common_vendor.index.__f__("warn", "at pages/main/index.vue:152", "无效的标签:", options.tab);
+        common_vendor.index.__f__("warn", "at pages/main/index.vue:156", "无效的标签:", options.tab);
       }
     } else {
-      common_vendor.index.__f__("log", "at pages/main/index.vue:155", "没有接收到tab参数，使用默认标签: designer");
+      common_vendor.index.__f__("log", "at pages/main/index.vue:159", "没有接收到tab参数，使用默认标签: designer");
     }
   },
   methods: {
@@ -93,7 +97,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     a: $options.currentHeaderBg,
     b: common_vendor.o((...args) => $options.goBack && $options.goBack(...args)),
     c: $options.currentBadgeIcon,
-    d: common_vendor.f($data.tabItems, (tab, index, i0) => {
+    d: common_vendor.t($options.currentTabLabel),
+    e: common_vendor.f($data.tabItems, (tab, index, i0) => {
       return common_vendor.e({
         a: common_vendor.t(tab.label),
         b: $data.activeTab === tab.value ? 1 : "",
@@ -104,12 +109,15 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         f: common_vendor.o(($event) => $options.switchTab(tab.value), index)
       });
     }),
-    e: $data.activeTab === "designer"
+    f: $options.currentMainBg ? `url(${$options.currentMainBg})` : "none",
+    g: $data.activeTab === "designer"
   }, $data.activeTab === "designer" ? {} : {}, {
-    f: $data.activeTab === "service"
+    h: $data.activeTab === "service"
   }, $data.activeTab === "service" ? {} : {}, {
-    g: $data.activeTab === "brand"
-  }, $data.activeTab === "brand" ? {} : {});
+    i: $data.activeTab === "brand"
+  }, $data.activeTab === "brand" ? {} : {}, {
+    j: $options.currentMainBg ? `url(${$options.currentMainBg})` : "none"
+  });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-d311227b"]]);
 wx.createPage(MiniProgramPage);

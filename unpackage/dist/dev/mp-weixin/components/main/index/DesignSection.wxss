@@ -178,7 +178,7 @@
 .new-badge.data-v-b5ee60fe {
   position: absolute;
   top: -14rpx;
-  left: calc(100% + 4rpx);
+  left: calc(80% + 4rpx);
   width: 50rpx;
   height: 24rpx;
 }
@@ -198,6 +198,16 @@
   font-family: "PingFang_SC-Semibold", Helvetica;
   font-weight: normal;
   color: #ffffff;
+}
+.ranking-swiper.data-v-b5ee60fe {
+  width: 100%;
+  height: 470rpx;
+  min-height: 460rpx;
+}
+.ranking-swiper-item.data-v-b5ee60fe {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 .ranking-list.data-v-b5ee60fe {
   display: flex;
@@ -283,7 +293,8 @@
   display: flex;
   align-items: center;
   gap: 6rpx;
-  padding: 0 20rpx 20rpx;
+  padding: 0 20rpx;
+  margin-bottom: 24rpx;
   justify-content: center;
 }
 .dot.data-v-b5ee60fe {

@@ -21,7 +21,7 @@ const _sfc_main = {
   },
   onLoad(options) {
     if (options.id) {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:96", "Designer ID:", options.id);
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:99", "Designer ID:", options.id);
     }
     if (options.tab) {
       this.activeTab = options.tab;
@@ -91,19 +91,19 @@ const _sfc_main = {
       common_vendor.index.navigateTo({ url: "/pages/designer/info" });
     },
     handleFollow() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:167", "Follow clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:170", "Follow clicked");
     },
     handlePhone() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:170", "Phone clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:173", "Phone clicked");
     },
     handleNavigation() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:173", "Navigation clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:176", "Navigation clicked");
     },
     handleShare() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:176", "Share clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:179", "Share clicked");
     },
     handleBooking() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:179", "Booking clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:182", "Booking clicked");
     }
   }
 };

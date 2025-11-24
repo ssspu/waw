@@ -48,7 +48,7 @@
 						<text class="skill-text">{{ designerInfo.skills }}</text>
 					</view>
 					<view class="skill-item intro-item">
-						<view class="skill-badge">个人简介</view>
+						<view class="skill-badge2">个人简介</view>
 						<text class="intro-text">{{ designerInfo.introduction }}</text>
 						<view class="more-btn" @tap="handleMoreClick">
 							<text class="more-text">更多</text>
@@ -238,8 +238,8 @@ export default {
 <style scoped lang="scss">
 .designer-info-card {
 	position: relative;
-	width: 100%;
-	margin-bottom: 18rpx;
+	width: calc(100% + 24rpx);
+	margin: 0 -12rpx 18rpx -12rpx;
 }
 
 .card-wrapper {
@@ -249,9 +249,11 @@ export default {
 
 .follow-btn {
 	position: absolute;
-	top: 120rpx;
-	right: 20rpx;
-	z-index: 10;
+	top: 108rpx;
+	right: 10rpx;
+	width: 200rpx;
+	height: 100rpx;
+	z-index: 2;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;
@@ -286,6 +288,7 @@ export default {
 	font-weight: normal;
 	color: rgba(255, 255, 255, 0.6);
 	font-size: 18rpx;
+	margin-top: -2rpx;
 }
 
 .bg-decoration {
@@ -297,9 +300,25 @@ export default {
 .designer-card {
 	position: relative;
 	width: 100%;
-	padding: 30rpx;
+	padding: 7rpx 30rpx;
 	box-sizing: border-box;
 	background-color: transparent;
+	overflow: hidden;
+}
+
+.designer-card::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-image: url('/static/background-image/designer-card-bg.png');
+	background-size: contain;
+	background-position: center 58rpx;
+	background-repeat: no-repeat;
+	z-index: 3;
+	pointer-events: none;
 }
 
 .designer-info {
@@ -307,6 +326,8 @@ export default {
 	align-items: flex-start;
 	gap: 16rpx;
 	margin-bottom: 20rpx;
+	position: relative;
+	z-index: 4;
 }
 
 .avatar {
@@ -394,18 +415,21 @@ export default {
 .skills-section {
 	display: flex;
 	flex-direction: column;
-	gap: 12rpx;
+	gap: 10rpx;
 	margin-bottom: 20rpx;
+	position: relative;
+	z-index: 4;
 }
 
 .skill-item {
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	gap: 12rpx;
 	position: relative;
 }
 
 .skill-badge {
+	// margin-top: -20rpx;
 	display: inline-flex;
 	align-items: center;
 	height: 44rpx;
@@ -419,6 +443,20 @@ export default {
 	flex-shrink: 0;
 }
 
+.skill-badge2{
+	margin-top: -40rpx;
+	display: inline-flex;
+	align-items: center;
+	height: 44rpx;
+	padding: 4rpx 8rpx;
+	background-color: #f6f6f6;
+	border-radius: 4rpx;
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-weight: 500;
+	color: #333333;
+	font-size: 22rpx;
+	flex-shrink: 0;
+}
 .skill-text {
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-weight: normal;
@@ -465,6 +503,8 @@ export default {
 	gap: 10rpx;
 	flex-wrap: wrap;
 	margin-bottom: 20rpx;
+	position: relative;
+	z-index: 4;
 }
 
 .service-badge {
@@ -474,8 +514,8 @@ export default {
 	gap: 4rpx;
 	padding: 4rpx 8rpx;
 	height: 42rpx;
-	flex: 1;
-	min-width: 0;
+	flex-shrink: 0;
+	width: auto;
 	background-color: #f6f6f6;
 	border-radius: 4rpx;
 	box-sizing: border-box;
@@ -493,8 +533,6 @@ export default {
 	color: #666666;
 	font-size: 20rpx;
 	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
 }
 
 .stats-container {
@@ -502,6 +540,8 @@ export default {
 	align-items: center;
 	gap: 10rpx;
 	margin-bottom: 20rpx;
+	position: relative;
+	z-index: 4;
 }
 
 .stat-item {
@@ -547,9 +587,11 @@ export default {
 
 .business-info {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	gap: 12rpx;
 	margin-bottom: 20rpx;
+	position: relative;
+	z-index: 4;
 }
 
 .business-card {
@@ -562,12 +604,14 @@ export default {
 	border-radius: 16rpx;
 	position: relative;
 	box-sizing: border-box;
+	flex: 1;
+	min-width: 0;
 }
 
 .business-content {
 	display: flex;
 	flex-direction: column;
-	gap: 6rpx;
+	gap: 2rpx;
 	flex: 1;
 	position: relative;
 }
@@ -701,12 +745,16 @@ export default {
 	height: 2rpx;
 	background-color: #e5e5e5;
 	margin: 20rpx 0;
+	position: relative;
+	z-index: 4;
 }
 
 .promotions {
 	display: flex;
 	align-items: center;
 	gap: 20rpx;
+	position: relative;
+	z-index: 4;
 }
 
 .promo-icon {
