@@ -9,15 +9,9 @@
 				@tap="handleTabClick(tab.id)"
 			>
 				<text class="tab-label" :class="{ active: activeTab === tab.id }">{{ tab.label }}</text>
-				<image 
-					v-if="activeTab === tab.id"
-					class="tab-indicator" 
-					src="https://c.animaapp.com/mi5d4lp0csJxnR/img/vector-15.svg" 
-					mode="aspectFit"
-				></image>
+				<view v-if="activeTab === tab.id" class="tab-indicator"></view>
 			</view>
 		</view>
-		<view class="separator-line"></view>
 	</view>
 </template>
 
@@ -49,12 +43,11 @@ export default {
 <style scoped lang="scss">
 .tabs-card {
 	width: 100%;
-	margin-top: 18rpx;
-	background-color: #ffffff;
-	border-radius: 16rpx;
+	background-color: transparent;
+	border-radius: 0;
 	border: 0;
 	box-shadow: none;
-	padding: 30rpx;
+	padding: 20rpx 30rpx 0;
 	box-sizing: border-box;
 }
 
@@ -66,25 +59,26 @@ export default {
 	gap: 10rpx;
 	width: 100%;
 	box-sizing: border-box;
+	padding-bottom: 12rpx;
+	border-bottom: 2rpx solid #f3f3f3;
 }
 
 .tab-item {
 	display: inline-flex;
 	flex-direction: column;
-	align-items: center;
+	align-items: flex-start;
 	justify-content: center;
-	gap: 16rpx;
-	width: 25%;
-	position: relative;
+	gap: 10rpx;
+	flex: 1;
 	cursor: pointer;
 }
 
 .tab-label {
 	font-size: 28rpx;
-	text-align: center;
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 500;
-	color: #666666;
+	text-align: left;
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: normal;
+	color: #a6a6a6;
 }
 
 .tab-label.active {
@@ -94,16 +88,10 @@ export default {
 }
 
 .tab-indicator {
-	width: 20rpx;
+	width: 36rpx;
 	height: 6rpx;
-	margin-bottom: -6rpx;
-}
-
-.separator-line {
-	width: 100%;
-	height: 2rpx;
-	background-color: #e5e5e5;
-	margin-top: 16rpx;
+	border-radius: 4rpx;
+	background-color: #000000;
 }
 </style>
 
