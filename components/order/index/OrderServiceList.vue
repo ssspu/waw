@@ -90,9 +90,9 @@
 								</template>
 								<template v-else>
 									<image 
-										v-if="order.hasIcon"
+										v-if="order.status === '待使用'"
 										class="action-icon" 
-										src="https://c.animaapp.com/mi5lwlq8FxTpMa/img/frame-2142.svg" 
+										src="/static/icon/more.png" 
 										mode="aspectFit"
 									></image>
 									<view class="detail-btn" @tap="handleDetail(order)">
@@ -125,6 +125,27 @@ export default {
 			serviceOrders: [
 				{
 					orderNumber: "CDD83290895",
+					status: "已确认",
+					statusColor: "#ffa77b",
+					serviceName: "洗剪吹",
+					serviceDetails: "洗护+修剪+造型",
+					duration: "预计1小时",
+					time: "今天11:00",
+					provider: {
+						name: "李天天",
+						badge: "美发师",
+						avatar: "https://c.animaapp.com/mi5lwlq8FxTpMa/img/ellipse-34.svg",
+						rating: "4.8",
+						reviews: "23",
+					},
+					price: "799",
+					quantity: "x1",
+					hasIcon: true,
+					primaryButton: "订单完成",
+					tab: "all"
+				},
+				{
+					orderNumber: "CDD83290895",
 					status: "待付款",
 					statusColor: "#ffa77b",
 					remainingTime: "00:15:00",
@@ -144,27 +165,6 @@ export default {
 					hasIcon: false,
 					primaryButton: "立即付款",
 					tab: "pending-payment"
-				},
-				{
-					orderNumber: "CDD83290895",
-					status: "已确认",
-					statusColor: "#ffa77b",
-					serviceName: "洗剪吹",
-					serviceDetails: "洗护+修剪+造型",
-					duration: "预计1小时",
-					time: "今天11:00",
-					provider: {
-						name: "李天天",
-						badge: "美发师",
-						avatar: "https://c.animaapp.com/mi5lwlq8FxTpMa/img/ellipse-34.svg",
-						rating: "4.8",
-						reviews: "23",
-					},
-					price: "799",
-					quantity: "x1",
-					hasIcon: true,
-					primaryButton: "订单完成",
-					tab: "all"
 				},
 				{
 					orderNumber: "CDD83290895",
@@ -479,7 +479,7 @@ export default {
 .provider-avatar {
 	width: 64rpx;
 	height: 64rpx;
-	border-radius: 16rpx;
+	border-radius: 50%;
 	background-color: #a6a6a6;
 	flex-shrink: 0;
 }
@@ -526,6 +526,7 @@ export default {
 	display: inline-flex;
 	align-items: center;
 	gap: 4rpx;
+	flex-wrap: nowrap;
 }
 
 .rating-score {
@@ -533,10 +534,13 @@ export default {
 	font-weight: normal;
 	color: #333333;
 	font-size: 26rpx;
+	line-height: 1;
 }
 
 .star-wrapper {
-	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 	width: 20rpx;
 	height: 20rpx;
 	flex-shrink: 0;
@@ -553,6 +557,7 @@ export default {
 	font-weight: 500;
 	color: #333333;
 	font-size: 24rpx;
+	line-height: 1;
 }
 
 .provider-right {
@@ -611,6 +616,8 @@ export default {
 	display: inline-flex;
 	align-items: center;
 	gap: 12rpx;
+	flex: 1;
+	justify-content: flex-end;
 }
 
 .action-icon {
@@ -623,12 +630,13 @@ export default {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 148rpx;
+	min-width: 148rpx;
 	height: 60rpx;
-	padding: 16rpx 30rpx;
+	padding: 0 30rpx;
 	border-radius: 4rpx;
 	cursor: pointer;
 	box-sizing: border-box;
+	flex-shrink: 0;
 }
 
 .detail-btn {
@@ -637,32 +645,35 @@ export default {
 
 .primary-btn {
 	background-color: #333333;
+	min-width: 200rpx;
 }
 
 .cancel-btn {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 148rpx;
+	min-width: 148rpx;
 	height: 60rpx;
-	padding: 16rpx 30rpx;
+	padding: 0 30rpx;
 	border-radius: 4rpx;
 	background-color: #f6f6f6;
 	cursor: pointer;
 	box-sizing: border-box;
+	flex-shrink: 0;
 }
 
 .pay-btn {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 148rpx;
+	min-width: 200rpx;
 	height: 60rpx;
-	padding: 16rpx 30rpx;
+	padding: 0 30rpx;
 	border-radius: 4rpx;
 	background-color: #333333;
 	cursor: pointer;
 	box-sizing: border-box;
+	flex-shrink: 0;
 }
 
 .btn-text {
@@ -670,11 +681,13 @@ export default {
 	font-weight: 500;
 	color: #666666;
 	font-size: 22rpx;
+	white-space: nowrap;
 	
 	&.primary {
 		font-family: 'PingFang_SC-Semibold', Helvetica;
 		font-weight: normal;
 		color: #ffffff;
+		white-space: nowrap;
 	}
 }
 </style>

@@ -2,28 +2,6 @@
 	<view class="order-page">
 		<!-- 自定义导航栏 -->
 		<view class="custom-header">
-			<!-- 状态栏 -->
-			<view class="status-bar">
-				<text class="time">9:41</text>
-				<view class="status-icons">
-					<image 
-						class="status-icon" 
-						src="https://c.animaapp.com/mi5lwlq8FxTpMa/img/cellular-connection.svg" 
-						mode="aspectFit"
-					></image>
-					<image 
-						class="status-icon" 
-						src="https://c.animaapp.com/mi5lwlq8FxTpMa/img/wifi.svg" 
-						mode="aspectFit"
-					></image>
-					<image 
-						class="status-icon" 
-						src="https://c.animaapp.com/mi5lwlq8FxTpMa/img/battery.png" 
-						mode="aspectFit"
-					></image>
-				</view>
-			</view>
-			
 			<!-- 导航栏内容 -->
 			<view class="navbar-content">
 				<view class="nav-left">
@@ -126,43 +104,11 @@ export default {
 	flex-shrink: 0;
 }
 
-.status-bar {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: 88rpx;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 0 32rpx;
-	box-sizing: border-box;
-}
-
-.time {
-	font-family: 'Inter', Helvetica;
-	font-size: 28rpx;
-	color: #000000;
-	font-weight: normal;
-}
-
-.status-icons {
-	display: flex;
-	align-items: center;
-	gap: 12rpx;
-}
-
-.status-icon {
-	width: 35rpx;
-	height: 23rpx;
-	flex-shrink: 0;
-}
-
 .navbar-content {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 112rpx 32rpx 32rpx;
+	padding: 24rpx 32rpx;
 	box-sizing: border-box;
 }
 
@@ -213,7 +159,7 @@ export default {
 
 .logo {
 	position: absolute;
-	top: 62rpx;
+	top: 24rpx;
 	right: 16rpx;
 	width: 256rpx;
 	height: 144rpx;
