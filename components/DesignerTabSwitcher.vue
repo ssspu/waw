@@ -64,8 +64,6 @@ padding: 20rpx 0rpx 0rpx 0rpx;
 	width: 102%;
 	margin-left: -10rpx;
 	box-sizing: border-box;
-	padding-bottom: 12rpx;
-	border-bottom: 2rpx solid #f3f3f3;
 }
 
 .tab-item {
@@ -96,14 +94,16 @@ text-align: center;
 }
 
 .tab-indicator {
-	width: 36rpx;
+	width: 20rpx;
 	height: 6rpx;
-margin-top: 0;
+	margin-top: 0;
 	margin-bottom: 0;
 	position: absolute;
-	bottom: 0;
+	bottom: -2rpx;
 	left: 50%;
 	transform: translateX(-50%);
+	background-color: #000000;
+	border-radius: 3rpx;
 }
 
 .separator-line {

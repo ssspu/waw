@@ -1,18 +1,6 @@
 <template>
 	<view class="profile-section">
 		<view class="nav-card">
-			<!-- 次级标签 -->
-			<view class="secondary-nav">
-				<view 
-					v-for="tab in secondaryTabs" 
-					:key="tab.id" 
-					class="secondary-tab"
-					:class="{ active: selectedSecondary === tab.id }"
-					@tap="selectSecondary(tab.id)"
-				>
-					<text>{{ tab.label }}</text>
-				</view>
-			</view>
 			
 			<!-- 分类标签 -->
 			<view class="category-nav">
@@ -137,11 +125,12 @@ export default {
 			selectedCategory: "wash-cut-blow",
 			selectedHairLength: "short",
 			categories: [
-				{ id: "stylist", label: "发型师", active: true },
-				{ id: "chief", label: "首席", active: false },
-				{ id: "senior", label: "资深", active: false },
-				{ id: "director", label: "总监", active: false },
-				{ id: "manager", label: "店长", active: false },
+				{ id: "wash-cut-blow", label: "洗剪吹" },
+				{ id: "perm", label: "烫发" },
+				{ id: "dye", label: "染发" },
+				{ id: "care", label: "护发" },
+				{ id: "scalp", label: "头皮" },
+				{ id: "extension", label: "接发" },
 			],
 			services: [
 				{
@@ -286,11 +275,10 @@ export default {
 
 .nav-card {
 	width: 100%;
-	background-color: #ffffff;
 	border-radius: 0 0 12rpx 12rpx;
-
 	box-sizing: border-box;
 	border-top: 2rpx solid #f3f3f3;
+	margin-bottom: 5rpx;
 }
 
 .secondary-nav {
@@ -317,6 +305,7 @@ export default {
 }
 
 .category-nav {
+
 	display: inline-flex;
 	align-items: center;
 	gap: 12rpx;
@@ -325,7 +314,7 @@ export default {
 
 .category-btn {
 	height: auto;
-	padding: 0rpx 20rpx;
+	padding: 8rpx 20rpx;
 	border-radius: 4rpx;
 	background-color: #ffffff;
 	color: #a6a6a6;

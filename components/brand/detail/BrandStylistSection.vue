@@ -141,9 +141,8 @@ export default {
 		},
 		handleBook(stylist) {
 			console.log('Book stylist:', stylist)
-			uni.showToast({
-				title: `预约 ${stylist.name}`,
-				icon: 'none'
+			uni.navigateTo({
+				url: `/pages/designer/detail?id=${stylist.id}&tab=appointment`
 			})
 		}
 	}
@@ -168,21 +167,17 @@ export default {
 }
 
 .category-btn {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	padding: 12rpx 24rpx;
+	height: auto;
+	padding: 8rpx 20rpx;
+	border-radius: 4rpx;
 	background-color: #ffffff;
-	border: 1rpx solid #e5e5e5;
-	border-radius: 8rpx;
-	font-family: 'PingFang_SC-Regular', Helvetica;
+	color: #a6a6a6;
 	font-size: 26rpx;
-	color: #666666;
-	transition: all 0.2s;
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: normal;
 	
 	&.active {
 		background-color: #333333;
-		border-color: #333333;
 		color: #ffffff;
 	}
 }

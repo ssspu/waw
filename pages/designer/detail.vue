@@ -120,13 +120,24 @@ export default {
 		// 支持从URL参数中指定初始tab
 		if (options.tab) {
 			this.activeTab = options.tab
+			// 如果是预约tab，滚动到底部
+			if (options.tab === 'appointment') {
+				this.$nextTick(() => {
+					setTimeout(() => {
+						uni.pageScrollTo({
+							scrollTop: 99999,
+							duration: 300
+						})
+					}, 300)
+				})
+			}
 		}
 	},
 	data() {
 		return {
 			activeTab: 'service',
 			activeSubTabs: {
-				service: 'hair',
+				service: 'hair-service',
 				appointment: 'today',
 				works: 'female',
 				reviews: 'all'
@@ -139,8 +150,9 @@ export default {
 			],
 			subTabs: {
 				service: [
-					{ id: 'hair', title: '美发师' },
-					{ id: 'beauty', title: '美容师' }
+					{ id: 'hair-service', title: '美发服务' },
+					{ id: 'beauty-service', title: '美容服务' },
+					{ id: 'other-service', title: '其他服务' }
 				],
 				appointment: [
 					{ id: 'today', title: '今天', subtitle: '周一' },
