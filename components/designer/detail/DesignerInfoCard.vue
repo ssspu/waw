@@ -531,17 +531,17 @@ export default {
 }
 
 .service-badge {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 4rpx;
-	padding: 4rpx 8rpx;
-	height: 42rpx;
-	flex-shrink: 0;
-	width: auto;
-	background-color: #f6f6f6;
-	border-radius: 4rpx;
-	box-sizing: border-box;
+	 display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6rpx;
+    padding: 4rpx 10rpx 8rpx 10rpx;
+    height: 42rpx;
+    flex-shrink: 0;
+    width: auto;
+    background-color: #f6f6f6;
+    border-radius: 8rpx;
+    box-sizing: border-box;
 }
 
 .badge-icon {

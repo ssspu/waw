@@ -8,7 +8,7 @@
     "brand-info-card": "../../components/brand/detail/BrandInfoCard",
     "brand-tab-switcher": "../../components/BrandTabSwitcher",
     "brand-service-tab-content": "../../components/brand/detail/BrandServiceTabContent",
-    "brand-appointment-tab-content": "../../components/brand/detail/BrandAppointmentTabContent",
+    "brand-designer-tab-content": "../../components/brand/detail/BrandDesignerTabContent",
     "brand-works-tab-content": "../../components/BrandWorksTabContent",
     "brand-reviews-tab-content": "../../components/BrandReviewsTabContent",
     "brand-portfolio-section": "../../components/brand/detail/BrandPortfolioSection"

@@ -7,7 +7,7 @@
 					<image class="follow-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-12.svg" mode="aspectFit"></image>
 					<text class="follow-text">关注</text>
 				</view>
-				<text class="follow-subtitle">你的私人设计师</text>
+				<text class="follow-subtitle">你的优质好店</text>
 			</view>
 			
 			<!-- 背景装饰 -->
@@ -17,7 +17,7 @@
 				mode="aspectFill"
 			></image>
 			
-			<!-- 设计师信息 -->
+			<!-- 店铺信息 -->
 			<view class="designer-card">
 				<view class="designer-info">
 				<!-- 头像 -->
@@ -46,11 +46,11 @@
 				<!-- 专业擅长和个人简介 -->
 				<view class="skills-section">
 					<view class="skill-item">
-						<view class="skill-badge">专业擅长</view>
+						<view class="skill-badge">店铺性质</view>
 						<text class="skill-text">{{ designerInfo.skills }}</text>
 					</view>
 					<view class="skill-item intro-item">
-						<view class="skill-badge2">个人简介</view>
+						<view class="skill-badge2">品牌简介</view>
 						<text class="intro-text">{{ designerInfo.introduction }}</text>
 						<view class="more-btn" @tap="handleMoreClick">
 							<text class="more-text">更多</text>
@@ -167,15 +167,15 @@ export default {
 		designerInfo: {
 			type: Object,
 			default: () => ({
-				avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-153.png",
-				name: "朱一龙",
-				verifyIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2110.svg",
-				role: "技术总监",
-				certIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2.svg",
-				certText: "职业认证",
-				certDot: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg",
-				skills: "染发设计、短发造型、女士晚装:",
-				introduction: "从业19年，毕业沙宣美发学院，擅长各种造型设计师有丰富的设计经验擅长..."
+				// avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-153.png",
+				// name: "朱一龙",
+				// verifyIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2110.svg",
+				// role: "技术总监",
+				// certIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2.svg",
+				// certText: "职业认证",
+				// certDot: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg",
+				// skills: "染发设计、短发造型、女士晚装:",
+				// introduction: "从业19年，毕业沙宣美发学院，擅长各种造型设计师有丰富的设计经验擅长..."
 			})
 		},
 		serviceBadges: {
@@ -189,17 +189,17 @@ export default {
 		businessInfo: {
 			type: Object,
 			default: () => ({
-				status: "营业中",
-				restDay: "周二休息",
-				hours: "10:00-21:00"
+				// status: "营业中",
+				// restDay: "周二休息",
+				// hours: "10:00-21:00"
 			})
 		},
 		shopInfo: {
 			type: Object,
 			default: () => ({
-				name: "NICE美发造型沙...",
-				address: "武侯区天府三家B7栋...",
-				distance: "距您2.7km"
+				// name: "NICE美发造型沙...",
+				// address: "武侯区天府三家B7栋...",
+				// distance: "距您2.7km"
 			})
 		},
 		promotions: {
@@ -209,11 +209,11 @@ export default {
 		rightStats: {
 			type: Object,
 			default: () => ({
-				serviceIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1.svg",
-				serviceCount: "281",
-				workIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-4.svg",
-				workCount: "234",
-				dotIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg"
+				// serviceIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1.svg",
+				// serviceCount: "281",
+				// workIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-4.svg",
+				// workCount: "234",
+				// dotIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg"
 			})
 		}
 	},
@@ -395,10 +395,18 @@ export default {
 }
 
 .role {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0rpx 10rpx;
+	background-color: #dacbb1;
+	border-radius: 6rpx;
 	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 500;
-	color: #666666;
-	font-size: 24rpx;
+	font-weight: 400;
+	color: #645e57;
+	font-size: 22rpx;
+	height: 36rpx;
+	line-height: 36rpx;
 }
 
 .divider {
@@ -534,13 +542,13 @@ export default {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 4rpx;
-	padding: 4rpx 8rpx;
+	gap: 6rpx;
+	padding: 4rpx 10rpx 8rpx 10rpx;
 	height: 42rpx;
 	flex-shrink: 0;
 	width: auto;
 	background-color: #f6f6f6;
-	border-radius: 4rpx;
+	border-radius: 8rpx;
 	box-sizing: border-box;
 }
 

@@ -5,15 +5,15 @@ const _sfc_main = {
     designerInfo: {
       type: Object,
       default: () => ({
-        avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-153.png",
-        name: "朱一龙",
-        verifyIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2110.svg",
-        role: "技术总监",
-        certIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2.svg",
-        certText: "职业认证",
-        certDot: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg",
-        skills: "染发设计、短发造型、女士晚装:",
-        introduction: "从业19年，毕业沙宣美发学院，擅长各种造型设计师有丰富的设计经验擅长..."
+        // avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-153.png",
+        // name: "朱一龙",
+        // verifyIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2110.svg",
+        // role: "技术总监",
+        // certIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2.svg",
+        // certText: "职业认证",
+        // certDot: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg",
+        // skills: "染发设计、短发造型、女士晚装:",
+        // introduction: "从业19年，毕业沙宣美发学院，擅长各种造型设计师有丰富的设计经验擅长..."
       })
     },
     serviceBadges: {
@@ -27,17 +27,17 @@ const _sfc_main = {
     businessInfo: {
       type: Object,
       default: () => ({
-        status: "营业中",
-        restDay: "周二休息",
-        hours: "10:00-21:00"
+        // status: "营业中",
+        // restDay: "周二休息",
+        // hours: "10:00-21:00"
       })
     },
     shopInfo: {
       type: Object,
       default: () => ({
-        name: "NICE美发造型沙...",
-        address: "武侯区天府三家B7栋...",
-        distance: "距您2.7km"
+        // name: "NICE美发造型沙...",
+        // address: "武侯区天府三家B7栋...",
+        // distance: "距您2.7km"
       })
     },
     promotions: {
@@ -47,11 +47,11 @@ const _sfc_main = {
     rightStats: {
       type: Object,
       default: () => ({
-        serviceIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1.svg",
-        serviceCount: "281",
-        workIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-4.svg",
-        workCount: "234",
-        dotIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg"
+        // serviceIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1.svg",
+        // serviceCount: "281",
+        // workIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-4.svg",
+        // workCount: "234",
+        // dotIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg"
       })
     }
   },

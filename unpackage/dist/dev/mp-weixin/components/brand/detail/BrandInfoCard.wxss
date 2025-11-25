@@ -162,10 +162,18 @@
   gap: 4rpx;
 }
 .role.data-v-8dec43d4 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0rpx 10rpx;
+  background-color: #dacbb1;
+  border-radius: 6rpx;
   font-family: "PingFang_SC-Medium", Helvetica;
-  font-weight: 500;
-  color: #666666;
-  font-size: 24rpx;
+  font-weight: 400;
+  color: #645e57;
+  font-size: 22rpx;
+  height: 36rpx;
+  line-height: 36rpx;
 }
 .divider.data-v-8dec43d4 {
   font-family: "PingFang_SC-Medium", Helvetica;
@@ -285,13 +293,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4rpx;
-  padding: 4rpx 8rpx;
+  gap: 6rpx;
+  padding: 4rpx 10rpx 8rpx 10rpx;
   height: 42rpx;
   flex-shrink: 0;
   width: auto;
   background-color: #f6f6f6;
-  border-radius: 4rpx;
+  border-radius: 8rpx;
   box-sizing: border-box;
 }
 .badge-icon.data-v-8dec43d4 {

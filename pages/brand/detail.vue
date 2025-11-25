@@ -35,7 +35,7 @@
 			<!-- 子标签切换（根据当前tab显示） -->
 			<view 
 				v-if="currentSubTabs.length" 
-				:class="['sub-tabs-section', { 'compact-sub-tabs': isCompactSubTabs, 'appointment-sub-tabs': activeTab === 'appointment' }]"
+				:class="['sub-tabs-section', { 'compact-sub-tabs': isCompactSubTabs }]"
 			>
 				<view 
 					v-for="(subTab, index) in currentSubTabs" 
@@ -52,14 +52,14 @@
 		
 			<!-- Tab内容 -->
 			<view class="tab-content-wrapper">
-				<!-- 服务tab内容 -->
+				<!-- 设计师tab内容 -->
 				<view v-if="activeTab === 'service'" class="tab-content" :key="'service'">
-					<brand-service-tab-content :active-sub-tab="activeSubTabs.service"></brand-service-tab-content>
+					<brand-designer-tab-content :active-sub-tab="activeSubTabs.service"></brand-designer-tab-content>
 				</view>
 				
-				<!-- 预约tab内容 -->
+				<!-- 服务tab内容 -->
 				<view v-if="activeTab === 'appointment'" class="tab-content" :key="'appointment'">
-					<brand-appointment-tab-content :active-sub-tab="activeSubTabs.appointment"></brand-appointment-tab-content>
+					<brand-service-tab-content :active-sub-tab="activeSubTabs.appointment"></brand-service-tab-content>
 				</view>
 				
 				<!-- 作品tab内容 -->
@@ -73,13 +73,13 @@
 				</view>
 			</view>
 			
-			<!-- 底部内容（只在服务tab显示） -->
-			<view v-if="activeTab === 'service'" class="bottom-content">
+			<!-- 底部内容（在设计师和服务tab显示） -->
+			<view v-if="activeTab === 'service' || activeTab === 'appointment'" class="bottom-content">
 				<brand-portfolio-section></brand-portfolio-section>
 			</view>
 			
-			<!-- 预约按钮（只在预约tab显示） -->
-			<view v-if="activeTab === 'appointment'" class="booking-footer">
+			<!-- 预约按钮（暂时隐藏） -->
+			<view v-if="false" class="booking-footer">
 				<view class="booking-btn-container">
 					<view class="booking-btn" @tap="handleBooking">
 						<text class="booking-btn-text">预约</text>
@@ -96,10 +96,13 @@ import BrandDetailHeader from '../../components/brand/detail/BrandDetailHeader.v
 import BrandInfoCard from '../../components/brand/detail/BrandInfoCard.vue'
 import BrandTabSwitcher from '../../components/BrandTabSwitcher.vue'
 import BrandServiceTabContent from '../../components/brand/detail/BrandServiceTabContent.vue'
+import BrandDesignerTabContent from '../../components/brand/detail/BrandDesignerTabContent.vue'
 import BrandAppointmentTabContent from '../../components/brand/detail/BrandAppointmentTabContent.vue'
 import BrandWorksTabContent from '../../components/BrandWorksTabContent.vue'
 import BrandReviewsTabContent from '../../components/BrandReviewsTabContent.vue'
 import BrandPortfolioSection from '../../components/brand/detail/BrandPortfolioSection.vue'
+// 导入品牌馆数据
+import brandData from './brand-data.js'
 
 export default {
 	components: {
@@ -107,6 +110,7 @@ export default {
 		BrandInfoCard,
 		BrandTabSwitcher,
 		BrandServiceTabContent,
+		BrandDesignerTabContent,
 		BrandAppointmentTabContent,
 		BrandWorksTabContent,
 		BrandReviewsTabContent,
@@ -116,6 +120,7 @@ export default {
 		// 可以从options中获取品牌ID等信息
 		if (options.id) {
 			console.log('Brand ID:', options.id)
+			this.brandId = options.id
 		}
 		// 支持从URL参数中指定初始tab
 		if (options.tab) {
@@ -124,16 +129,17 @@ export default {
 	},
 	data() {
 		return {
+			brandId: null,
 			activeTab: 'service',
 			activeSubTabs: {
 				service: 'hair',
-				appointment: 'today',
+				appointment: 'hair-service',
 				works: 'female',
 				reviews: 'all'
 			},
 			tabs: [
-				{ id: 'service', label: '服务' },
-				{ id: 'appointment', label: '预约' },
+				{ id: 'service', label: '设计师' },
+				{ id: 'appointment', label: '服务' },
 				{ id: 'works', label: '作品' },
 				{ id: 'reviews', label: '点评' }
 			],
@@ -143,13 +149,9 @@ export default {
 					{ id: 'beauty', title: '美容师' }
 				],
 				appointment: [
-					{ id: 'today', title: '今天', subtitle: '周一' },
-					{ id: 'tomorrow', title: '明天', subtitle: '周二' },
-					{ id: '1205', title: '12.05', subtitle: '周三' },
-					{ id: '1206', title: '12.06', subtitle: '周四' },
-					{ id: '1207', title: '12.07', subtitle: '周五' },
-					{ id: '1208', title: '12.08', subtitle: '周六' },
-					{ id: '1209', title: '12.09', subtitle: '周日' }
+					{ id: 'hair-service', title: '美发服务' },
+					{ id: 'beauty-service', title: '美容服务' },
+					{ id: 'other-service', title: '其他服务' }
 				],
 				works: [
 					{ id: 'female', title: '女士' },
@@ -162,50 +164,37 @@ export default {
 					{ id: 'bad', title: '差评(9)' }
 				]
 			},
+			// 使用brand-data.js中的品牌数据
 			designerInfo: {
-				avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-153.png",
-				name: "朱一龙",
-				verifyIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2110.svg",
-				role: "技术总监",
-				certIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2.svg",
-				certText: "职业认证",
-				certDot: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg",
-				skills: "染发设计、短发造型、女士晚装:",
-				introduction: "从业19年，毕业沙宣美发学院，擅长各种造型设计师有丰富的设计经验擅长..."
+				avatar: brandData.brandInfo.avatar,
+				name: brandData.brandInfo.name,
+				verifyIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-3.svg",
+				role: brandData.brandInfo.badge,
+				certIcon: brandData.brandInfo.certIcon,
+				certText: brandData.brandInfo.certification,
+				certDot: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg",
+				skills: brandData.brandInfo.nature,
+				introduction: brandData.brandInfo.introduction
 			},
-			serviceBadges: [
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "安心服务" },
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "7天无忧" },
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "免费设计" },
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "小吃水果" },
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "预约服务" }
-			],
-			statsData: [
-				{ value: "1244", label: "预约" },
-				{ value: "2000", label: "粉丝" },
-				{ value: "18", unit: "年", label: "从业" },
-				{ value: "4.8", unit: "分", label: "评分" }
-			],
+			serviceBadges: brandData.serviceBadges,
+			statsData: brandData.statistics,
 			businessInfo: {
-				status: "营业中",
-				restDay: "周二休息",
-				hours: "10:00-21:00"
+				status: brandData.businessInfo.status,
+				restDay: brandData.businessInfo.restDay,
+				hours: brandData.businessInfo.hours
 			},
 			shopInfo: {
-				name: "NICE美发造型沙...",
-				address: "武侯区天府三家B7栋...",
-				distance: "距您2.7km"
+				name: brandData.addressInfo.street,
+				address: brandData.addressInfo.detail,
+				distance: brandData.addressInfo.distance
 			},
-			promotions: [
-				{ text: "满100-5" },
-				{ text: "满500-50" }
-			],
+			promotions: brandData.promotions.map(p => ({ text: p.label })),
 			rightStats: {
-				serviceIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1.svg",
-				serviceCount: "281",
-				workIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-4.svg",
-				workCount: "234",
-				dotIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg"
+				serviceIcon: brandData.rightStats.designerIcon,
+				serviceCount: String(brandData.rightStats.designerCount),
+				workIcon: brandData.rightStats.worksIcon,
+				workCount: String(brandData.rightStats.worksCount),
+				dotIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg"
 			}
 		}
 	},
@@ -214,7 +203,7 @@ export default {
 			return this.subTabs[this.activeTab] || []
 		},
 		isCompactSubTabs() {
-			return ['appointment', 'works', 'reviews'].includes(this.activeTab)
+			return ['service', 'appointment', 'works', 'reviews'].includes(this.activeTab)
 		}
 	},
 	methods: {

@@ -1,9 +1,11 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const pages_brand_brandData = require("./brand-data.js");
 const BrandDetailHeader = () => "../../components/brand/detail/BrandDetailHeader.js";
 const BrandInfoCard = () => "../../components/brand/detail/BrandInfoCard.js";
 const BrandTabSwitcher = () => "../../components/BrandTabSwitcher.js";
 const BrandServiceTabContent = () => "../../components/brand/detail/BrandServiceTabContent.js";
+const BrandDesignerTabContent = () => "../../components/brand/detail/BrandDesignerTabContent.js";
 const BrandAppointmentTabContent = () => "../../components/brand/detail/BrandAppointmentTabContent.js";
 const BrandWorksTabContent = () => "../../components/BrandWorksTabContent.js";
 const BrandReviewsTabContent = () => "../../components/BrandReviewsTabContent.js";
@@ -14,6 +16,7 @@ const _sfc_main = {
     BrandInfoCard,
     BrandTabSwitcher,
     BrandServiceTabContent,
+    BrandDesignerTabContent,
     BrandAppointmentTabContent,
     BrandWorksTabContent,
     BrandReviewsTabContent,
@@ -21,7 +24,8 @@ const _sfc_main = {
   },
   onLoad(options) {
     if (options.id) {
-      common_vendor.index.__f__("log", "at pages/brand/detail.vue:118", "Brand ID:", options.id);
+      common_vendor.index.__f__("log", "at pages/brand/detail.vue:122", "Brand ID:", options.id);
+      this.brandId = options.id;
     }
     if (options.tab) {
       this.activeTab = options.tab;
@@ -29,16 +33,17 @@ const _sfc_main = {
   },
   data() {
     return {
+      brandId: null,
       activeTab: "service",
       activeSubTabs: {
         service: "hair",
-        appointment: "today",
+        appointment: "hair-service",
         works: "female",
         reviews: "all"
       },
       tabs: [
-        { id: "service", label: "服务" },
-        { id: "appointment", label: "预约" },
+        { id: "service", label: "设计师" },
+        { id: "appointment", label: "服务" },
         { id: "works", label: "作品" },
         { id: "reviews", label: "点评" }
       ],
@@ -48,13 +53,9 @@ const _sfc_main = {
           { id: "beauty", title: "美容师" }
         ],
         appointment: [
-          { id: "today", title: "今天", subtitle: "周一" },
-          { id: "tomorrow", title: "明天", subtitle: "周二" },
-          { id: "1205", title: "12.05", subtitle: "周三" },
-          { id: "1206", title: "12.06", subtitle: "周四" },
-          { id: "1207", title: "12.07", subtitle: "周五" },
-          { id: "1208", title: "12.08", subtitle: "周六" },
-          { id: "1209", title: "12.09", subtitle: "周日" }
+          { id: "hair-service", title: "美发服务" },
+          { id: "beauty-service", title: "美容服务" },
+          { id: "other-service", title: "其他服务" }
         ],
         works: [
           { id: "female", title: "女士" },
@@ -67,50 +68,37 @@ const _sfc_main = {
           { id: "bad", title: "差评(9)" }
         ]
       },
+      // 使用brand-data.js中的品牌数据
       designerInfo: {
-        avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-153.png",
-        name: "朱一龙",
-        verifyIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2110.svg",
-        role: "技术总监",
-        certIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2.svg",
-        certText: "职业认证",
-        certDot: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg",
-        skills: "染发设计、短发造型、女士晚装:",
-        introduction: "从业19年，毕业沙宣美发学院，擅长各种造型设计师有丰富的设计经验擅长..."
+        avatar: pages_brand_brandData.brandData.brandInfo.avatar,
+        name: pages_brand_brandData.brandData.brandInfo.name,
+        verifyIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-3.svg",
+        role: pages_brand_brandData.brandData.brandInfo.badge,
+        certIcon: pages_brand_brandData.brandData.brandInfo.certIcon,
+        certText: pages_brand_brandData.brandData.brandInfo.certification,
+        certDot: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg",
+        skills: pages_brand_brandData.brandData.brandInfo.nature,
+        introduction: pages_brand_brandData.brandData.brandInfo.introduction
       },
-      serviceBadges: [
-        { icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "安心服务" },
-        { icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "7天无忧" },
-        { icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "免费设计" },
-        { icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "小吃水果" },
-        { icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "预约服务" }
-      ],
-      statsData: [
-        { value: "1244", label: "预约" },
-        { value: "2000", label: "粉丝" },
-        { value: "18", unit: "年", label: "从业" },
-        { value: "4.8", unit: "分", label: "评分" }
-      ],
+      serviceBadges: pages_brand_brandData.brandData.serviceBadges,
+      statsData: pages_brand_brandData.brandData.statistics,
       businessInfo: {
-        status: "营业中",
-        restDay: "周二休息",
-        hours: "10:00-21:00"
+        status: pages_brand_brandData.brandData.businessInfo.status,
+        restDay: pages_brand_brandData.brandData.businessInfo.restDay,
+        hours: pages_brand_brandData.brandData.businessInfo.hours
       },
       shopInfo: {
-        name: "NICE美发造型沙...",
-        address: "武侯区天府三家B7栋...",
-        distance: "距您2.7km"
+        name: pages_brand_brandData.brandData.addressInfo.street,
+        address: pages_brand_brandData.brandData.addressInfo.detail,
+        distance: pages_brand_brandData.brandData.addressInfo.distance
       },
-      promotions: [
-        { text: "满100-5" },
-        { text: "满500-50" }
-      ],
+      promotions: pages_brand_brandData.brandData.promotions.map((p) => ({ text: p.label })),
       rightStats: {
-        serviceIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1.svg",
-        serviceCount: "281",
-        workIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-4.svg",
-        workCount: "234",
-        dotIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg"
+        serviceIcon: pages_brand_brandData.brandData.rightStats.designerIcon,
+        serviceCount: String(pages_brand_brandData.brandData.rightStats.designerCount),
+        workIcon: pages_brand_brandData.brandData.rightStats.worksIcon,
+        workCount: String(pages_brand_brandData.brandData.rightStats.worksCount),
+        dotIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg"
       }
     };
   },
@@ -119,7 +107,7 @@ const _sfc_main = {
       return this.subTabs[this.activeTab] || [];
     },
     isCompactSubTabs() {
-      return ["appointment", "works", "reviews"].includes(this.activeTab);
+      return ["service", "appointment", "works", "reviews"].includes(this.activeTab);
     }
   },
   methods: {
@@ -137,19 +125,19 @@ const _sfc_main = {
       common_vendor.index.navigateTo({ url: "/pages/brand/info" });
     },
     handleFollow() {
-      common_vendor.index.__f__("log", "at pages/brand/detail.vue:235", "Follow clicked");
+      common_vendor.index.__f__("log", "at pages/brand/detail.vue:224", "Follow clicked");
     },
     handlePhone() {
-      common_vendor.index.__f__("log", "at pages/brand/detail.vue:238", "Phone clicked");
+      common_vendor.index.__f__("log", "at pages/brand/detail.vue:227", "Phone clicked");
     },
     handleNavigation() {
-      common_vendor.index.__f__("log", "at pages/brand/detail.vue:241", "Navigation clicked");
+      common_vendor.index.__f__("log", "at pages/brand/detail.vue:230", "Navigation clicked");
     },
     handleShare() {
-      common_vendor.index.__f__("log", "at pages/brand/detail.vue:244", "Share clicked");
+      common_vendor.index.__f__("log", "at pages/brand/detail.vue:233", "Share clicked");
     },
     handleBooking() {
-      common_vendor.index.__f__("log", "at pages/brand/detail.vue:247", "Booking clicked");
+      common_vendor.index.__f__("log", "at pages/brand/detail.vue:236", "Booking clicked");
     }
   }
 };
@@ -157,12 +145,12 @@ if (!Array) {
   const _component_brand_detail_header = common_vendor.resolveComponent("brand-detail-header");
   const _component_brand_info_card = common_vendor.resolveComponent("brand-info-card");
   const _component_brand_tab_switcher = common_vendor.resolveComponent("brand-tab-switcher");
+  const _component_brand_designer_tab_content = common_vendor.resolveComponent("brand-designer-tab-content");
   const _component_brand_service_tab_content = common_vendor.resolveComponent("brand-service-tab-content");
-  const _component_brand_appointment_tab_content = common_vendor.resolveComponent("brand-appointment-tab-content");
   const _component_brand_works_tab_content = common_vendor.resolveComponent("brand-works-tab-content");
   const _component_brand_reviews_tab_content = common_vendor.resolveComponent("brand-reviews-tab-content");
   const _component_brand_portfolio_section = common_vendor.resolveComponent("brand-portfolio-section");
-  (_component_brand_detail_header + _component_brand_info_card + _component_brand_tab_switcher + _component_brand_service_tab_content + _component_brand_appointment_tab_content + _component_brand_works_tab_content + _component_brand_reviews_tab_content + _component_brand_portfolio_section)();
+  (_component_brand_detail_header + _component_brand_info_card + _component_brand_tab_switcher + _component_brand_designer_tab_content + _component_brand_service_tab_content + _component_brand_works_tab_content + _component_brand_reviews_tab_content + _component_brand_portfolio_section)();
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
@@ -200,8 +188,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       });
     }),
     k: common_vendor.n({
-      "compact-sub-tabs": $options.isCompactSubTabs,
-      "appointment-sub-tabs": $data.activeTab === "appointment"
+      "compact-sub-tabs": $options.isCompactSubTabs
     })
   } : {}, {
     l: $data.activeTab === "service"
@@ -228,14 +215,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       ["active-sub-tab"]: $data.activeSubTabs.reviews
     })
   } : {}, {
-    t: $data.activeTab === "service"
-  }, $data.activeTab === "service" ? {} : {}, {
-    v: $data.activeTab === "appointment"
-  }, $data.activeTab === "appointment" ? {
-    w: common_vendor.o((...args) => $options.handleBooking && $options.handleBooking(...args))
-  } : {}, {
-    x: $data.activeTab === "reviews" ? 1 : "",
-    y: $data.activeTab === "works" || $data.activeTab === "service" ? 1 : ""
+    t: $data.activeTab === "service" || $data.activeTab === "appointment"
+  }, $data.activeTab === "service" || $data.activeTab === "appointment" ? {} : {}, {}, {
+    w: $data.activeTab === "reviews" ? 1 : "",
+    x: $data.activeTab === "works" || $data.activeTab === "service" ? 1 : ""
   });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-464bd95a"]]);
