@@ -4,15 +4,20 @@ const common_assets = require("../common/assets.js");
 const _sfc_main = {
   data() {
     return {
+      selectedSecondary: "hairstylist",
+      secondaryTabs: [
+        { id: "hairstylist", label: "美发师" },
+        { id: "beautician", label: "美容师" }
+      ],
       selectedCategory: "wash-cut-blow",
       selectedHairLength: "short",
       categories: [
-        { id: "wash-cut-blow", label: "洗剪吹", active: true },
-        { id: "perm", label: "烫发", active: false },
-        { id: "dye", label: "染发", active: false },
-        { id: "care", label: "护发", active: false },
-        { id: "scalp", label: "头皮", active: false },
-        { id: "extension", label: "接发", active: false }
+        { id: "wash-cut-blow", label: "洗剪吹" },
+        { id: "perm", label: "烫发" },
+        { id: "dye", label: "染发" },
+        { id: "care", label: "护发" },
+        { id: "scalp", label: "头皮" },
+        { id: "extension", label: "接发" }
       ],
       services: [
         {
@@ -96,6 +101,9 @@ const _sfc_main = {
     };
   },
   methods: {
+    selectSecondary(id) {
+      this.selectedSecondary = id;
+    },
     selectCategory(id) {
       this.selectedCategory = id;
     },
@@ -132,7 +140,7 @@ const _sfc_main = {
       return this.selectedBrands[serviceId] || (this.brandOptions && this.brandOptions.length > 0 ? this.brandOptions[0].id : null);
     },
     handleBook(service) {
-      common_vendor.index.__f__("log", "at components/DesignerProfileSection.vue:245", "Book service:", service);
+      common_vendor.index.__f__("log", "at components/DesignerProfileSection.vue:256", "Book service:", service);
     }
   }
 };
@@ -160,7 +168,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       }, !$options.isExpanded(service.id) ? {
         j: common_vendor.o(($event) => $options.toggleExpand(service.id), service.id)
       } : {
-        k: common_assets._imports_0$4,
+        k: common_assets._imports_0$10,
         l: common_vendor.o(($event) => $options.toggleExpand(service.id), service.id)
       }, {
         m: $options.isExpanded(service.id) ? 1 : "",

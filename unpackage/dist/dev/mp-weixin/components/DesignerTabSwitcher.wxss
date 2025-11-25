@@ -73,9 +73,11 @@
   margin-top: 0;
   margin-bottom: 0;
   position: absolute;
-  bottom: 0;
+  bottom: -2rpx;
   left: 50%;
   transform: translateX(-50%);
+  background-color: #000000;
+  border-radius: 3rpx;
 }
 .separator-line.data-v-507b05ba {
   width: 100%;

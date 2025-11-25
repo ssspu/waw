@@ -78,9 +78,15 @@ const _sfc_main = {
       if (item.label === "优惠券") {
         common_vendor.index.navigateTo({ url: "/pages/coupon/index" });
       }
+      if (item.label === "资产") {
+        common_vendor.index.navigateTo({ url: "/pages/mine/asset" });
+      }
     },
     handleSettlementItemClick(item) {
-      common_vendor.index.__f__("log", "at components/mine/index/MineProfileSection.vue:155", "Settlement item clicked:", item);
+      common_vendor.index.__f__("log", "at components/mine/index/MineProfileSection.vue:159", "Settlement item clicked:", item);
+      if (item.label === "我要入驻") {
+        common_vendor.index.navigateTo({ url: "/pages/mine/apply-settlement" });
+      }
       if (item.label === "个人设置") {
         common_vendor.index.navigateTo({ url: "/pages/setting/index" });
       }

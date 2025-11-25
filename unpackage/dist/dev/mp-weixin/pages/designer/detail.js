@@ -25,13 +25,23 @@ const _sfc_main = {
     }
     if (options.tab) {
       this.activeTab = options.tab;
+      if (options.tab === "appointment") {
+        this.$nextTick(() => {
+          setTimeout(() => {
+            common_vendor.index.pageScrollTo({
+              scrollTop: 99999,
+              duration: 300
+            });
+          }, 300);
+        });
+      }
     }
   },
   data() {
     return {
       activeTab: "service",
       activeSubTabs: {
-        service: "hair",
+        service: "hair-service",
         appointment: "today",
         works: "female",
         reviews: "all"
@@ -44,8 +54,9 @@ const _sfc_main = {
       ],
       subTabs: {
         service: [
-          { id: "hair", title: "美发师" },
-          { id: "beauty", title: "美容师" }
+          { id: "hair-service", title: "美发服务" },
+          { id: "beauty-service", title: "美容服务" },
+          { id: "other-service", title: "其他服务" }
         ],
         appointment: [
           { id: "today", title: "今天", subtitle: "周一" },
@@ -137,19 +148,19 @@ const _sfc_main = {
       common_vendor.index.navigateTo({ url: "/pages/designer/info" });
     },
     handleFollow() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:235", "Follow clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:247", "Follow clicked");
     },
     handlePhone() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:238", "Phone clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:250", "Phone clicked");
     },
     handleNavigation() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:241", "Navigation clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:253", "Navigation clicked");
     },
     handleShare() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:244", "Share clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:256", "Share clicked");
     },
     handleBooking() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:247", "Booking clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:259", "Booking clicked");
     }
   }
 };

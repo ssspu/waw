@@ -67,11 +67,6 @@
   color: #666666;
   font-size: 30rpx;
 }
-.nav-right.data-v-17a44f9d {
-  display: flex;
-  align-items: center;
-  gap: 32rpx;
-}
 .action-btn.data-v-17a44f9d {
   display: flex;
   align-items: center;
