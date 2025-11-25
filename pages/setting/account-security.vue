@@ -47,24 +47,24 @@ export default {
 			]
 		}
 	},
-	methods: {
-		handleItemClick(item) {
-			console.log('Edit:', item.label)
-			// 根据不同的安全设置项打开对应的页面
-			if (item.label === '修改手机号码') {
-				this.navigateToEditPhone()
-			} else if (item.label === '修改登录密码') {
-				this.navigateToEditPassword()
+		methods: {
+			handleItemClick(item) {
+				console.log('Edit:', item.label)
+				// 根据不同的安全设置项打开对应的页面
+				if (item.label === '修改手机号码') {
+					this.navigateToEditPhone()
+				} else if (item.label === '修改登录密码') {
+					this.navigateToEditPassword()
+				}
+			},
+			navigateToEditPhone() {
+				uni.navigateTo({ url: '/pages/setting/edit-phone' })
+			},
+			navigateToEditPassword() {
+				uni.navigateTo({ url: '/pages/setting/edit-password' })
 			}
-		},
-		navigateToEditPhone() {
-			console.log('Navigate to edit phone')
-		},
-		navigateToEditPassword() {
-			console.log('Navigate to edit password')
 		}
 	}
-}
 </script>
 
 <style scoped lang="scss">
@@ -174,4 +174,3 @@ export default {
 	font-weight: normal;
 }
 </style>
-

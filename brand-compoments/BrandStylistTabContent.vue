@@ -1,15 +1,30 @@
 <template>
 	<view class="brand-stylist-content">
-		<!-- 分类导航 -->
-		<view class="category-nav">
-			<view 
-				v-for="category in categories" 
-				:key="category.id" 
-				class="category-btn"
-				:class="{ active: selectedCategory === category.id }"
-				@tap="selectCategory(category.id)"
-			>
-				<text>{{ category.label }}</text>
+		<view class="nav-card">
+			<!-- 次级标签 -->
+			<view class="secondary-nav">
+				<view 
+					v-for="secondary in secondaryTabs" 
+					:key="secondary.id" 
+					class="secondary-tab"
+					:class="{ active: selectedSecondary === secondary.id }"
+					@tap="selectSecondary(secondary.id)"
+				>
+					<text>{{ secondary.label }}</text>
+				</view>
+			</view>
+			
+			<!-- 分类导航 -->
+			<view class="category-nav">
+				<view 
+					v-for="category in categories" 
+					:key="category.id" 
+					class="category-btn"
+					:class="{ active: selectedCategory === category.id }"
+					@tap="selectCategory(category.id)"
+				>
+					<text>{{ category.label }}</text>
+				</view>
 			</view>
 		</view>
 		
@@ -106,6 +121,11 @@
 export default {
 	data() {
 		return {
+			selectedSecondary: 'hairstylist',
+			secondaryTabs: [
+				{ id: 'hairstylist', label: '美发师' },
+				{ id: 'beautician', label: '美容师' }
+			],
 			selectedCategory: "hairstylist",
 			categories: [
 				{ id: "hairstylist", label: "发型师" },
@@ -183,6 +203,9 @@ export default {
 		}
 	},
 	methods: {
+		selectSecondary(id) {
+			this.selectedSecondary = id
+		},
 		selectCategory(id) {
 			this.selectedCategory = id
 		},
@@ -199,30 +222,69 @@ export default {
 	flex-direction: column;
 	width: 100%;
 	align-items: flex-start;
-	gap: 12rpx;
+	gap: 20rpx;
+}
+
+.nav-card {
+	width: 100%;
+	background-color: #ffffff;
+	border-radius: 0 0 12rpx 12rpx;
+	padding: 0rpx 0rpx;
+	box-sizing: border-box;
+	border-top: 2rpx solid #f3f3f3;
+	margin-top: -2rpx;
+	display: flex;
+	flex-direction: column;
+	gap: 16rpx;
+}
+
+.secondary-nav {
+	display: flex;
+	align-items: center;
+	gap: 36rpx;
+	border-bottom: 2rpx solid #f3f3f3;
+	padding-bottom: 12rpx;
+	margin-bottom: 16rpx;
+}
+
+.secondary-tab {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: normal;
+	color: #a6a6a6;
+	font-size: 26rpx;
+	cursor: pointer;
+	
+	&.active {
+		font-family: 'PingFang_SC-Semibold', Helvetica;
+		color: #000000;
+	}
 }
 
 .category-nav {
-	display: inline-flex;
+	display: flex;
 	align-items: center;
 	gap: 12rpx;
 	flex-wrap: wrap;
 }
 
 .category-btn {
-	height: auto;
-	padding: 8rpx 20rpx;
-	border-radius: 4rpx;
-	background-color: #ffffff;
+	min-width: 120rpx;
+	text-align: center;
+	padding: 0rpx 22rpx;
+	border-radius: 6rpx;
+	border: 2rpx solid #f0f0f0;
+	background-color: #f7f7f7;
 	color: #a6a6a6;
-	font-size: 26rpx;
+	font-size: 24rpx;
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-weight: normal;
 	cursor: pointer;
 	
 	&.active {
-		background-color: #333333;
+		background-color: #000000;
+		border-color: #000000;
 		color: #ffffff;
+		box-shadow: 0 6rpx 10rpx rgba(0, 0, 0, 0.15);
 	}
 }
 

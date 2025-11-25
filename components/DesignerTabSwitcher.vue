@@ -9,12 +9,7 @@
 				@tap="handleTabClick(tab.id)"
 			>
 				<text class="tab-label" :class="{ active: activeTab === tab.id }">{{ tab.label }}</text>
-				<image 
-					v-if="activeTab === tab.id"
-					class="tab-indicator" 
-					src="https://c.animaapp.com/mi5d4lp0csJxnR/img/vector-15.svg" 
-					mode="aspectFit"
-				></image>
+				<view v-if="activeTab === tab.id" class="tab-indicator"></view>
 			</view>
 		</view>
 	</view>
@@ -48,12 +43,12 @@ export default {
 <style scoped lang="scss">
 .tabs-card {
 	width: 100%;
-	margin-top: 0;
+margin-top: 0;
 	background-color: transparent;
 	border-radius: 0;
 	border: 0;
 	box-shadow: none;
-	padding: 20rpx 0rpx 0rpx 0rpx;
+padding: 20rpx 0rpx 0rpx 0rpx;
 	box-sizing: border-box;
 	// margin-left: -20rpx;
 	// background-color: #fcc;
@@ -69,12 +64,14 @@ export default {
 	width: 102%;
 	margin-left: -10rpx;
 	box-sizing: border-box;
+	padding-bottom: 12rpx;
+	border-bottom: 2rpx solid #f3f3f3;
 }
 
 .tab-item {
 	display: inline-flex;
 	flex-direction: column;
-	align-items: center;
+align-items: center;
 	justify-content: flex-start;
 	gap: 0;
 	width: 25%;
@@ -85,7 +82,7 @@ export default {
 
 .tab-label {
 	font-size: 28rpx;
-	text-align: center;
+text-align: center;
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
 	color: #666666;
@@ -99,9 +96,9 @@ export default {
 }
 
 .tab-indicator {
-	width: 20rpx;
+	width: 36rpx;
 	height: 6rpx;
-	margin-top: 0;
+margin-top: 0;
 	margin-bottom: 0;
 	position: absolute;
 	bottom: 0;

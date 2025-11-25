@@ -1,48 +1,52 @@
 <template>
 	<view class="user-info-section">
-		<view class="user-header">
-			<view class="avatar-wrapper">
-				<image 
-					class="avatar" 
-					src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/ellipse-77.svg" 
-					mode="aspectFill"
-				></image>
+		<view class="user-card">
+			<view class="vip-chip">
+				<view class="vip-chip-text">
+					<text class="vip-chip-title">VIP会员专享</text>
+					<text class="vip-chip-desc">超值补贴优惠专享</text>
+				</view>
+				<view class="vip-chip-arrow">
+					<text>➔</text>
+				</view>
 			</view>
-			
-			<view class="user-details">
-				<view class="name-row">
-					<text class="user-name">Javen</text>
+
+			<view class="user-header">
+				<view class="avatar-wrapper">
 					<image 
-						class="verify-icon" 
-						src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-2110.svg" 
-						mode="aspectFit"
+						class="avatar" 
+						src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/ellipse-77.svg" 
+						mode="aspectFill"
 					></image>
 				</view>
-				<text class="user-level">金牌会员</text>
+				
+				<view class="user-details">
+					<view class="name-row">
+						<text class="user-name">Javen</text>
+						<image 
+							class="verify-icon" 
+							src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-2110.svg" 
+							mode="aspectFit"
+						></image>
+					</view>
+					<text class="user-level">金牌会员</text>
+					<text class="user-bio">来自星星的盗梦者，一切都要回答火星</text>
+				</view>
 			</view>
-		</view>
-		
-		<text class="user-bio">来自星星的盗梦者，一切都要回答火星</text>
-		
-		<view class="stats-row">
-			<view class="stats-list">
+			
+			<view class="stats-row">
 				<view 
 					v-for="(stat, index) in statsData" 
 					:key="index" 
 					class="stat-item"
+					@tap="handleStatClick(stat)"
 				>
 					<text class="stat-value">{{ stat.value }}</text>
 					<text class="stat-label">{{ stat.label }}</text>
 				</view>
 			</view>
 			
-			<view class="edit-btn" @tap="handleEdit">
-				<text class="edit-text">编辑</text>
-			</view>
-		</view>
-		
-		<view class="territory-card" @tap="handleTerritoryClick">
-			<view class="territory-content">
+			<view class="territory-card" @tap="handleTerritoryClick">
 				<view class="territory-info">
 					<view class="territory-text">
 						<text class="territory-title">领地</text>
@@ -57,12 +61,6 @@
 						></view>
 					</view>
 				</view>
-				<image 
-					class="qr-code" 
-					src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-2117.svg" 
-					mode="aspectFit"
-					@tap.stop="handleQrClick"
-				></image>
 			</view>
 		</view>
 	</view>
@@ -74,8 +72,7 @@ export default {
 		return {
 			statsData: [
 				{ value: "1244", label: "关注" },
-				{ value: "123", label: "粉丝" },
-				{ value: "234", label: "问答" },
+				{ value: "234", label: "浏览" },
 				{ value: "1245", label: "收藏" },
 			],
 			territoryAvatars: [
@@ -89,15 +86,23 @@ export default {
 		}
 	},
 	methods: {
-		handleEdit() {
-			console.log('Edit clicked')
+		handleStatClick(stat) {
+			if (stat.label === '关注') {
+				uni.navigateTo({ url: '/pages/mine/follow-list' })
+			} else if (stat.label === '浏览') {
+				uni.navigateTo({ url: '/pages/mine/browse-records' })
+			} else if (stat.label === '收藏') {
+				uni.navigateTo({ url: '/pages/mine/favorites' })
+			}
 		},
 		handleTerritoryClick() {
 			uni.navigateTo({ url: '/pages/territory/index' })
 		},
 		handleQrClick() {
 			console.log('QR code clicked')
-			// 可以弹出二维码大图或分享等功能
+			uni.navigateTo({
+				url: '/pages/mine/qr-code-card'
+			})
 		}
 	}
 }
@@ -105,38 +110,95 @@ export default {
 
 <style scoped lang="scss">
 .user-info-section {
+	width: 100%;
+	box-sizing: border-box;
+	display: flex;
+	justify-content: center;
+}
+
+.user-card {
+	width: 100%;
+	max-width: 780rpx;
+	background: #ffffff;
+	border-radius: 36rpx;
+	box-shadow: 0 16rpx 50rpx rgba(0, 0, 0, 0.12);
+	padding: 40rpx 34rpx 36rpx;
+	position: relative;
+	box-sizing: border-box;
+	margin-top: -60rpx;
+}
+
+.vip-chip {
+	position: absolute;
+	top: 0.1rem;
+	right: -0.25rem;
+	background: linear-gradient(134deg, #E9D9C1 0%, #B19F84 100%);
+	border-top-right-radius: 40rpx;
+	border-bottom-left-radius: 40rpx;
+	border-bottom-right-radius: 40rpx;
+	padding: 20rpx 28rpx 24rpx 32rpx;
+	display: flex;
+	align-items: center;
+	min-width: 100rpx;
+	box-shadow: 0 12rpx 20rpx rgba(177, 159, 132, 0.4);
+}
+
+.vip-chip-text {
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start;
-	gap: 36rpx;
-	padding: 0 40rpx;
-	width: 100%;
-	max-width: 710rpx;
-	box-sizing: border-box;
+	line-height: 1.2;
+}
+
+.vip-chip-title {
+	font-size: 22rpx;
+	color: #fff;
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+}
+
+.vip-chip-desc {
+	font-size: 18rpx;
+	color: rgba(255, 255, 255, 0.85);
+}
+
+.vip-chip-arrow {
+	width: 36rpx;
+	height: 36rpx;
+	background-color: rgba(255, 255, 255, 0.25);
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #fff;
+	font-size: 22rpx;
 }
 
 .user-header {
+	margin-top: -30rpx;
 	display: flex;
-	align-items: flex-end;
-	gap: 16rpx;
+	align-items: center;
+	gap: 24rpx;
 }
 
 .avatar-wrapper {
-	flex-shrink: 0;
+	width: 156rpx;
+	height: 156rpx;
+	border-radius: 50%;
+	padding: 6rpx;
+	margin-top: -110rpx;
 }
 
 .avatar {
-	width: 168rpx;
-	height: 168rpx;
+	margin-top: 0rpx;
+	width: 100%;
+	height: 100%;
 	border-radius: 50%;
-	background-color: #a6a6a6;
+	object-fit: cover;
 }
 
 .user-details {
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start;
-	gap: 4rpx;
+	gap: 8rpx;
 }
 
 .name-row {
@@ -146,152 +208,94 @@ export default {
 }
 
 .user-name {
+	font-size: 40rpx;
+	color: #000;
 	font-family: 'PingFang_SC-Semibold', Helvetica;
-	font-weight: normal;
-	color: #000000;
-	font-size: 38rpx;
 }
 
 .verify-icon {
-	width: 40rpx;
-	height: 40rpx;
-	flex-shrink: 0;
+	width: 36rpx;
+	height: 36rpx;
 }
 
 .user-level {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 500;
+	font-size: 26rpx;
 	color: #a6a6a6;
-	font-size: 24rpx;
 }
 
 .user-bio {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 500;
-	color: #a6a6a6;
 	font-size: 24rpx;
-	width: 100%;
-	max-width: 408rpx;
+	color: #a6a6a6;
+	max-width: 420rpx;
+	line-height: 1.4;
 }
 
 .stats-row {
+	margin-top: 32rpx;
 	display: flex;
-	align-items: center;
 	justify-content: space-between;
-	width: 100%;
-}
-
-.stats-list {
-	display: flex;
 	align-items: center;
-	justify-content: center;
-	gap: 54rpx;
+	padding: 0 10rpx;
 }
 
 .stat-item {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 4rpx;
-	min-width: 52rpx;
+	gap: 6rpx;
+	min-width: 140rpx;
 }
 
 .stat-value {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 500;
-	color: #333333;
-	font-size: 30rpx;
+	font-size: 34rpx;
+	color: #333;
+	font-family: 'PingFang_SC-Semibold', Helvetica;
 }
 
 .stat-label {
-	font-family: 'PingFang_SC-Regular', Helvetica;
-	font-weight: normal;
-	color: #a6a6a6;
 	font-size: 22rpx;
-}
-
-.edit-btn {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	padding: 14rpx 40rpx;
-	background-color: #ffffff;
-	border-radius: 50rpx;
-	border: 2rpx solid #666666;
-	cursor: pointer;
-}
-
-.edit-text {
-	font-family: 'PingFang_SC-Semibold', Helvetica;
-	font-weight: normal;
-	color: #333333;
-	font-size: 24rpx;
+	color: #a6a6a6;
 }
 
 .territory-card {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	padding: 18rpx 20rpx;
-	background-color: #f6f6f6;
-	border-radius: 10rpx;
-	box-sizing: border-box;
-	cursor: pointer;
-}
-
-.territory-content {
+	margin-top: 36rpx;
+	background: #f7f7f7;
+	border-radius: 24rpx;
+	padding: 28rpx 30rpx;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	width: 100%;
-}
-
-.territory-info {
-	display: inline-flex;
-	align-items: center;
-	gap: 22rpx;
 }
 
 .territory-text {
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start;
-	gap: 4rpx;
+	gap: 6rpx;
 }
 
 .territory-title {
+	font-size: 28rpx;
+	color: #333;
 	font-family: 'PingFang_SC-Semibold', Helvetica;
-	font-weight: normal;
-	color: #000000;
-	font-size: 26rpx;
 }
 
 .territory-subtitle {
-	font-family: 'PingFang_SC-Regular', Helvetica;
-	font-weight: normal;
-	color: #a6a6a6;
 	font-size: 22rpx;
+	color: #a6a6a6;
 }
 
 .territory-avatars {
-	display: inline-flex;
+	display: flex;
 	align-items: center;
 }
 
 .territory-avatar {
-	width: 60rpx;
-	height: 60rpx;
+	width: 64rpx;
+	height: 64rpx;
 	border-radius: 50%;
-	border: 2rpx solid #ffffff;
+	border: 2rpx solid #fff;
 	background-size: cover;
 	background-position: center;
-	flex-shrink: 0;
-}
-
-.qr-code {
-	width: 72rpx;
-	height: 72rpx;
-	flex-shrink: 0;
 }
 </style>
 
