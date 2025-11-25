@@ -4,7 +4,7 @@
 		<!-- <view class="status-bar" style="height: 44rpx;"></view> -->
 		
 		<!-- 头部 -->
-		<brand-detail-header></brand-detail-header>
+		<designer-detail-header></designer-detail-header>
 		
 		<!-- 主内容区域 -->
 		<view class="main-content" :class="{ 'reviews-fullwidth': activeTab === 'reviews' }">
@@ -54,7 +54,7 @@
 			<view class="tab-content-wrapper">
 				<!-- 服务tab内容 -->
 				<view v-if="activeTab === 'service'" class="tab-content" :key="'service'">
-					<brand-service-tab-content :active-sub-tab="activeSubTabs.service"></brand-service-tab-content>
+					<designer-service-tab-content :active-sub-tab="activeSubTabs.service"></designer-service-tab-content>
 				</view>
 				
 				<!-- 预约tab内容 -->
@@ -69,7 +69,7 @@
 				
 				<!-- 点评tab内容 -->
 				<view v-if="activeTab === 'reviews'" class="tab-content" :key="'reviews'">
-					<brand-reviews-tab-content :active-sub-tab="activeSubTabs.reviews"></brand-reviews-tab-content>
+					<designer-reviews-tab-content :active-sub-tab="activeSubTabs.reviews"></designer-reviews-tab-content>
 				</view>
 			</view>
 			
@@ -92,24 +92,24 @@
 </template>
 
 <script>
-import BrandDetailHeader from '../../components/brand/detail/BrandDetailHeader.vue'
+import DesignerDetailHeader from '../../components/designer/detail/DesignerDetailHeader.vue'
 import BrandInfoCard from '../../components/brand/detail/BrandInfoCard.vue'
 import DesignerTabSwitcher from '../../components/DesignerTabSwitcher.vue'
-import BrandServiceTabContent from '../../components/brand/detail/BrandServiceTabContent.vue'
+import DesignerServiceTabContent from '../../components/designer/detail/DesignerServiceTabContent.vue'
 import DesignerAppointmentTabContent from '../../components/designer/detail/DesignerAppointmentTabContent.vue'
 import DesignerWorksTabContent from '../../components/DesignerWorksTabContent.vue'
-import BrandReviewsTabContent from '../../components/brand/detail/BrandReviewsTabContent.vue'
+import DesignerReviewsTabContent from '../../components/DesignerReviewsTabContent.vue'
 import DesignerPortfolioSection from '../../components/designer/detail/DesignerPortfolioSection.vue'
 
 export default {
 	components: {
-		BrandDetailHeader,
+		DesignerDetailHeader,
 		BrandInfoCard,
 		DesignerTabSwitcher,
-		BrandServiceTabContent,
+		DesignerServiceTabContent,
 		DesignerAppointmentTabContent,
 		DesignerWorksTabContent,
-		BrandReviewsTabContent,
+		DesignerReviewsTabContent,
 		DesignerPortfolioSection
 	},
 	onLoad(options) {
@@ -166,11 +166,11 @@ export default {
 			brandInfo: {
 				avatar: "https://c.animaapp.com/mi5l377nJk1HHO/img/rectangle-153.png",
 				name: "金龙大好人美发沙龙...",
-				verifyBadge: "舒适",
+				comfortBadge: "舒适",
 				certIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-3.svg",
 				certText: "企业认证",
-				certDot: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg",
-				type: "工作室、专业店",
+				certArrow: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg",
+				shopType: "工作室、专业店",
 				introduction: "从业19年，毕业沙宣美发学院，擅长各种造型设计师有丰富的设计经验擅长...",
 				moreIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-9.svg"
 			},
@@ -203,8 +203,8 @@ export default {
 				navIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1879.svg"
 			},
 			promotions: [
-				{ text: "满100-5" },
-				{ text: "满500-50" }
+				{ label: "满100-5" },
+				{ label: "满500-50" }
 			],
 			// 优惠图标
 			promoIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1.svg",
@@ -215,7 +215,7 @@ export default {
 				serviceCount: "281",
 				workIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-12.svg",
 				workCount: "234",
-				dotIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg"
+				arrowIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg"
 			}
 		}
 	},

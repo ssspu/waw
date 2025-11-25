@@ -4,12 +4,13 @@
   "navigationBarTextStyle": "black",
   "navigationBarBackgroundColor": "#f2f2f2",
   "usingComponents": {
-    "brand-detail-header": "../../components/brand/detail/BrandDetailHeader",
-    "brand-info-card": "../../components/brand/detail/BrandInfoCard",
+    "designer-detail-header": "../../components/designer/detail/DesignerDetailHeader",
+    "designer-info-card": "../../components/designer/detail/DesignerInfoCard",
     "designer-tab-switcher": "../../components/DesignerTabSwitcher",
-    "brand-stylist-tab-content": "../../components/brand/detail/BrandStylistTabContent",
-    "brand-service-tab-content": "../../components/brand/detail/BrandServiceTabContent",
+    "designer-service-tab-content": "../../components/designer/detail/DesignerServiceTabContent",
+    "designer-appointment-tab-content": "../../components/designer/detail/DesignerAppointmentTabContent",
     "designer-works-tab-content": "../../components/DesignerWorksTabContent",
-    "brand-reviews-tab-content": "../../components/brand/detail/BrandReviewsTabContent"
+    "designer-reviews-tab-content": "../../components/DesignerReviewsTabContent",
+    "designer-portfolio-section": "../../components/designer/detail/DesignerPortfolioSection"
   }
 }
