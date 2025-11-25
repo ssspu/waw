@@ -82,6 +82,33 @@
 		}
 	},
 	{
+		"path": "pages/mine/favorites",
+		"style": {
+			"navigationBarTitleText": "我的收藏",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/mine/browse-records",
+		"style": {
+			"navigationBarTitleText": "浏览记录",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/mine/follow-list",
+		"style": {
+			"navigationBarTitleText": "我的关注",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
 		"path": "pages/mine/apply-settlement",
 		"style": {
 			"navigationBarTitleText": "我要合作",
@@ -108,15 +135,42 @@
 			"navigationBarBackgroundColor": "#f2f2f2"
 		}
 	},
-		{
-			"path": "pages/order/index",
-			"style": {
-				"navigationBarTitleText": "服务订单",
-				"navigationStyle": "custom",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#f2f2f2"
-			}
-		},
+	{
+		"path": "pages/order/index",
+		"style": {
+			"navigationBarTitleText": "服务订单",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/order/detail",
+		"style": {
+			"navigationBarTitleText": "订单详情",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/order/detail-pending-use",
+		"style": {
+			"navigationBarTitleText": "订单详情",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/order/service-review",
+		"style": {
+			"navigationBarTitleText": "服务点评",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
 		{
 			"path": "pages/coupon/index",
 			"style": {
