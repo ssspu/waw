@@ -7,16 +7,16 @@
 		<brand-detail-header></brand-detail-header>
 		
 		<!-- 主内容区域 -->
-		<view class="main-content" :class="{ 'reviews-fullwidth': activeTab === 'reviews' }">
+		<view class="main-content" :class="{ 'reviews-fullwidth': activeTab === 'reviews', 'no-bottom-padding': activeTab === 'works' || activeTab === 'service' }">
 			<!-- 品牌信息卡片 -->
 			<brand-info-card
-				:brandInfo="brandInfo"
-				:serviceBadges="serviceBadges"
-				:statsData="statistics"
-				:businessInfo="businessInfo"
-				:shopInfo="shopInfo"
+				:designer-info="designerInfo"
+				:service-badges="serviceBadges"
+				:stats-data="statsData"
+				:business-info="businessInfo"
+				:shop-info="shopInfo"
 				:promotions="promotions"
-				:rightStats="rightStats"
+				:right-stats="rightStats"
 				@more-info="handleMoreInfo"
 				@follow="handleFollow"
 				@phone="handlePhone"
@@ -26,11 +26,11 @@
 			
 		<!-- Tab切换 -->
 		<view class="tabs-wrapper">
-			<designer-tab-switcher
+			<brand-tab-switcher
 				:active-tab="activeTab"
 				:tabs="tabs"
 				@tab-change="handleTabChange"
-			></designer-tab-switcher>
+			></brand-tab-switcher>
 			
 			<!-- 子标签切换（根据当前tab显示） -->
 			<view 
@@ -59,12 +59,12 @@
 				
 				<!-- 预约tab内容 -->
 				<view v-if="activeTab === 'appointment'" class="tab-content" :key="'appointment'">
-					<designer-appointment-tab-content :active-sub-tab="activeSubTabs.appointment"></designer-appointment-tab-content>
+					<brand-appointment-tab-content :active-sub-tab="activeSubTabs.appointment"></brand-appointment-tab-content>
 				</view>
 				
 				<!-- 作品tab内容 -->
 				<view v-if="activeTab === 'works'" class="tab-content" :key="'works'">
-					<designer-works-tab-content :active-sub-tab="activeSubTabs.works"></designer-works-tab-content>
+					<brand-works-tab-content :active-sub-tab="activeSubTabs.works"></brand-works-tab-content>
 				</view>
 				
 				<!-- 点评tab内容 -->
@@ -75,7 +75,7 @@
 			
 			<!-- 底部内容（只在服务tab显示） -->
 			<view v-if="activeTab === 'service'" class="bottom-content">
-				<designer-portfolio-section></designer-portfolio-section>
+				<brand-portfolio-section></brand-portfolio-section>
 			</view>
 			
 			<!-- 预约按钮（只在预约tab显示） -->
@@ -94,28 +94,28 @@
 <script>
 import BrandDetailHeader from '../../components/brand/detail/BrandDetailHeader.vue'
 import BrandInfoCard from '../../components/brand/detail/BrandInfoCard.vue'
-import DesignerTabSwitcher from '../../components/DesignerTabSwitcher.vue'
+import BrandTabSwitcher from '../../components/BrandTabSwitcher.vue'
 import BrandServiceTabContent from '../../components/brand/detail/BrandServiceTabContent.vue'
-import DesignerAppointmentTabContent from '../../components/designer/detail/DesignerAppointmentTabContent.vue'
-import DesignerWorksTabContent from '../../components/DesignerWorksTabContent.vue'
-import BrandReviewsTabContent from '../../components/brand/detail/BrandReviewsTabContent.vue'
-import DesignerPortfolioSection from '../../components/designer/detail/DesignerPortfolioSection.vue'
+import BrandAppointmentTabContent from '../../components/brand/detail/BrandAppointmentTabContent.vue'
+import BrandWorksTabContent from '../../components/BrandWorksTabContent.vue'
+import BrandReviewsTabContent from '../../components/BrandReviewsTabContent.vue'
+import BrandPortfolioSection from '../../components/brand/detail/BrandPortfolioSection.vue'
 
 export default {
 	components: {
 		BrandDetailHeader,
 		BrandInfoCard,
-		DesignerTabSwitcher,
+		BrandTabSwitcher,
 		BrandServiceTabContent,
-		DesignerAppointmentTabContent,
-		DesignerWorksTabContent,
+		BrandAppointmentTabContent,
+		BrandWorksTabContent,
 		BrandReviewsTabContent,
-		DesignerPortfolioSection
+		BrandPortfolioSection
 	},
 	onLoad(options) {
-		// 可以从options中获取设计师ID等信息
+		// 可以从options中获取品牌ID等信息
 		if (options.id) {
-			console.log('Designer ID:', options.id)
+			console.log('Brand ID:', options.id)
 		}
 		// 支持从URL参数中指定初始tab
 		if (options.tab) {
@@ -162,60 +162,50 @@ export default {
 					{ id: 'bad', title: '差评(9)' }
 				]
 			},
-			// 品牌信息
-			brandInfo: {
-				avatar: "https://c.animaapp.com/mi5l377nJk1HHO/img/rectangle-153.png",
-				name: "金龙大好人美发沙龙...",
-				verifyBadge: "舒适",
-				certIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-3.svg",
-				certText: "企业认证",
-				certDot: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg",
-				type: "工作室、专业店",
-				introduction: "从业19年，毕业沙宣美发学院，擅长各种造型设计师有丰富的设计经验擅长...",
-				moreIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-9.svg"
+			designerInfo: {
+				avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-153.png",
+				name: "朱一龙",
+				verifyIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2110.svg",
+				role: "技术总监",
+				certIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2.svg",
+				certText: "职业认证",
+				certDot: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg",
+				skills: "染发设计、短发造型、女士晚装:",
+				introduction: "从业19年，毕业沙宣美发学院，擅长各种造型设计师有丰富的设计经验擅长..."
 			},
 			serviceBadges: [
-				{ icon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1891.svg", label: "安心服务" },
-				{ icon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1891.svg", label: "7天无忧" },
-				{ icon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1891.svg", label: "免费设计" },
-				{ icon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1891.svg", label: "小吃水果" },
-				{ icon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1891.svg", label: "预约服务" }
+				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "安心服务" },
+				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "7天无忧" },
+				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "免费设计" },
+				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "小吃水果" },
+				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "预约服务" }
 			],
-			statistics: [
+			statsData: [
 				{ value: "1244", label: "预约" },
 				{ value: "2000", label: "粉丝" },
 				{ value: "18", unit: "年", label: "从业" },
 				{ value: "4.8", unit: "分", label: "评分" }
 			],
-			// 营业信息
 			businessInfo: {
 				status: "营业中",
 				restDay: "周二休息",
-				hours: "10:00-21:00",
-				moreIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-5.svg",
-				phoneIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1879-2.svg"
+				hours: "10:00-21:00"
 			},
-			// 店铺信息
 			shopInfo: {
-				name: "锦江区红星路120号",
-				address: "IFS国际东门2栋607室",
-				distance: "距您2.7km",
-				navIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1879.svg"
+				name: "NICE美发造型沙...",
+				address: "武侯区天府三家B7栋...",
+				distance: "距您2.7km"
 			},
 			promotions: [
 				{ text: "满100-5" },
 				{ text: "满500-50" }
 			],
-			// 优惠图标
-			promoIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1.svg",
-			// 右侧统计
 			rightStats: {
-				shareIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1879-1.svg",
-				serviceIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-4.svg",
+				serviceIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1.svg",
 				serviceCount: "281",
-				workIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-12.svg",
+				workIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-4.svg",
 				workCount: "234",
-				dotIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg"
+				dotIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg"
 			}
 		}
 	},
@@ -239,7 +229,7 @@ export default {
 			this.$set(this.activeSubTabs, this.activeTab, subTabId)
 		},
 		handleMoreInfo() {
-			uni.navigateTo({ url: '/pages/designer/info' })
+			uni.navigateTo({ url: '/pages/brand/info' })
 		},
 		handleFollow() {
 			console.log('Follow clicked')
@@ -289,12 +279,13 @@ export default {
 	box-sizing: border-box;
 	margin-top: -200rpx;
 	z-index: 5;
+	
+	&.no-bottom-padding {
+		padding-bottom: 20rpx;
+	}
 }
 
-.main-content.reviews-fullwidth {
-	padding-left: 0;
-	padding-right: 0;
-}
+
 
 .tabs-wrapper {
 	width: 100vw;
@@ -384,6 +375,11 @@ export default {
 	font-size: 22rpx;
 	line-height: 28rpx;
 	color: #a6a6a6;
+	
+	.sub-tab-item.active & {
+		color: #333333;
+		font-weight: 500;
+	}
 }
 
 .tab-content-wrapper {
@@ -471,4 +467,3 @@ export default {
 	border-radius: 200rpx;
 }
 </style>
-

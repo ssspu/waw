@@ -48,7 +48,8 @@
 }
 .header-content.data-v-c4766ac1 {
   position: relative;
-  z-index: 2;
+  top: -430rpx;
+  z-index: 9;
   height: 100%;
   padding: 48rpx 32rpx 32rpx;
   display: flex;
@@ -56,8 +57,8 @@
   box-sizing: border-box;
 }
 .header-actions.data-v-c4766ac1 {
-  margin-top: auto;
-  margin-bottom: 200rpx;
+  margin-top: 135rpx;
+  margin-left: 40rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -68,7 +69,6 @@
   width: 64rpx;
   height: 64rpx;
   border-radius: 32rpx;
-  background: rgba(255, 255, 255, 0.18);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -81,8 +81,13 @@
   opacity: 1;
 }
 .back-icon.data-v-c4766ac1 {
-  width: 32rpx;
-  height: 32rpx;
+  width: 60;
+  height: 60rpx;
   flex-shrink: 0;
   filter: brightness(0) invert(1);
+}
+.logo.data-v-c4766ac1 {
+  width: 220rpx;
+  height: 124rpx;
+  opacity: 0;
 }

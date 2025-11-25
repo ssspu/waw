@@ -50,9 +50,8 @@
   margin-top: -200rpx;
   z-index: 5;
 }
-.main-content.reviews-fullwidth.data-v-464bd95a {
-  padding-left: 0;
-  padding-right: 0;
+.main-content.no-bottom-padding.data-v-464bd95a {
+  padding-bottom: 20rpx;
 }
 .tabs-wrapper.data-v-464bd95a {
   width: 100vw;
@@ -132,6 +131,10 @@
   font-size: 22rpx;
   line-height: 28rpx;
   color: #a6a6a6;
+}
+.sub-tab-item.active .sub-tab-subtitle.data-v-464bd95a {
+  color: #333333;
+  font-weight: 500;
 }
 .tab-content-wrapper.data-v-464bd95a {
   position: relative;

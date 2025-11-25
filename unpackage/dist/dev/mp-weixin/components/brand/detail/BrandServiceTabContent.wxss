@@ -23,10 +23,8 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.brand-service-content.data-v-20c4729e {
+.service-tab-content.data-v-20c4729e {
   display: flex;
   flex-direction: column;
   width: 100%;
-  align-items: flex-start;
-  gap: 12rpx;
 }

@@ -4,13 +4,13 @@
   "navigationBarTextStyle": "black",
   "navigationBarBackgroundColor": "#f2f2f2",
   "usingComponents": {
-    "designer-detail-header": "../../components/designer/detail/DesignerDetailHeader",
-    "designer-info-card": "../../components/designer/detail/DesignerInfoCard",
-    "designer-tab-switcher": "../../components/DesignerTabSwitcher",
-    "designer-service-tab-content": "../../components/designer/detail/DesignerServiceTabContent",
-    "designer-appointment-tab-content": "../../components/designer/detail/DesignerAppointmentTabContent",
-    "designer-works-tab-content": "../../components/DesignerWorksTabContent",
-    "designer-reviews-tab-content": "../../components/DesignerReviewsTabContent",
-    "designer-portfolio-section": "../../components/designer/detail/DesignerPortfolioSection"
+    "brand-detail-header": "../../components/brand/detail/BrandDetailHeader",
+    "brand-info-card": "../../components/brand/detail/BrandInfoCard",
+    "brand-tab-switcher": "../../components/BrandTabSwitcher",
+    "brand-service-tab-content": "../../components/brand/detail/BrandServiceTabContent",
+    "brand-appointment-tab-content": "../../components/brand/detail/BrandAppointmentTabContent",
+    "brand-works-tab-content": "../../components/BrandWorksTabContent",
+    "brand-reviews-tab-content": "../../components/BrandReviewsTabContent",
+    "brand-portfolio-section": "../../components/brand/detail/BrandPortfolioSection"
   }
 }

@@ -8,7 +8,7 @@ const _sfc_main = {
         common_vendor.index.navigateBack();
       } else {
         common_vendor.index.redirectTo({
-          url: "/pages/main/index"
+          url: "/pages/brand/index"
         });
       }
     }

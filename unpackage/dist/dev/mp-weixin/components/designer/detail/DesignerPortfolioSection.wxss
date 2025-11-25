@@ -184,10 +184,10 @@
   min-height: 72rpx;
 }
 .feature-tag text.data-v-097e074b {
-  font-family: "PingFang_SC-Medium", Helvetica;
-  font-weight: 400;
+  font-family: "PingFang_SC-Regular", Helvetica;
+  font-weight: normal;
   color: #666666;
-  font-size: 26rpx;
+  font-size: 22rpx;
   text-align: center;
 }
 .reviews-card.data-v-097e074b {

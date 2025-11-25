@@ -1,27 +1,27 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
-const DesignerDetailHeader = () => "../../components/designer/detail/DesignerDetailHeader.js";
-const DesignerInfoCard = () => "../../components/designer/detail/DesignerInfoCard.js";
-const DesignerTabSwitcher = () => "../../components/DesignerTabSwitcher.js";
-const DesignerServiceTabContent = () => "../../components/designer/detail/DesignerServiceTabContent.js";
-const DesignerAppointmentTabContent = () => "../../components/designer/detail/DesignerAppointmentTabContent.js";
-const DesignerWorksTabContent = () => "../../components/DesignerWorksTabContent.js";
-const DesignerReviewsTabContent = () => "../../components/DesignerReviewsTabContent.js";
-const DesignerPortfolioSection = () => "../../components/designer/detail/DesignerPortfolioSection.js";
+const BrandDetailHeader = () => "../../components/brand/detail/BrandDetailHeader.js";
+const BrandInfoCard = () => "../../components/brand/detail/BrandInfoCard.js";
+const BrandTabSwitcher = () => "../../components/BrandTabSwitcher.js";
+const BrandServiceTabContent = () => "../../components/brand/detail/BrandServiceTabContent.js";
+const BrandAppointmentTabContent = () => "../../components/brand/detail/BrandAppointmentTabContent.js";
+const BrandWorksTabContent = () => "../../components/BrandWorksTabContent.js";
+const BrandReviewsTabContent = () => "../../components/BrandReviewsTabContent.js";
+const BrandPortfolioSection = () => "../../components/brand/detail/BrandPortfolioSection.js";
 const _sfc_main = {
   components: {
-    DesignerDetailHeader,
-    DesignerInfoCard,
-    DesignerTabSwitcher,
-    DesignerServiceTabContent,
-    DesignerAppointmentTabContent,
-    DesignerWorksTabContent,
-    DesignerReviewsTabContent,
-    DesignerPortfolioSection
+    BrandDetailHeader,
+    BrandInfoCard,
+    BrandTabSwitcher,
+    BrandServiceTabContent,
+    BrandAppointmentTabContent,
+    BrandWorksTabContent,
+    BrandReviewsTabContent,
+    BrandPortfolioSection
   },
   onLoad(options) {
     if (options.id) {
-      common_vendor.index.__f__("log", "at pages/brand/detail.vue:118", "Designer ID:", options.id);
+      common_vendor.index.__f__("log", "at pages/brand/detail.vue:118", "Brand ID:", options.id);
     }
     if (options.tab) {
       this.activeTab = options.tab;
@@ -134,7 +134,7 @@ const _sfc_main = {
       this.$set(this.activeSubTabs, this.activeTab, subTabId);
     },
     handleMoreInfo() {
-      common_vendor.index.navigateTo({ url: "/pages/designer/info" });
+      common_vendor.index.navigateTo({ url: "/pages/brand/info" });
     },
     handleFollow() {
       common_vendor.index.__f__("log", "at pages/brand/detail.vue:235", "Follow clicked");
@@ -154,15 +154,15 @@ const _sfc_main = {
   }
 };
 if (!Array) {
-  const _component_designer_detail_header = common_vendor.resolveComponent("designer-detail-header");
-  const _component_designer_info_card = common_vendor.resolveComponent("designer-info-card");
-  const _component_designer_tab_switcher = common_vendor.resolveComponent("designer-tab-switcher");
-  const _component_designer_service_tab_content = common_vendor.resolveComponent("designer-service-tab-content");
-  const _component_designer_appointment_tab_content = common_vendor.resolveComponent("designer-appointment-tab-content");
-  const _component_designer_works_tab_content = common_vendor.resolveComponent("designer-works-tab-content");
-  const _component_designer_reviews_tab_content = common_vendor.resolveComponent("designer-reviews-tab-content");
-  const _component_designer_portfolio_section = common_vendor.resolveComponent("designer-portfolio-section");
-  (_component_designer_detail_header + _component_designer_info_card + _component_designer_tab_switcher + _component_designer_service_tab_content + _component_designer_appointment_tab_content + _component_designer_works_tab_content + _component_designer_reviews_tab_content + _component_designer_portfolio_section)();
+  const _component_brand_detail_header = common_vendor.resolveComponent("brand-detail-header");
+  const _component_brand_info_card = common_vendor.resolveComponent("brand-info-card");
+  const _component_brand_tab_switcher = common_vendor.resolveComponent("brand-tab-switcher");
+  const _component_brand_service_tab_content = common_vendor.resolveComponent("brand-service-tab-content");
+  const _component_brand_appointment_tab_content = common_vendor.resolveComponent("brand-appointment-tab-content");
+  const _component_brand_works_tab_content = common_vendor.resolveComponent("brand-works-tab-content");
+  const _component_brand_reviews_tab_content = common_vendor.resolveComponent("brand-reviews-tab-content");
+  const _component_brand_portfolio_section = common_vendor.resolveComponent("brand-portfolio-section");
+  (_component_brand_detail_header + _component_brand_info_card + _component_brand_tab_switcher + _component_brand_service_tab_content + _component_brand_appointment_tab_content + _component_brand_works_tab_content + _component_brand_reviews_tab_content + _component_brand_portfolio_section)();
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
@@ -234,7 +234,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, $data.activeTab === "appointment" ? {
     w: common_vendor.o((...args) => $options.handleBooking && $options.handleBooking(...args))
   } : {}, {
-    x: $data.activeTab === "reviews" ? 1 : ""
+    x: $data.activeTab === "reviews" ? 1 : "",
+    y: $data.activeTab === "works" || $data.activeTab === "service" ? 1 : ""
   });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-464bd95a"]]);

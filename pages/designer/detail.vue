@@ -7,7 +7,7 @@
 		<designer-detail-header></designer-detail-header>
 		
 		<!-- 主内容区域 -->
-		<view class="main-content" :class="{ 'reviews-fullwidth': activeTab === 'reviews' }">
+		<view class="main-content" :class="{ 'reviews-fullwidth': activeTab === 'reviews', 'no-bottom-padding': activeTab === 'works' || activeTab === 'service' }">
 			<!-- 设计师信息卡片 -->
 			<designer-info-card
 				:designer-info="designerInfo"
@@ -279,12 +279,13 @@ export default {
 	box-sizing: border-box;
 	margin-top: -200rpx;
 	z-index: 5;
+	
+	&.no-bottom-padding {
+		padding-bottom: 20rpx;
+	}
 }
 
-.main-content.reviews-fullwidth {
-	padding-left: 0;
-	padding-right: 0;
-}
+
 
 .tabs-wrapper {
 	width: 100vw;
@@ -374,6 +375,11 @@ export default {
 	font-size: 22rpx;
 	line-height: 28rpx;
 	color: #a6a6a6;
+	
+	.sub-tab-item.active & {
+		color: #333333;
+		font-weight: 500;
+	}
 }
 
 .tab-content-wrapper {

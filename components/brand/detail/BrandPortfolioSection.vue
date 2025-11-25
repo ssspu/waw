@@ -381,7 +381,7 @@ export default {
 		handleViewMoreReviews() {
 			// 跳转到评价详情页
 			uni.navigateTo({
-				url: '/pages/designer/reviews'
+				url: '/pages/brand/reviews'
 			})
 		},
 		handleViewMoreQA() {

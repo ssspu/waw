@@ -178,7 +178,7 @@
   gap: 6rpx;
 }
 .price-symbol.data-v-d3c57a56 {
-  font-size: 28rpx;
+  font-size: 32rpx;
   font-family: "PingFang_SC-Semibold", Helvetica;
   font-weight: normal;
   color: #333333;
@@ -187,7 +187,7 @@
   font-family: "FZChaoCuHei-M10T-Regular", Helvetica;
   font-weight: normal;
   color: #333333;
-  font-size: 36rpx;
+  font-size: 34rpx;
   white-space: nowrap;
 }
 .discount-badge.data-v-d3c57a56 {
@@ -283,7 +283,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 30rpx;
+  gap: 16rpx;
   padding: 0 20rpx;
   width: 100%;
   box-sizing: border-box;
@@ -296,7 +296,7 @@
   min-width: 0;
   box-sizing: border-box;
   cursor: pointer;
-  padding: 12rpx 0;
+  padding: 8rpx 0;
 }
 .brand-info.data-v-d3c57a56 {
   display: flex;
@@ -304,8 +304,8 @@
   gap: 20rpx;
 }
 .brand-radio.data-v-d3c57a56 {
-  width: 44rpx;
-  height: 44rpx;
+  width: 36rpx;
+  height: 36rpx;
   border-radius: 50%;
   border: 2rpx solid #e5e5e5;
   background-color: #ffffff;
@@ -319,8 +319,8 @@
   background-color: #333333;
 }
 .check-icon.data-v-d3c57a56 {
-  width: 24rpx;
-  height: 24rpx;
+  width: 20rpx;
+  height: 20rpx;
   filter: brightness(0) invert(1);
 }
 .brand-icon.data-v-d3c57a56 {
@@ -331,7 +331,7 @@
   font-family: "PingFang_SC-Regular", Helvetica;
   font-weight: normal;
   color: #333333;
-  font-size: 26rpx;
+  font-size: 24rpx;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -339,10 +339,19 @@
 }
 .brand-price.data-v-d3c57a56 {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
+  gap: 4rpx;
+}
+.brand-price .price-symbol.data-v-d3c57a56 {
+  font-size: 26rpx;
+  color: #333333;
+}
+.brand-price .price-value.data-v-d3c57a56 {
+  font-size: 32rpx;
+  color: #333333;
 }
 .book-btn-large.data-v-d3c57a56 {
-  height: 88rpx;
+  height: 78rpx;
   width: 100%;
   padding: 0;
   background-color: #333333;
@@ -357,7 +366,7 @@
   font-family: "PingFang_SC-Semibold", Helvetica;
   font-weight: normal;
   color: #ffa77b;
-  font-size: 32rpx;
+  font-size: 26rpx;
 }
 
 /* 动画 */

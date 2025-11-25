@@ -234,7 +234,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, $data.activeTab === "appointment" ? {
     w: common_vendor.o((...args) => $options.handleBooking && $options.handleBooking(...args))
   } : {}, {
-    x: $data.activeTab === "reviews" ? 1 : ""
+    x: $data.activeTab === "reviews" ? 1 : "",
+    y: $data.activeTab === "works" || $data.activeTab === "service" ? 1 : ""
   });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-d0e7643f"]]);
