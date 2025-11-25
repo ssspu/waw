@@ -1,5 +1,5 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [ 
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -36,15 +36,78 @@
 				"navigationBarBackgroundColor": "#f2f2f2"
 			}
 		},
-		{
-			"path": "pages/mine/index",
-			"style": {
-				"navigationBarTitleText": "我的",
-				"navigationStyle": "custom",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#f2f2f2"
-			}
-		},
+	{
+		"path": "pages/mine/index",
+		"style": {
+			"navigationBarTitleText": "我的",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/mine/customer-service",
+		"style": {
+			"navigationBarTitleText": "客服中心",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/mine/asset",
+		"style": {
+			"navigationBarTitleText": "资产收入",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/mine/asset-detail",
+		"style": {
+			"navigationBarTitleText": "我的资产",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/mine/qr-code-card",
+		"style": {
+			"navigationBarTitleText": "二维码名片",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/mine/apply-settlement",
+		"style": {
+			"navigationBarTitleText": "我要合作",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/mine/designer-settlement",
+		"style": {
+			"navigationBarTitleText": "入驻申请",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/mine/store-settlement",
+		"style": {
+			"navigationBarTitleText": "入驻申请",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
 		{
 			"path": "pages/order/index",
 			"style": {
@@ -118,6 +181,24 @@
 		}
 	},
 	{
+		"path": "pages/setting/edit-phone",
+		"style": {
+			"navigationBarTitleText": "添加手机号",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/setting/edit-password",
+		"style": {
+			"navigationBarTitleText": "修改登录密码",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
 		"path": "pages/setting/apply-certification",
 		"style": {
 			"navigationBarTitleText": "申请认证",
@@ -130,6 +211,15 @@
 		"path": "pages/setting/address-management",
 		"style": {
 			"navigationBarTitleText": "收货地址",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/setting/edit-address",
+		"style": {
+			"navigationBarTitleText": "编辑收货地址",
 			"navigationStyle": "custom",
 			"navigationBarTextStyle": "black",
 			"navigationBarBackgroundColor": "#f2f2f2"
@@ -175,6 +265,24 @@
 		"path": "pages/setting/agreement",
 		"style": {
 			"navigationBarTitleText": "协议与条款",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/setting/bank-cards",
+		"style": {
+			"navigationBarTitleText": "银行卡",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/setting/add-bank-card",
+		"style": {
+			"navigationBarTitleText": "添加银行卡",
 			"navigationStyle": "custom",
 			"navigationBarTextStyle": "black",
 			"navigationBarBackgroundColor": "#f2f2f2"

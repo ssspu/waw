@@ -64,6 +64,9 @@ export default {
 		handleItemClick(item) {
 			console.log('Edit:', item.label)
 			// 根据不同的支付设置项打开对应的页面
+			if (item.label === '银行卡') {
+				uni.navigateTo({ url: '/pages/setting/bank-cards' })
+			}
 		},
 		handleUnbindCard(card) {
 			uni.showModal({

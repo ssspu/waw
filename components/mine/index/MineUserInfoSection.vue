@@ -97,7 +97,9 @@ export default {
 		},
 		handleQrClick() {
 			console.log('QR code clicked')
-			// 可以弹出二维码大图或分享等功能
+			uni.navigateTo({
+				url: '/pages/mine/qr-code-card'
+			})
 		}
 	}
 }
