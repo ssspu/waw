@@ -187,21 +187,20 @@ export default {
 	align-items: center;
 	justify-content: center;
 	padding: 16rpx 0;
-}
 	background-color: #f6f6f6;
 	border-radius: 8rpx;
 	border: 2rpx solid #f6f6f6;
-	
+
 	&.available {
 		background-color: #f6f6f6;
 		border: 2rpx solid #f6f6f6;
 	}
-	
+
 	&.selected {
 		background-color: #ffffff;
 		border: 3rpx solid #333333;
 	}
-	
+
 	&.booked {
 		background-color: #ffffff;
 		border: 2rpx solid #f6f6f6;
