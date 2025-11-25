@@ -150,9 +150,17 @@ export default {
 			if (item.label === '优惠券') {
 				uni.navigateTo({ url: '/pages/coupon/index' })
 			}
+			// 点击资产跳转到资产页面
+			if (item.label === '资产') {
+				uni.navigateTo({ url: '/pages/mine/asset' })
+			}
 		},
 		handleSettlementItemClick(item) {
 			console.log('Settlement item clicked:', item)
+			// 点击我要入驻跳转到申请入驻页面
+			if (item.label === '我要入驻') {
+				uni.navigateTo({ url: '/pages/mine/apply-settlement' })
+			}
 			// 点击个人设置跳转到设置页面
 			if (item.label === '个人设置') {
 				uni.navigateTo({ url: '/pages/setting/index' })

@@ -93,7 +93,7 @@ export default {
 	},
 	methods: {
 		handleEditAddress(address) {
-			console.log('Edit address:', address.id)
+			uni.navigateTo({ url: `/pages/setting/edit-address?id=${address.id}` })
 		},
 		handleDeleteAddress(address) {
 			uni.showModal({
@@ -107,7 +107,7 @@ export default {
 			})
 		},
 		handleAddAddress() {
-			console.log('Add new address')
+			uni.navigateTo({ url: '/pages/setting/edit-address' })
 		}
 	}
 }

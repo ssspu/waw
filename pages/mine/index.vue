@@ -13,44 +13,23 @@
 		<!-- 圆角背景 -->
 		<view class="rounded-bg"></view>
 		
+		<!-- 客服按钮 - 独立在页面左上角 -->
+		<button class="customer-service-btn" @tap="handleCustomerService">
+			<image 
+				class="customer-service-icon" 
+				src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-1881.svg" 
+				mode="aspectFit"
+			></image>
+		</button>
+		
 		<!-- 自定义导航栏 -->
 		<view class="custom-navbar">
-			<view class="status-header">
-				<text class="time">9:41</text>
-				<view class="status-icons">
-					<image 
-						class="status-icon" 
-						src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/cellular-connection.svg" 
-						mode="aspectFit"
-					></image>
-					<image 
-						class="status-icon" 
-						src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/wifi.svg" 
-						mode="aspectFit"
-					></image>
-					<image 
-						class="status-icon" 
-						src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/battery.png" 
-						mode="aspectFit"
-					></image>
-				</view>
-			</view>
-			
 			<!-- Logo -->
 			<image 
 				class="logo" 
 				src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/group-7.png" 
 				mode="aspectFit"
 			></image>
-			
-			<!-- 导航按钮 -->
-			<view class="nav-btn">
-				<image 
-					class="nav-icon" 
-					src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-1881.svg" 
-					mode="aspectFit"
-				></image>
-			</view>
 			
 			<!-- 装饰图片 -->
 			<image 
@@ -84,6 +63,24 @@ export default {
 		MineMenuSection,
 		MineProfileSection,
 		MineDashboardSection
+	},
+	methods: {
+		handleCustomerService(e) {
+			console.log('Customer service button clicked', e)
+			uni.showToast({ title: '点击了客服按钮', icon: 'none', duration: 2000 })
+			setTimeout(() => {
+				uni.navigateTo({ 
+					url: '/pages/mine/customer-service',
+					success: () => {
+						console.log('Navigate to customer service success')
+					},
+					fail: (err) => {
+						console.error('Navigate to customer service failed:', err)
+						uni.showToast({ title: '页面跳转失败: ' + JSON.stringify(err), icon: 'none', duration: 3000 })
+					}
+				})
+			}, 100)
+		}
 	}
 }
 </script>
@@ -135,38 +132,6 @@ export default {
 	z-index: 10;
 }
 
-.status-header {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 88rpx;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 0 32rpx;
-	box-sizing: border-box;
-}
-
-.time {
-	font-family: 'Inter', Helvetica;
-	font-size: 28rpx;
-	color: #333333;
-	font-weight: normal;
-}
-
-.status-icons {
-	display: flex;
-	align-items: center;
-	gap: 8rpx;
-}
-
-.status-icon {
-	width: 32rpx;
-	height: 22rpx;
-	flex-shrink: 0;
-}
-
 .logo {
 	position: absolute;
 	top: 62rpx;
@@ -176,16 +141,31 @@ export default {
 	z-index: 10;
 }
 
-.nav-btn {
-	position: absolute;
+.customer-service-btn {
+	position: fixed;
 	top: 102rpx;
 	left: 30rpx;
-	z-index: 10;
-}
-
-.nav-icon {
+	z-index: 9999;
 	width: 138rpx;
 	height: 60rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	margin: 0;
+	border: none;
+	background-color: transparent;
+	line-height: 1;
+}
+
+.customer-service-btn::after {
+	border: none;
+}
+
+.customer-service-icon {
+	width: 138rpx;
+	height: 60rpx;
+	pointer-events: none;
 }
 
 .decoration-image {

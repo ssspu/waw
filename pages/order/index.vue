@@ -14,22 +14,7 @@
 					</view>
 					<text class="nav-title">服务订单</text>
 				</view>
-				<view class="nav-right">
-					<view class="action-btn" @tap="handleMore">
-						<text class="action-text">⋮</text>
-					</view>
-					<view class="action-btn" @tap="handleCircle">
-						<text class="action-text">○</text>
-					</view>
-				</view>
 			</view>
-			
-			<!-- Logo -->
-			<image 
-				class="logo" 
-				src="https://c.animaapp.com/mi5lwlq8FxTpMa/img/group-8.png" 
-				mode="aspectFit"
-			></image>
 		</view>
 		
 		<!-- Tab导航栏 -->
@@ -136,14 +121,7 @@ export default {
 	font-weight: 500;
 	color: #666666;
 	font-size: 30rpx;
-}
-
-.nav-right {
-	display: flex;
-	align-items: center;
-	gap: 32rpx;
-}
-
+}	
 .action-btn {
 	display: flex;
 	align-items: center;
