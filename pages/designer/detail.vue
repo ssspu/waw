@@ -22,6 +22,7 @@
 				@phone="handlePhone"
 				@navigation="handleNavigation"
 				@share="handleShare"
+				@coupon-click="showCouponPopup = true"
 			></designer-info-card>
 			
 		<!-- Tab切换 -->
@@ -88,6 +89,12 @@
 			</view>
 		</view>
 		
+		<!-- 优惠券弹窗 -->
+		<coupon-popup 
+			:visible="showCouponPopup" 
+			@close="showCouponPopup = false"
+			@claim="handleClaimCoupon"
+		></coupon-popup>
 	</view>
 </template>
 
@@ -100,6 +107,7 @@ import DesignerAppointmentTabContent from '../../components/designer/detail/Desi
 import DesignerWorksTabContent from '../../components/DesignerWorksTabContent.vue'
 import DesignerReviewsTabContent from '../../components/DesignerReviewsTabContent.vue'
 import DesignerPortfolioSection from '../../components/designer/detail/DesignerPortfolioSection.vue'
+import CouponPopup from '../../components/popup/CouponPopup.vue'
 
 export default {
 	components: {
@@ -110,7 +118,8 @@ export default {
 		DesignerAppointmentTabContent,
 		DesignerWorksTabContent,
 		DesignerReviewsTabContent,
-		DesignerPortfolioSection
+		DesignerPortfolioSection,
+		CouponPopup
 	},
 	onLoad(options) {
 		// 可以从options中获取设计师ID等信息
@@ -136,6 +145,7 @@ export default {
 	data() {
 		return {
 			activeTab: 'service',
+			showCouponPopup: false,
 			activeSubTabs: {
 				service: 'hair-service',
 				appointment: 'today',
@@ -257,6 +267,10 @@ export default {
 		},
 		handleBooking() {
 			console.log('Booking clicked')
+		},
+		handleClaimCoupon(coupon) {
+			console.log('Claim coupon:', coupon)
+			uni.showToast({ title: '领取成功', icon: 'success' })
 		}
 	}
 }

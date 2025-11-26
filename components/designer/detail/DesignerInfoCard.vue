@@ -124,7 +124,7 @@
 				<view class="separator-line"></view>
 				
 				<!-- 优惠信息 -->
-				<view class="promotions">
+				<view class="promotions" @tap="handleCouponClick">
 					<image class="promo-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-5.svg" mode="aspectFit"></image>
 					<view class="promo-badges">
 						<view 
@@ -232,6 +232,9 @@ export default {
 		},
 		handleShare() {
 			this.$emit('share')
+		},
+		handleCouponClick() {
+			this.$emit('coupon-click')
 		}
 	}
 }

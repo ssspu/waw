@@ -13,6 +13,20 @@ const _sfc_main = {
       activeSubTab: "hairstylist",
       activeBrandTab: "hair",
       avatarImage: "/static/avatar/avatar.png",
+      designerSubTabs: [
+        { id: "hairstylist", label: "美发师" },
+        { id: "beautician", label: "美容师" },
+        { id: "makeup", label: "化妆师" },
+        { id: "nail", label: "美甲师" },
+        { id: "body", label: "美体师" }
+      ],
+      brandSubTabs: [
+        { id: "hair", label: "美发" },
+        { id: "beauty", label: "美容" },
+        { id: "makeup", label: "化妆" },
+        { id: "nail", label: "美甲" },
+        { id: "body", label: "美体" }
+      ],
       brandCards: [
         {
           headerInfo: ["2025-05-05", "｜", "洗剪吹", "｜", "欧莱雅生化烫"],
@@ -71,10 +85,10 @@ const _sfc_main = {
       common_vendor.index.navigateBack();
     },
     handleMore() {
-      common_vendor.index.__f__("log", "at pages/territory/index.vue:312", "More clicked");
+      common_vendor.index.__f__("log", "at pages/territory/index.vue:277", "More clicked");
     },
     handleRadio() {
-      common_vendor.index.__f__("log", "at pages/territory/index.vue:315", "Radio clicked");
+      common_vendor.index.__f__("log", "at pages/territory/index.vue:280", "Radio clicked");
     },
     handleTopTabChange(tabId) {
       this.activeTopTab = tabId;
@@ -92,21 +106,20 @@ const _sfc_main = {
       this.showShareModal = false;
     },
     handleShare(type) {
-      common_vendor.index.__f__("log", "at pages/territory/index.vue:333", "Share via:", type);
+      common_vendor.index.__f__("log", "at pages/territory/index.vue:298", "Share via:", type);
       this.showShareModal = false;
     },
     handleBookAgain() {
-      common_vendor.index.__f__("log", "at pages/territory/index.vue:337", "Book again clicked");
+      common_vendor.index.__f__("log", "at pages/territory/index.vue:302", "Book again clicked");
     },
     handleMore() {
-      common_vendor.index.__f__("log", "at pages/territory/index.vue:340", "More clicked");
+      common_vendor.index.__f__("log", "at pages/territory/index.vue:305", "More clicked");
     }
   }
 };
 if (!Array) {
-  const _component_territory_header_section = common_vendor.resolveComponent("territory-header-section");
   const _component_territory_service_list_section = common_vendor.resolveComponent("territory-service-list-section");
-  (_component_territory_header_section + _component_territory_service_list_section)();
+  _component_territory_service_list_section();
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
@@ -121,41 +134,35 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     i: common_vendor.o(($event) => $options.handleTopTabChange("brand")),
     j: $data.activeTopTab === "designer"
   }, $data.activeTopTab === "designer" ? {
-    k: common_vendor.o($options.handleTopTabChange),
-    l: common_vendor.o($options.handleSubTabChange),
-    m: common_vendor.p({
-      ["active-top-tab"]: $data.activeTopTab,
-      ["active-sub-tab"]: $data.activeSubTab
+    k: common_vendor.f($data.designerSubTabs, (tab, k0, i0) => {
+      return common_vendor.e({
+        a: common_vendor.t(tab.label),
+        b: $data.activeSubTab === tab.id ? 1 : "",
+        c: $data.activeSubTab === tab.id
+      }, $data.activeSubTab === tab.id ? {} : {}, {
+        d: tab.id,
+        e: $data.activeSubTab === tab.id ? 1 : "",
+        f: common_vendor.o(($event) => $options.handleSubTabChange(tab.id), tab.id)
+      });
     })
-  } : {}, {
+  } : {
+    l: common_vendor.f($data.brandSubTabs, (tab, k0, i0) => {
+      return common_vendor.e({
+        a: common_vendor.t(tab.label),
+        b: $data.activeBrandTab === tab.id ? 1 : "",
+        c: $data.activeBrandTab === tab.id
+      }, $data.activeBrandTab === tab.id ? {} : {}, {
+        d: tab.id,
+        e: $data.activeBrandTab === tab.id ? 1 : "",
+        f: common_vendor.o(($event) => $options.handleBrandTabChange(tab.id), tab.id)
+      });
+    })
+  }, {
+    m: $data.activeTopTab === "designer"
+  }, $data.activeTopTab === "designer" ? {} : {}, {
     n: $data.activeTopTab === "brand"
-  }, $data.activeTopTab === "brand" ? common_vendor.e({
-    o: $data.activeBrandTab === "hair" ? 1 : "",
-    p: $data.activeBrandTab === "hair"
-  }, $data.activeBrandTab === "hair" ? {} : {}, {
-    q: $data.activeBrandTab === "hair" ? 1 : "",
-    r: common_vendor.o(($event) => $options.handleBrandTabChange("hair")),
-    s: $data.activeBrandTab === "beauty" ? 1 : "",
-    t: $data.activeBrandTab === "beauty"
-  }, $data.activeBrandTab === "beauty" ? {} : {}, {
-    v: $data.activeBrandTab === "beauty" ? 1 : "",
-    w: common_vendor.o(($event) => $options.handleBrandTabChange("beauty")),
-    x: $data.activeBrandTab === "makeup" ? 1 : "",
-    y: $data.activeBrandTab === "makeup"
-  }, $data.activeBrandTab === "makeup" ? {} : {}, {
-    z: $data.activeBrandTab === "makeup" ? 1 : "",
-    A: common_vendor.o(($event) => $options.handleBrandTabChange("makeup")),
-    B: $data.activeBrandTab === "nail" ? 1 : "",
-    C: $data.activeBrandTab === "nail"
-  }, $data.activeBrandTab === "nail" ? {} : {}, {
-    D: $data.activeBrandTab === "nail" ? 1 : "",
-    E: common_vendor.o(($event) => $options.handleBrandTabChange("nail")),
-    F: $data.activeBrandTab === "body" ? 1 : "",
-    G: $data.activeBrandTab === "body"
-  }, $data.activeBrandTab === "body" ? {} : {}, {
-    H: $data.activeBrandTab === "body" ? 1 : "",
-    I: common_vendor.o(($event) => $options.handleBrandTabChange("body")),
-    J: common_vendor.f($data.brandCards, (card, index, i0) => {
+  }, $data.activeTopTab === "brand" ? {
+    o: common_vendor.f($data.brandCards, (card, index, i0) => {
       return {
         a: common_vendor.f(card.headerInfo, (item, idx, i1) => {
           return {
@@ -183,8 +190,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         n: index
       };
     }),
-    K: `url(${$data.avatarImage})`
-  }) : {});
+    p: `url(${$data.avatarImage})`
+  } : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-8e3d1bd9"]]);
 wx.createPage(MiniProgramPage);

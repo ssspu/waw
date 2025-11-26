@@ -22,6 +22,7 @@
 				@phone="handlePhone"
 				@navigation="handleNavigation"
 				@share="handleShare"
+				@coupon-click="showCouponPopup = true"
 			></brand-info-card>
 			
 		<!-- Tab切换 -->
@@ -88,6 +89,12 @@
 			</view>
 		</view>
 		
+		<!-- 优惠券弹窗 -->
+		<coupon-popup 
+			:visible="showCouponPopup" 
+			@close="showCouponPopup = false"
+			@claim="handleClaimCoupon"
+		></coupon-popup>
 	</view>
 </template>
 
@@ -101,6 +108,7 @@ import BrandAppointmentTabContent from '../../components/brand/detail/BrandAppoi
 import BrandWorksTabContent from '../../components/BrandWorksTabContent.vue'
 import BrandReviewsTabContent from '../../components/BrandReviewsTabContent.vue'
 import BrandPortfolioSection from '../../components/brand/detail/BrandPortfolioSection.vue'
+import CouponPopup from '../../components/popup/CouponPopup.vue'
 // 导入品牌馆数据
 import brandData from './brand-data.js'
 
@@ -114,7 +122,8 @@ export default {
 		BrandAppointmentTabContent,
 		BrandWorksTabContent,
 		BrandReviewsTabContent,
-		BrandPortfolioSection
+		BrandPortfolioSection,
+		CouponPopup
 	},
 	onLoad(options) {
 		// 可以从options中获取品牌ID等信息
@@ -131,6 +140,7 @@ export default {
 		return {
 			brandId: null,
 			activeTab: 'service',
+			showCouponPopup: false,
 			activeSubTabs: {
 				service: 'hair',
 				appointment: 'hair-service',
@@ -234,6 +244,10 @@ export default {
 		},
 		handleBooking() {
 			console.log('Booking clicked')
+		},
+		handleClaimCoupon(coupon) {
+			console.log('Claim coupon:', coupon)
+			uni.showToast({ title: '领取成功', icon: 'success' })
 		}
 	}
 }

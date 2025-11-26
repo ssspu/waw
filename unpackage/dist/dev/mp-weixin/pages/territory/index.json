@@ -4,7 +4,6 @@
   "navigationBarTextStyle": "black",
   "navigationBarBackgroundColor": "#f2f2f2",
   "usingComponents": {
-    "territory-header-section": "../../components/territory/index/TerritoryHeaderSection",
     "territory-service-list-section": "../../components/territory/index/TerritoryServiceListSection"
   }
 }
