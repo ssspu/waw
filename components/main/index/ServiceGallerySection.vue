@@ -1,7 +1,7 @@
 <template>
 	<view class="service-gallery-section">
 		<!-- 分类标题 -->
-		<view class="category-header">
+		<view v-if="showCategoryHeader" class="category-header">
 			<image class="header-icon" src="https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-2.svg" mode="aspectFit"></image>
 			<text class="header-title">优服务</text>
 		</view>
@@ -63,6 +63,12 @@
 
 <script>
 export default {
+	props: {
+		showCategoryHeader: {
+			type: Boolean,
+			default: true
+		}
+	},
 	data() {
 		return {
 			serviceCards: [

@@ -1,5 +1,6 @@
 <template>
 	<view class="apply-settlement-page">
+		<view class="status-bar-space"></view>
 		<!-- 状态栏 -->
 		<view class="status-bar"></view>
 		

@@ -5,8 +5,7 @@ const _sfc_main = {
     return {
       statsData: [
         { value: "1244", label: "关注" },
-        { value: "123", label: "粉丝" },
-        { value: "234", label: "问答" },
+        { value: "234", label: "浏览" },
         { value: "1245", label: "收藏" }
       ],
       territoryAvatars: [
@@ -20,27 +19,42 @@ const _sfc_main = {
     };
   },
   methods: {
-    handleEdit() {
-      common_vendor.index.__f__("log", "at components/mine/index/MineUserInfoSection.vue:93", "Edit clicked");
+    handleStatClick(stat) {
+      if (stat.label === "关注") {
+        common_vendor.index.navigateTo({ url: "/pages/mine/follow-list" });
+      } else if (stat.label === "浏览") {
+        common_vendor.index.navigateTo({ url: "/pages/mine/browse-records" });
+      } else if (stat.label === "收藏") {
+        common_vendor.index.navigateTo({ url: "/pages/mine/favorites" });
+      }
     },
     handleTerritoryClick() {
       common_vendor.index.navigateTo({ url: "/pages/territory/index" });
     },
     handleQrClick() {
-      common_vendor.index.__f__("log", "at components/mine/index/MineUserInfoSection.vue:99", "QR code clicked");
+      common_vendor.index.__f__("log", "at components/mine/index/MineUserInfoSection.vue:102", "QR code clicked");
+      common_vendor.index.navigateTo({
+        url: "/pages/mine/qr-code-card"
+      });
+    },
+    handleVipClick() {
+      common_vendor.index.navigateTo({
+        url: "/pages/mine/vip"
+      });
     }
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_vendor.f($data.statsData, (stat, index, i0) => {
+    a: common_vendor.o((...args) => $options.handleVipClick && $options.handleVipClick(...args)),
+    b: common_vendor.f($data.statsData, (stat, index, i0) => {
       return {
         a: common_vendor.t(stat.value),
         b: common_vendor.t(stat.label),
-        c: index
+        c: index,
+        d: common_vendor.o(($event) => $options.handleStatClick(stat), index)
       };
     }),
-    b: common_vendor.o((...args) => $options.handleEdit && $options.handleEdit(...args)),
     c: common_vendor.f($data.territoryAvatars, (avatar, index, i0) => {
       return {
         a: index,
@@ -48,8 +62,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         c: index > 0 ? "-20rpx" : "0"
       };
     }),
-    d: common_vendor.o((...args) => $options.handleQrClick && $options.handleQrClick(...args)),
-    e: common_vendor.o((...args) => $options.handleTerritoryClick && $options.handleTerritoryClick(...args))
+    d: common_vendor.o((...args) => $options.handleTerritoryClick && $options.handleTerritoryClick(...args))
   };
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-012df707"]]);

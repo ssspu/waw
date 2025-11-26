@@ -1,5 +1,6 @@
 <template>
 	<view class="setting-detail-page">
+		<view class="status-bar-space"></view>
 		<SettingDetailHeader title="修改登录密码" />
 
 		<view class="main-content">

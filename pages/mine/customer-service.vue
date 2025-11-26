@@ -1,5 +1,6 @@
 <template>
 	<view class="customer-service-page">
+		<view class="status-bar-space"></view>
 		<!-- 自定义头部 -->
 		<view class="custom-header">
 			<view class="navbar-content">
@@ -182,17 +183,6 @@ export default {
 	flex-shrink: 0;
 }
 
-.nav-title {
-	position: absolute;
-	left: 50%;
-	top: 88rpx;
-	transform: translateX(-50%);
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 500;
-	color: #1d1d1f;
-	font-size: 32rpx;
-	text-align: center;
-}
 
 .nav-right {
 	display: flex;

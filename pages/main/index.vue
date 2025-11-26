@@ -27,7 +27,7 @@
 				</view>
 				<view class="nav-bar-right">
 					<!-- 搜索栏 -->
-					<view class="search-bar">
+					<view class="search-bar" @tap="handleSearchClick">
 						<image class="search-icon" :src="currentBadgeIcon" mode="aspectFit"></image>
 						<text class="search-text">{{ currentTabLabel }}</text>
 					</view>
@@ -165,6 +165,11 @@ export default {
 		},
 		switchTab(value) {
 			this.activeTab = value
+		},
+		handleSearchClick() {
+			uni.navigateTo({
+				url: '/pages/main/search'
+			})
 		}
 	}
 }
@@ -246,13 +251,6 @@ export default {
 	height: 32rpx;
 }
 
-.nav-title {
-	font-family: 'DIN_Black-Regular', Helvetica;
-	font-size: 30rpx;
-	color: #ffffff;
-	font-weight: normal;
-	white-space: nowrap;
-}
 
 .logo-group {
 	width: 256rpx;
@@ -302,6 +300,9 @@ export default {
 	gap: 4rpx;
 	border: 0;
 	white-space: nowrap;
+	cursor: pointer;
+	position: relative;
+	z-index: 10;
 }
 
 .search-icon {

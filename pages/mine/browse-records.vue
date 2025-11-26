@@ -1,6 +1,6 @@
 <template>
 	<view class="browse-record-page">
-		<view class="status-bar"></view>
+		<view class="status-bar-space"></view>
 		<view class="navbar">
 			<view class="navbar-content">
 				<view class="back-btn" @tap="handleBack">
@@ -205,10 +205,6 @@ export default {
 	background-color: #f2f2f2;
 	display: flex;
 	flex-direction: column;
-}
-
-.status-bar {
-	height: var(--status-bar-height, 44rpx);
 }
 
 .navbar {

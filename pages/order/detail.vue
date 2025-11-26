@@ -1,5 +1,6 @@
 <template>
 	<view class="order-detail-page">
+		<view class="status-bar-space"></view>
 
 		
 		<!-- 导航栏 -->

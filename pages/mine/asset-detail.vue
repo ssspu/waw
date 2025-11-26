@@ -1,7 +1,7 @@
 <template>
 	<view class="asset-detail-page">
+		<view class="status-bar-space"></view>
 		<!-- 状态栏 -->
-		<view class="status-bar"></view>
 		
 		<!-- 导航栏 -->
 		<view class="navbar">
@@ -104,10 +104,6 @@ export default {
 	position: relative;
 }
 
-.status-bar {
-	height: 44rpx;
-	width: 100%;
-}
 
 .navbar {
 	position: relative;

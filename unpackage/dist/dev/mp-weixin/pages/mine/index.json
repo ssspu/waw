@@ -5,7 +5,6 @@
   "navigationBarBackgroundColor": "#f2f2f2",
   "usingComponents": {
     "mine-user-info-section": "../../components/mine/index/MineUserInfoSection",
-    "mine-menu-section": "../../components/mine/index/MineMenuSection",
     "mine-profile-section": "../../components/mine/index/MineProfileSection",
     "mine-dashboard-section": "../../components/mine/index/MineDashboardSection"
   }

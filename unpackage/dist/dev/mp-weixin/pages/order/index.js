@@ -22,10 +22,10 @@ const _sfc_main = {
       common_vendor.index.navigateBack();
     },
     handleMore() {
-      common_vendor.index.__f__("log", "at pages/order/index.vue:77", "More clicked");
+      common_vendor.index.__f__("log", "at pages/order/index.vue:63", "More clicked");
     },
     handleCircle() {
-      common_vendor.index.__f__("log", "at pages/order/index.vue:80", "Circle clicked");
+      common_vendor.index.__f__("log", "at pages/order/index.vue:66", "Circle clicked");
     },
     handleTabChange(tabId) {
       this.activeTab = tabId;
@@ -40,13 +40,11 @@ if (!Array) {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_vendor.o((...args) => $options.goBack && $options.goBack(...args)),
-    b: common_vendor.o((...args) => $options.handleMore && $options.handleMore(...args)),
-    c: common_vendor.o((...args) => $options.handleCircle && $options.handleCircle(...args)),
-    d: common_vendor.o($options.handleTabChange),
-    e: common_vendor.p({
+    b: common_vendor.o($options.handleTabChange),
+    c: common_vendor.p({
       ["active-tab"]: $data.activeTab
     }),
-    f: common_vendor.p({
+    d: common_vendor.p({
       ["active-tab"]: $data.activeTab
     })
   };

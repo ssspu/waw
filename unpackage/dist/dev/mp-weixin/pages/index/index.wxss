@@ -23,6 +23,11 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.status-bar-space.data-v-1cf27b2a {
+  height: 88rpx;
+  width: 100%;
+  background-color: #ffffff;
+}
 .screen.data-v-1cf27b2a {
   width: 100%;
   background-color: #f2f2f2;
@@ -77,6 +82,7 @@
   display: flex;
   align-items: center;
   box-sizing: border-box;
+  cursor: pointer;
 }
 .badge-content.data-v-1cf27b2a {
   display: flex;

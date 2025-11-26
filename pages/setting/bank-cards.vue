@@ -1,5 +1,6 @@
 <template>
 	<view class="setting-detail-page">
+		<view class="status-bar-space"></view>
 		<SettingDetailHeader title="银行卡" />
 		
 		<view class="main-content">

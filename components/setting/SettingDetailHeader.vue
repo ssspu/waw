@@ -42,8 +42,7 @@ export default {
 .navbar-content {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	padding: 88rpx 32rpx 24rpx;
+	padding: 24rpx 32rpx;
 	box-sizing: border-box;
 }
 
@@ -69,18 +68,5 @@ export default {
 	flex-shrink: 0;
 }
 
-.nav-title {
-	margin-top: 30rpx;
-	margin-left: -240rpx;
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 500;
-	color: #666666;
-	font-size: 30rpx;
-	text-align: center;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-}
 </style>
 

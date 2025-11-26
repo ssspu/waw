@@ -1,5 +1,6 @@
 <template>
 	<view class="order-page">
+		<view class="status-bar-space"></view>
 		<!-- 自定义导航栏 -->
 		<view class="custom-header">
 			<!-- 导航栏内容 -->
@@ -116,12 +117,6 @@ export default {
 	flex-shrink: 0;
 }
 
-.nav-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 500;
-	color: #666666;
-	font-size: 30rpx;
-}	
 .action-btn {
 	display: flex;
 	align-items: center;

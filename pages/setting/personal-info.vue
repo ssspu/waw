@@ -1,5 +1,6 @@
 <template>
 	<view class="setting-detail-page">
+		<view class="status-bar-space"></view>
 		<SettingDetailHeader title="个人信息" />
 		
 		<view class="main-content">

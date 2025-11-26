@@ -189,18 +189,6 @@ export default {
 	justify-content: center;
 }
 
-.nav-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 500;
-	color: #333333;
-	font-size: 32rpx;
-	text-align: center;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-}
-
 .nav-right {
 	position: absolute;
 	right: 30rpx;

@@ -23,6 +23,11 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.status-bar-space.data-v-59672890 {
+  height: 88rpx;
+  width: 100%;
+  background-color: #ffffff;
+}
 .coupon-page.data-v-59672890 {
   width: 100%;
   min-height: 100vh;
@@ -101,17 +106,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.nav-title.data-v-59672890 {
-  font-family: "PingFang_SC-Medium", Helvetica;
-  font-weight: 500;
-  color: #333333;
-  font-size: 32rpx;
-  text-align: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 .nav-right.data-v-59672890 {
   position: absolute;

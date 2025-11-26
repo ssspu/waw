@@ -23,6 +23,11 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.status-bar-space.data-v-17a44f9d {
+  height: 88rpx;
+  width: 100%;
+  background-color: #ffffff;
+}
 .order-page.data-v-17a44f9d {
   width: 100%;
   min-height: 100vh;
@@ -60,17 +65,6 @@
   width: 32rpx;
   height: 32rpx;
   flex-shrink: 0;
-}
-.nav-title.data-v-17a44f9d {
-  font-family: "PingFang_SC-Medium", Helvetica;
-  font-weight: 500;
-  color: #666666;
-  font-size: 30rpx;
-}
-.nav-right.data-v-17a44f9d {
-  display: flex;
-  align-items: center;
-  gap: 32rpx;
 }
 .action-btn.data-v-17a44f9d {
   display: flex;

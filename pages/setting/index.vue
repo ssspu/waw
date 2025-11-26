@@ -1,30 +1,8 @@
 <template>
 	<view class="setting-page">
+		<view class="status-bar-space"></view>
 		<!-- 自定义导航栏 -->
 		<view class="custom-header">
-			<!-- 状态栏 -->
-			<!-- <view class="status-bar">
-				<text class="time">9:41</text>
-				<view class="status-icons">
-					<image 
-						class="status-icon" 
-						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/cellular-connection.svg" 
-						mode="aspectFit"
-					></image>
-					<image 
-						class="status-icon" 
-						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/wifi.svg" 
-						mode="aspectFit"
-					></image>
-					<image 
-						class="status-icon" 
-						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/battery.png" 
-						mode="aspectFit"
-					></image>
-				</view>
-			</view> -->
-			
-			<!-- 导航栏内容 -->
 			<view class="navbar-content">
 				<view class="nav-left">
 					<view class="back-btn" @tap="goBack">
@@ -277,8 +255,7 @@ export default {
 .navbar-content {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	padding: 88rpx 32rpx 24rpx;
+	padding: 24rpx 32rpx;
 	box-sizing: border-box;
 }
 
@@ -304,19 +281,7 @@ export default {
 	flex-shrink: 0;
 }
 
-.nav-title {
-    margin-top: 30rpx;
-    margin-left: -240rpx;
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 500;
-	color: #666666;
-	font-size: 30rpx;
-	text-align: center;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-}
+
 
 .nav-right {
 	display: flex;

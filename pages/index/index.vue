@@ -22,7 +22,7 @@
 		></image> -->
 		
 		<!-- 位置和角色 Badge -->
-		<view class="location-badge animate-fade-in" style="animation-delay: 400ms;">
+		<view class="location-badge animate-fade-in" style="animation-delay: 400ms;" @tap="handleSearchClick">
 			<view class="badge-content">
 				<view class="location-info">
 					<text class="location-text">成都市</text>
@@ -84,6 +84,13 @@ export default {
 	},
 	onLoad() {
 		
+	},
+	methods: {
+		handleSearchClick() {
+			uni.navigateTo({
+				url: '/pages/main/search'
+			})
+		}
 	}
 }
 </script>
@@ -152,6 +159,7 @@ export default {
 	display: flex;
 	align-items: center;
 	box-sizing: border-box;
+	cursor: pointer;
 }
 
 .badge-content {

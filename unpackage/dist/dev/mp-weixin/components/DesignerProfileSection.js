@@ -3,15 +3,19 @@ const common_vendor = require("../common/vendor.js");
 const _sfc_main = {
   data() {
     return {
+      selectedSecondary: "hairstylist",
+      secondaryTabs: [
+        { id: "hairstylist", label: "美发师" },
+        { id: "beautician", label: "美容师" }
+      ],
       selectedCategory: "wash-cut-blow",
       selectedHairLength: "short",
       categories: [
-        { id: "wash-cut-blow", label: "洗剪吹", active: true },
-        { id: "perm", label: "烫发", active: false },
-        { id: "dye", label: "染发", active: false },
-        { id: "care", label: "护发", active: false },
-        { id: "scalp", label: "头皮", active: false },
-        { id: "extension", label: "接发", active: false }
+        { id: "stylist", label: "发型师", active: true },
+        { id: "chief", label: "首席", active: false },
+        { id: "senior", label: "资深", active: false },
+        { id: "director", label: "总监", active: false },
+        { id: "manager", label: "店长", active: false }
       ],
       services: [
         {
@@ -93,6 +97,9 @@ const _sfc_main = {
     };
   },
   methods: {
+    selectSecondary(id) {
+      this.selectedSecondary = id;
+    },
     selectCategory(id) {
       this.selectedCategory = id;
     },
@@ -100,13 +107,21 @@ const _sfc_main = {
       this.selectedHairLength = id;
     },
     handleBook(service) {
-      common_vendor.index.__f__("log", "at components/DesignerProfileSection.vue:210", "Book service:", service);
+      common_vendor.index.__f__("log", "at components/DesignerProfileSection.vue:232", "Book service:", service);
     }
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_vendor.f($data.categories, (category, k0, i0) => {
+    a: common_vendor.f($data.secondaryTabs, (tab, k0, i0) => {
+      return {
+        a: common_vendor.t(tab.label),
+        b: tab.id,
+        c: $data.selectedSecondary === tab.id ? 1 : "",
+        d: common_vendor.o(($event) => $options.selectSecondary(tab.id), tab.id)
+      };
+    }),
+    b: common_vendor.f($data.categories, (category, k0, i0) => {
       return {
         a: common_vendor.t(category.label),
         b: category.id,
@@ -114,7 +129,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         d: common_vendor.o(($event) => $options.selectCategory(category.id), category.id)
       };
     }),
-    b: common_vendor.f($data.services, (service, k0, i0) => {
+    c: common_vendor.f($data.services, (service, k0, i0) => {
       return common_vendor.e({
         a: service.image,
         b: service.title,

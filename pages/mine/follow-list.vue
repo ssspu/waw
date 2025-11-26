@@ -1,5 +1,6 @@
 <template>
 	<view class="follow-list-page">
+		<view class="status-bar-space"></view>
 		<view class="navbar">
 			<view class="navbar-content">
 				<view class="back-btn" @tap="handleBack">

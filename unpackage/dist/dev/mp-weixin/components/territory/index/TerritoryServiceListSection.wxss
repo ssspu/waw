@@ -23,6 +23,11 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.status-bar-space.data-v-ebe4f2a9 {
+  height: 88rpx;
+  width: 100%;
+  background-color: #ffffff;
+}
 .territory-service-list-section.data-v-ebe4f2a9 {
   width: 100%;
   max-width: 726rpx;

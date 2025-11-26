@@ -1,5 +1,6 @@
 <template>
 	<view class="service-review-page">
+		<view class="status-bar-space"></view>
 		<!-- 导航栏 -->
 		<view class="navbar">
 			<view class="navbar-content">

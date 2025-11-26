@@ -80,6 +80,11 @@ const _sfc_main = {
     },
     switchTab(value) {
       this.activeTab = value;
+    },
+    handleSearchClick() {
+      common_vendor.index.navigateTo({
+        url: "/pages/main/search"
+      });
     }
   }
 };
@@ -98,7 +103,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     b: common_vendor.o((...args) => $options.goBack && $options.goBack(...args)),
     c: $options.currentBadgeIcon,
     d: common_vendor.t($options.currentTabLabel),
-    e: common_vendor.f($data.tabItems, (tab, index, i0) => {
+    e: common_vendor.o((...args) => $options.handleSearchClick && $options.handleSearchClick(...args)),
+    f: common_vendor.f($data.tabItems, (tab, index, i0) => {
       return common_vendor.e({
         a: common_vendor.t(tab.label),
         b: $data.activeTab === tab.value ? 1 : "",
@@ -109,14 +115,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         f: common_vendor.o(($event) => $options.switchTab(tab.value), index)
       });
     }),
-    f: $options.currentMainBg ? `url(${$options.currentMainBg})` : "none",
-    g: $data.activeTab === "designer"
+    g: $options.currentMainBg ? `url(${$options.currentMainBg})` : "none",
+    h: $data.activeTab === "designer"
   }, $data.activeTab === "designer" ? {} : {}, {
-    h: $data.activeTab === "service"
+    i: $data.activeTab === "service"
   }, $data.activeTab === "service" ? {} : {}, {
-    i: $data.activeTab === "brand"
+    j: $data.activeTab === "brand"
   }, $data.activeTab === "brand" ? {} : {}, {
-    j: $options.currentMainBg ? `url(${$options.currentMainBg})` : "none"
+    k: $options.currentMainBg ? `url(${$options.currentMainBg})` : "none"
   });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-d311227b"]]);

@@ -1,7 +1,7 @@
 <template>
 	<view class="user-info-section">
 		<view class="user-card">
-			<view class="vip-chip">
+			<view class="vip-chip" @tap="handleVipClick">
 				<view class="vip-chip-text">
 					<text class="vip-chip-title">VIP会员专享</text>
 					<text class="vip-chip-desc">超值补贴优惠专享</text>
@@ -102,6 +102,11 @@ export default {
 			console.log('QR code clicked')
 			uni.navigateTo({
 				url: '/pages/mine/qr-code-card'
+			})
+		},
+		handleVipClick() {
+			uni.navigateTo({
+				url: '/pages/mine/vip'
 			})
 		}
 	}

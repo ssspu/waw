@@ -23,6 +23,11 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.status-bar-space.data-v-d311227b {
+  height: 88rpx;
+  width: 100%;
+  background-color: #ffffff;
+}
 .screen.data-v-d311227b {
   width: 100%;
   min-height: 100vh;
@@ -89,13 +94,6 @@
   width: 32rpx;
   height: 32rpx;
 }
-.nav-title.data-v-d311227b {
-  font-family: "DIN_Black-Regular", Helvetica;
-  font-size: 30rpx;
-  color: #ffffff;
-  font-weight: normal;
-  white-space: nowrap;
-}
 .logo-group.data-v-d311227b {
   width: 256rpx;
   height: 144rpx;
@@ -139,6 +137,9 @@
   gap: 4rpx;
   border: 0;
   white-space: nowrap;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
 }
 .search-icon.data-v-d311227b {
   width: 36rpx;

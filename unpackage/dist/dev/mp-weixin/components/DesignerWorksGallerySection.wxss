@@ -23,6 +23,11 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.status-bar-space.data-v-3cc156a4 {
+  height: 88rpx;
+  width: 100%;
+  background-color: #ffffff;
+}
 .gallery-section.data-v-3cc156a4 {
   display: flex;
   flex-direction: column;

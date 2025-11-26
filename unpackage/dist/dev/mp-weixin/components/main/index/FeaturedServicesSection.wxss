@@ -23,6 +23,11 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.status-bar-space.data-v-02b35523 {
+  height: 88rpx;
+  width: 100%;
+  background-color: #ffffff;
+}
 .featured-services-section.data-v-02b35523 {
   width: 100%;
   max-width: 100%;

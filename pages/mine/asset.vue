@@ -1,7 +1,7 @@
 <template>
 	<view class="asset-page">
-		<!-- 状态栏 -->
-		<view class="status-bar"></view>
+		<view class="status-bar-space"></view>
+
 		
 		<!-- 导航栏 -->
 		<view class="navbar">
@@ -121,11 +121,6 @@ export default {
 	min-height: 100vh;
 	background-color: #f2f2f2;
 	position: relative;
-}
-
-.status-bar {
-	height: 44rpx;
-	width: 100%;
 }
 
 .navbar {

@@ -1,5 +1,6 @@
 <template>
 	<view class="favorites-page">
+		<view class="status-bar-space"></view>
 		<view class="navbar">
 			<view class="navbar-content">
 				<view class="back-btn" @tap="handleBack">
@@ -108,7 +109,9 @@ export default {
 	display: flex;
 	flex-direction: column;
 }
-
+.favorite-card.favorite-card--favorite {
+	margin: 15rpx 0;
+}
 .navbar-content {
 	display: flex;
 	align-items: center;

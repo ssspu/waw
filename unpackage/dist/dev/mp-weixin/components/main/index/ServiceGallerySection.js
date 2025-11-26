@@ -1,6 +1,12 @@
 "use strict";
 const common_vendor = require("../../../common/vendor.js");
 const _sfc_main = {
+  props: {
+    showCategoryHeader: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
     return {
       serviceCards: [
@@ -99,13 +105,15 @@ const _sfc_main = {
   },
   methods: {
     handleCardClick(card) {
-      common_vendor.index.__f__("log", "at components/main/index/ServiceGallerySection.vue:164", "Service card clicked:", card);
+      common_vendor.index.__f__("log", "at components/main/index/ServiceGallerySection.vue:170", "Service card clicked:", card);
     }
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return {
-    a: common_vendor.f($data.serviceCards, (card, index, i0) => {
+  return common_vendor.e({
+    a: $props.showCategoryHeader
+  }, $props.showCategoryHeader ? {} : {}, {
+    b: common_vendor.f($data.serviceCards, (card, index, i0) => {
       return {
         a: card.image,
         b: card.title,
@@ -123,7 +131,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         n: common_vendor.o(($event) => $options.handleCardClick(card), card.id)
       };
     })
-  };
+  });
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-e7bf1da2"]]);
 wx.createComponent(Component);

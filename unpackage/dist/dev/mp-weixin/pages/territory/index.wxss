@@ -23,6 +23,11 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.status-bar-space.data-v-8e3d1bd9 {
+  height: 88rpx;
+  width: 100%;
+  background-color: #ffffff;
+}
 .territory-page.data-v-8e3d1bd9 {
   width: 100%;
   min-height: 100vh;
@@ -86,17 +91,6 @@
   width: 32rpx;
   height: 32rpx;
   flex-shrink: 0;
-}
-.nav-title.data-v-8e3d1bd9 {
-  font-family: "PingFang_SC-Medium", Helvetica;
-  font-weight: 500;
-  color: #333333;
-  font-size: 32rpx;
-  text-align: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 .action-btn.data-v-8e3d1bd9 {
   display: flex;

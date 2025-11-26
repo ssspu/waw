@@ -40,13 +40,13 @@ const _sfc_main = {
       common_vendor.index.navigateBack();
     },
     handleMore() {
-      common_vendor.index.__f__("log", "at pages/setting/index.vue:152", "More clicked");
+      common_vendor.index.__f__("log", "at pages/setting/index.vue:130", "More clicked");
     },
     handleScan() {
-      common_vendor.index.__f__("log", "at pages/setting/index.vue:155", "Scan clicked");
+      common_vendor.index.__f__("log", "at pages/setting/index.vue:133", "Scan clicked");
     },
     handleSettingClick(item) {
-      common_vendor.index.__f__("log", "at pages/setting/index.vue:158", "Setting clicked:", item.label);
+      common_vendor.index.__f__("log", "at pages/setting/index.vue:136", "Setting clicked:", item.label);
       if (item.label === "清除缓存") {
         if (!event.target.closest(".action-button")) {
           this.navigateToDetailPage(item.label);
@@ -62,7 +62,7 @@ const _sfc_main = {
       if (item.label === "清除缓存") {
         this.handleClearCache();
       }
-      common_vendor.index.__f__("log", "at pages/setting/index.vue:177", "Action button clicked:", item.label);
+      common_vendor.index.__f__("log", "at pages/setting/index.vue:155", "Action button clicked:", item.label);
     },
     navigateToDetailPage(label) {
       const routeMap = {
@@ -84,7 +84,7 @@ const _sfc_main = {
     handleToggleChange(item, event2) {
       const checked = event2.detail.value || event2.target.checked;
       item.checked = checked;
-      common_vendor.index.__f__("log", "at pages/setting/index.vue:199", "Toggle changed:", item.label, checked);
+      common_vendor.index.__f__("log", "at pages/setting/index.vue:177", "Toggle changed:", item.label, checked);
     },
     handleClearCache() {
       common_vendor.index.showModal({
@@ -92,7 +92,7 @@ const _sfc_main = {
         content: "确定要清除缓存吗？",
         success: (res) => {
           if (res.confirm) {
-            common_vendor.index.__f__("log", "at pages/setting/index.vue:207", "Clear cache");
+            common_vendor.index.__f__("log", "at pages/setting/index.vue:185", "Clear cache");
           }
         }
       });
@@ -103,7 +103,7 @@ const _sfc_main = {
         content: "确定要退出登录吗？",
         success: (res) => {
           if (res.confirm) {
-            common_vendor.index.__f__("log", "at pages/setting/index.vue:219", "Logout");
+            common_vendor.index.__f__("log", "at pages/setting/index.vue:197", "Logout");
             common_vendor.index.reLaunch({ url: "/pages/index/index" });
           }
         }
@@ -132,7 +132,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
           } : {}, {
             h: !item.hasToggle
           }, !item.hasToggle ? {
-            i: common_assets._imports_0,
+            i: common_assets._imports_0$1,
             j: common_vendor.o(($event) => $options.handleActionClick(item, $event), itemIndex)
           } : {}, {
             k: common_vendor.o(($event) => $options.handleSettingClick(item), itemIndex),
