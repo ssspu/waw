@@ -70,6 +70,9 @@ const _sfc_main = {
     },
     handleShare() {
       this.$emit("share");
+    },
+    handleCouponClick() {
+      this.$emit("coupon-click");
     }
   }
 };
@@ -119,13 +122,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         b: index
       };
     }),
-    y: common_vendor.o((...args) => $options.handleShare && $options.handleShare(...args)),
-    z: $props.rightStats.serviceIcon,
-    A: common_vendor.t($props.rightStats.serviceCount),
-    B: $props.rightStats.dotIcon,
-    C: $props.rightStats.workIcon,
-    D: common_vendor.t($props.rightStats.workCount),
-    E: $props.rightStats.dotIcon
+    y: common_vendor.o((...args) => $options.handleCouponClick && $options.handleCouponClick(...args)),
+    z: common_vendor.o((...args) => $options.handleShare && $options.handleShare(...args)),
+    A: $props.rightStats.serviceIcon,
+    B: common_vendor.t($props.rightStats.serviceCount),
+    C: $props.rightStats.dotIcon,
+    D: $props.rightStats.workIcon,
+    E: common_vendor.t($props.rightStats.workCount),
+    F: $props.rightStats.dotIcon
   };
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-8dec43d4"]]);

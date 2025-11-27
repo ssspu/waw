@@ -1098,7 +1098,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         o: common_vendor.o(($event) => $options.handleBrandClick(brand), index)
       });
     }),
-    m: common_assets._imports_0$8,
+    m: common_assets._imports_0$9,
     n: common_vendor.o(($event) => $options.handleSectionHeaderClick("service")),
     o: common_vendor.f($data.serviceTabs, (tab, index, i0) => {
       return common_vendor.e({

@@ -132,7 +132,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
           } : {}, {
             h: !item.hasToggle
           }, !item.hasToggle ? {
-            i: common_assets._imports_0$1,
+            i: common_assets._imports_0$2,
             j: common_vendor.o(($event) => $options.handleActionClick(item, $event), itemIndex)
           } : {}, {
             k: common_vendor.o(($event) => $options.handleSettingClick(item), itemIndex),

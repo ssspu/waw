@@ -11,6 +11,7 @@
     "designer-appointment-tab-content": "../../components/designer/detail/DesignerAppointmentTabContent",
     "designer-works-tab-content": "../../components/DesignerWorksTabContent",
     "designer-reviews-tab-content": "../../components/DesignerReviewsTabContent",
-    "designer-portfolio-section": "../../components/designer/detail/DesignerPortfolioSection"
+    "designer-portfolio-section": "../../components/designer/detail/DesignerPortfolioSection",
+    "coupon-popup": "../../components/popup/CouponPopup"
   }
 }

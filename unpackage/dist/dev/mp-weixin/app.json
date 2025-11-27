@@ -1,5 +1,8 @@
 {
   "pages": [
+    "pages/login/index",
+    "pages/login/password",
+    "pages/login/register",
     "pages/index/index",
     "pages/main/index",
     "pages/designer/detail",
@@ -19,11 +22,13 @@
     "pages/order/detail",
     "pages/order/detail-pending-use",
     "pages/order/service-review",
+    "pages/order/purchase",
     "pages/coupon/index",
     "pages/territory/index",
     "pages/territory/brand-store",
     "pages/setting/index",
     "pages/brand/detail",
+    "pages/brand/info",
     "pages/setting/personal-info",
     "pages/setting/account-security",
     "pages/setting/edit-phone",

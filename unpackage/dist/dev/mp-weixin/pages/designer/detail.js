@@ -8,6 +8,7 @@ const DesignerAppointmentTabContent = () => "../../components/designer/detail/De
 const DesignerWorksTabContent = () => "../../components/DesignerWorksTabContent.js";
 const DesignerReviewsTabContent = () => "../../components/DesignerReviewsTabContent.js";
 const DesignerPortfolioSection = () => "../../components/designer/detail/DesignerPortfolioSection.js";
+const CouponPopup = () => "../../components/popup/CouponPopup.js";
 const _sfc_main = {
   components: {
     DesignerDetailHeader,
@@ -17,11 +18,12 @@ const _sfc_main = {
     DesignerAppointmentTabContent,
     DesignerWorksTabContent,
     DesignerReviewsTabContent,
-    DesignerPortfolioSection
+    DesignerPortfolioSection,
+    CouponPopup
   },
   onLoad(options) {
     if (options.id) {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:118", "Designer ID:", options.id);
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:127", "Designer ID:", options.id);
     }
     if (options.tab) {
       this.activeTab = options.tab;
@@ -40,6 +42,7 @@ const _sfc_main = {
   data() {
     return {
       activeTab: "service",
+      showCouponPopup: false,
       activeSubTabs: {
         service: "hair-service",
         appointment: "today",
@@ -148,19 +151,23 @@ const _sfc_main = {
       common_vendor.index.navigateTo({ url: "/pages/designer/info" });
     },
     handleFollow() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:247", "Follow clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:257", "Follow clicked");
     },
     handlePhone() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:250", "Phone clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:260", "Phone clicked");
     },
     handleNavigation() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:253", "Navigation clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:263", "Navigation clicked");
     },
     handleShare() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:256", "Share clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:266", "Share clicked");
     },
     handleBooking() {
-      common_vendor.index.__f__("log", "at pages/designer/detail.vue:259", "Booking clicked");
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:269", "Booking clicked");
+    },
+    handleClaimCoupon(coupon) {
+      common_vendor.index.__f__("log", "at pages/designer/detail.vue:272", "Claim coupon:", coupon);
+      common_vendor.index.showToast({ title: "领取成功", icon: "success" });
     }
   }
 };
@@ -173,7 +180,8 @@ if (!Array) {
   const _component_designer_works_tab_content = common_vendor.resolveComponent("designer-works-tab-content");
   const _component_designer_reviews_tab_content = common_vendor.resolveComponent("designer-reviews-tab-content");
   const _component_designer_portfolio_section = common_vendor.resolveComponent("designer-portfolio-section");
-  (_component_designer_detail_header + _component_designer_info_card + _component_designer_tab_switcher + _component_designer_service_tab_content + _component_designer_appointment_tab_content + _component_designer_works_tab_content + _component_designer_reviews_tab_content + _component_designer_portfolio_section)();
+  const _component_coupon_popup = common_vendor.resolveComponent("coupon-popup");
+  (_component_designer_detail_header + _component_designer_info_card + _component_designer_tab_switcher + _component_designer_service_tab_content + _component_designer_appointment_tab_content + _component_designer_works_tab_content + _component_designer_reviews_tab_content + _component_designer_portfolio_section + _component_coupon_popup)();
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
@@ -182,7 +190,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     c: common_vendor.o($options.handlePhone),
     d: common_vendor.o($options.handleNavigation),
     e: common_vendor.o($options.handleShare),
-    f: common_vendor.p({
+    f: common_vendor.o(($event) => $data.showCouponPopup = true),
+    g: common_vendor.p({
       ["designer-info"]: $data.designerInfo,
       ["service-badges"]: $data.serviceBadges,
       ["stats-data"]: $data.statsData,
@@ -191,14 +200,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       promotions: $data.promotions,
       ["right-stats"]: $data.rightStats
     }),
-    g: common_vendor.o($options.handleTabChange),
-    h: common_vendor.p({
+    h: common_vendor.o($options.handleTabChange),
+    i: common_vendor.p({
       ["active-tab"]: $data.activeTab,
       tabs: $data.tabs
     }),
-    i: $options.currentSubTabs.length
+    j: $options.currentSubTabs.length
   }, $options.currentSubTabs.length ? {
-    j: common_vendor.f($options.currentSubTabs, (subTab, index, i0) => {
+    k: common_vendor.f($options.currentSubTabs, (subTab, index, i0) => {
       return common_vendor.e({
         a: common_vendor.t(subTab.title),
         b: subTab.subtitle
@@ -210,43 +219,48 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         f: common_vendor.o(($event) => $options.handleSubTabClick(subTab.id), index)
       });
     }),
-    k: common_vendor.n({
+    l: common_vendor.n({
       "compact-sub-tabs": $options.isCompactSubTabs,
       "appointment-sub-tabs": $data.activeTab === "appointment"
     })
   } : {}, {
-    l: $data.activeTab === "service"
+    m: $data.activeTab === "service"
   }, $data.activeTab === "service" ? {
-    m: common_vendor.p({
+    n: common_vendor.p({
       ["active-sub-tab"]: $data.activeSubTabs.service
     })
   } : {}, {
-    n: $data.activeTab === "appointment"
+    o: $data.activeTab === "appointment"
   }, $data.activeTab === "appointment" ? {
-    o: common_vendor.p({
+    p: common_vendor.p({
       ["active-sub-tab"]: $data.activeSubTabs.appointment
     })
   } : {}, {
-    p: $data.activeTab === "works"
+    q: $data.activeTab === "works"
   }, $data.activeTab === "works" ? {
-    q: common_vendor.p({
+    r: common_vendor.p({
       ["active-sub-tab"]: $data.activeSubTabs.works
     })
   } : {}, {
-    r: $data.activeTab === "reviews"
+    s: $data.activeTab === "reviews"
   }, $data.activeTab === "reviews" ? {
-    s: common_vendor.p({
+    t: common_vendor.p({
       ["active-sub-tab"]: $data.activeSubTabs.reviews
     })
   } : {}, {
-    t: $data.activeTab === "service"
+    v: $data.activeTab === "service"
   }, $data.activeTab === "service" ? {} : {}, {
-    v: $data.activeTab === "appointment"
+    w: $data.activeTab === "appointment"
   }, $data.activeTab === "appointment" ? {
-    w: common_vendor.o((...args) => $options.handleBooking && $options.handleBooking(...args))
+    x: common_vendor.o((...args) => $options.handleBooking && $options.handleBooking(...args))
   } : {}, {
-    x: $data.activeTab === "reviews" ? 1 : "",
-    y: $data.activeTab === "works" || $data.activeTab === "service" ? 1 : ""
+    y: $data.activeTab === "reviews" ? 1 : "",
+    z: $data.activeTab === "works" || $data.activeTab === "service" ? 1 : "",
+    A: common_vendor.o(($event) => $data.showCouponPopup = false),
+    B: common_vendor.o($options.handleClaimCoupon),
+    C: common_vendor.p({
+      visible: $data.showCouponPopup
+    })
   });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-d0e7643f"]]);

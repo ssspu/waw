@@ -2,6 +2,9 @@
 Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const common_vendor = require("./common/vendor.js");
 if (!Math) {
+  "./pages/login/index.js";
+  "./pages/login/password.js";
+  "./pages/login/register.js";
   "./pages/index/index.js";
   "./pages/main/index.js";
   "./pages/designer/detail.js";
@@ -21,11 +24,13 @@ if (!Math) {
   "./pages/order/detail.js";
   "./pages/order/detail-pending-use.js";
   "./pages/order/service-review.js";
+  "./pages/order/purchase.js";
   "./pages/coupon/index.js";
   "./pages/territory/index.js";
   "./pages/territory/brand-store.js";
   "./pages/setting/index.js";
   "./pages/brand/detail.js";
+  "./pages/brand/info.js";
   "./pages/setting/personal-info.js";
   "./pages/setting/account-security.js";
   "./pages/setting/edit-phone.js";

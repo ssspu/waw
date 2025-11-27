@@ -168,7 +168,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       }, !$options.isExpanded(service.id) ? {
         j: common_vendor.o(($event) => $options.toggleExpand(service.id), service.id)
       } : {
-        k: common_assets._imports_0$10,
+        k: common_assets._imports_0$12,
         l: common_vendor.o(($event) => $options.toggleExpand(service.id), service.id)
       }, {
         m: $options.isExpanded(service.id) ? 1 : "",

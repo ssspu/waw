@@ -99,7 +99,9 @@ const _sfc_main = {
   },
   methods: {
     handleCardClick(card) {
-      common_vendor.index.__f__("log", "at components/main/index/ServiceGallerySection.vue:164", "Service card clicked:", card);
+      common_vendor.index.navigateTo({
+        url: `/pages/order/purchase?id=${card.id}`
+      });
     }
   }
 };

@@ -1,6 +1,7 @@
 <template>
 	<view class="popup-overlay" v-if="visible" @tap="handleClose">
 		<view class="popup-container" @tap.stop>
+			<view class="sheet-handle"></view>
 			<!-- 弹窗头部 -->
 			<view class="popup-header">
 				<text class="popup-title">优惠券</text>
@@ -12,33 +13,36 @@
 			<!-- 优惠券列表 -->
 			<scroll-view class="coupon-list" scroll-y>
 				<view 
-					v-for="coupon in coupons" 
+					v-for="coupon in displayCoupons" 
 					:key="coupon.id" 
 					class="coupon-card"
 				>
-					<!-- 金额区域 -->
-					<view class="coupon-amount">
-						<view class="amount-row">
-							<text class="amount-symbol">¥</text>
-							<text class="amount-value">{{ coupon.amount }}</text>
+					<view class="coupon-card-inner">
+						<!-- 金额区域 -->
+						<view class="coupon-amount">
+							<view class="amount-row">
+								<text class="amount-symbol">¥</text>
+								<text class="amount-value">{{ coupon.amount }}</text>
+							</view>
+							<text class="amount-condition">{{ coupon.condition }}</text>
 						</view>
-						<text class="amount-condition">{{ coupon.condition }}</text>
-					</view>
-					
-					<!-- 优惠券信息 -->
-					<view class="coupon-info">
-						<text class="coupon-title">{{ coupon.title }}</text>
-						<text class="coupon-desc">{{ coupon.description }}</text>
-						<text class="coupon-date">{{ coupon.startDate }} - {{ coupon.endDate }}</text>
-						<view class="coupon-progress">
-							<text class="progress-text">已领取:{{ coupon.claimed }}张</text>
-							<text class="progress-text">剩余:{{ coupon.remaining }}张</text>
+						
+						<!-- 优惠券信息 -->
+						<view class="coupon-info">
+							<text class="coupon-title">{{ coupon.title }}</text>
+							<text class="coupon-desc">{{ coupon.description }}</text>
+							<text class="coupon-date">{{ coupon.startDate }} - {{ coupon.endDate }}</text>
+							<view class="coupon-progress">
+								<text class="progress-text">已领取: {{ coupon.claimed }}张</text>
+								<!-- <view class="dot"></view> -->
+								<text class="progress-text">剩余: {{ coupon.remaining }}张</text>
+							</view>
 						</view>
-					</view>
-					
-					<!-- 领取按钮 -->
-					<view class="claim-btn" :class="{ 'claimed': coupon.isClaimed }" @tap="handleClaim(coupon)">
-						<text class="claim-text">{{ coupon.isClaimed ? '已领取' : '领取' }}</text>
+						
+						<!-- 领取按钮 -->
+						<view class="claim-btn" :class="{ 'claimed': coupon.isClaimed }" @tap="handleClaim(coupon)">
+							<text class="claim-text">{{ coupon.isClaimed ? '已领取' : '领取' }}</text>
+						</view>
 					</view>
 				</view>
 				
@@ -101,14 +105,48 @@ export default {
 			]
 		}
 	},
+	data() {
+		return {
+			internalCoupons: []
+		}
+	},
+	computed: {
+		displayCoupons() {
+			return this.internalCoupons.length > 0 ? this.internalCoupons : this.coupons
+		}
+	},
+	watch: {
+		coupons: {
+			immediate: true,
+			deep: true,
+			handler(newCoupons) {
+				// 深拷贝优惠券数据到内部状态
+				this.internalCoupons = JSON.parse(JSON.stringify(newCoupons))
+			}
+		}
+	},
 	methods: {
 		handleClose() {
 			this.$emit('close')
 		},
 		handleClaim(coupon) {
-			if (!coupon.isClaimed) {
-				this.$emit('claim', coupon)
+			if (coupon.isClaimed) {
+				return
 			}
+			
+			// 找到对应的优惠券并更新状态
+			const index = this.internalCoupons.findIndex(c => c.id === coupon.id)
+			if (index !== -1) {
+				// 更新为已领取状态
+				this.$set(this.internalCoupons[index], 'isClaimed', true)
+				// 更新领取数量
+				this.$set(this.internalCoupons[index], 'claimed', this.internalCoupons[index].claimed + 1)
+				// 更新剩余数量
+				this.$set(this.internalCoupons[index], 'remaining', this.internalCoupons[index].remaining - 1)
+			}
+			
+			// 触发父组件的领取事件
+			this.$emit('claim', coupon)
 		}
 	}
 }
@@ -124,25 +162,39 @@ export default {
 	background-color: rgba(0, 0, 0, 0.5);
 	z-index: 999;
 	display: flex;
-	align-items: center;
+	align-items: flex-end;
 	justify-content: center;
+	padding: 0;
+	box-sizing: border-box;
 }
 
 .popup-container {
-	width: 600rpx;
-	max-height: 80vh;
+	width: 100vw;
+	max-height: 85vh;
 	background-color: #ffffff;
-	border-radius: 16rpx;
+	border-radius: 32rpx 32rpx 0 0;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
+	padding-bottom: constant(safe-area-inset-bottom, 0);
+	padding-bottom: env(safe-area-inset-bottom, 0);
+	box-shadow: 0 -20rpx 40rpx rgba(0, 0, 0, 0.08);
+}
+
+.sheet-handle {
+	width: 80rpx;
+	height: 8rpx;
+	border-radius: 100rpx;
+	background-color: rgba(0, 0, 0, 0.08);
+	align-self: center;
+	margin-top: 16rpx;
 }
 
 .popup-header {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 30rpx;
+	padding: 24rpx 60rpx 32rpx;
 	position: relative;
 	border-bottom: 1rpx solid #f5f5f5;
 }
@@ -173,27 +225,37 @@ export default {
 
 .coupon-list {
 	flex: 1;
-	padding: 20rpx 30rpx;
-	max-height: 60vh;
+	padding: 0 32rpx 40rpx;
+	max-height: inherit;
+	box-sizing: border-box;
+	background-color: #f7f7f7;
 }
 
 .coupon-card {
-	display: flex;
-	align-items: center;
-	padding: 24rpx 0;
-	border-bottom: 1rpx solid #f5f5f5;
-	
-	&:last-child {
-		border-bottom: none;
+	padding-top: 24rpx;
+	&:first-child {
+		padding-top: 32rpx;
 	}
+}
+
+.coupon-card-inner {
+	display: flex;
+	align-items: stretch;
+	background: #ffffff;
+	border-radius: 16rpx;
+	box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.05);
+	padding: 28rpx 24rpx;
 }
 
 .coupon-amount {
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start;
-	min-width: 100rpx;
-	margin-right: 24rpx;
+	align-items: center;
+	justify-content: center;
+	min-width: 140rpx;
+	margin-right: 28rpx;
+	border-right: 1rpx dashed #f0f0f0;
+	padding-right: 24rpx;
 }
 
 .amount-row {
@@ -226,13 +288,14 @@ export default {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	gap: 6rpx;
+	gap: 8rpx;
 	min-width: 0;
+	justify-content: center;
 }
 
 .coupon-title {
 	font-family: 'PingFang_SC-Semibold', Helvetica;
-	font-size: 28rpx;
+	font-size: 30rpx;
 	color: #333333;
 }
 
@@ -250,7 +313,8 @@ export default {
 
 .coupon-progress {
 	display: flex;
-	gap: 16rpx;
+	gap: 10rpx;
+	align-items: center;
 }
 
 .progress-text {
@@ -259,19 +323,29 @@ export default {
 	color: #cccccc;
 }
 
+.dot {
+	width: 6rpx;
+	height: 6rpx;
+	border-radius: 50%;
+	background-color: #e0e0e0;
+}
+
 .claim-btn {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 100rpx;
-	height: 56rpx;
-	padding: 0 24rpx;
+	min-width: 120rpx;
+	height: 64rpx;
+	padding: 0 26rpx;
 	background-color: #333333;
-	border-radius: 8rpx;
-	margin-left: 16rpx;
+	border-radius: 12rpx;
+	margin-left: 20rpx;
+	align-self: center;
+	transition: all 0.3s ease;
 	
 	&.claimed {
 		background-color: #e5e5e5;
+		pointer-events: none;
 	}
 }
 
@@ -288,7 +362,7 @@ export default {
 .list-footer {
 	display: flex;
 	justify-content: center;
-	padding: 30rpx 0;
+	padding: 40rpx 0 20rpx;
 }
 
 .footer-text {
