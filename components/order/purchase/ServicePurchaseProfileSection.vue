@@ -1,0 +1,1634 @@
+<template>
+	<view class="profile-section">
+		<!-- 价格卡片 -->
+		<view class="price-card card-item full-width">
+			<view class="card-content">
+				<view class="price-info">
+					<view class="price-row">
+						<text class="currency-symbol">¥</text>
+						<text class="price-value">799</text>
+					</view>
+					<text class="sold-count">已售1234</text>
+				</view>
+				<view class="service-info-row">
+					<view class="service-text-info">
+						<text class="service-title">洗剪吹 发型提案+裁剪+造型</text>
+						<view class="coupon-row">
+							<image 
+								class="coupon-icon" 
+								src="https://c.animaapp.com/mifnbli6udxphC/img/frame-5.svg" 
+								mode="aspectFit"
+							></image>
+							<view class="coupon-badges">
+								<view class="coupon-badge">
+									<text class="coupon-text">满100-5</text>
+								</view>
+								<view class="coupon-badge">
+									<text class="coupon-text">满500-50</text>
+								</view>
+							</view>
+						</view>
+					</view>
+					<view class="favorite-btn" @tap="handleFavorite">
+						<image 
+							class="favorite-icon" 
+							src="https://c.animaapp.com/mifnbli6udxphC/img/frame-2142.svg" 
+							mode="aspectFit"
+						></image>
+					</view>
+				</view>
+			</view>
+		</view>
+
+		<!-- 预约优惠卡片 -->
+		<view class="appointment-card card-item full-width">
+			<view class="card-content">
+				<view class="appointment-content">
+					<view class="appointment-info">
+						<view class="appointment-text-wrapper">
+							<text class="appointment-title">预约优惠专家</text>
+							<text class="appointment-desc">即可享受10%以上的项目服务优惠！</text>
+						</view>
+					</view>
+					<view class="view-appointment-btn" @tap="handleViewAppointment">
+						<text class="btn-gradient-text">查看预约</text>
+					</view>
+				</view>
+			</view>
+		</view>
+
+		<!-- 设计师信息卡片 -->
+		<view class="designer-card card-item full-width">
+			<view class="card-content designer-content">
+				<view class="designer-info-row">
+					<image 
+						class="designer-avatar" 
+						src="https://c.animaapp.com/mifnbli6udxphC/img/rectangle-153.png" 
+						mode="aspectFill"
+					></image>
+					<view class="designer-details">
+						<view class="designer-name-row">
+							<text class="designer-name">李天天</text>
+							<view class="designer-badge">
+								<text class="badge-text">高级</text>
+							</view>
+						</view>
+						<view class="designer-meta">
+							<text class="designer-role">店长｜从业12年</text>
+						</view>
+						<view class="designer-stats">
+							<view class="rating-info">
+								<text class="rating-value">4.8</text>
+								<view class="star-badge">
+									<image 
+										class="star-icon" 
+										src="https://c.animaapp.com/mifnbli6udxphC/img/star-1.svg" 
+										mode="aspectFit"
+									></image>
+								</view>
+							</view>
+							<view class="stats-row">
+								<view class="stat-item">
+									<text class="stat-label">服务</text>
+									<text class="stat-value">287</text>
+								</view>
+								<text class="stat-divider">｜</text>
+								<view class="stat-item">
+									<text class="stat-label">作品</text>
+									<text class="stat-value">123</text>
+								</view>
+							</view>
+						</view>
+					</view>
+					<view class="enter-store-btn" @tap="handleEnterStore">
+						<text class="enter-store-text">进入店铺</text>
+					</view>
+				</view>
+			</view>
+		</view>
+
+		<!-- 服务内容卡片 -->
+		<view class="service-content-card card-item">
+			<view class="card-content">
+				<text class="section-title">服务内容</text>
+				<view class="service-list">
+					<view 
+						v-for="(item, index) in serviceItems" 
+						:key="index" 
+						class="service-item-wrapper"
+					>
+						<view class="service-item-row">
+							<text class="service-item-name">{{ item.name }}</text>
+							<text class="service-item-quantity">{{ item.quantity }}</text>
+						</view>
+						<view v-if="index < serviceItems.length - 1" class="separator"></view>
+					</view>
+				</view>
+			</view>
+		</view>
+
+
+		<!-- 温馨提示卡片 -->
+		<view class="tips-card card-item">
+			<view class="card-content">
+				<text class="section-title">温馨提示</text>
+				<view class="tips-list">
+					<text 
+						v-for="(item, index) in warmTips" 
+						:key="index" 
+						class="tips-text"
+					>{{ item }}</text>
+				</view>
+			</view>
+		</view>
+
+		<!-- 图文详情卡片 -->
+		<view class="detail-images-card card-item">
+			<view class="card-content detail-images-content">
+				<text class="section-title">图文详情</text>
+				<view class="images-container" :class="{ 'expanded': showMoreImages }">
+					<image 
+						v-for="(image, index) in displayImages" 
+						:key="index" 
+						class="detail-image" 
+						:src="image" 
+						mode="aspectFill"
+					></image>
+				</view>
+				<view class="view-more-btn" @tap="handleViewMore">
+					<text class="view-more-text">{{ showMoreImages ? '收起' : '查看更多图文详情' }}</text>
+					<image 
+						class="chevron-icon" 
+						:class="{ 'rotated': showMoreImages }"
+						src="/static/icon/down.png" 
+						mode="aspectFit"
+					></image>
+				</view>
+			</view>
+		</view>
+
+		<!-- 服务须知卡片 -->
+		<!-- <view class="service-notice-card card-item">
+			<view class="card-content">
+				<text class="section-title">服务须知</text>
+				<view class="notice-list">
+					<text 
+						v-for="(item, index) in serviceNotices" 
+						:key="index" 
+						class="notice-text"
+		<!-- 顾客点评卡片 -->
+		<view class="reviews-card card-item">
+			<view class="card-header">
+				<text class="card-title">顾客点评</text>
+				<view class="more-btn" @tap="handleViewAllReviews">
+					<text class="more-text">{{ totalReviewCount }}条点评</text>
+					<image class="chevron-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-8.svg" mode="aspectFit"></image>
+				</view>
+			</view>
+			
+			<!-- 点评标签 -->
+			<view class="review-tags">
+				<view 
+					v-for="(tag, index) in reviewTags" 
+					:key="index" 
+					class="review-tag"
+					:class="{ active: tag.active }"
+					@tap="selectTag(index)"
+				>
+					<text>{{ tag.text }}</text>
+					<text>{{ tag.count }}</text>
+				</view>
+			</view>
+			
+			<!-- 点评列表 -->
+			<view class="reviews-scroll-wrapper">
+				<scroll-view 
+					class="reviews-scroll" 
+					scroll-x 
+					show-scrollbar="false"
+					@scroll="handleReviewScroll"
+					ref="reviewsScroll"
+				>
+					<view class="reviews-list" ref="reviewsList">
+						<view 
+							v-for="(review, index) in displayedReviews" 
+							:key="index" 
+							class="review-item"
+						>
+							<image 
+								class="review-image" 
+								:src="review.image" 
+								mode="aspectFill"
+							></image>
+							<view class="review-content">
+								<text class="review-title">{{ review.title }}</text>
+								<view class="review-rating">
+									<text class="rating-score">{{ review.rating }}</text>
+									<view class="stars">
+										<image 
+											v-for="i in Math.floor(review.rating)" 
+											:key="i" 
+											class="star-icon" 
+											src="https://c.animaapp.com/mi5d4lp0csJxnR/img/star-1.svg" 
+											mode="aspectFit"
+										></image>
+									</view>
+								</view>
+								<text class="review-text">{{ review.content }}</text>
+								<view class="review-author">
+									<view class="author-avatar" :style="{ backgroundImage: `url(${review.avatar})` }"></view>
+									<text class="author-name">{{ review.author }}</text>
+									<text class="review-date">{{ review.date }}</text>
+								</view>
+							</view>
+						</view>
+					</view>
+				</scroll-view>
+				<view class="scroll-fade-left" :class="{ 'visible': showReviewLeftFade, 'fading': reviewFadeOut && showReviewLeftFade }"></view>
+				<view class="scroll-fade-right" :class="{ 'visible': showReviewRightFade, 'fading': reviewFadeOut && showReviewRightFade }"></view>
+			</view>
+		</view>
+
+		<!-- 问TA卡片 -->
+		<view class="question-card card-item">
+			<view class="card-content">
+				<view class="question-header">
+					<text class="section-title">问TA</text>
+					<view class="answer-count-btn" @tap="handleViewAllQuestions">
+						<text class="answer-count">12条回答</text>
+						<text class="chevron-icon-small">›</text>
+					</view>
+				</view>
+				<view 
+					v-for="(question, index) in questions" 
+					:key="index" 
+					class="question-item"
+				>
+					<view class="question-badge">
+						<text class="question-text">问</text>
+					</view>
+					<text class="question-content">{{ question }}</text>
+				</view>
+			</view>
+		</view>
+
+		<!-- 为您推荐标题 -->
+		<view class="recommend-header">
+			<text class="recommend-title">为您推荐</text>
+		</view>
+
+		<!-- 推荐服务列表 -->
+		<view class="recommend-services">
+			<view 
+				v-for="(service, index) in recommendedServices" 
+				:key="index" 
+				class="recommend-service-card"
+				@tap="handleServiceClick(service)"
+			>
+				<image 
+					class="recommend-service-image" 
+					:src="service.image" 
+					mode="aspectFill"
+				></image>
+				<view class="recommend-service-info">
+					<view class="recommend-service-header">
+						<text class="recommend-service-title">{{ service.title }}</text>
+					</view>
+					<view class="recommend-service-details">
+						<text class="recommend-service-desc">{{ service.description }}</text>
+						<view class="recommend-price-row">
+							<text class="recommend-currency">¥</text>
+							<text class="recommend-price">{{ service.price }}</text>
+						</view>
+					</view>
+					<view class="recommend-designer-info">
+						<view class="recommend-designer-row">
+							<image 
+								class="recommend-designer-avatar" 
+								:src="service.avatar" 
+								mode="aspectFill"
+							></image>
+							<view class="recommend-designer-details">
+								<view class="recommend-designer-name-row">
+									<text class="recommend-designer-name">{{ service.stylistName }}</text>
+									<text class="recommend-designer-role">{{ service.stylistRole }}</text>
+								</view>
+								<view class="recommend-rating-row">
+									<text class="recommend-rating">{{ service.rating }}</text>
+									<image 
+										class="recommend-star" 
+										src="https://c.animaapp.com/mifnbli6udxphC/img/star-1.svg" 
+										mode="aspectFit"
+									></image>
+									<text class="recommend-review-count">({{ service.reviewCount }})</text>
+								</view>
+							</view>
+						</view>
+						<text class="recommend-distance">{{ service.distance }}</text>
+					</view>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+export default {
+	name: 'ServicePurchaseProfileSection',
+	data() {
+		return {
+			serviceItems: [
+				{ name: '发型提案', quantity: '*1' },
+				{ name: '头发清洁', quantity: '*1' },
+				{ name: '发型修剪', quantity: '*1' },
+				{ name: '吹风造型', quantity: '*1' }
+			],
+			warmTips: [
+				'有效日期2019-12-24至2019-12-30',
+				'需您当日一次性体验完所有项目',
+				'不予其他优惠同享'
+			],
+			showMoreImages: false,
+			allImages: [
+				'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+				'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+				'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+				'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+				'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'
+			],
+			reviewTags: [
+				{ text: "技术很好", count: "232", active: true },
+				{ text: "效果满意", count: "321", active: false },
+				{ text: "服务态度", count: "321", active: false },
+			],
+			reviews: [
+				{
+					id: 1,
+					title: "环境特别好",
+					rating: "4.0",
+					content: "环境特别好环境特别好环境特别好环境特别好环境特别好环境特别好环境...",
+					author: "加菲猫",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-25",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+				{
+					id: 2,
+					title: "服务很专业",
+					rating: "3.1",
+					content: "服务很专业，发型设计很满意，下次还会再来...",
+					author: "小可爱",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-24",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+				{
+					id: 3,
+					title: "效果超出预期",
+					rating: "5.0",
+					content: "效果超出预期，非常满意，推荐给大家...",
+					author: "美少女",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-23",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+				{
+					id: 4,
+					title: "技术很棒",
+					rating: "4.9",
+					content: "技术很棒，服务态度也很好，值得推荐...",
+					author: "时尚达人",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-22",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+				{
+					id: 5,
+					title: "性价比很高",
+					rating: "4.7",
+					content: "性价比很高，服务周到，环境舒适...",
+					author: "追求者",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-21",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+				{
+					id: 6,
+					title: "非常满意",
+					rating: "5.0",
+					content: "非常满意，下次还会再来，强烈推荐...",
+					author: "忠实客户",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-20",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+				{
+					id: 7,
+					title: "环境优雅",
+					rating: "4.8",
+					content: "环境优雅，服务专业，体验很好...",
+					author: "品味生活",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-19",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+				{
+					id: 8,
+					title: "发型设计很赞",
+					rating: "4.9",
+					content: "发型设计很赞，技术精湛，推荐...",
+					author: "时尚先锋",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-18",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+				{
+					id: 9,
+					title: "服务态度很好",
+					rating: "5.0",
+					content: "服务态度很好，技术也很专业，满意...",
+					author: "满意客户",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-17",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				},
+				{
+					id: 10,
+					title: "体验很棒",
+					rating: "4.8",
+					content: "体验很棒，整体服务很好，推荐...",
+					author: "回头客",
+					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+					date: "2019-12-16",
+					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+				}
+			],
+			reviewScrollLeft: 0,
+			lastReviewScrollLeft: 0,
+			showReviewLeftFade: false,
+			showReviewRightFade: false,
+			reviewFadeOut: false,
+			reviewFadeTimeout: null,
+			reviewFadeStartTimeout: null,
+			reviewScrollContainerWidth: 0,
+			reviewScrollContentWidth: 0,
+			questions: [
+				'只烫不染的短发多少钱？头发比较干，不知道能不能做？',
+				'刘海发际线太高怎么办？'
+			],
+			recommendedServices: [
+				{
+					image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+					title: '烫发',
+					description: '发型提案+染发+造型',
+					price: '799',
+					stylistName: '李天天',
+					stylistRole: '美发师',
+					rating: '4.8',
+					reviewCount: '768',
+					distance: '6.7km',
+					avatar: 'https://c.animaapp.com/mifnbli6udxphC/img/ellipse-34-1.svg'
+				},
+				{
+					image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+					title: '烫发',
+					description: '发型提案+染发+造型',
+					price: '799',
+					stylistName: '李天天',
+					stylistRole: '美发师',
+					rating: '4.8',
+					reviewCount: '768',
+					distance: '6.7km',
+					avatar: 'https://c.animaapp.com/mifnbli6udxphC/img/ellipse-34-1.svg'
+				}
+			]
+		}
+	},
+	methods: {
+		handleFavorite() {
+			uni.showToast({
+				title: '已收藏',
+				icon: 'success'
+			})
+		},
+		handleViewAppointment() {
+			uni.navigateTo({
+				url: '/pages/designer/booking'
+			})
+		},
+		handleEnterStore() {
+			uni.navigateTo({
+				url: '/pages/designer/detail'
+			})
+		},
+		handleViewMore() {
+			this.showMoreImages = !this.showMoreImages
+		},
+		handleViewAllReviews() {
+			console.log('查看所有点评')
+		},
+		selectTag(index) {
+			this.reviewTags.forEach((tag, i) => {
+				tag.active = i === index
+			})
+		},
+		handleReviewScroll(e) {
+			const scrollLeft = e.detail.scrollLeft
+			this.reviewScrollLeft = scrollLeft
+			this.updateReviewFadeEdges(scrollLeft)
+		},
+		updateReviewFadeEdges(scrollLeft) {
+			const containerWidth = this.reviewScrollContainerWidth
+			const contentWidth = this.reviewScrollContentWidth
+			
+			this.showReviewLeftFade = scrollLeft > 5
+			this.showReviewRightFade = scrollLeft < contentWidth - containerWidth - 5
+		},
+		measureReviewScroll() {
+			this.$nextTick(() => {
+				const query = uni.createSelectorQuery().in(this)
+				query.select('.reviews-scroll').boundingClientRect(rect => {
+					this.reviewScrollContainerWidth = rect ? rect.width : 0
+				})
+				query.select('.reviews-list').boundingClientRect(rect => {
+					this.reviewScrollContentWidth = rect ? rect.width : 0
+				})
+				query.exec(() => {
+					this.updateReviewFadeEdges(this.reviewScrollLeft)
+				})
+			})
+		},
+		handleViewAllQuestions() {
+			console.log('查看所有问题')
+		},
+		handleServiceClick(service) {
+			uni.navigateTo({
+				url: `/pages/order/purchase?id=${service.id || 1}`
+			})
+		}
+	},
+	mounted() {
+		this.measureReviewScroll()
+	},
+	beforeDestroy() {
+		if (this.reviewFadeTimeout) {
+			clearTimeout(this.reviewFadeTimeout)
+		}
+		if (this.reviewFadeStartTimeout) {
+			clearTimeout(this.reviewFadeStartTimeout)
+		}
+	},
+	computed: {
+		displayImages() {
+			return this.showMoreImages ? this.allImages : this.allImages.slice(0, 2)
+		},
+		totalReviewCount() {
+			return this.reviews.length || this.reviewTags.reduce((sum, tag) => sum + parseInt(tag.count || 0), 0)
+		},
+		displayedReviews() {
+			return this.reviews.slice(0, 10)
+		}
+	}
+}
+</script>
+
+<style scoped lang="scss">
+.profile-section {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	max-width: none;
+	margin: 0;
+	align-items: center;
+	gap: 12rpx;
+	padding: 0 15rpx;
+	box-sizing: border-box;
+	padding-bottom: 220rpx;
+}
+
+.card-item {
+	width: 100%;
+	background-color: #ffffff;
+	border-radius: 8rpx;
+	overflow: hidden;
+
+	&.full-width {
+		max-width: none;
+		border-radius: 0;
+		margin-left: -15rpx;
+		margin-right: -15rpx;
+		width: calc(100% + 30rpx);
+	}
+}
+
+.card-content {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 20rpx;
+	padding: 26rpx;
+}
+
+// 价格卡片
+.price-card {
+	transform: translateY(-32rpx);
+	animation: fadeIn 0.5s ease-out forwards;
+	animation-delay: 0ms;
+
+	&.full-width {
+		margin-top: -40rpx;
+		border-top-left-radius: 40rpx;
+		border-top-right-radius: 40rpx;
+		overflow: hidden;
+		box-shadow: 0 -20rpx 40rpx rgba(0, 0, 0, 0.04);
+	}
+}
+
+.price-info {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.price-row {
+	display: flex;
+	align-items: flex-end;
+}
+
+.currency-symbol {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 46rpx;
+	font-weight: 400;
+	color: #333333;
+}
+
+.price-value {
+	font-family: 'FZChaoCuHei-M10T-Regular', Helvetica;
+	font-size: 52rpx;
+	font-weight: 800;
+	color: #333333;
+}
+
+.sold-count {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 28rpx;
+	font-weight: 400;
+	color: #a6a6a6;
+}
+
+.service-info-row {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.service-text-info {
+	display: flex;
+	flex-direction: column;
+	width: 452rpx;
+	gap: 14rpx;
+}
+
+.service-title {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 36rpx;
+	font-weight: 500;
+	color: #000000;
+	white-space: nowrap;
+}
+
+.coupon-row {
+	display: flex;
+	align-items: center;
+	gap: 20rpx;
+}
+
+.coupon-icon {
+	width: 40rpx;
+	height: 40rpx;
+}
+
+.coupon-badges {
+	display: flex;
+	align-items: flex-start;
+	gap: 6rpx;
+}
+
+.coupon-badge {
+	height: 40rpx;
+	padding: 0rpx 12rpx 8rpx 12rpx;
+	background-color: #f6f6f6;
+	border-radius: 4rpx;
+}
+
+.coupon-text {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 22rpx;
+	font-weight: 500;
+	color: #a6a6a6;
+}
+
+.favorite-btn {
+	width: 60rpx;
+	height: 60rpx;
+}
+
+.favorite-icon {
+	width: 100%;
+	height: 100%;
+}
+
+// 预约优惠卡片
+.appointment-card {
+	transform: translateY(-32rpx);
+	animation: fadeIn 0.5s ease-out forwards;
+	animation-delay: 100ms;
+}
+
+.appointment-content {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20rpx;
+	width: 100%;
+	padding: 20rpx;
+	border-radius: 8rpx;
+	border: 2rpx solid #f6f6f6;
+	background: linear-gradient(180deg, rgba(246, 246, 246, 1) 0%, rgba(251, 251, 251, 1) 100%);
+	box-sizing: border-box;
+}
+
+.appointment-info {
+	display: flex;
+	align-items: center;
+	gap: 16rpx;
+	width: 100%;
+}
+
+.appointment-text-wrapper {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	gap: 8rpx;
+}
+
+.appointment-title {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 28rpx;
+	font-weight: 500;
+	color: #000000;
+}
+
+.appointment-desc {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 22rpx;
+	font-weight: 500;
+	color: #a6a6a6;
+}
+
+.view-appointment-btn {
+	width: 180rpx;
+	height: 70rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #ffffff;
+	border-radius: 60rpx;
+}
+
+.btn-gradient-text {
+	background: linear-gradient(90deg, rgba(253, 145, 255, 1) 0%, rgba(83, 64, 254, 1) 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 24rpx;
+	font-weight: 400;
+}
+
+// 设计师信息卡片
+.designer-card {
+	transform: translateY(-32rpx);
+	animation: fadeIn 0.5s ease-out forwards;
+	animation-delay: 200ms;
+}
+
+.designer-content {
+	height: 130rpx;
+	gap: 14rpx;
+	padding: 20rpx;
+}
+
+.designer-info-row {
+	display: flex;
+	align-items: flex-start;
+	gap: 16rpx;
+	width: 100%;
+	// padding-bottom: 12rpx;
+}
+
+.designer-avatar {
+	width: 120rpx;
+	height: 119rpx;
+	border-radius: 8rpx;
+	flex-shrink: 0;
+	background-color: #f2f2f2;
+	overflow: hidden;
+}
+
+.designer-details {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 6rpx;
+	flex: 1;
+}
+
+.designer-name-row {
+	display: flex;
+	align-items: center;
+	gap: 8rpx;
+}
+
+.designer-name {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 28rpx;
+	font-weight: 500;
+	color: #000000;
+}
+
+.designer-badge {
+	padding: 2rpx 8rpx;
+	background-color: #dacbb1;
+	border-radius: 4rpx;
+}
+
+.badge-text {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 20rpx;
+	font-weight: 500;
+	color: #645e57;
+}
+
+.designer-meta {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
+}
+
+.designer-role {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 22rpx;
+	font-weight: 500;
+	color: #a6a6a6;
+}
+
+.designer-stats {
+	display: flex;
+	align-items: center;
+	gap: 16rpx;
+}
+
+.rating-info {
+	display: flex;
+	align-items: center;
+	gap: 6rpx;
+}
+
+.rating-value {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 24rpx;
+	font-weight: 400;
+	color: #333333;
+}
+
+.star-badge {
+	display: flex;
+	align-items: center;
+	gap: 4rpx;
+	padding: 2rpx;
+	background-color: #333333;
+	border-radius: 4rpx;
+	border: 2rpx solid rgba(255, 255, 255, 0.2);
+}
+
+.star-icon {
+	width: 20rpx;
+	height: 20rpx;
+}
+
+.stats-row {
+	display: flex;
+	align-items: center;
+	gap: 4rpx;
+}
+
+.stat-item {
+	display: flex;
+	align-items: flex-end;
+	gap: 4rpx;
+}
+
+.stat-label {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 22rpx;
+	font-weight: 400;
+	color: #a6a6a6;
+}
+
+.stat-value {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 24rpx;
+	font-weight: 500;
+	color: #666666;
+}
+
+.stat-divider {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 24rpx;
+	font-weight: 500;
+	color: #a6a6a6;
+}
+
+.enter-store-btn {
+	height: 30rpx;
+	padding: 16rpx 28rpx;
+	position: relative;
+	top: 30rpx;
+	background-color: #ffffff;
+	border: 2rpx solid #e0e0e0;
+	border-radius: 6rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.enter-store-text {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 22rpx;
+	font-weight: 500;
+	color: #666666;
+}
+
+// 服务内容卡片
+.service-content-card {
+	transform: translateY(-32rpx);
+	animation: fadeIn 0.5s ease-out forwards;
+	animation-delay: 300ms;
+}
+
+.section-title {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 28rpx;
+	font-weight: 400;
+	color: #000000;
+}
+
+.service-list {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 20rpx;
+	width: 100%;
+}
+
+.service-item-wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 20rpx;
+	width: 100%;
+}
+
+.service-item-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.service-item-name {
+	width: 96rpx;
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 24rpx;
+	font-weight: 400;
+	color: #666666;
+	white-space: nowrap;
+}
+
+.service-item-quantity {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 24rpx;
+	font-weight: 500;
+	color: #333333;
+}
+
+.separator {
+	width: 100%;
+	height: 2rpx;
+	background-color: #e5e5e5;
+}
+
+
+// 温馨提示卡片
+.tips-card {
+	transform: translateY(-32rpx);
+	animation: fadeIn 0.5s ease-out forwards;
+	animation-delay: 300ms;
+}
+
+.tips-list {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 20rpx;
+	width: 100%;
+}
+
+.tips-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 24rpx;
+	font-weight: 400;
+	color: #666666;
+}
+
+// 图文详情卡片
+.detail-images-card {
+	transform: translateY(-32rpx);
+	animation: fadeIn 0.5s ease-out forwards;
+	animation-delay: 300ms;
+}
+
+.detail-images-content {
+	padding-top: 30rpx;
+	padding-bottom: 20rpx;
+}
+
+.detail-image {
+	width: 100%;
+	height: 686rpx;
+	border-radius: 8rpx;
+}
+
+.view-more-btn {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	gap: 8rpx;
+	width: 100%;
+	padding: 16rpx 0;
+	transition: opacity 0.3s;
+}
+
+.view-more-btn:active {
+	opacity: 0.7;
+}
+
+.images-container {
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
+	width: 100%;
+	overflow: hidden;
+	transition: max-height 0.3s ease-in-out;
+	max-height: 1392rpx; /* 2张图片的高度 + gap */
+}
+
+.images-container.expanded {
+	max-height: none;
+}
+
+.more-images {
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
+	width: 100%;
+	margin-top: 20rpx;
+}
+
+.view-more-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 24rpx;
+	font-weight: 400;
+	color: #a6a6a6;
+}
+
+.chevron-icon {
+	width: 24rpx;
+	height: 24rpx;
+	transition: transform 0.3s ease-in-out;
+}
+
+.chevron-icon.rotated {
+	transform: rotate(180deg);
+}
+
+// 服务须知卡片
+/*
+.service-notice-card {
+	transform: translateY(-32rpx);
+	animation: fadeIn 0.5s ease-out forwards;
+	animation-delay: 400ms;
+}
+
+.notice-list {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 20rpx;
+	width: 100%;
+}
+
+.notice-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 24rpx;
+	font-weight: 400;
+	color: #666666;
+}
+*/
+
+// 顾客点评卡片
+.reviews-card {
+	width: calc(100% + 30rpx);
+	background-color: #ffffff;
+	border-radius: 0;
+	margin-left: -15rpx;
+	margin-right: -15rpx;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.card-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 26rpx 26rpx 0;
+}
+
+.card-title {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-weight: normal;
+	color: #000000;
+	font-size: 28rpx;
+}
+
+.more-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 12rpx;
+}
+
+.more-text {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-weight: 500;
+	color: #a6a6a6;
+	font-size: 24rpx;
+}
+
+.chevron-icon {
+	width: 24rpx;
+	height: 24rpx;
+}
+
+.review-tags {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	gap: 12rpx;
+	padding: 20rpx 26rpx 24rpx;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.review-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8rpx;
+	padding: 8rpx 20rpx;
+	border-radius: 4rpx;
+	background-color: #f5f5f5;
+}
+
+.review-tag.active {
+	background-color: #000000;
+}
+
+.review-tag text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 22rpx;
+	font-weight: 400;
+	color: #666666;
+}
+
+.review-tag.active text {
+	color: #ffffff;
+}
+
+.reviews-scroll-wrapper {
+	position: relative;
+	padding: 0 26rpx 26rpx;
+}
+
+.reviews-scroll {
+	width: 100%;
+	overflow-x: auto;
+}
+
+.reviews-list {
+	display: flex;
+	gap: 16rpx;
+	width: max-content;
+}
+
+.review-item {
+	display: inline-flex;
+	align-items: flex-start;
+	gap: 16rpx;
+	flex-shrink: 0;
+	width: 600rpx;
+	box-sizing: border-box;
+}
+
+.review-image {
+	width: 200rpx;
+	height: 200rpx;
+	object-fit: cover;
+	border-radius: 8rpx;
+}
+
+.review-content {
+	display: flex;
+	flex-direction: column;
+	width: 388rpx;
+	align-items: flex-start;
+	gap: 2rpx;
+	box-sizing: border-box;
+	flex-shrink: 0;
+}
+
+.review-title {
+	width: 100%;
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-weight: 500;
+	color: #333333;
+	font-size: 24rpx;
+	line-height: 36rpx;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.review-rating {
+	display: inline-flex;
+	align-items: center;
+	gap: 4rpx;
+}
+
+.rating-text {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 24rpx;
+	font-weight: 400;
+	color: #333333;
+}
+
+.star-wrapper {
+	width: 20rpx;
+	height: 20rpx;
+}
+
+.star-small {
+	width: 100%;
+	height: 100%;
+}
+
+.review-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 22rpx;
+	font-weight: 400;
+	color: #666666;
+	line-height: 36rpx;
+}
+
+.review-author {
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
+.author-info {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
+}
+
+.author-avatar {
+	width: 52rpx;
+	height: 52rpx;
+	border-radius: 50%;
+}
+
+.author-name {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 22rpx;
+	font-weight: 400;
+	color: #a6a6a6;
+}
+
+.review-date {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 20rpx;
+	font-weight: 500;
+	color: #a6a6a6;
+}
+
+.review-more-images {
+	display: flex;
+	align-items: flex-start;
+	gap: 16rpx;
+	position: relative;
+}
+
+.review-thumb {
+	width: 78rpx;
+	height: 200rpx;
+}
+
+.fade-overlay {
+	position: absolute;
+	top: -24rpx;
+	left: 48rpx;
+	width: 30rpx;
+	height: 250rpx;
+	background: linear-gradient(270deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 61%, rgba(255, 255, 255, 0) 100%);
+}
+
+// 问TA卡片
+.question-card {
+	transform: translateY(-32rpx);
+	animation: fadeIn 0.5s ease-out forwards;
+	animation-delay: 400ms;
+}
+
+.question-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.answer-count-btn {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
+}
+
+.answer-count {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 24rpx;
+	font-weight: 500;
+	color: #a6a6a6;
+}
+
+.question-item {
+	display: flex;
+	align-items: center;
+	gap: 16rpx;
+	width: 100%;
+}
+
+.question-badge {
+	display: flex;
+	flex-direction: column;
+	width: 40rpx;
+	height: 40rpx;
+	align-items: center;
+	justify-content: center;
+	gap: 20rpx;
+	padding: 8rpx 0 4rpx;
+	background-color: #fcf0e2;
+	border-radius: 8rpx;
+}
+
+.question-text {
+	font-family: 'DIN_Black-Regular', Helvetica;
+	font-size: 24rpx;
+	font-weight: 400;
+	color: #ff9763;
+}
+
+.question-content {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 24rpx;
+	font-weight: 500;
+	color: #333333;
+}
+
+// 为您推荐
+.recommend-header {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 20rpx;
+	padding: 12rpx 8rpx;
+	width: 100%;
+	transform: translateY(-32rpx);
+	animation: fadeIn 0.5s ease-out forwards;
+	animation-delay: 400ms;
+}
+
+.recommend-title {
+	flex: 1;
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 28rpx;
+	font-weight: 500;
+	color: #000000;
+}
+
+.recommend-services {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	width: 100%;
+	padding: 0 8rpx;
+	box-sizing: border-box;
+	align-items: stretch;
+	gap: 12rpx;
+	transform: translateY(-32rpx);
+	animation: fadeIn 0.5s ease-out forwards;
+	animation-delay: 400ms;
+}
+
+.recommend-service-card {
+	width: 100%;
+	background-color: #ffffff;
+	border-radius: 8rpx;
+	padding-bottom: 16rpx;
+	overflow: hidden;
+}
+
+.recommend-service-image {
+	width: 100%;
+	height: 358rpx;
+	border-radius: 8rpx;
+}
+
+.recommend-service-info {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	align-items: center;
+	gap: 14rpx;
+	padding: 0 16rpx;
+}
+
+.recommend-service-header {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 6rpx;
+	width: 100%;
+}
+
+.recommend-service-title {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 32rpx;
+	font-weight: 400;
+	color: #000000;
+	white-space: nowrap;
+}
+
+.recommend-service-details {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 6rpx;
+	width: 100%;
+}
+
+.recommend-service-desc {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 24rpx;
+	font-weight: 500;
+	color: #a6a6a6;
+}
+
+.recommend-price-row {
+	display: flex;
+	align-items: center;
+	gap: 6rpx;
+}
+
+.recommend-currency {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 28rpx;
+	font-weight: 400;
+	color: #333333;
+}
+
+.recommend-price {
+	font-family: 'FZChaoCuHei-M10T-Regular', Helvetica;
+	font-size: 28rpx;
+	font-weight: 400;
+	color: #333333;
+}
+
+.recommend-designer-info {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	width: 100%;
+	padding-right: 4rpx;
+	box-sizing: border-box;
+}
+
+.recommend-designer-row {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
+}
+
+.recommend-designer-avatar {
+	width: 52rpx;
+	height: 52rpx;
+	border-radius: 50%;
+}
+
+.recommend-designer-details {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 4rpx;
+}
+
+.recommend-designer-name-row {
+	display: flex;
+	align-items: flex-start;
+	gap: 8rpx;
+}
+
+.recommend-designer-name {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 22rpx;
+	font-weight: 500;
+	color: #333333;
+}
+
+.recommend-designer-role {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 22rpx;
+	font-weight: 400;
+	color: #a6a6a6;
+}
+
+.recommend-rating-row {
+	display: flex;
+	align-items: center;
+	gap: 4rpx;
+}
+
+.recommend-rating {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 24rpx;
+	font-weight: 400;
+	color: #333333;
+}
+
+.recommend-star {
+	width: 20rpx;
+	height: 20rpx;
+}
+
+.recommend-review-count {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 24rpx;
+	font-weight: 500;
+	color: #333333;
+}
+
+.recommend-distance {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 22rpx;
+	font-weight: 400;
+	color: #a6a6a6;
+	position: relative;
+	top: 0;
+	left: -18rpx;
+}
+
+@keyframes fadeIn {
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+</style>
+
+
+
+
+
+
