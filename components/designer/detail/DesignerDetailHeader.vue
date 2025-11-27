@@ -48,7 +48,6 @@ export default {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	object-fit: cover;
 }
 
 .header-overlay {
@@ -73,7 +72,6 @@ export default {
 }
 
 .header-actions {
-	margin-top: 135rpx;
 	margin-left: 40rpx;
 	display: flex;
 	align-items: center;

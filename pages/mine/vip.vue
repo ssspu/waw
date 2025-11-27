@@ -99,7 +99,7 @@ export default {
 <style scoped lang="scss">
 .vip-page {
 	min-height: 100vh;
-	background-color: #f2f2f2;
+	background-color: #ffffff;
 	display: flex;
 	flex-direction: column;
 }
