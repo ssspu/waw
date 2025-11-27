@@ -9,7 +9,7 @@
 						<text class="more-text">全部订单</text>
 						<image 
 							class="more-icon" 
-							src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-8.svg" 
+							src="/static/icon/right.png" 
 							mode="aspectFit"
 						></image>
 					</view>
@@ -105,22 +105,18 @@ export default {
 					label: "资产",
 				},
 				{
-					icon: "https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-9.svg",
-					label: "美豆",
+					icon: "https://c.animaapp.com/mih16y3pFMmwpi/img/frame-4.svg",
+					label: "推广佣金",
 				},
 				{
-					icon: "https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-13.svg",
-					label: "积分",
+					icon: "https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-9.svg",
+					label: "美豆",
 				},
 			],
 			settlementItems: [
 				{
 					icon: "https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame.svg",
 					label: "我要入驻",
-				},
-				{
-					icon: "https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-2.svg",
-					label: "邀请入驻",
 				},
 				{
 					icon: "https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-7.svg",
@@ -183,16 +179,17 @@ export default {
 .profile-section {
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start;
+	align-items: center;
 	gap: 16rpx;
 	width: 100%;
-	max-width: 710rpx;
-	padding: 0 24rpx;
+	padding: 0 20rpx;
+	margin-bottom: 26rpx;
 	box-sizing: border-box;
 }
 
 .order-card, .asset-card, .settlement-card {
-	width: 100%;
+	width: calc(100vw - 40rpx);
+	height: 198rpx;
 	background-color: #ffffff;
 	border-radius: 8rpx;
 	box-shadow: none;
@@ -204,7 +201,7 @@ export default {
 	flex-direction: column;
 	align-items: flex-start;
 	gap: 20rpx;
-	padding: 24rpx;
+	padding: 24rpx 20rpx;
 	box-sizing: border-box;
 }
 
@@ -225,7 +222,7 @@ export default {
 .more-btn {
 	display: inline-flex;
 	align-items: center;
-	gap: 20rpx;
+	// gap: 10rpx;
 	cursor: pointer;
 }
 
@@ -273,6 +270,10 @@ export default {
 	color: #666666;
 	font-size: 22rpx;
 	text-align: center;
+	word-wrap: break-word;
+	white-space: normal;
+	line-height: 1.2;
+	width: 100rpx;
 }
 </style>
 

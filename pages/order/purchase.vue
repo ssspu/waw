@@ -9,17 +9,9 @@
 					mode="aspectFill"
 				></image>
 				
-				<!-- Logo -->
-				<view class="logo-wrapper">
-					<image 
-						class="logo-image" 
-						src="https://c.animaapp.com/mifnbli6udxphC/img/group-7.png" 
-						mode="aspectFit"
-					></image>
-				</view>
-				
+			
 				<!-- 返回按钮 -->
-				<view class="back-btn" @tap="handleBack">
+				<view class="back-btn" @click="handleBack">
 					<image 
 						class="back-icon" 
 						src="https://c.animaapp.com/mifnbli6udxphC/img/frame-1877.svg" 
@@ -68,7 +60,14 @@ export default {
 	},
 	methods: {
 		handleBack() {
-			uni.navigateBack()
+			const pages = getCurrentPages && getCurrentPages()
+			if (pages && pages.length > 1) {
+				uni.navigateBack()
+			} else {
+				uni.switchTab({
+					url: '/pages/main/index'
+				})
+			}
 		}
 	}
 }
@@ -104,19 +103,8 @@ export default {
 	height: 100%;
 }
 
-.logo-wrapper {
-	position: absolute;
-	top: 62rpx;
-	left: 494rpx;
-	width: 256rpx;
-	height: 144rpx;
-	z-index: 10;
-}
 
-.logo-image {
-	width: 100%;
-	height: 100%;
-}
+
 
 .back-btn {
 	position: absolute;
@@ -127,11 +115,8 @@ export default {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	z-index: 10;
-	opacity: 0;
-	transform: translateY(-32rpx);
-	animation: fadeIn 0.5s ease-out forwards;
-	animation-delay: 0ms;
+	z-index: 30;
+	cursor: pointer;
 }
 
 .back-icon {

@@ -32,7 +32,7 @@ export default {
 .pagination-indicator {
 	display: flex;
 	justify-content: flex-end;
-	padding: 0 32rpx 32rpx 0;
+	padding: 0 32rpx 60rpx 0;
 }
 
 .pagination-badge {

@@ -7,9 +7,14 @@
 				mode="aspectFill"
 			></image>
 			<view class="hero-toolbar">
-				<button class="hero-btn" @tap="handleCustomerService">
-					<image class="hero-btn-icon" src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-1881.svg" mode="aspectFit"></image>
-				</button>
+				<view class="toolbar-btns">
+					<view class="toolbar-btn" @tap="handleOnlineService">
+						<image class="toolbar-icon" src="/static/icon/online—service.png" mode="aspectFit"></image>
+					</view>
+					<view class="toolbar-btn" @tap="handleNotice">
+						<image class="toolbar-icon" src="/static/icon/notice.png" mode="aspectFit"></image>
+					</view>
+				</view>
 			</view>
 		</view>
 		
@@ -34,21 +39,13 @@ export default {
 		MineDashboardSection
 	},
 	methods: {
-		handleCustomerService(e) {
-			console.log('Customer service button clicked', e)
-			uni.showToast({ title: '点击了客服按钮', icon: 'none', duration: 2000 })
-			setTimeout(() => {
-				uni.navigateTo({ 
-					url: '/pages/mine/customer-service',
-					success: () => {
-						console.log('Navigate to customer service success')
-					},
-					fail: (err) => {
-						console.error('Navigate to customer service failed:', err)
-						uni.showToast({ title: '页面跳转失败: ' + JSON.stringify(err), icon: 'none', duration: 3000 })
-					}
-				})
-			}, 100)
+		handleOnlineService() {
+			console.log('Online service button clicked')
+			uni.navigateTo({ url: '/pages/mine/customer-service' })
+		},
+		handleNotice() {
+			console.log('Notice button clicked')
+			uni.navigateTo({ url: '/pages/mine/notice' })
 		}
 	}
 }
@@ -74,30 +71,35 @@ export default {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
-	border-bottom-left-radius: 60rpx;
-	border-bottom-right-radius: 60rpx;
+
 }
 
 .hero-toolbar {
 	position: absolute;
 	top: 80rpx;
-	left: 40rpx;
-	right: 40rpx;
+	left: 30rpx;
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
 }
 
-.hero-btn {
-	width: 120rpx;
-	height: 56rpx;
-	border-radius: 28rpx;
-	background-color: rgba(255, 255, 255, 0.85);
+.toolbar-btns {
+	display: flex;
+	align-items: center;
+	gap: 20rpx;
+}
+
+.toolbar-btn {
+	width: 60rpx;
+	height: 60rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border: none;
-	padding: 0;
+	cursor: pointer;
+}
+
+.toolbar-icon {
+	width: 48rpx;
+	height: 48rpx;
 }
 
 .hero-btn::after {
@@ -130,7 +132,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 20rpx;
+	// gap: 20rpx;
 	box-sizing: border-box;
 	z-index: 2;
 }

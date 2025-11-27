@@ -3,12 +3,17 @@
 		<view class="user-card">
 			<view class="vip-chip" @tap="handleVipClick">
 				<view class="vip-chip-text">
-					<text class="vip-chip-title">VIP会员专享</text>
+					<view class="vip-title-row">
+						<text class="vip-chip-title">VIP会员专享</text>
+						<view class="arrow-bg">
+							<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
+						</view>
+					</view>
 					<text class="vip-chip-desc">超值补贴优惠专享</text>
 				</view>
-				<view class="vip-chip-arrow">
-					<text>➔</text>
-				</view>
+				<!-- <view class="vip-chip-arrow">
+					<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
+				</view> -->
 			</view>
 
 			<view class="user-header">
@@ -124,57 +129,112 @@ export default {
 .user-card {
 	width: 100%;
 	max-width: 780rpx;
-	background: #ffffff;
-	border-radius: 36rpx;
-	box-shadow: 0 16rpx 50rpx rgba(0, 0, 0, 0.12);
+	// background: #fcc;
+	// border-radius: 36rpx;
+	// box-shadow: 0 16rpx 50rpx rgba(0, 0, 0, 0.12);
 	padding: 40rpx 34rpx 36rpx;
 	position: relative;
 	box-sizing: border-box;
 	margin-top: -60rpx;
 }
 
+.user-card::before {
+	content: '';
+	position: absolute;
+	top:0rpx;
+	left: 0;
+	width:100%;
+	height: 100%;
+	background-image: url('/static/background-image/mine_info_bg.png');
+	background-size: contain;
+	// background-position: center 58rpx;
+	background-repeat: no-repeat;
+	z-index: -1;
+	pointer-events: none;
+}
+
 .vip-chip {
 	position: absolute;
 	top: 0.1rem;
 	right: -0.25rem;
-	background: linear-gradient(134deg, #E9D9C1 0%, #B19F84 100%);
-	border-top-right-radius: 40rpx;
-	border-bottom-left-radius: 40rpx;
-	border-bottom-right-radius: 40rpx;
+	// background: linear-gradient(134deg, #E9D9C1 0%, #B19F84 100%);
+	// border-top-right-radius: 40rpx;
+	// border-bottom-left-radius: 40rpx;
+	// border-bottom-right-radius: 40rpx;
 	padding: 20rpx 28rpx 24rpx 32rpx;
 	display: flex;
 	align-items: center;
 	min-width: 100rpx;
-	box-shadow: 0 12rpx 20rpx rgba(177, 159, 132, 0.4);
+	// box-shadow: 0 12rpx 20rpx rgba(177, 159, 132, 0.4);
+}
+.vip-chip::before {
+	content: '';
+	position: absolute;
+	top:4rpx;
+	left: -170rpx;
+	width: 200%;
+	height: 200%;
+	background-image: url('/static/background-image/mine_vip_bg.png');
+	background-size: contain;
+	// background-position: center;
+	background-repeat: no-repeat;
+	z-index: -10;
+	pointer-events: none;
 }
 
 .vip-chip-text {
 	display: flex;
 	flex-direction: column;
 	line-height: 1.2;
+	gap: 6rpx;
+	margin-left: 20rpx;
+}
+
+.vip-title-row {
+	display: flex;
+	align-items: center;
+	gap: 6rpx;
 }
 
 .vip-chip-title {
-	font-size: 22rpx;
+	// padding-left: 20rpx;
+	font-size: 24rpx;
 	color: #fff;
 	font-family: 'PingFang_SC-Semibold', Helvetica;
 }
 
 .vip-chip-desc {
 	font-size: 18rpx;
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+
 	color: rgba(255, 255, 255, 0.85);
 }
 
 .vip-chip-arrow {
 	width: 36rpx;
 	height: 36rpx;
-	background-color: rgba(255, 255, 255, 0.25);
+	background-color: #ffffff;
 	border-radius: 50%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: #fff;
-	font-size: 22rpx;
+	margin-left: 10rpx;
+}
+
+.arrow-bg {
+	width: 28rpx;
+	height: 28rpx;
+	background-color: #ffffff;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.arrow-icon {
+	width: 26rpx;
+	height: 26rpx;
+	filter: brightness(0) saturate(100%) invert(79%) sepia(12%) saturate(497%) hue-rotate(8deg) brightness(93%) contrast(87%) drop-shadow(0 0 1rpx #D0C1A7) ;
 }
 
 .user-header {
@@ -233,14 +293,18 @@ export default {
 	color: #a6a6a6;
 	max-width: 420rpx;
 	line-height: 1.4;
+	position: relative;
+	left: -180rpx;
+	top: 14rpx;
 }
 
 .stats-row {
-	margin-top: 32rpx;
+	margin-top: 38rpx;
 	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 0 10rpx;
+	// justify-content: space-around;
+	// align-items: center;
+	// padding: 0 10rpx;
+	// gap: 80rpx;
 }
 
 .stat-item {
@@ -266,10 +330,21 @@ export default {
 	margin-top: 36rpx;
 	background: #f7f7f7;
 	border-radius: 24rpx;
-	padding: 28rpx 30rpx;
+	padding: 28rpx 20rpx;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	width: 100%;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.territory-info {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	box-sizing: border-box;
 }
 
 .territory-text {

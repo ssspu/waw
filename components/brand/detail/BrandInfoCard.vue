@@ -337,6 +337,7 @@ export default {
 
 .avatar-wrapper {
 	position: relative;
+	left: -1rpx;
 	width: 158rpx;
 	height: 157rpx;
 	flex-shrink: 0;
