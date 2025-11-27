@@ -1,4 +1,5 @@
 <template>
+	<page-meta :page-style="'padding-top:0px; background-color:#f2f2f2;'"></page-meta>
 	<view class="screen">
 		<!-- 头部 -->
 		<designer-detail-header></designer-detail-header>

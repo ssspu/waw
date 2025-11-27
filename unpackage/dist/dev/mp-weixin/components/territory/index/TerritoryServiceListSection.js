@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../../common/vendor.js");
+const common_assets = require("../../../common/assets.js");
 const _sfc_main = {
   props: {
     isBrandMode: {
@@ -84,23 +85,28 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     h: common_vendor.o((...args) => $options.handleBookAgain && $options.handleBookAgain(...args)),
     i: $data.showShareModal
   }, $data.showShareModal ? {
-    j: common_vendor.o(($event) => $options.handleShare("wechat")),
-    k: common_vendor.o(($event) => $options.handleShare("moments")),
-    l: common_vendor.o(($event) => $options.handleShare("weibo")),
-    m: common_vendor.o(($event) => $options.handleShare("link")),
-    n: common_vendor.o(($event) => $options.handleShare("qrcode")),
-    o: common_vendor.o((...args) => $options.closeShareModal && $options.closeShareModal(...args)),
-    p: common_vendor.o(() => {
-    }),
-    q: common_vendor.o((...args) => $options.closeShareModal && $options.closeShareModal(...args))
-  } : {}, {
-    r: $data.showDeleteConfirm
-  }, $data.showDeleteConfirm ? {
-    s: common_vendor.o((...args) => $options.closeDeleteConfirm && $options.closeDeleteConfirm(...args)),
-    t: common_vendor.o((...args) => $options.confirmDelete && $options.confirmDelete(...args)),
+    j: common_assets._imports_0$9,
+    k: common_vendor.o(($event) => $options.handleShare("wechat")),
+    l: common_assets._imports_1$8,
+    m: common_vendor.o(($event) => $options.handleShare("moments")),
+    n: common_assets._imports_2$4,
+    o: common_vendor.o(($event) => $options.handleShare("weibo")),
+    p: common_assets._imports_3,
+    q: common_vendor.o(($event) => $options.handleShare("link")),
+    r: common_assets._imports_4,
+    s: common_vendor.o(($event) => $options.handleShare("qrcode")),
+    t: common_vendor.o((...args) => $options.closeShareModal && $options.closeShareModal(...args)),
     v: common_vendor.o(() => {
     }),
-    w: common_vendor.o((...args) => $options.closeDeleteConfirm && $options.closeDeleteConfirm(...args))
+    w: common_vendor.o((...args) => $options.closeShareModal && $options.closeShareModal(...args))
+  } : {}, {
+    x: $data.showDeleteConfirm
+  }, $data.showDeleteConfirm ? {
+    y: common_vendor.o((...args) => $options.closeDeleteConfirm && $options.closeDeleteConfirm(...args)),
+    z: common_vendor.o((...args) => $options.confirmDelete && $options.confirmDelete(...args)),
+    A: common_vendor.o(() => {
+    }),
+    B: common_vendor.o((...args) => $options.closeDeleteConfirm && $options.closeDeleteConfirm(...args))
   } : {});
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-ebe4f2a9"]]);

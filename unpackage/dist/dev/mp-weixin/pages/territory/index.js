@@ -71,10 +71,10 @@ const _sfc_main = {
       common_vendor.index.navigateBack();
     },
     handleMore() {
-      common_vendor.index.__f__("log", "at pages/territory/index.vue:312", "More clicked");
+      common_vendor.index.__f__("log", "at pages/territory/index.vue:313", "More clicked");
     },
     handleRadio() {
-      common_vendor.index.__f__("log", "at pages/territory/index.vue:315", "Radio clicked");
+      common_vendor.index.__f__("log", "at pages/territory/index.vue:316", "Radio clicked");
     },
     handleTopTabChange(tabId) {
       this.activeTopTab = tabId;
@@ -92,14 +92,14 @@ const _sfc_main = {
       this.showShareModal = false;
     },
     handleShare(type) {
-      common_vendor.index.__f__("log", "at pages/territory/index.vue:333", "Share via:", type);
+      common_vendor.index.__f__("log", "at pages/territory/index.vue:334", "Share via:", type);
       this.showShareModal = false;
     },
     handleBookAgain() {
-      common_vendor.index.__f__("log", "at pages/territory/index.vue:337", "Book again clicked");
+      common_vendor.index.__f__("log", "at pages/territory/index.vue:338", "Book again clicked");
     },
     handleMore() {
-      common_vendor.index.__f__("log", "at pages/territory/index.vue:340", "More clicked");
+      common_vendor.index.__f__("log", "at pages/territory/index.vue:341", "More clicked");
     }
   }
 };

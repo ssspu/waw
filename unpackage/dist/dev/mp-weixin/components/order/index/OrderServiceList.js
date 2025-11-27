@@ -371,7 +371,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       } : common_vendor.e({
         w: order.hasIcon
       }, order.hasIcon ? {
-        x: common_assets._imports_0$9
+        x: common_assets._imports_0$8
       } : {}, {
         y: common_vendor.o(($event) => $options.handleDetail(order), index),
         z: common_vendor.t(order.primaryButton),

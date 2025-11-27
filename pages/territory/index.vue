@@ -1,5 +1,6 @@
 <template>
 	<view class="territory-page">
+		<view class="status-bar-space"></view>
 		<!-- 自定义导航栏 -->
 		<view class="custom-header">
 			
@@ -382,28 +383,12 @@ export default {
 }
 
 .navbar-content {
-	position: relative;
-	width: 100%;
-	height: 96rpx;
 	display: flex;
 	align-items: center;
-	justify-content: center;
-	padding: 0 32rpx;
+	padding: 24rpx 32rpx;
 	box-sizing: border-box;
 }
 
-.nav-left {
-	position: absolute;
-	left: 32rpx;
-	top: 50%;
-	transform: translateY(-50%);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 32rpx;
-	height: 32rpx;
-	z-index: 2;
-}
 
 .back-btn {
 	display: flex;
@@ -455,7 +440,7 @@ export default {
 	align-items: center;
 	gap: 40rpx;
 	width: 100%;
-	padding: 24rpx 30rpx;
+	padding: 0rpx 0rpx 0rpx 35rpx;
 	box-sizing: border-box;
 }
 
@@ -525,6 +510,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 	flex: 1;
+	gap: 12rpx;
 }
 
 .brand-tab-nav {

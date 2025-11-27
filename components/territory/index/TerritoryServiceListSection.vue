@@ -109,32 +109,32 @@
 			<view class="share-modal" @tap.stop="">
 				<view class="share-grid">
 					<view class="share-item" @tap="handleShare('wechat')">
-						<view class="share-icon wechat-icon">
-							<text>微信</text>
+						<view class="share-icon">
+							<image class="share-icon-img" src="/static/icon/weixin.png" mode="aspectFit"></image>
 						</view>
 						<text class="share-label">微信</text>
 					</view>
 					<view class="share-item" @tap="handleShare('moments')">
-						<view class="share-icon moments-icon">
-							<text>朋友圈</text>
+						<view class="share-icon">
+							<image class="share-icon-img" src="/static/icon/shejiaotubiao-42.png" mode="aspectFit"></image>
 						</view>
 						<text class="share-label">朋友圈</text>
 					</view>
 					<view class="share-item" @tap="handleShare('weibo')">
-						<view class="share-icon weibo-icon">
-							<text>微博</text>
+						<view class="share-icon">
+							<image class="share-icon-img" src="/static/icon/iconfontzhizuobiaozhunbduan36.png" mode="aspectFit"></image>
 						</view>
 						<text class="share-label">微博</text>
 					</view>
 					<view class="share-item" @tap="handleShare('link')">
-						<view class="share-icon link-icon">
-							<text>链接</text>
+						<view class="share-icon">
+							<image class="share-icon-img" src="/static/icon/lianjie.png" mode="aspectFit"></image>
 						</view>
 						<text class="share-label">复制链接</text>
 					</view>
 					<view class="share-item" @tap="handleShare('qrcode')">
-						<view class="share-icon qrcode-icon">
-							<text>二维码</text>
+						<view class="share-icon">
+							<image class="share-icon-img" src="/static/icon/saoyisao.png" mode="aspectFit"></image>
 						</view>
 						<text class="share-label">服务二维码</text>
 					</view>
@@ -241,7 +241,6 @@ export default {
 .card-content {
 	display: flex;
 	flex-direction: column;
-	gap: 20rpx;
 	padding: 24rpx;
 	box-sizing: border-box;
 }
@@ -569,29 +568,12 @@ export default {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: #ffffff;
-	font-size: 24rpx;
-	font-weight: 500;
+	background-color: #f5f5f5;
 }
 
-.wechat-icon {
-	background-color: #09b81f;
-}
-
-.moments-icon {
-	background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
-}
-
-.weibo-icon {
-	background-color: #e6162d;
-}
-
-.link-icon {
-	background-color: #999999;
-}
-
-.qrcode-icon {
-	background-color: #333333;
+.share-icon-img {
+	width: 60rpx;
+	height: 60rpx;
 }
 
 .share-label {
