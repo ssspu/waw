@@ -181,37 +181,43 @@ export default {
 	flex-direction: column;
 	width: 100%;
 	align-items: center;
-	gap: 16rpx;
+	gap: 24rpx;
 	position: relative;
+	padding: 0 20rpx 48rpx;
+	box-sizing: border-box;
 }
 
 .profile-image {
 	position: relative;
-	width: 100%;
-	height: 444rpx;
+	width: calc(100% + 40rpx);
+	max-width: calc(100% + 40rpx);
+	margin: 0 -20rpx 12rpx;
+	height: 360rpx;
 	object-fit: cover;
+	border-radius: 0;
 }
 
 .card {
 	width: 100%;
 	max-width: 726rpx;
 	background-color: #ffffff;
-	border-radius: 16rpx;
+	border-radius: 10rpx;
+	box-shadow: 0 12rpx 30rpx rgba(0, 0, 0, 0.04);
 }
 
 .card-content {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: 20rpx;
-	padding: 30rpx;
+	gap: 24rpx;
+	padding: 34rpx 32rpx;
 }
 
 .card-title {
 	font-family: 'PingFang_SC-Semibold', Helvetica;
-	font-weight: normal;
-	color: #000000;
-	font-size: 28rpx;
+	font-weight: 600;
+	color: #111111;
+	font-size: 30rpx;
 }
 
 .overview-list {
@@ -239,7 +245,7 @@ export default {
 }
 
 .overview-label {
-	width: 96rpx;
+	width: 140rpx;
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-weight: normal;
 	color: #666666;
@@ -266,7 +272,8 @@ export default {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
 	color: #333333;
-	font-size: 24rpx;
+	font-size: 26rpx;
+	line-height: 38rpx;
 }
 
 .overview-extra {
@@ -301,7 +308,7 @@ export default {
 	font-weight: 500;
 	color: #333333;
 	font-size: 24rpx;
-	line-height: 36rpx;
+	line-height: 40rpx;
 }
 
 .badges-container {

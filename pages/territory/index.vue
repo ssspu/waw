@@ -25,8 +25,9 @@
 			</view>
 		</view>
 		
-		<!-- 顶部导航栏 -->
+		<!-- 顶部导航栏 - 合并主tabs与子tabs -->
 		<view class="top-nav-fixed">
+			<!-- 主tabs行 -->
 			<view class="top-nav">
 				<view 
 					class="top-nav-item"
@@ -43,19 +44,39 @@
 					<text class="top-nav-label" :class="{ active: activeTopTab === 'brand' }">品牌馆</text>
 				</view>
 			</view>
+			<!-- 子tabs行 -->
+			<view class="sub-nav">
+				<template v-if="activeTopTab === 'designer'">
+					<view 
+						v-for="tab in designerSubTabs" 
+						:key="tab.id" 
+						class="sub-nav-item"
+						:class="{ active: activeSubTab === tab.id }"
+						@tap="handleSubTabChange(tab.id)"
+					>
+						<text class="sub-nav-label" :class="{ active: activeSubTab === tab.id }">{{ tab.label }}</text>
+						<view v-if="activeSubTab === tab.id" class="sub-nav-indicator"></view>
+					</view>
+				</template>
+				<template v-else>
+					<view 
+						v-for="tab in brandSubTabs" 
+						:key="tab.id" 
+						class="sub-nav-item"
+						:class="{ active: activeBrandTab === tab.id }"
+						@tap="handleBrandTabChange(tab.id)"
+					>
+						<text class="sub-nav-label" :class="{ active: activeBrandTab === tab.id }">{{ tab.label }}</text>
+						<view v-if="activeBrandTab === tab.id" class="sub-nav-indicator"></view>
+					</view>
+				</template>
+			</view>
 		</view>
 		
 	<!-- 主内容区域 -->
 	<view class="main-content">
 		<!-- 设计师页面 -->
 		<view v-if="activeTopTab === 'designer'" class="tab-content">
-			<territory-header-section 
-				:active-top-tab="activeTopTab"
-				:active-sub-tab="activeSubTab"
-				@top-tab-change="handleTopTabChange"
-				@sub-tab-change="handleSubTabChange"
-			></territory-header-section>
-			
 			<territory-service-list-section></territory-service-list-section>
 			
 			<territory-service-list-section></territory-service-list-section>
@@ -67,76 +88,6 @@
 		
 		<!-- 品牌馆页面 -->
 		<view v-if="activeTopTab === 'brand'" class="tab-content brand-content">
-			<view class="brand-tab-nav">
-				<view class="tab-nav">
-					<view 
-						class="tab-item"
-						:class="{ active: activeBrandTab === 'hair' }"
-						@tap="handleBrandTabChange('hair')"
-					>
-						<text class="tab-label" :class="{ active: activeBrandTab === 'hair' }">美发</text>
-						<image 
-							v-if="activeBrandTab === 'hair'"
-							class="tab-indicator" 
-							src="https://c.animaapp.com/mi5ng54v4eM3X6/img/vector-15.svg" 
-							mode="aspectFit"
-						></image>
-					</view>
-					<view 
-						class="tab-item"
-						:class="{ active: activeBrandTab === 'beauty' }"
-						@tap="handleBrandTabChange('beauty')"
-					>
-						<text class="tab-label" :class="{ active: activeBrandTab === 'beauty' }">美容</text>
-						<image 
-							v-if="activeBrandTab === 'beauty'"
-							class="tab-indicator" 
-							src="https://c.animaapp.com/mi5ng54v4eM3X6/img/vector-15.svg" 
-							mode="aspectFit"
-						></image>
-					</view>
-					<view 
-						class="tab-item"
-						:class="{ active: activeBrandTab === 'makeup' }"
-						@tap="handleBrandTabChange('makeup')"
-					>
-						<text class="tab-label" :class="{ active: activeBrandTab === 'makeup' }">化妆</text>
-						<image 
-							v-if="activeBrandTab === 'makeup'"
-							class="tab-indicator" 
-							src="https://c.animaapp.com/mi5ng54v4eM3X6/img/vector-15.svg" 
-							mode="aspectFit"
-						></image>
-					</view>
-					<view 
-						class="tab-item"
-						:class="{ active: activeBrandTab === 'nail' }"
-						@tap="handleBrandTabChange('nail')"
-					>
-						<text class="tab-label" :class="{ active: activeBrandTab === 'nail' }">美甲</text>
-						<image 
-							v-if="activeBrandTab === 'nail'"
-							class="tab-indicator" 
-							src="https://c.animaapp.com/mi5ng54v4eM3X6/img/vector-15.svg" 
-							mode="aspectFit"
-						></image>
-					</view>
-					<view 
-						class="tab-item"
-						:class="{ active: activeBrandTab === 'body' }"
-						@tap="handleBrandTabChange('body')"
-					>
-						<text class="tab-label" :class="{ active: activeBrandTab === 'body' }">美体</text>
-						<image 
-							v-if="activeBrandTab === 'body'"
-							class="tab-indicator" 
-							src="https://c.animaapp.com/mi5ng54v4eM3X6/img/vector-15.svg" 
-							mode="aspectFit"
-						></image>
-					</view>
-				</view>
-			</view>
-			
 			<view 
 				v-for="(card, index) in brandCards" 
 				:key="index"
@@ -252,6 +203,20 @@ export default {
 			activeSubTab: 'hairstylist',
 			activeBrandTab: 'hair',
 			avatarImage: '/static/avatar/avatar.png',
+			designerSubTabs: [
+				{ id: 'hairstylist', label: '美发师' },
+				{ id: 'beautician', label: '美容师' },
+				{ id: 'makeup', label: '化妆师' },
+				{ id: 'nail', label: '美甲师' },
+				{ id: 'body', label: '美体师' }
+			],
+			brandSubTabs: [
+				{ id: 'hair', label: '美发' },
+				{ id: 'beauty', label: '美容' },
+				{ id: 'makeup', label: '化妆' },
+				{ id: 'nail', label: '美甲' },
+				{ id: 'body', label: '美体' }
+			],
 			brandCards: [
 				{
 					headerInfo: ['2025-05-05', '｜', '洗剪吹', '｜', '欧莱雅生化烫'],
@@ -440,7 +405,7 @@ export default {
 	align-items: center;
 	gap: 40rpx;
 	width: 100%;
-	padding: 0rpx 0rpx 0rpx 35rpx;
+	padding: 24rpx 30rpx 0 30rpx;
 	box-sizing: border-box;
 }
 
@@ -459,6 +424,46 @@ export default {
 		font-weight: 600;
 		color: #000000;
 	}
+}
+
+/* 子tabs行样式 */
+.top-nav-fixed .sub-nav {
+	display: flex;
+	align-items: center;
+	gap: 24rpx;
+	width: 100%;
+	padding: 20rpx 30rpx 0 30rpx;
+	box-sizing: border-box;
+}
+
+.top-nav-fixed .sub-nav-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: relative;
+	cursor: pointer;
+	padding-bottom: 16rpx;
+}
+
+.top-nav-fixed .sub-nav-label {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-weight: 400;
+	color: #a6a6a6;
+	font-size: 28rpx;
+	
+	&.active {
+		font-weight: 500;
+		color: #000000;
+	}
+}
+
+.top-nav-fixed .sub-nav-indicator {
+	position: absolute;
+	bottom: -2rpx;
+	width: 24rpx;
+	height: 4rpx;
+	background-color: #000000;
+	border-radius: 2rpx;
 }
 
 .main-content {
@@ -511,53 +516,6 @@ export default {
 	flex-direction: column;
 	flex: 1;
 	gap: 12rpx;
-}
-
-.brand-tab-nav {
-	background-color: #ffffff;
-	padding: 24rpx 30rpx;
-	box-sizing: border-box;
-	flex-shrink: 0;
-	width: 100%;
-	max-width: 726rpx;
-	margin: 0 auto;
-}
-
-.brand-tab-nav .tab-nav {
-	display: flex;
-	align-items: flex-start;
-	gap: 24rpx;
-	width: 100%;
-	flex-wrap: wrap;
-}
-
-.brand-tab-nav .tab-item {
-	display: inline-flex;
-	flex-direction: column;
-	height: 62rpx;
-	align-items: center;
-	gap: 20rpx;
-	position: relative;
-	cursor: pointer;
-}
-
-.brand-tab-nav .tab-label {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 500;
-	color: #a6a6a6;
-	font-size: 28rpx;
-	
-	&.active {
-		font-weight: 600;
-		color: #000000;
-	}
-}
-
-.brand-tab-nav .tab-indicator {
-	position: absolute;
-	bottom: -20rpx;
-	width: 20rpx;
-	height: 6rpx;
 }
 
 .brand-card {
@@ -826,7 +784,6 @@ export default {
 
 .book-again-btn {
 	background-color: #333333;
-	min-width: 300rpx;
 }
 
 .btn-text {

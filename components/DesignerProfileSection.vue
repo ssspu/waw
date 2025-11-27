@@ -1,18 +1,6 @@
 <template>
 	<view class="profile-section">
 		<view class="nav-card">
-			<!-- 次级标签 -->
-			<view class="secondary-nav">
-				<view 
-					v-for="tab in secondaryTabs" 
-					:key="tab.id" 
-					class="secondary-tab"
-					:class="{ active: selectedSecondary === tab.id }"
-					@tap="selectSecondary(tab.id)"
-				>
-					<text>{{ tab.label }}</text>
-				</view>
-			</view>
 			
 			<!-- 分类标签 -->
 			<view class="category-nav">
@@ -35,7 +23,7 @@
 				:key="service.id" 
 				class="service-card"
 			>
-				<view class="service-content" :class="{ 'has-options': service.hasOptions }">
+				<view class="service-content" :class="{ 'has-options': isExpanded(service.id) }">
 					<image 
 						class="service-image" 
 						:src="service.image" 
@@ -56,7 +44,7 @@
 							<text class="sales-count">已售{{ service.salesCount }}</text>
 						</view>
 						
-						<view class="service-pricing" :class="{ 'has-options': service.hasOptions }">
+						<view class="service-pricing" :class="{ 'has-options': isExpanded(service.id) }">
 							<view class="price-container">
 								<text class="price-symbol">¥</text>
 								<text class="price-value">{{ service.price }}</text>
@@ -65,29 +53,30 @@
 								<text class="discount-text">{{ service.discount }}</text>
 							</view>
 							
-							<view v-if="!service.hasOptions" class="book-btn" @tap="handleBook(service)">
+							<view v-if="!isExpanded(service.id)" class="book-btn" @tap="toggleExpand(service.id)">
 								<text class="book-text">在线预订</text>
 							</view>
-							<image 
-								v-else
-								class="options-icon" 
-								src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1811.svg" 
-								mode="aspectFit"
-							></image>
+							<view v-else class="expand-btn" @tap="toggleExpand(service.id)">
+								<image 
+									class="options-icon" 
+									src="/static/icon/up.png" 
+									mode="aspectFit"
+								></image>
+							</view>
 						</view>
 					</view>
 				</view>
 				
-				<!-- 选项区域（如果有） -->
-				<view v-if="service.hasOptions" class="options-section">
+				<!-- 选项区域（如果展开） -->
+				<view v-if="isExpanded(service.id)" class="options-section">
 					<!-- 头发长度选择 -->
 					<view class="hair-length-options">
 						<view 
 							v-for="option in hairLengthOptions" 
 							:key="option.id" 
 							class="hair-length-btn"
-							:class="{ active: selectedHairLength === option.id }"
-							@tap="selectHairLength(option.id)"
+							:class="{ active: getSelectedHairLength(service.id) === option.id }"
+							@tap="selectHairLengthForService(service.id, option.id)"
 						>
 							<text>{{ option.label }}</text>
 						</view>
@@ -99,9 +88,12 @@
 							v-for="brand in brandOptions" 
 							:key="brand.id" 
 							class="brand-item"
+							@tap="selectBrand(service.id, brand.id)"
 						>
 							<view class="brand-info">
-								<image class="brand-icon" :src="brand.icon" :alt="brand.name" mode="aspectFit"></image>
+								<view class="brand-radio" :class="{ checked: getSelectedBrand(service.id) === brand.id }">
+									<image v-if="getSelectedBrand(service.id) === brand.id" class="check-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg" mode="aspectFit"></image>
+								</view>
 								<text class="brand-name">{{ brand.name }}</text>
 							</view>
 							<view class="brand-price">
@@ -133,11 +125,12 @@ export default {
 			selectedCategory: "wash-cut-blow",
 			selectedHairLength: "short",
 			categories: [
-				{ id: "stylist", label: "发型师", active: true },
-				{ id: "chief", label: "首席", active: false },
-				{ id: "senior", label: "资深", active: false },
-				{ id: "director", label: "总监", active: false },
-				{ id: "manager", label: "店长", active: false },
+				{ id: "wash-cut-blow", label: "洗剪吹" },
+				{ id: "perm", label: "烫发" },
+				{ id: "dye", label: "染发" },
+				{ id: "care", label: "护发" },
+				{ id: "scalp", label: "头皮" },
+				{ id: "extension", label: "接发" },
 			],
 			services: [
 				{
@@ -149,7 +142,6 @@ export default {
 					price: "799",
 					discount: "预约优惠10%",
 					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png",
-					hasOptions: false,
 				},
 				{
 					id: 2,
@@ -160,7 +152,6 @@ export default {
 					price: "799",
 					discount: "预约优惠10%",
 					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png",
-					hasOptions: false,
 				},
 				{
 					id: 3,
@@ -171,7 +162,6 @@ export default {
 					price: "799",
 					discount: "预约优惠10%",
 					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png",
-					hasOptions: true,
 				},
 				{
 					id: 4,
@@ -182,9 +172,11 @@ export default {
 					price: "799",
 					discount: "预约优惠10%",
 					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png",
-					hasOptions: false,
 				},
 			],
+			expandedServices: [], // 展开的服务ID列表
+			selectedBrands: {}, // 每个服务选中的品牌 { serviceId: brandId }
+			selectedHairLengths: {}, // 每个服务选中的头发长度 { serviceId: lengthId }
 			hairLengthOptions: [
 				{ id: "short", label: "短发", active: true },
 				{ id: "medium", label: "中发", active: false },
@@ -228,6 +220,38 @@ export default {
 		selectHairLength(id) {
 			this.selectedHairLength = id
 		},
+		toggleExpand(serviceId) {
+			// 切换展开状态
+			const index = this.expandedServices.indexOf(serviceId)
+			if (index > -1) {
+				this.expandedServices.splice(index, 1)
+			} else {
+				this.expandedServices.push(serviceId)
+				// 默认选择第一个头发长度和品牌
+				if (!this.selectedHairLengths[serviceId]) {
+					this.$set(this.selectedHairLengths, serviceId, 'short')
+				}
+				if (!this.selectedBrands[serviceId] && this.brandOptions && this.brandOptions.length > 0) {
+					this.$set(this.selectedBrands, serviceId, this.brandOptions[0].id)
+				}
+			}
+		},
+		isExpanded(serviceId) {
+			// 检查服务是否展开
+			return this.expandedServices.includes(serviceId)
+		},
+		getSelectedHairLength(serviceId) {
+			return this.selectedHairLengths[serviceId] || 'short'
+		},
+		selectHairLengthForService(serviceId, lengthId) {
+			this.$set(this.selectedHairLengths, serviceId, lengthId)
+		},
+		selectBrand(serviceId, brandId) {
+			this.$set(this.selectedBrands, serviceId, brandId)
+		},
+		getSelectedBrand(serviceId) {
+			return this.selectedBrands[serviceId] || (this.brandOptions && this.brandOptions.length > 0 ? this.brandOptions[0].id : null)
+		},
 		handleBook(service) {
 			console.log('Book service:', service)
 		}
@@ -251,11 +275,10 @@ export default {
 
 .nav-card {
 	width: 100%;
-	background-color: #ffffff;
 	border-radius: 0 0 12rpx 12rpx;
-
 	box-sizing: border-box;
 	border-top: 2rpx solid #f3f3f3;
+	margin-bottom: 5rpx;
 }
 
 .secondary-nav {
@@ -282,6 +305,7 @@ export default {
 }
 
 .category-nav {
+
 	display: inline-flex;
 	align-items: center;
 	gap: 12rpx;
@@ -290,7 +314,7 @@ export default {
 
 .category-btn {
 	height: auto;
-	padding: 0rpx 20rpx;
+	padding: 8rpx 20rpx;
 	border-radius: 4rpx;
 	background-color: #ffffff;
 	color: #a6a6a6;
@@ -445,7 +469,7 @@ export default {
 }
 
 .price-symbol {
-	font-size: 28rpx;
+	font-size: 32rpx;
 	font-family: 'PingFang_SC-Semibold', Helvetica;
 	font-weight: normal;
 	color: #333333;
@@ -455,7 +479,7 @@ export default {
 	font-family: 'FZChaoCuHei-M10T-Regular', Helvetica;
 	font-weight: normal;
 	color: #333333;
-	font-size: 36rpx;
+	font-size: 34rpx;
 	white-space: nowrap;
 }
 
@@ -478,12 +502,28 @@ export default {
 
 .book-btn {
 	height: 60rpx;
-	padding: 16rpx 30rpx;
+	min-width: 148rpx;
+	padding: 0 30rpx;
 	background-color: #333333;
 	border-radius: 4rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+.expand-btn {
+	height: 60rpx;
+	min-width: 148rpx;
+	padding: 0;
+	background-color: #333333;
+	border-radius: 4rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	box-sizing: border-box;
 }
 
 .book-text {
@@ -491,11 +531,13 @@ export default {
 	font-weight: normal;
 	color: #ffa77b;
 	font-size: 22rpx;
+	white-space: nowrap;
 }
 
 .options-icon {
-	width: 148rpx;
-	height: 60rpx;
+	width: 40rpx;
+	height: 40rpx;
+	filter: brightness(0) invert(1);
 }
 
 .options-section {
@@ -544,7 +586,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: 30rpx;
+	gap: 16rpx;
 	padding: 0 20rpx;
 	width: 100%;
 	box-sizing: border-box;
@@ -557,12 +599,37 @@ export default {
 	width: 100%;
 	min-width: 0;
 	box-sizing: border-box;
+	cursor: pointer;
+	padding: 8rpx 0;
 }
 
 .brand-info {
 	display: flex;
 	align-items: center;
 	gap: 20rpx;
+}
+
+.brand-radio {
+	width: 36rpx;
+	height: 36rpx;
+	border-radius: 50%;
+	border: 2rpx solid #e5e5e5;
+	background-color: #ffffff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+.brand-radio.checked {
+	border-color: #333333;
+	background-color: #333333;
+}
+
+.check-icon {
+	width: 20rpx;
+	height: 20rpx;
+	filter: brightness(0) invert(1);
 }
 
 .brand-icon {
@@ -574,7 +641,7 @@ export default {
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-weight: normal;
 	color: #333333;
-	font-size: 26rpx;
+	font-size: 24rpx;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -583,18 +650,38 @@ export default {
 
 .brand-price {
 	display: inline-flex;
-	align-items: center;
+	align-items: baseline;
+	gap: 4rpx;
+	
+	.price-symbol {
+		font-size: 26rpx;
+		color: #333333;
+	}
+	
+	.price-value {
+		font-size: 32rpx;
+		color: #333333;
+	}
 }
 
 .book-btn-large {
-	height: 84rpx;
+	height: 78rpx;
 	width: 100%;
-	padding: 16rpx 30rpx;
+	padding: 0;
 	background-color: #333333;
-	border-radius: 4rpx;
+	border-radius: 8rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+.book-btn-large .book-text {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-weight: normal;
+	color: #ffa77b;
+	font-size: 26rpx;
 }
 
 /* 动画 */

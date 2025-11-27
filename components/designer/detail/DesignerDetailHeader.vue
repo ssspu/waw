@@ -72,6 +72,9 @@ export default {
 }
 
 .header-actions {
+	// margin-top: 135rpx;
+	position: absolute;
+	top: 100rpx;
 	margin-left: 40rpx;
 	display: flex;
 	align-items: center;

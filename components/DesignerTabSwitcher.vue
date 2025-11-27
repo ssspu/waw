@@ -43,12 +43,16 @@ export default {
 <style scoped lang="scss">
 .tabs-card {
 	width: 100%;
+margin-top: 0;
 	background-color: transparent;
 	border-radius: 0;
 	border: 0;
 	box-shadow: none;
-	padding: 20rpx 30rpx 0;
+padding: 20rpx 0rpx 0rpx 0rpx;
 	box-sizing: border-box;
+	// margin-left: -20rpx;
+	// background-color: #fcc;
+	
 }
 
 .tabs-header {
@@ -57,28 +61,30 @@ export default {
 	align-items: flex-start;
 	justify-content: space-between;
 	gap: 10rpx;
-	width: 100%;
+	width: 102%;
+	margin-left: -10rpx;
 	box-sizing: border-box;
-	padding-bottom: 12rpx;
-	border-bottom: 2rpx solid #f3f3f3;
 }
 
 .tab-item {
 	display: inline-flex;
 	flex-direction: column;
-	align-items: flex-start;
-	justify-content: center;
-	gap: 10rpx;
-	flex: 1;
+align-items: center;
+	justify-content: flex-start;
+	gap: 0;
+	width: 25%;
+	position: relative;
 	cursor: pointer;
+	padding-bottom: 12rpx;
 }
 
 .tab-label {
 	font-size: 28rpx;
-	text-align: left;
-	font-family: 'PingFang_SC-Regular', Helvetica;
-	font-weight: normal;
-	color: #a6a6a6;
+text-align: center;
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-weight: 500;
+	color: #666666;
+	margin-bottom: 8rpx;
 }
 
 .tab-label.active {
@@ -88,10 +94,24 @@ export default {
 }
 
 .tab-indicator {
-	width: 36rpx;
+	width: 20rpx;
 	height: 6rpx;
-	border-radius: 4rpx;
+	margin-top: 0;
+	margin-bottom: 0;
+	position: absolute;
+	bottom: -2rpx;
+	left: 50%;
+	transform: translateX(-50%);
 	background-color: #000000;
+	border-radius: 3rpx;
+}
+
+.separator-line {
+	width: 100%;
+	height: 2rpx;
+	background-color: #e5e5e5;
+	margin-top: 0;
+	margin-bottom: 0;
 }
 </style>
 

@@ -167,7 +167,10 @@ export default {
 	},
 	methods: {
 		handleCardClick(card) {
-			console.log('Service card clicked:', card)
+		// 跳转到服务订单购买页面，并传递服务卡片的 id
+		uni.navigateTo({
+			url: `/pages/order/purchase?id=${card.id}`
+		})
 		}
 	}
 }

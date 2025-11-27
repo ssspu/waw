@@ -1,32 +1,30 @@
 <template>
-	<view class="brand-service-content">
-		<!-- 复用 DesignerProfileSection 作为服务列表 -->
-		<designer-profile-section></designer-profile-section>
-		
-		<!-- 服务信息卡片 -->
-		<brand-service-info-section></brand-service-info-section>
+	<view class="service-tab-content">
+		<!-- 服务列表 -->
+		<brand-profile-section :active-sub-tab="activeSubTab"></brand-profile-section>
 	</view>
 </template>
 
 <script>
-import DesignerProfileSection from '../../DesignerProfileSection.vue'
-import BrandServiceInfoSection from './BrandServiceInfoSection.vue'
+import BrandProfileSection from '../../BrandProfileSection.vue'
 
 export default {
 	components: {
-		DesignerProfileSection,
-		BrandServiceInfoSection
+		BrandProfileSection
+	},
+	props: {
+		activeSubTab: {
+			type: String,
+			default: 'hair'
+		}
 	}
 }
 </script>
 
 <style scoped lang="scss">
-.brand-service-content {
+.service-tab-content {
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	align-items: flex-start;
-	gap: 12rpx;
 }
 </style>
-
