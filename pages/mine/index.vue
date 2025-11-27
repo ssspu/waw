@@ -127,12 +127,16 @@ export default {
 
 .main-content {
 	position: relative;
-	margin-top: -80		rpx;
-	padding: 0 24rpx 160rpx;
+	margin-top: 20rpx;
+	width: 100%;
+	max-width: 750rpx;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 0 20rpx 160rpx;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	// gap: 20rpx;
+	gap: 20rpx;
 	box-sizing: border-box;
 	z-index: 2;
 }

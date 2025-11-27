@@ -127,12 +127,8 @@ export default {
 }
 
 .user-card {
-	width: 100%;
-	max-width: 780rpx;
-	// background: #fcc;
-	// border-radius: 36rpx;
-	// box-shadow: 0 16rpx 50rpx rgba(0, 0, 0, 0.12);
-	padding: 40rpx 34rpx 36rpx;
+	width: 710rpx;
+	padding: 40rpx 20rpx 36rpx;
 	position: relative;
 	box-sizing: border-box;
 	margin-top: -60rpx;
@@ -222,8 +218,8 @@ export default {
 }
 
 .arrow-bg {
-	width: 28rpx;
-	height: 28rpx;
+	width: 24rpx;
+	height: 24rpx;
 	background-color: #ffffff;
 	border-radius: 50%;
 	display: flex;
@@ -232,8 +228,8 @@ export default {
 }
 
 .arrow-icon {
-	width: 26rpx;
-	height: 26rpx;
+	width: 24rpx;
+	height: 24rpx;
 	filter: brightness(0) saturate(100%) invert(79%) sepia(12%) saturate(497%) hue-rotate(8deg) brightness(93%) contrast(87%) drop-shadow(0 0 1rpx #D0C1A7) ;
 }
 
