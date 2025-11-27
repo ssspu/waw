@@ -1,1 +1,0 @@
-<view class="service-tab-content data-v-20c4729e"><brand-profile-section wx:if="{{a}}" class="data-v-20c4729e" u-i="20c4729e-0" bind:__l="__l" u-p="{{a}}"></brand-profile-section></view>
