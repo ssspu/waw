@@ -101,12 +101,12 @@
 <script>
 import BrandDetailHeader from '../../components/brand/detail/BrandDetailHeader.vue'
 import BrandInfoCard from '../../components/brand/detail/BrandInfoCard.vue'
-import BrandTabSwitcher from '../../components/BrandTabSwitcher.vue'
+import BrandTabSwitcher from '../../components/brand/detail/BrandTabSwitcher.vue'
 import BrandServiceTabContent from '../../components/brand/detail/BrandServiceTabContent.vue'
 import BrandDesignerTabContent from '../../components/brand/detail/BrandDesignerTabContent.vue'
 import BrandAppointmentTabContent from '../../components/brand/detail/BrandAppointmentTabContent.vue'
-import BrandWorksTabContent from '../../components/BrandWorksTabContent.vue'
-import BrandReviewsTabContent from '../../components/BrandReviewsTabContent.vue'
+import BrandWorksTabContent from '../../components/brand/detail/BrandWorksTabContent.vue'
+import BrandReviewsTabContent from '../../components/brand/detail/BrandReviewsTabContent.vue'
 import BrandPortfolioSection from '../../components/brand/detail/BrandPortfolioSection.vue'
 import CouponPopup from '../../components/popup/CouponPopup.vue'
 // 导入品牌馆数据

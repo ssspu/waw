@@ -238,7 +238,7 @@
 		
 		<!-- 底部指示器 -->
 		<view class="footer-indicator">
-			<view class="indicator-bar"></view>
+			<!-- <view class="indicator-bar"></view> -->
 		</view>
 	</view>
 </template>

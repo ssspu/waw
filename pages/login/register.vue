@@ -103,7 +103,7 @@
 		
 		<!-- 底部指示条 -->
 		<view class="home-indicator">
-			<view class="indicator-bar"></view>
+			<!-- <view class="indicator-bar"></view> -->
 		</view>
 	</view>
 </template>

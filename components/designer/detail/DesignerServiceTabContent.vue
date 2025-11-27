@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import DesignerProfileSection from '../../DesignerProfileSection.vue'
+import DesignerProfileSection from './DesignerProfileSection.vue'
 
 export default {
 	components: {

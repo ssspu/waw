@@ -95,10 +95,10 @@
 import DesignSection from '../../components/main/index/DesignSection.vue'
 import ServiceOptionsSection from '../../components/main/index/ServiceOptionsSection.vue'
 import FeaturedServicesSection from '../../components/main/index/FeaturedServicesSection.vue'
-import RecommendationsSection from '../../components/RecommendationsSection.vue'
+import RecommendationsSection from '../../components/main/index/RecommendationsSection.vue'
 import VIPSection from '../../components/main/index/VIPSection.vue'
 import ServiceGallerySection from '../../components/main/index/ServiceGallerySection.vue'
-import BrandFeaturedItemsSection from '../../components/BrandFeaturedItemsSection.vue'
+import BrandFeaturedItemsSection from '../../components/main/index/BrandFeaturedItemsSection.vue'
 
 export default {
 	components: {

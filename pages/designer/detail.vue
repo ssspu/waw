@@ -102,11 +102,11 @@
 <script>
 import DesignerDetailHeader from '../../components/designer/detail/DesignerDetailHeader.vue'
 import DesignerInfoCard from '../../components/designer/detail/DesignerInfoCard.vue'
-import DesignerTabSwitcher from '../../components/DesignerTabSwitcher.vue'
+import DesignerTabSwitcher from '../../components/designer/detail/DesignerTabSwitcher.vue'
 import DesignerServiceTabContent from '../../components/designer/detail/DesignerServiceTabContent.vue'
 import DesignerAppointmentTabContent from '../../components/designer/detail/DesignerAppointmentTabContent.vue'
-import DesignerWorksTabContent from '../../components/DesignerWorksTabContent.vue'
-import DesignerReviewsTabContent from '../../components/DesignerReviewsTabContent.vue'
+import DesignerWorksTabContent from '../../components/designer/detail/DesignerWorksTabContent.vue'
+import DesignerReviewsTabContent from '../../components/designer/detail/DesignerReviewsTabContent.vue'
 import DesignerPortfolioSection from '../../components/designer/detail/DesignerPortfolioSection.vue'
 import CouponPopup from '../../components/popup/CouponPopup.vue'
 

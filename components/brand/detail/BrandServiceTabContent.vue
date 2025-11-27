@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import BrandProfileSection from '../../BrandProfileSection.vue'
+import BrandProfileSection from './BrandProfileSection.vue'
 
 export default {
 	components: {

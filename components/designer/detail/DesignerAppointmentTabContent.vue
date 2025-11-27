@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import DesignerBookingProfileSection from '../../DesignerBookingProfileSection.vue'
+import DesignerBookingProfileSection from './DesignerBookingProfileSection.vue'
 
 export default {
 	components: {
