@@ -36,6 +36,7 @@
 					v-for="(action, index) in bottomActions" 
 					:key="index" 
 					class="bottom-action-item"
+					@tap="handleBottomAction(action, index)"
 				>
 					<image class="action-icon" :src="action.icon" mode="aspectFit"></image>
 					<view class="action-info">
@@ -103,35 +104,35 @@
 					:key="slideIndex"
 					class="designers-swiper-item"
 				>
-					<view class="designers-container">
-						<view 
+				<view class="designers-container">
+					<view 
 							v-for="(designer, index) in slide" 
-							:key="index" 
-							class="designer-card"
-							@tap="handleDesignerClick(designer)"
-						>
-							<view class="designer-img-wrapper">
-								<view class="designer-img-bg"></view>
-								<image class="designer-img" :src="designer.image" mode="aspectFill"></image>
+						:key="index" 
+						class="designer-card"
+						@tap="handleDesignerClick(designer)"
+					>
+						<view class="designer-img-wrapper">
+							<view class="designer-img-bg"></view>
+							<image class="designer-img" :src="designer.image" mode="aspectFill"></image>
+						</view>
+						<view class="designer-info">
+							<view class="designer-header">
+								<text class="designer-name">{{ designer.name }}</text>
+								<view class="designer-badge secondary">{{ designer.role }}</view>
+								<view class="designer-badge primary">{{ designer.level }}</view>
 							</view>
-							<view class="designer-info">
-								<view class="designer-header">
-									<text class="designer-name">{{ designer.name }}</text>
-									<view class="designer-badge secondary">{{ designer.role }}</view>
-									<view class="designer-badge primary">{{ designer.level }}</view>
+							<text class="designer-title">{{ designer.title }}</text>
+							<view class="designer-footer">
+								<view class="rating-info">
+									<text class="rating-score">{{ designer.rating }}</text>
+									<text class="star">★</text>
+									<text class="review-count">({{ designer.reviews }})</text>
 								</view>
-								<text class="designer-title">{{ designer.title }}</text>
-								<view class="designer-footer">
-									<view class="rating-info">
-										<text class="rating-score">{{ designer.rating }}</text>
-										<text class="star">★</text>
-										<text class="review-count">({{ designer.reviews }})</text>
-									</view>
-									<text class="distance">{{ designer.distance }}</text>
-								</view>
+								<text class="distance">{{ designer.distance }}</text>
 							</view>
 						</view>
 					</view>
+				</view>
 				</swiper-item>
 			</swiper>
 			<view class="pagination-dots">
@@ -164,7 +165,7 @@
 					</view>
 				</view>
 			</scroll-view>
-			<scroll-view class="brands-scroll" scroll-x>
+			<scroll-view class="brands-scroll" scroll-x show-scrollbar="false" scroll-with-animation>
 				<view class="brands-container">
 					<view 
 						v-for="(brand, index) in filteredBrands" 
@@ -189,7 +190,7 @@
 								<text class="review-count">({{ brand.reviews }})</text>
 							</view>
 							<view class="brand-address">
-								<text class="location-icon">📍</text>
+								<image class="location-icon" src="/static/icon/position.png" mode="aspectFit"></image>
 								<text class="address-text">{{ brand.address }}</text>
 								<text v-if="brand.distance" class="distance">{{ brand.distance }}</text>
 							</view>
@@ -327,28 +328,28 @@ export default {
 			designerSwiperIndex: 0,
 			designersByTab: {
 				0: [ // 首席创意
-					{
-						id: 13,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "李天天",
-						role: "美发师",
-						level: "高级",
+				{
+					id: 13,
+					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+					name: "李天天",
+					role: "美发师",
+					level: "高级",
 						title: "创意总监｜从业十年",
-						rating: "4.8",
-						reviews: "234",
-						distance: "6.7km",
-					},
-					{
-						id: 14,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
+					rating: "4.8",
+					reviews: "234",
+					distance: "6.7km",
+				},
+				{
+					id: 14,
+					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
 						name: "张雨辰",
-						role: "美发师",
-						level: "高级",
+					role: "美发师",
+					level: "高级",
 						title: "创意导师｜从业八年",
-						rating: "4.8",
-						reviews: "234",
-						distance: "6.7km",
-					},
+					rating: "4.8",
+					reviews: "234",
+					distance: "6.7km",
+				},
 					{
 						id: 15,
 						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
@@ -691,14 +692,14 @@ export default {
 			activeBrandTab: "专业店",
 			allBrands: {
 				"专业店": [
-					{
+				{
 						id: 1,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "成都意念美发造型沙龙",
-						rating: "4.8",
-						reviews: "768",
-						address: "成都青羊区草堂路12号...",
-						distance: "7.5km",
+					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
+					name: "成都意念美发造型沙龙",
+					rating: "4.8",
+					reviews: "768",
+					address: "成都青羊区草堂路12号...",
+					distance: "7.5km",
 						category: "专业店",
 					},
 					{
@@ -735,7 +736,7 @@ export default {
 						id: 5,
 						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
 						name: "专业剪发造型店",
-						rating: "4.8",
+					rating: "4.8",
 						reviews: "445",
 						address: "成都高新区天府三街...",
 						distance: "4.3km",
@@ -1232,8 +1233,25 @@ export default {
 			uni.navigateTo({
 				url: `/pages/brand/detail?id=${brand.id || 1}&name=${encodeURIComponent(brand.name || '')}`
 			})
+		},
+		handleBottomAction(action, index) {
+			// 处理底部按钮点击
+			if (action.title === '优惠券') {
+				uni.navigateTo({
+					url: '/pages/coupon/index'
+				})
+			} else if (action.title === '预约单') {
+				// 可以添加预约单页面跳转
+				console.log('跳转到预约单页面')
+			} else if (action.title === '会员') {
+				// 可以添加会员页面跳转
+				console.log('跳转到会员页面')
+			} else if (action.title === '入驻中') {
+				// 可以添加入驻页面跳转
+				console.log('跳转入驻页面')
+			}
 		}
-	}
+	},
 }
 </script>
 
@@ -1361,8 +1379,7 @@ export default {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 20rpx 30rpx;
-	border-top: 2rpx solid #f3f3f3;
+	padding: 0 30rpx 20rpx;
 }
 
 .bottom-action-item {
@@ -1662,6 +1679,9 @@ export default {
 .brands-scroll {
 	width: 100%;
 	white-space: nowrap;
+	box-sizing: border-box;
+	/* 确保回弹效果正常 */
+	-webkit-overflow-scrolling: touch;
 }
 
 .brands-container {
@@ -1731,13 +1751,15 @@ export default {
 .brand-address {
 	display: flex;
 	align-items: center;
-	gap: 8rpx;
-	justify-content: space-between;
+	gap: 6rpx;
+	justify-content: flex-start;
 	width: 100%;
 }
 
 .location-icon {
-	font-size: 28rpx;
+	width: 28rpx;
+	height: 28rpx;
+	flex-shrink: 0;
 }
 
 .address-text {
@@ -1745,6 +1767,18 @@ export default {
 	font-size: 22rpx;
 	color: #666666;
 	font-weight: 500;
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.brand-address .distance {
+	margin-left: 8rpx;
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 22rpx;
+	color: #a6a6a6;
+	white-space: nowrap;
 }
 
 .brand-overlay {

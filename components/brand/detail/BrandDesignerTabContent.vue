@@ -1,16 +1,16 @@
 <template>
-	<view class="service-tab-content">
-		<!-- 服务列表 -->
-		<brand-profile-section :active-sub-tab="activeSubTab"></brand-profile-section>
+	<view class="designer-tab-content">
+		<!-- 发型师列表 -->
+		<brand-stylist-section :active-sub-tab="activeSubTab"></brand-stylist-section>
 	</view>
 </template>
 
 <script>
-import BrandProfileSection from '../../BrandProfileSection.vue'
+import BrandStylistSection from './BrandStylistSection.vue'
 
 export default {
 	components: {
-		BrandProfileSection
+		BrandStylistSection
 	},
 	props: {
 		activeSubTab: {
@@ -22,7 +22,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.service-tab-content {
+.designer-tab-content {
 	display: flex;
 	flex-direction: column;
 	width: 100%;

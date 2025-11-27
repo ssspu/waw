@@ -2,20 +2,23 @@
 	<view class="info-page">
 		<!-- 自定义导航栏 -->
 		<view class="custom-navbar">
+			<view class="status-bar-spacer"></view>
 			<view class="navbar-content">
 				<view class="nav-left" @tap="goBack">
-					<image class="back-icon" src="https://c.animaapp.com/mi5eklbiAEaKLJ/img/chevron-left.svg" mode="aspectFit"></image>
+					<image class="back-icon" src="https://c.animaapp.com/mi5eklbiAEaKLJ/img/frame-1.svg" mode="aspectFit"></image>
 				</view>
-		
-				<view class="nav-right" @tap="goBack">
-					<image class="share-icon" src="https://c.animaapp.com/mi5eklbiAEaKLJ/img/frame-1.svg" mode="aspectFit"></image>
-				</view>
+
 			</view>
+
+			<designer-info-profile-section
+				class="navbar-tabs"
+				:active-tab="activeTab"
+				@tab-change="handleTabChange"
+			></designer-info-profile-section>
 		</view>
 		
 		<!-- 主内容 -->
 		<view class="main-content">
-			<designer-info-profile-section @tab-change="handleTabChange"></designer-info-profile-section>
 			<designer-info-services-section :active-tab="activeTab"></designer-info-services-section>
 		</view>
 		
@@ -68,18 +71,25 @@ export default {
 	background-color: #ffffff;
 	z-index: 10;
 	flex-shrink: 0;
-	box-sizing: border-box;
+	box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.04);
+	display: flex;
+	flex-direction: column;
+	border-bottom: 2rpx solid #f1f1f1;
+}
+
+.status-bar-spacer {
+	height: 80rpx;
 }
 
 .navbar-content {
 	width: 100%;
-	min-height: 252rpx;
-	position: relative;
+	min-height: 120rpx;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 116rpx 30rpx 0;
+	padding: 0 30rpx;
 	box-sizing: border-box;
+	position: relative;
 }
 
 .logo {
@@ -98,7 +108,12 @@ export default {
 	align-items: center;
 	gap: 32rpx;
 	flex-shrink: 0;
+	width: 64rpx;
+	height: 64rpx;
 	cursor: pointer;
+	justify-content: center;
+	position: absolute;
+	left: 30rpx;
 }
 
 .back-icon {
@@ -114,11 +129,16 @@ export default {
 	gap: 12rpx;
 	flex-shrink: 0;
 	cursor: pointer;
-	z-index: 2;
-	background-color: #ffffff;
-	padding: 12rpx 20rpx;
-	border-radius: 8rpx;
-	box-sizing: border-box;
+	width: 64rpx;
+	height: 64rpx;
+	justify-content: center;
+	position: absolute;
+	right: 30rpx;
+}
+
+.navbar-tabs {
+	width: 100%;
+	margin-top: -40rpx;
 }
 
 .share-icon {
@@ -134,6 +154,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 	min-width: 0;
+	padding-top: 12rpx;
 	box-sizing: border-box;
 }
 

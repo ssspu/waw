@@ -2,18 +2,18 @@
 	<view class="header">
 		<image 
 			class="header-bg" 
-			src="https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-186.png" 
+			src="https://c.animaapp.com/mi5l377nJk1HHO/img/rectangle-186.png" 
 			mode="aspectFill"
 		></image>
 		<view class="header-overlay"></view>
 
-		<!-- <view class="header-content"> -->
+		<view class="header-content">
 			<view class="header-actions">
 				<view class="back-btn" @tap="goBack">
-					<image class="back-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1877.svg" mode="aspectFit"></image>
+					<image class="back-icon" src="https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1877.svg" mode="aspectFit"></image>
 				</view>
 			</view>
-		<!-- </view> -->
+		</view>
 	</view>
 </template>
 
@@ -26,7 +26,7 @@ export default {
 				uni.navigateBack()
 			} else {
 				uni.redirectTo({
-					url: '/pages/brand/index'
+					url: '/pages/main/index'
 				})
 			}
 		}
@@ -63,8 +63,7 @@ export default {
 
 .header-content {
 	position: relative;
-	top: -430rpx;
-	z-index: 9;
+	z-index: 2;
 	height: 100%;
 	padding: 48rpx 32rpx 32rpx;
 	display: flex;
@@ -73,8 +72,8 @@ export default {
 }
 
 .header-actions {
-	margin-top: 135rpx;
-	margin-left: 40rpx;
+	margin-top: auto;
+	margin-bottom: 200rpx;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -86,7 +85,7 @@ export default {
 	width: 64rpx;
 	height: 64rpx;
 	border-radius: 32rpx;
-	// background: rgba(255, 255, 255, 0.18);
+	background: rgba(255, 255, 255, 0.18);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -99,15 +98,10 @@ export default {
 }
 
 .back-icon {
-	width: 60;
-	height: 60rpx;
+	width: 32rpx;
+	height: 32rpx;
 	flex-shrink: 0;
 	filter: brightness(0) invert(1);
 }
-
-.logo {
-	width: 220rpx;
-	height: 124rpx;
-	opacity: 0;
-}
 </style>
+

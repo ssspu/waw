@@ -1,15 +1,15 @@
 <template>
 	<view class="works-tab-content">
-		<designer-works-gallery-section></designer-works-gallery-section>
+		<brand-works-gallery-section></brand-works-gallery-section>
 	</view>
 </template>
 
 <script>
-import DesignerWorksGallerySection from './DesignerWorksGallerySection.vue'
+import BrandWorksGallerySection from './BrandWorksGallerySection.vue'
 
 export default {
 	components: {
-		DesignerWorksGallerySection
+		BrandWorksGallerySection
 	},
 	props: {
 		activeSubTab: {

@@ -9,7 +9,12 @@
 				@tap="handleTabClick(tab.id)"
 			>
 				<text class="tab-label" :class="{ active: activeTab === tab.id }">{{ tab.label }}</text>
-				<view v-if="activeTab === tab.id" class="tab-indicator"></view>
+				<image 
+					v-if="activeTab === tab.id"
+					class="tab-indicator" 
+					src="https://c.animaapp.com/mi5d4lp0csJxnR/img/vector-15.svg" 
+					mode="aspectFit"
+				></image>
 			</view>
 		</view>
 	</view>
@@ -43,12 +48,12 @@ export default {
 <style scoped lang="scss">
 .tabs-card {
 	width: 100%;
-margin-top: 0;
+	margin-top: 0;
 	background-color: transparent;
 	border-radius: 0;
 	border: 0;
 	box-shadow: none;
-padding: 20rpx 0rpx 0rpx 0rpx;
+	padding: 20rpx 0rpx 0rpx 0rpx;
 	box-sizing: border-box;
 	// margin-left: -20rpx;
 	// background-color: #fcc;
@@ -69,7 +74,7 @@ padding: 20rpx 0rpx 0rpx 0rpx;
 .tab-item {
 	display: inline-flex;
 	flex-direction: column;
-align-items: center;
+	align-items: center;
 	justify-content: flex-start;
 	gap: 0;
 	width: 25%;
@@ -80,7 +85,7 @@ align-items: center;
 
 .tab-label {
 	font-size: 28rpx;
-text-align: center;
+	text-align: center;
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
 	color: #666666;
@@ -99,11 +104,9 @@ text-align: center;
 	margin-top: 0;
 	margin-bottom: 0;
 	position: absolute;
-	bottom: -2rpx;
+	bottom: 0;
 	left: 50%;
 	transform: translateX(-50%);
-	background-color: #000000;
-	border-radius: 3rpx;
 }
 
 .separator-line {
@@ -114,4 +117,3 @@ text-align: center;
 	margin-bottom: 0;
 }
 </style>
-

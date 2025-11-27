@@ -1,26 +1,28 @@
 <template>
-	<page-meta :page-style="'padding-top:0px; background-color:#f2f2f2;'"></page-meta>
 	<view class="screen">
+		<!-- 状态栏占位 -->
+		<!-- <view class="status-bar" style="height: 44rpx;"></view> -->
+		
 		<!-- 头部 -->
 		<designer-detail-header></designer-detail-header>
 		
 		<!-- 主内容区域 -->
-		<view class="main-content" :class="{ 'reviews-fullwidth': activeTab === 'reviews', 'no-bottom-padding': activeTab === 'works' || activeTab === 'service' }">
-			<!-- 设计师信息卡片 -->
-			<designer-info-card
-				:designer-info="designerInfo"
-				:service-badges="serviceBadges"
-				:stats-data="statsData"
-				:business-info="businessInfo"
-				:shop-info="shopInfo"
+		<view class="main-content" :class="{ 'reviews-fullwidth': activeTab === 'reviews' }">
+			<!-- 品牌信息卡片 -->
+			<brand-info-card
+				:brandInfo="brandInfo"
+				:serviceBadges="serviceBadges"
+				:statsData="statistics"
+				:businessInfo="businessInfo"
+				:shopInfo="shopInfo"
 				:promotions="promotions"
-				:right-stats="rightStats"
+				:rightStats="rightStats"
 				@more-info="handleMoreInfo"
 				@follow="handleFollow"
 				@phone="handlePhone"
 				@navigation="handleNavigation"
 				@share="handleShare"
-			></designer-info-card>
+			></brand-info-card>
 			
 		<!-- Tab切换 -->
 		<view class="tabs-wrapper">
@@ -91,7 +93,7 @@
 
 <script>
 import DesignerDetailHeader from '../../components/designer/detail/DesignerDetailHeader.vue'
-import DesignerInfoCard from '../../components/designer/detail/DesignerInfoCard.vue'
+import BrandInfoCard from '../../components/brand/detail/BrandInfoCard.vue'
 import DesignerTabSwitcher from '../../components/DesignerTabSwitcher.vue'
 import DesignerServiceTabContent from '../../components/designer/detail/DesignerServiceTabContent.vue'
 import DesignerAppointmentTabContent from '../../components/designer/detail/DesignerAppointmentTabContent.vue'
@@ -102,7 +104,7 @@ import DesignerPortfolioSection from '../../components/designer/detail/DesignerP
 export default {
 	components: {
 		DesignerDetailHeader,
-		DesignerInfoCard,
+		BrandInfoCard,
 		DesignerTabSwitcher,
 		DesignerServiceTabContent,
 		DesignerAppointmentTabContent,
@@ -118,24 +120,13 @@ export default {
 		// 支持从URL参数中指定初始tab
 		if (options.tab) {
 			this.activeTab = options.tab
-			// 如果是预约tab，滚动到底部
-			if (options.tab === 'appointment') {
-				this.$nextTick(() => {
-					setTimeout(() => {
-						uni.pageScrollTo({
-							scrollTop: 99999,
-							duration: 300
-						})
-					}, 300)
-				})
-			}
 		}
 	},
 	data() {
 		return {
 			activeTab: 'service',
 			activeSubTabs: {
-				service: 'hair-service',
+				service: 'hair',
 				appointment: 'today',
 				works: 'female',
 				reviews: 'all'
@@ -148,9 +139,8 @@ export default {
 			],
 			subTabs: {
 				service: [
-					{ id: 'hair-service', title: '美发服务' },
-					{ id: 'beauty-service', title: '美容服务' },
-					{ id: 'other-service', title: '其他服务' }
+					{ id: 'hair', title: '美发师' },
+					{ id: 'beauty', title: '美容师' }
 				],
 				appointment: [
 					{ id: 'today', title: '今天', subtitle: '周一' },
@@ -172,50 +162,60 @@ export default {
 					{ id: 'bad', title: '差评(9)' }
 				]
 			},
-			designerInfo: {
-				avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-153.png",
-				name: "朱一龙",
-				verifyIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2110.svg",
-				role: "技术总监",
-				certIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2.svg",
-				certText: "职业认证",
-				certDot: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg",
-				skills: "染发设计、短发造型、女士晚装:",
-				introduction: "从业19年，毕业沙宣美发学院，擅长各种造型设计师有丰富的设计经验擅长..."
+			// 品牌信息
+			brandInfo: {
+				avatar: "https://c.animaapp.com/mi5l377nJk1HHO/img/rectangle-153.png",
+				name: "金龙大好人美发沙龙...",
+				comfortBadge: "舒适",
+				certIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-3.svg",
+				certText: "企业认证",
+				certArrow: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg",
+				shopType: "工作室、专业店",
+				introduction: "从业19年，毕业沙宣美发学院，擅长各种造型设计师有丰富的设计经验擅长...",
+				moreIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-9.svg"
 			},
 			serviceBadges: [
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "安心服务" },
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "7天无忧" },
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "免费设计" },
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "小吃水果" },
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "预约服务" }
+				{ icon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1891.svg", label: "安心服务" },
+				{ icon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1891.svg", label: "7天无忧" },
+				{ icon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1891.svg", label: "免费设计" },
+				{ icon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1891.svg", label: "小吃水果" },
+				{ icon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1891.svg", label: "预约服务" }
 			],
-			statsData: [
+			statistics: [
 				{ value: "1244", label: "预约" },
 				{ value: "2000", label: "粉丝" },
 				{ value: "18", unit: "年", label: "从业" },
 				{ value: "4.8", unit: "分", label: "评分" }
 			],
+			// 营业信息
 			businessInfo: {
 				status: "营业中",
 				restDay: "周二休息",
-				hours: "10:00-21:00"
+				hours: "10:00-21:00",
+				moreIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-5.svg",
+				phoneIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1879-2.svg"
 			},
+			// 店铺信息
 			shopInfo: {
-				name: "NICE美发造型沙...",
-				address: "武侯区天府三家B7栋...",
-				distance: "距您2.7km"
+				name: "锦江区红星路120号",
+				address: "IFS国际东门2栋607室",
+				distance: "距您2.7km",
+				navIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1879.svg"
 			},
 			promotions: [
-				{ text: "满100-5" },
-				{ text: "满500-50" }
+				{ label: "满100-5" },
+				{ label: "满500-50" }
 			],
+			// 优惠图标
+			promoIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1.svg",
+			// 右侧统计
 			rightStats: {
-				serviceIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1.svg",
+				shareIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1879-1.svg",
+				serviceIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-4.svg",
 				serviceCount: "281",
-				workIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-4.svg",
+				workIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-12.svg",
 				workCount: "234",
-				dotIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg"
+				arrowIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg"
 			}
 		}
 	},
@@ -289,13 +289,12 @@ export default {
 	box-sizing: border-box;
 	margin-top: -200rpx;
 	z-index: 5;
-	
-	&.no-bottom-padding {
-		padding-bottom: 20rpx;
-	}
 }
 
-
+.main-content.reviews-fullwidth {
+	padding-left: 0;
+	padding-right: 0;
+}
 
 .tabs-wrapper {
 	width: 100vw;
@@ -385,11 +384,6 @@ export default {
 	font-size: 22rpx;
 	line-height: 28rpx;
 	color: #a6a6a6;
-	
-	.sub-tab-item.active & {
-		color: #333333;
-		font-weight: 500;
-	}
 }
 
 .tab-content-wrapper {
@@ -477,3 +471,4 @@ export default {
 	border-radius: 200rpx;
 }
 </style>
+

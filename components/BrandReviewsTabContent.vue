@@ -1,15 +1,15 @@
 <template>
 	<view class="reviews-tab-content">
-		<designer-reviews-list-section></designer-reviews-list-section>
+		<brand-reviews-list-section></brand-reviews-list-section>
 	</view>
 </template>
 
 <script>
-import DesignerReviewsListSection from './DesignerReviewsListSection.vue'
+import BrandReviewsListSection from './BrandReviewsListSection.vue'
 
 export default {
 	components: {
-		DesignerReviewsListSection
+		BrandReviewsListSection
 	},
 	props: {
 		activeSubTab: {
@@ -32,4 +32,3 @@ export default {
 	box-sizing: border-box;
 }
 </style>
-

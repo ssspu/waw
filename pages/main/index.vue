@@ -35,46 +35,55 @@
 			</view>
 		</view>
 		
-		<!-- Tabs -->
-		<view class="tabs-wrapper" :style="{ backgroundImage: currentMainBg ? `url(${currentMainBg})` : 'none' }">
-			<view class="tabs-list">
-				<view 
-					v-for="(tab, index) in tabItems" 
-					:key="index"
-					class="tab-item"
-					:class="{ active: activeTab === tab.value }"
-					@tap="switchTab(tab.value)"
-				>
-					<text class="tab-label" :class="{ active: activeTab === tab.value }">{{ tab.label }}</text>
-					<image 
-						v-if="activeTab === tab.value"
-						class="tab-indicator" 
-						src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-215.svg" 
-						mode="aspectFit"
-					></image>
+		<!-- Tabs 背景块 -->
+		<view class="tabs-bg"></view>
+		
+		<!-- Tabs + 内容区背景 -->
+		<view 
+			class="content-section" 
+			:style="{ backgroundImage: assets[activeTab].tabBg ? `url(${assets[activeTab].tabBg})` : 'none' }"
+		>
+			<!-- Tabs -->
+			<view class="tabs-wrapper">
+				<view class="tabs-list">
+					<view 
+						v-for="(tab, index) in tabItems" 
+						:key="index"
+						class="tab-item"
+						:class="{ active: activeTab === tab.value }"
+						@tap="switchTab(tab.value)"
+					>
+						<text class="tab-label" :class="{ active: activeTab === tab.value }">{{ tab.label }}</text>
+						<image 
+							v-if="activeTab === tab.value"
+							class="tab-indicator" 
+							src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-215.svg" 
+							mode="aspectFit"
+						></image>
+					</view>
 				</view>
 			</view>
-		</view>
-		
-		<!-- 主内容 -->
-		<view class="main-content" :style="{ backgroundImage: currentMainBg ? `url(${currentMainBg})` : 'none' }">
-			<!-- 设计师板块 -->
-			<view v-if="activeTab === 'designer'" :key="'designer'" class="designer-content animate-fade-up">
-				<design-section></design-section>
-			</view>
+			
+			<!-- 主内容 -->
+			<view class="main-content" :class="{ 'reviews-fullwidth': activeTab === 'reviews' }">
+				<!-- 设计师板块 -->
+				<view v-if="activeTab === 'designer'" :key="'designer'" class="designer-content animate-fade-up">
+					<design-section></design-section>
+				</view>
 
-			<!-- 优服务板块 -->
-			<view v-if="activeTab === 'service'" :key="'service'" class="service-content animate-fade-up">
-				<featured-services-section></featured-services-section>
-				<recommendations-section></recommendations-section>
-				<vip-section></vip-section>
-				<service-gallery-section></service-gallery-section>
-			</view>
+				<!-- 优服务板块 -->
+				<view v-if="activeTab === 'service'" :key="'service'" class="service-content animate-fade-up">
+					<featured-services-section></featured-services-section>
+					<recommendations-section></recommendations-section>
+					<vip-section></vip-section>
+					<service-gallery-section></service-gallery-section>
+				</view>
 
-			<!-- 品牌馆板块 -->
-			<view v-if="activeTab === 'brand'" :key="'brand'" class="brand-content animate-fade-up">
-				<view class="featured-section">
-					<brand-featured-items-section></brand-featured-items-section>
+				<!-- 品牌馆板块 -->
+				<view v-if="activeTab === 'brand'" :key="'brand'" class="brand-content animate-fade-up">
+					<view class="featured-section">
+						<brand-featured-items-section></brand-featured-items-section>
+					</view>
 				</view>
 			</view>
 		</view>
@@ -114,17 +123,20 @@ export default {
 				designer: {
 					headerBg: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-217.png",
 					mainBg: "/static/background-image/mian-background-left.png",
-					badgeIcon: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-1.svg"
+					badgeIcon: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-1.svg",
+					tabBg: "/static/background-image/mian-background-left.png"
 				},
 				service: {
 					headerBg: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-217.png",
 					mainBg: "/static/background-image/mian-background-mid.png",
-					badgeIcon: "https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-3.svg"
+					badgeIcon: "https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-3.svg",
+					tabBg: "/static/background-image/mian-background-mid.png"
 				},
 				brand: {
 					headerBg: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-217.png",
 					mainBg: "/static/background-image/mian-background-right.png",
-					badgeIcon: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-4.svg"
+					badgeIcon: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-4.svg",
+					tabBg: "/static/background-image/mian-background-right.png"
 				}
 			}
 		}
@@ -318,17 +330,42 @@ export default {
 	white-space: nowrap;
 }
 
-.tabs-wrapper {
+.content-section {
 	position: relative;
 	z-index: 10;
 	margin-top: 438rpx;
+	width: 100%;
+	min-height: calc(100vh - 438rpx);
+	padding-bottom: 60rpx;
+	background-size: 100% auto;
+	background-position: center top;
+	background-repeat: no-repeat;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	box-sizing: border-box;
+}
+
+.tabs-bg {
+	position: absolute;
+	top: 678rpx;
+	left: 0;
+	right: 0;
+	height: 100rpx;
+	background-color: #e6e6e6;
+	border-radius: 36rpx 36rpx 0 0;
+	box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.08);
+	z-index: 5;
+}
+
+.tabs-wrapper {
+	position: relative;
+	z-index: 11;
+	margin-top: 0;
 	margin-bottom: -25rpx;
 	width: 100%;
 	height: 125rpx;
-	background-color: #f2f2f2;
-	background-size: cover;
-	background-position: center;
-	background-repeat: no-repeat;
+	background-color: transparent;
 	padding: 0;
 	box-sizing: border-box;
 	display: flex;
@@ -337,12 +374,12 @@ export default {
 }
 
 .tabs-list {
-	width: calc(100% - 24rpx);
+	width: 100%;
 	height: 100%;
 	background-color: transparent;
 	border: 0;
 	border-radius: 0;
-	padding: 0;
+	padding: 0 30rpx;
 	display: flex;
 	align-items: flex-start;
 	justify-content: center;
@@ -357,21 +394,15 @@ export default {
 	align-items: center;
 	justify-content: flex-start;
 	gap: 6rpx;
-	padding: 20rpx 0 0 0;
+	padding: 20rpx 0 0;
 	height: 125rpx;
-	width: calc((100% - 290rpx) / 2);
+	flex: 1;
 	cursor: pointer;
 	box-sizing: border-box;
-	transition: width 0.3s ease, height 0.3s ease, background-color 0.3s ease;
+	transition: color 0.3s ease;
 	
 	&.active {
-		width: 290rpx;
-		height: 125rpx;
-		background-color: #ffffff;
-		border-top-left-radius: 50rpx;
-		border-top-right-radius: 50rpx;
-		top: -20rpx;
-		clip-path: polygon(5% 0%, 95% 0%, 100% 100%, 0% 100%);
+		top: -10rpx;
 	}
 }
 
@@ -383,6 +414,9 @@ export default {
 	line-height: 1.2;
 	white-space: nowrap;
 	transition: color 0.3s ease;
+	position: relative;
+	top: 16rpx;
+	z-index: 2;
 	
 	&.active {
 		font-family: 'DIN_Black-Regular', Helvetica;
@@ -408,11 +442,14 @@ export default {
 	flex-direction: column;
 	// align-items: stretch; // Removed to avoid stretching fixed width items if any
 	gap: 18rpx;
-	padding-bottom: 100rpx;
+	padding: 20rpx 12rpx 100rpx;
 	top: -15rpx;
-	background-size: cover;
-	background-position: center;
-	background-repeat: no-repeat;
+	width: 100%;
+
+	&.reviews-fullwidth {
+		padding-left: 0;
+		padding-right: 0;
+	}
 }
 
 // Brand specific styles

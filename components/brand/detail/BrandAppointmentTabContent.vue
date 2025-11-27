@@ -1,15 +1,15 @@
 <template>
 	<view class="appointment-tab-content">
-		<designer-booking-profile-section></designer-booking-profile-section>
+		<brand-booking-profile-section></brand-booking-profile-section>
 	</view>
 </template>
 
 <script>
-import DesignerBookingProfileSection from '../../DesignerBookingProfileSection.vue'
+import BrandBookingProfileSection from '../../BrandBookingProfileSection.vue'
 
 export default {
 	components: {
-		DesignerBookingProfileSection
+		BrandBookingProfileSection
 	},
 	props: {
 		activeSubTab: {

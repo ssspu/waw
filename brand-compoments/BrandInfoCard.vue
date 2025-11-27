@@ -1,10 +1,10 @@
 <template>
-	<view class="designer-info-card">
+	<view class="brand-info-card">
 		<view class="card-wrapper">
 			<!-- 关注按钮 -->
 			<view class="follow-btn" @tap="handleFollow">
 				<view class="follow-content">
-					<image class="follow-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-12.svg" mode="aspectFit"></image>
+					<image class="follow-icon" src="https://c.animaapp.com/mi5l377nJk1HHO/img/frame-11.svg" mode="aspectFit"></image>
 					<text class="follow-text">关注</text>
 				</view>
 				<text class="follow-subtitle">你的优质好店</text>
@@ -13,48 +13,47 @@
 			<!-- 背景装饰 -->
 			<image 
 				class="bg-decoration" 
-				src="https://c.animaapp.com/mi5d4lp0csJxnR/img/subtract.svg" 
+				src="https://c.animaapp.com/mi5l377nJk1HHO/img/subtract.svg" 
 				mode="aspectFill"
 			></image>
 			
-			<!-- 店铺信息 -->
-			<view class="designer-card">
-				<view class="designer-info">
-				<!-- 头像 -->
-				<view class="avatar-wrapper">
-					<view class="avatar" :style="{ backgroundImage: `url(${designerInfo.avatar})` }"></view>
-				</view>
+			<!-- 品牌信息 -->
+			<view class="brand-card">
+				<view class="brand-info">
+					<!-- 头像 -->
+					<view class="avatar" :style="{ backgroundImage: `url(${brandInfo.avatar})` }"></view>
 					
 					<!-- 基本信息 -->
 					<view class="info-content">
 						<view class="name-row">
-							<text class="designer-name">{{ designerInfo.name }}</text>
-							<image class="verify-icon" :src="designerInfo.verifyIcon" mode="aspectFit"></image>
+							<text class="brand-name">{{ brandInfo.name }}</text>
 						</view>
-						<view class="role-row">
-							<text class="role">{{ designerInfo.role }}</text>
-							<text class="divider">｜</text>
-							<view class="cert-badge">
-								<image class="cert-icon" :src="designerInfo.certIcon" mode="aspectFit"></image>
-								<text class="cert-text">{{ designerInfo.certText }}</text>
-								<image class="cert-dot" :src="designerInfo.certDot" mode="aspectFit"></image>
+						<view class="badge-row">
+							<view class="verify-badge" v-if="brandInfo.verifyBadge">
+								<text class="verify-text">{{ brandInfo.verifyBadge }}</text>
+							</view>
+							<text class="divider" v-if="brandInfo.verifyBadge && brandInfo.certText">｜</text>
+							<view class="cert-badge" v-if="brandInfo.certText">
+								<image class="cert-icon" :src="brandInfo.certIcon" mode="aspectFit"></image>
+								<text class="cert-text">{{ brandInfo.certText }}</text>
+								<image class="cert-dot" :src="brandInfo.certDot" mode="aspectFit"></image>
 							</view>
 						</view>
 					</view>
 				</view>
 				
-				<!-- 专业擅长和个人简介 -->
-				<view class="skills-section">
-					<view class="skill-item">
-						<view class="skill-badge">店铺性质</view>
-						<text class="skill-text">{{ designerInfo.skills }}</text>
+				<!-- 店铺性质和品牌简介 -->
+				<view class="info-section">
+					<view class="info-item" v-if="brandInfo.type">
+						<view class="info-badge">店铺性质</view>
+						<text class="info-text">{{ brandInfo.type }}</text>
 					</view>
-					<view class="skill-item intro-item">
-						<view class="skill-badge2">品牌简介</view>
-						<text class="intro-text">{{ designerInfo.introduction }}</text>
+					<view class="info-item intro-item" v-if="brandInfo.introduction">
+						<view class="info-badge">品牌简介</view>
+						<text class="intro-text">{{ brandInfo.introduction }}</text>
 						<view class="more-btn" @tap="handleMoreClick">
 							<text class="more-text">更多</text>
-							<image class="more-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-8.svg" mode="aspectFit"></image>
+							<image class="more-icon" src="https://c.animaapp.com/mi5l377nJk1HHO/img/frame-9.svg" mode="aspectFit"></image>
 						</view>
 					</view>
 				</view>
@@ -97,11 +96,11 @@
 							<text class="business-time">{{ businessInfo.hours }}</text>
 							<view class="business-more" @tap="handleMoreClick">
 								<text class="more-text">更多</text>
-								<image class="more-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-8.svg" mode="aspectFit"></image>
+								<image class="more-icon" src="https://c.animaapp.com/mi5l377nJk1HHO/img/frame-5.svg" mode="aspectFit"></image>
 							</view>
 						</view>
 						<view class="phone-btn" @tap="handlePhone">
-							<image class="phone-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1879-2.svg" mode="aspectFit"></image>
+							<image class="phone-icon" src="https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1879-2.svg" mode="aspectFit"></image>
 							<text class="phone-label">电话</text>
 						</view>
 					</view>
@@ -114,7 +113,7 @@
 							<text class="shop-distance">{{ shopInfo.distance }}</text>
 						</view>
 						<view class="nav-btn" @tap="handleNavigation">
-							<image class="nav-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1879.svg" mode="aspectFit"></image>
+							<image class="nav-icon" src="https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1879.svg" mode="aspectFit"></image>
 							<text class="nav-label">导航</text>
 						</view>
 					</view>
@@ -125,7 +124,7 @@
 				
 				<!-- 优惠信息 -->
 				<view class="promotions">
-					<image class="promo-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-5.svg" mode="aspectFit"></image>
+					<image class="promo-icon" src="https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1.svg" mode="aspectFit"></image>
 					<view class="promo-badges">
 						<view 
 							v-for="(promo, index) in promotions" 
@@ -141,7 +140,7 @@
 			<!-- 右侧统计 -->
 			<view class="right-stats">
 				<view class="share-btn" @tap="handleShare">
-					<image class="share-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1879-1.svg" mode="aspectFit"></image>
+					<image class="share-icon" :src="rightStats.shareIcon || 'https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1879-1.svg'" mode="aspectFit"></image>
 				</view>
 				<view class="stats-badge">
 					<view class="stat-group">
@@ -164,18 +163,17 @@
 <script>
 export default {
 	props: {
-		designerInfo: {
+		brandInfo: {
 			type: Object,
 			default: () => ({
-				// avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-153.png",
-				// name: "朱一龙",
-				// verifyIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2110.svg",
-				// role: "技术总监",
-				// certIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2.svg",
-				// certText: "职业认证",
-				// certDot: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg",
-				// skills: "染发设计、短发造型、女士晚装:",
-				// introduction: "从业19年，毕业沙宣美发学院，擅长各种造型设计师有丰富的设计经验擅长..."
+				avatar: "https://c.animaapp.com/mi5l377nJk1HHO/img/rectangle-153.png",
+				name: "金龙大好人美发沙龙...",
+				verifyBadge: "舒适",
+				certIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-3.svg",
+				certText: "企业认证",
+				certDot: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg",
+				type: "工作室、专业店",
+				introduction: "从业19年，毕业沙宣美发学院，擅长各种造型设计师有丰富的设计经验擅长..."
 			})
 		},
 		serviceBadges: {
@@ -189,17 +187,17 @@ export default {
 		businessInfo: {
 			type: Object,
 			default: () => ({
-				// status: "营业中",
-				// restDay: "周二休息",
-				// hours: "10:00-21:00"
+				status: "营业中",
+				restDay: "周二休息",
+				hours: "10:00-21:00"
 			})
 		},
 		shopInfo: {
 			type: Object,
 			default: () => ({
-				// name: "NICE美发造型沙...",
-				// address: "武侯区天府三家B7栋...",
-				// distance: "距您2.7km"
+				name: "锦江区红星路120号",
+				address: "IFS国际东门2栋607室",
+				distance: "距您2.7km"
 			})
 		},
 		promotions: {
@@ -209,11 +207,11 @@ export default {
 		rightStats: {
 			type: Object,
 			default: () => ({
-				// serviceIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1.svg",
-				// serviceCount: "281",
-				// workIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-4.svg",
-				// workCount: "234",
-				// dotIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg"
+				serviceIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-4.svg",
+				serviceCount: "281",
+				workIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-12.svg",
+				workCount: "234",
+				dotIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg"
 			})
 		}
 	},
@@ -238,10 +236,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.designer-info-card {
+.brand-info-card {
 	position: relative;
-	width: calc(100% + 24rpx);
-	margin: 0 -12rpx 18rpx -12rpx;
+	width: 100%;
+	margin-bottom: 18rpx;
 }
 
 .card-wrapper {
@@ -251,11 +249,9 @@ export default {
 
 .follow-btn {
 	position: absolute;
-	top: 108rpx;
-	right: 10rpx;
-	width: 200rpx;
-	height: 100rpx;
-	z-index: 2;
+	top: 0;
+	right: 0;
+	z-index: 10;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;
@@ -264,6 +260,7 @@ export default {
 	border-radius: 32rpx;
 	background: linear-gradient(180deg, rgba(135, 134, 145, 1) 0%, rgba(59, 54, 83, 1) 100%);
 	cursor: pointer;
+	box-sizing: border-box;
 }
 
 .follow-content {
@@ -275,7 +272,7 @@ export default {
 .follow-icon {
 	width: 32rpx;
 	height: 32rpx;
-	filter: brightness(0) invert(1);
+	flex-shrink: 0;
 }
 
 .follow-text {
@@ -290,84 +287,52 @@ export default {
 	font-weight: normal;
 	color: rgba(255, 255, 255, 0.6);
 	font-size: 18rpx;
-	margin-top: -2rpx;
 }
 
 .bg-decoration {
-	width: 100%;
-	height: auto;
-	object-fit: cover;
-}
-
-.designer-card {
-	position: relative;
-	width: 100%;
-	padding: 7rpx 30rpx 20rpx 30rpx;
-	box-sizing: border-box;
-	background-color: transparent;
-	overflow: hidden;
-}
-
-.designer-card::before {
-	content: '';
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
-	height: 100%;
-	background-image: url('/static/background-image/designer-card-bg.png');
-	background-size: contain;
-	background-position: center 58rpx;
-	background-repeat: no-repeat;
-	z-index: 3;
+	height: auto;
+	object-fit: cover;
 	pointer-events: none;
+	z-index: 0;
 }
 
-.designer-info {
+.brand-card {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	background-color: transparent;
+	padding: 30rpx;
+	box-sizing: border-box;
+}
+
+.brand-info {
 	display: flex;
 	align-items: flex-start;
 	gap: 16rpx;
 	margin-bottom: 20rpx;
-	position: relative;
-	z-index: 4;
-}
-
-.avatar-wrapper {
-	position: relative;
-	width: 158rpx;
-	height: 157rpx;
-	flex-shrink: 0;
-	background-image: url('/static/background-image/avatar-shape.png');
-	background-size: contain;
-	background-position: center;
-	background-repeat: no-repeat;
 }
 
 .avatar {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
+	width: 158rpx;
+	height: 158rpx;
 	background-size: cover;
 	background-position: center;
 	border-radius: 8rpx;
-	mask-image: url('/static/background-image/avatar-shape.png');
-	mask-size: contain;
-	mask-position: center;
-	mask-repeat: no-repeat;
-	-webkit-mask-image: url('/static/background-image/avatar-shape.png');
-	-webkit-mask-size: contain;
-	-webkit-mask-position: center;
-	-webkit-mask-repeat: no-repeat;
+	flex-shrink: 0;
 }
 
 .info-content {
-	margin-top: 55rpx;
-	flex: 1;
 	display: flex;
 	flex-direction: column;
-	gap: 4rpx;
+	align-items: flex-start;
+	justify-content: flex-end;
+	gap: 8rpx;
+	padding: 12rpx 0;
+	flex: 1;
 }
 
 .name-row {
@@ -376,54 +341,50 @@ export default {
 	gap: 8rpx;
 }
 
-.designer-name {
+.brand-name {
 	font-family: 'PingFang_SC-Semibold', Helvetica;
 	font-weight: normal;
 	color: #000000;
 	font-size: 32rpx;
 }
 
-.verify-icon {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.role-row {
+.badge-row {
 	display: flex;
 	align-items: center;
-	gap: 4rpx;
+	gap: 10rpx;
 }
 
-.role {
+.verify-badge {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	padding: 0rpx 10rpx;
+	padding: 4rpx 8rpx;
 	background-color: #dacbb1;
 	border-radius: 6rpx;
+}
+
+.verify-text {
 	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 400;
+	font-weight: 500;
 	color: #645e57;
 	font-size: 22rpx;
-	height: 36rpx;
-	line-height: 36rpx;
 }
 
 .divider {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
 	color: #666666;
-	font-size: 24rpx;
+	font-size: 26rpx;
 }
 
 .cert-badge {
 	display: inline-flex;
 	align-items: center;
+	justify-content: center;
 	gap: 4rpx;
 	padding: 4rpx 10rpx;
 	background-color: #f6f6f6;
 	border-radius: 6rpx;
-	height: 36rpx;
 }
 
 .cert-icon {
@@ -435,7 +396,7 @@ export default {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
 	color: #a6a6a6;
-	font-size: 20rpx;
+	font-size: 22rpx;
 }
 
 .cert-dot {
@@ -443,24 +404,21 @@ export default {
 	height: 14rpx;
 }
 
-.skills-section {
+.info-section {
 	display: flex;
 	flex-direction: column;
-	gap: 10rpx;
+	gap: 12rpx;
 	margin-bottom: 20rpx;
-	position: relative;
-	z-index: 4;
 }
 
-.skill-item {
+.info-item {
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	gap: 12rpx;
 	position: relative;
 }
 
-.skill-badge {
-	// margin-top: -20rpx;
+.info-badge {
 	display: inline-flex;
 	align-items: center;
 	height: 44rpx;
@@ -474,21 +432,7 @@ export default {
 	flex-shrink: 0;
 }
 
-.skill-badge2{
-	margin-top: -40rpx;
-	display: inline-flex;
-	align-items: center;
-	height: 44rpx;
-	padding: 4rpx 8rpx;
-	background-color: #f6f6f6;
-	border-radius: 4rpx;
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 500;
-	color: #333333;
-	font-size: 22rpx;
-	flex-shrink: 0;
-}
-.skill-text {
+.info-text {
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-weight: normal;
 	color: #666666;
@@ -503,6 +447,10 @@ export default {
 	font-size: 24rpx;
 	line-height: 42rpx;
 	flex: 1;
+}
+
+.intro-item {
+	align-items: flex-start;
 }
 
 .more-btn {
@@ -524,8 +472,8 @@ export default {
 }
 
 .more-icon {
-	width: 14rpx;
-	height: 14rpx;
+	width: 28rpx;
+	height: 28rpx;
 }
 
 .service-badges {
@@ -534,21 +482,19 @@ export default {
 	gap: 10rpx;
 	flex-wrap: wrap;
 	margin-bottom: 20rpx;
-	position: relative;
-	z-index: 4;
 }
 
 .service-badge {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 6rpx;
-	padding: 4rpx 10rpx 8rpx 10rpx;
+	gap: 4rpx;
+	padding: 4rpx 8rpx;
 	height: 42rpx;
-	flex-shrink: 0;
-	width: auto;
+	flex: 1;
+	min-width: 0;
 	background-color: #f6f6f6;
-	border-radius: 8rpx;
+	border-radius: 4rpx;
 	box-sizing: border-box;
 }
 
@@ -564,28 +510,28 @@ export default {
 	color: #666666;
 	font-size: 20rpx;
 	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .stats-container {
 	display: flex;
 	align-items: center;
+	justify-content: center;
 	gap: 10rpx;
 	margin-bottom: 20rpx;
-	position: relative;
-	z-index: 4;
 }
 
 .stat-item {
 	display: flex;
 	flex-direction: column;
+	height: 82rpx;
 	align-items: center;
 	justify-content: center;
-	flex: 1;
-	height: 82rpx;
 	padding: 8rpx 0;
-	background: linear-gradient(180deg, rgba(241, 241, 241, 1) 0%, rgba(255, 255, 255, 1) 100%);
+	flex: 1;
 	border-radius: 8rpx;
-	box-sizing: border-box;
+	background: linear-gradient(180deg, rgba(241, 241, 241, 1) 0%, rgba(255, 255, 255, 1) 100%);
 }
 
 .stat-value-row {
@@ -603,10 +549,10 @@ export default {
 }
 
 .stat-unit {
-	color: #666666;
-	font-size: 22rpx;
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-weight: normal;
+	color: #666666;
+	font-size: 22rpx;
 }
 
 .stat-label {
@@ -618,33 +564,27 @@ export default {
 
 .business-info {
 	display: flex;
-	flex-direction: row;
-	gap: 12rpx;
-	margin-bottom: 20rpx;
-	position: relative;
-	z-index: 4;
+	flex-direction: column;
+	gap: 24rpx;
+	margin-bottom: 24rpx;
 }
 
 .business-card {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 16rpx;
-	padding: 14rpx 16rpx;
+	padding: 14rpx 20rpx;
 	background-color: #f6f6f6;
-	border-radius: 16rpx;
+	border-radius: 12rpx;
 	position: relative;
-	box-sizing: border-box;
-	flex: 1;
-	min-width: 0;
+	overflow: hidden;
 }
 
 .business-content {
-	display: flex;
+	display: inline-flex;
 	flex-direction: column;
-	gap: 2rpx;
-	flex: 1;
-	position: relative;
+	align-items: flex-start;
+	gap: 0;
 }
 
 .business-status {
@@ -677,27 +617,28 @@ export default {
 .business-more {
 	display: inline-flex;
 	align-items: center;
-	gap: 2rpx;
+	position: absolute;
+	top: 70rpx;
+	left: 20rpx;
 	cursor: pointer;
-	margin-top: 6rpx;
 }
 
-.phone-btn {
+.phone-btn, .nav-btn {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	gap: 4rpx;
 	width: 48rpx;
+	gap: 4rpx;
+	align-items: center;
 	flex-shrink: 0;
 	cursor: pointer;
 }
 
-.phone-icon {
-	width: 48rpx;
+.phone-icon, .nav-icon {
+	width: 100%;
 	height: 48rpx;
 }
 
-.phone-label {
+.phone-label, .nav-label {
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-weight: normal;
 	color: #a6a6a6;
@@ -705,7 +646,9 @@ export default {
 }
 
 .shop-card {
+	background-color: #f6f6f6;
 	position: relative;
+	overflow: hidden;
 }
 
 .shop-bg {
@@ -713,11 +656,16 @@ export default {
 	inset: 0;
 	width: 100%;
 	height: 100%;
-	background-image: url('https://c.animaapp.com/mi5d4lp0csJxnR/img/mask-group.png');
+	background-image: url('https://c.animaapp.com/mi5l377nJk1HHO/img/mask-group.png');
 	background-size: cover;
 	background-position: center;
-	border-radius: 16rpx;
-	opacity: 0.5;
+	border-radius: 12rpx;
+	z-index: 1;
+}
+
+.shop-name, .shop-address, .shop-distance {
+	position: relative;
+	z-index: 2;
 }
 
 .shop-name {
@@ -725,8 +673,6 @@ export default {
 	font-weight: 500;
 	color: #333333;
 	font-size: 24rpx;
-	position: relative;
-	z-index: 2;
 }
 
 .shop-address {
@@ -734,8 +680,6 @@ export default {
 	font-weight: 500;
 	color: #666666;
 	font-size: 22rpx;
-	position: relative;
-	z-index: 2;
 }
 
 .shop-distance {
@@ -743,52 +687,19 @@ export default {
 	font-weight: normal;
 	color: #a6a6a6;
 	font-size: 22rpx;
-	position: relative;
-	z-index: 2;
-}
-
-.nav-btn {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 4rpx;
-	width: 48rpx;
-	flex-shrink: 0;
-	cursor: pointer;
-	position: relative;
-	z-index: 2;
-}
-
-.nav-icon {
-	width: 48rpx;
-	height: 48rpx;
-}
-
-.nav-label {
-	font-family: 'PingFang_SC-Regular', Helvetica;
-	font-weight: normal;
-	color: #a6a6a6;
-	font-size: 18rpx;
 }
 
 .separator-line {
 	width: 100%;
-	height: 0;
-	border-top: 2rpx dashed #e5e5e5;
-	margin: 20rpx 0;
-	position: relative;
-	z-index: 4;
+	height: 2rpx;
+	background-color: #e5e5e5;
+	margin-bottom: 24rpx;
 }
 
 .promotions {
 	display: flex;
 	align-items: center;
 	gap: 20rpx;
-	position: relative;
-	z-index: 4;
-	margin-top: -4rpx;
-	margin-bottom: 0;
-	padding-bottom: 0;
 }
 
 .promo-icon {
@@ -805,9 +716,9 @@ export default {
 
 .promo-badge {
 	display: inline-flex;
-	align-items: center;
-	justify-content: center;
 	height: 40rpx;
+	justify-content: center;
+	gap: 8rpx;
 	padding: 6rpx 12rpx;
 	background-color: #f6f6f6;
 	border-radius: 4rpx;
@@ -818,7 +729,6 @@ export default {
 }
 
 .right-stats {
-	margin-top: -320rpx;
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -827,25 +737,30 @@ export default {
 	gap: 284rpx;
 	width: 336rpx;
 	height: 404rpx;
-	z-index: 10;
-	pointer-events: none;
-	
-	.share-btn,
-	.stats-badge {
-		pointer-events: auto;
-	}
+	padding: 30rpx;
+	box-sizing: border-box;
+	z-index: 3;
 }
 
 .share-btn {
-	margin-left: 50rpx;
 	width: 60rpx;
 	height: 60rpx;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(6rpx);
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	cursor: pointer;
+	flex-shrink: 0;
+	z-index: 10;
+	align-self: flex-end;
 }
 
 .share-icon {
-	width: 100%;
-	height: 100%;
+	width: 60rpx;
+	height: 60rpx;
+	filter: brightness(0) invert(1);
 }
 
 .stats-badge {
@@ -856,6 +771,7 @@ export default {
 	background-color: rgba(0, 0, 0, 0.2);
 	border-radius: 34rpx;
 	backdrop-filter: blur(6rpx);
+	align-self: flex-end;
 }
 
 .stat-group {
@@ -867,6 +783,7 @@ export default {
 .stat-icon {
 	width: 36rpx;
 	height: 36rpx;
+	filter: brightness(0) invert(1);
 }
 
 .stat-count {
@@ -879,6 +796,7 @@ export default {
 .stat-dot {
 	width: 10rpx;
 	height: 10rpx;
+	filter: brightness(0) invert(1);
 }
 
 .stat-divider {
@@ -888,3 +806,4 @@ export default {
 	font-size: 24rpx;
 }
 </style>
+
