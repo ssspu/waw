@@ -1474,7 +1474,8 @@ export default {
 
 .portfolio-label {
 	position: absolute;
-	bottom: 26rpx;
+	bottom: 0;
+	height: 48rpx;
 	display: flex;
 	align-items: center;
 	gap: 8rpx;

@@ -23,20 +23,20 @@
 			<mine-profile-section></mine-profile-section>
 		</view>
 		
-		<mine-dashboard-section></mine-dashboard-section>
+		<bottom-tab-bar active="mine"></bottom-tab-bar>
 	</view>
 </template>
 
 <script>
 import MineUserInfoSection from '../../components/mine/index/MineUserInfoSection.vue'
 import MineProfileSection from '../../components/mine/index/MineProfileSection.vue'
-import MineDashboardSection from '../../components/mine/index/MineDashboardSection.vue'
+import BottomTabBar from '../../components/common/BottomTabBar.vue'
 
 export default {
 	components: {
 		MineUserInfoSection,
 		MineProfileSection,
-		MineDashboardSection
+		BottomTabBar
 	},
 	methods: {
 		handleOnlineService() {
@@ -75,6 +75,7 @@ export default {
 }
 
 .hero-toolbar {
+	// background-color: #fcc;
 	position: absolute;
 	top: 80rpx;
 	left: 30rpx;
@@ -98,8 +99,8 @@ export default {
 }
 
 .toolbar-icon {
-	width: 48rpx;
-	height: 48rpx;
+	width: 56rpx;
+	height: 56rpx;
 }
 
 .hero-btn::after {

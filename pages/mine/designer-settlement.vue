@@ -93,10 +93,14 @@ export default {
 			uni.navigateBack()
 		},
 		handleEnterpriseLink() {
-			uni.showToast({ title: '企业商户入驻', icon: 'none' })
+			uni.navigateTo({
+				url: '/pages/mine/store-settlement'
+			})
 		},
 		handleApplyNow() {
-			uni.showToast({ title: '立即入驻', icon: 'none' })
+			uni.navigateTo({
+				url: '/pages/designer-settlement/identity'
+			})
 		}
 	}
 }

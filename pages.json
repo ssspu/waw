@@ -37,6 +37,24 @@
 			}
 		},
 		{
+			"path": "pages/message/index",
+			"style": {
+				"navigationBarTitleText": "消息中心",
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#f2f2f2"
+			}
+		},
+		{
+			"path": "pages/message/detail",
+			"style": {
+				"navigationBarTitleText": "消息详情",
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
 			"path": "pages/main/index",
 			"style": {
 				"navigationBarTitleText": "美发",
@@ -163,12 +181,93 @@
 		}
 	},
 	{
+		"path": "pages/designer-settlement/identity",
+		"style": {
+			"navigationBarTitleText": "设计师入驻",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#ffffff"
+		}
+	},
+	{
+		"path": "pages/designer-settlement/profession",
+		"style": {
+			"navigationBarTitleText": "设计师入驻",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#ffffff"
+		}
+	},
+	{
+		"path": "pages/designer-settlement/agreement",
+		"style": {
+			"navigationBarTitleText": "设计师入驻",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#ffffff"
+		}
+	},
+	{
+		"path": "pages/designer-settlement/settlement",
+		"style": {
+			"navigationBarTitleText": "设计师入驻",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#ffffff"
+		}
+	},
+	{
 		"path": "pages/mine/store-settlement",
 		"style": {
 			"navigationBarTitleText": "入驻申请",
 			"navigationStyle": "custom",
 			"navigationBarTextStyle": "black",
 			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/store-settlement/store",
+		"style": {
+			"navigationBarTitleText": "实体门店入驻",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#ffffff"
+		}
+	},
+	{
+		"path": "pages/store-settlement/license",
+		"style": {
+			"navigationBarTitleText": "实体门店入驻",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#ffffff"
+		}
+	},
+	{
+		"path": "pages/store-settlement/agreement",
+		"style": {
+			"navigationBarTitleText": "实体门店入驻",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#ffffff"
+		}
+	},
+	{
+		"path": "pages/store-settlement/settlement",
+		"style": {
+			"navigationBarTitleText": "实体门店入驻",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#ffffff"
+		}
+	},
+	{
+		"path": "pages/settlement-success/index",
+		"style": {
+			"navigationBarTitleText": "提交成功",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#ffffff"
 		}
 	},
 	{

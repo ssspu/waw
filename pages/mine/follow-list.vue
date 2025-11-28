@@ -53,23 +53,36 @@
 									{{ specialty }}
 								</view>
 							</view>
-							<view class="nearby-stats">
-								<view class="stats-rating">
-									<text class="stats-rating-score">{{ designer.rating }}</text>
-									<view class="star-container">
-										<image class="star-small" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/star-1.svg" mode="aspectFit"></image>
+							<view class="nearby-bottom-row">
+								<view class="nearby-stats">
+									<view class="stats-rating">
+										<text class="stats-rating-score">{{ designer.rating }}</text>
+										<view class="star-container">
+											<image class="star-small" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/star-1.svg" mode="aspectFit"></image>
+										</view>
+									</view>
+									<view class="stats-info">
+										<view class="stats-item">
+											<text class="stats-label">服务</text>
+											<text class="stats-value">{{ designer.services }}</text>
+										</view>
+										<text class="stats-divider">｜</text>
+										<view class="stats-item">
+											<text class="stats-label">作品</text>
+											<text class="stats-value">{{ designer.works }}</text>
+										</view>
 									</view>
 								</view>
-								<view class="stats-info">
-									<view class="stats-item">
-										<text class="stats-label">服务</text>
-										<text class="stats-value">{{ designer.services }}</text>
-									</view>
-									<text class="stats-divider">｜</text>
-									<view class="stats-item">
-										<text class="stats-label">作品</text>
-										<text class="stats-value">{{ designer.works }}</text>
-									</view>
+								<view
+									class="promotion-btn"
+									:class="{
+										'promotion-apply': designer.promotionStatus === 'apply',
+										'promotion-pending': designer.promotionStatus === 'pending',
+										'promotion-active': designer.promotionStatus === 'active'
+									}"
+									@tap.stop="handlePromotion(designer)"
+								>
+									<text class="promotion-text">{{ getPromotionText(designer.promotionStatus) }}</text>
 								</view>
 							</view>
 						</view>
@@ -95,23 +108,36 @@
 							<text class="store-unfollow" @tap.stop="handleUnfollowStore(store)">取消关注</text>
 						</view>
 						<text class="store-type">{{ store.type }}</text>
-						<view class="store-stats-row">
-							<view class="stats-rating">
-								<text class="stats-rating-score">{{ store.rating }}</text>
-								<view class="star-container-small">
-									<image class="star-small" src="https://c.animaapp.com/mi5cgxi6ndVkfo/img/star-1.svg" mode="aspectFit"></image>
+						<view class="store-bottom-row">
+							<view class="store-stats-row">
+								<view class="stats-rating">
+									<text class="stats-rating-score">{{ store.rating }}</text>
+									<view class="star-container-small">
+										<image class="star-small" src="https://c.animaapp.com/mi5cgxi6ndVkfo/img/star-1.svg" mode="aspectFit"></image>
+									</view>
+								</view>
+								<view class="store-stats-info">
+									<view class="stat-item">
+										<text class="stat-label">设计师</text>
+										<text class="stat-value">{{ store.designers }}</text>
+									</view>
+									<text class="stat-divider">｜</text>
+									<view class="stat-item">
+										<text class="stat-label">服务</text>
+										<text class="stat-value">{{ store.services }}</text>
+									</view>
 								</view>
 							</view>
-							<view class="store-stats-info">
-								<view class="stat-item">
-									<text class="stat-label">设计师</text>
-									<text class="stat-value">{{ store.designers }}</text>
-								</view>
-								<text class="stat-divider">｜</text>
-								<view class="stat-item">
-									<text class="stat-label">服务</text>
-									<text class="stat-value">{{ store.services }}</text>
-								</view>
+							<view
+								class="promotion-btn"
+								:class="{
+									'promotion-apply': store.promotionStatus === 'apply',
+									'promotion-pending': store.promotionStatus === 'pending',
+									'promotion-active': store.promotionStatus === 'active'
+								}"
+								@tap.stop="handleStorePromotion(store)"
+							>
+								<text class="promotion-text">{{ getPromotionText(store.promotionStatus) }}</text>
 							</view>
 						</view>
 					</view>
@@ -141,7 +167,8 @@ export default {
 					services: 287,
 					works: 123,
 					tags: ['气质提升', '高端染发'],
-					distance: '1.2km'
+					distance: '1.2km',
+					promotionStatus: 'apply'
 				},
 				{
 					name: '李天天',
@@ -153,7 +180,8 @@ export default {
 					services: 287,
 					works: 123,
 					tags: ['氛围感剪裁', '质感烫发'],
-					distance: '2.5km'
+					distance: '2.5km',
+					promotionStatus: 'pending'
 				},
 				{
 					name: '李天天',
@@ -165,7 +193,8 @@ export default {
 					services: 287,
 					works: 123,
 					tags: ['短发定制', '烫染一体'],
-					distance: '3.1km'
+					distance: '3.1km',
+					promotionStatus: 'active'
 				}
 			],
 			storeList: [
@@ -177,7 +206,8 @@ export default {
 					designers: '8人',
 					services: '1236',
 					distance: '7.5km',
-					image: 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png'
+					image: 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png',
+					promotionStatus: 'apply'
 				},
 				{
 					name: '成都NICE造型沙龙',
@@ -187,7 +217,8 @@ export default {
 					designers: '8人',
 					services: '1236',
 					distance: '7.5km',
-					image: 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-1.png'
+					image: 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-1.png',
+					promotionStatus: 'pending'
 				}
 			]
 		}
@@ -210,6 +241,51 @@ export default {
 				title: `取消关注 ${store.name}`,
 				icon: 'none'
 			})
+		},
+		getPromotionText(status) {
+			const textMap = {
+				'apply': '申请推广',
+				'pending': '申请中',
+				'active': '推广中'
+			}
+			return textMap[status] || '申请推广'
+		},
+		handlePromotion(designer) {
+			if (designer.promotionStatus === 'apply') {
+				// 跳转到申请推广页面或显示申请弹窗
+				uni.showToast({
+					title: '申请推广',
+					icon: 'none'
+				})
+			} else if (designer.promotionStatus === 'pending') {
+				uni.showToast({
+					title: '推广申请审核中',
+					icon: 'none'
+				})
+			} else if (designer.promotionStatus === 'active') {
+				uni.showToast({
+					title: '正在推广中',
+					icon: 'none'
+				})
+			}
+		},
+		handleStorePromotion(store) {
+			if (store.promotionStatus === 'apply') {
+				uni.showToast({
+					title: '申请推广',
+					icon: 'none'
+				})
+			} else if (store.promotionStatus === 'pending') {
+				uni.showToast({
+					title: '推广申请审核中',
+					icon: 'none'
+				})
+			} else if (store.promotionStatus === 'active') {
+				uni.showToast({
+					title: '正在推广中',
+					icon: 'none'
+				})
+			}
 		}
 	}
 }
@@ -431,10 +507,62 @@ export default {
 	border-radius: 4rpx;
 }
 
+.nearby-bottom-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	margin-top: 4rpx;
+}
+
 .nearby-stats {
 	display: flex;
 	align-items: center;
 	gap: 16rpx;
+}
+
+.promotion-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 128rpx;
+	height: 48rpx;
+	border-radius: 8rpx;
+	flex-shrink: 0;
+}
+
+.promotion-apply {
+	background-color: #333333;
+	border: none;
+}
+
+.promotion-apply .promotion-text {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 22rpx;
+	font-weight: 500;
+	color: #ffffff;
+}
+
+.promotion-pending {
+	border: 2rpx solid #e5e5e5;
+	background-color: #ffffff;
+}
+
+.promotion-pending .promotion-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 22rpx;
+	color: #999999;
+}
+
+.promotion-active {
+	border: 2rpx solid #e5e5e5;
+	background-color: #ffffff;
+}
+
+.promotion-active .promotion-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 22rpx;
+	color: #999999;
 }
 
 .stats-rating {
@@ -603,6 +731,14 @@ export default {
 	font-size: 24rpx;
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	color: #999999;
+}
+
+.store-bottom-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	margin-top: 4rpx;
 }
 
 .store-stats-row {

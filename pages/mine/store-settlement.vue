@@ -98,7 +98,9 @@ export default {
 			})
 		},
 		handleApplyNow() {
-			uni.showToast({ title: '立即入驻', icon: 'none' })
+			uni.navigateTo({
+				url: '/pages/store-settlement/store'
+			})
 		}
 	}
 }

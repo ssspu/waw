@@ -32,14 +32,7 @@
 					</view>
 				</view>
 				<text class="nav-title">优惠券</text>
-				<view class="nav-right">
-					<view class="action-btn" @tap="handleMore">
-						<text class="action-text">⋯</text>
-					</view>
-					<view class="action-btn" @tap="handleCircle">
-						<text class="action-text">○</text>
-					</view>
-				</view>
+				<view class="nav-right"></view>
 			</view>
 			
 			<!-- Logo -->

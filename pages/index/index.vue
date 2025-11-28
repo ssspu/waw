@@ -63,19 +63,19 @@
 			<profile-section></profile-section>
 		</view>
 		
-		<!-- Gallery Section (Bottom Navigation) -->
-		<gallery-section></gallery-section>
+		<!-- 底部导航 -->
+		<bottom-tab-bar active="service"></bottom-tab-bar>
 	</view>
 </template>
 
 <script>
 import ProfileSection from '../../components/index/index/ProfileSection.vue'
-import GallerySection from '../../components/index/index/GallerySection.vue'
+import BottomTabBar from '../../components/common/BottomTabBar.vue'
 
 export default {
 	components: {
 		ProfileSection,
-		GallerySection
+		BottomTabBar
 	},
 	data() {
 		return {
