@@ -22,7 +22,8 @@
 		<view class="featured-stores-card">
 			<view class="card-header">
 				<text class="card-title">精选店</text>
-				<image class="more-icon" src="https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-3.svg" mode="aspectFit"></image>
+				<!-- 测试阶段不显示 -->
+				<!-- <image class="more-icon" src="https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-3.svg" mode="aspectFit"></image> -->
 			</view>
 			
 			<!-- 标签切换 -->
@@ -125,27 +126,28 @@
 		</view>
 		
 		<!-- 附近推荐标题 -->
-		<view class="nearby-header">
+		<view id="brand-nearby-section" class="nearby-header">
 			<text class="nearby-title">附近推荐</text>
-			<view class="filter-btn" @tap="handleFilter">
+			<!-- 测试阶段不显示 -->
+			<!-- <view class="filter-btn" @tap="handleFilter">
 				<text class="filter-text">筛选</text>
 				<image class="filter-icon" src="https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-2.svg" mode="aspectFit"></image>
-			</view>
+			</view> -->
 		</view>
-		
+
 		<!-- 分类标签 -->
 		<view class="category-tab">
 			<view class="tab-content">
 				<image class="tab-icon" src="https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-1.svg" mode="aspectFit"></image>
-				<text class="tab-text">品牌馆</text>
+				<text class="tab-text">{{ activeCategory }}</text>
 			</view>
 		</view>
-		
+
 		<!-- 附近店铺列表 -->
 		<view class="nearby-stores-list">
-			<view 
-				v-for="(store, index) in nearbyStores" 
-				:key="index" 
+			<view
+				v-for="(store, index) in currentNearbyStores"
+				:key="index"
 				class="nearby-store-item"
 				@tap="handleStoreClick(store)"
 			>
@@ -197,6 +199,7 @@
 export default {
 	data() {
 		return {
+			activeCategory: '品牌馆',
 			categoryItems: [
 				{
 					icon: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-2006-1.svg",
@@ -538,96 +541,207 @@ export default {
 					],
 				],
 			},
-			nearbyStores: [
-				{
-					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-6.png",
-					name: "成都NICE造型沙龙",
-					type: "专业店｜2012年开业",
-					rating: "4.8",
-					designers: "8人",
-					services: "1236",
-					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
-					distance: "7.5km",
-					tag: "舒适",
-				},
-				{
-					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-1.png",
-					name: "成都NICE造型沙龙",
-					type: "专业店｜2012年开业",
-					rating: "4.8",
-					designers: "8人",
-					services: "1236",
-					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
-					distance: "7.5km",
-					tag: "舒适",
-				},
-				{
-					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-2.png",
-					name: "成都NICE造型沙龙",
-					type: "专业店｜2012年开业",
-					rating: "4.8",
-					designers: "8人",
-					services: "1236",
-					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
-					distance: "7.5km",
-					tag: "舒适",
-				},
-				{
-					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-3.png",
-					name: "成都NICE造型沙龙",
-					type: "专业店｜2012年开业",
-					rating: "4.8",
-					designers: "8人",
-					services: "1236",
-					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
-					distance: "7.5km",
-					tag: "舒适",
-				},
-				{
-					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-4.png",
-					name: "成都NICE造型沙龙",
-					type: "专业店｜2012年开业",
-					rating: "4.8",
-					designers: "8人",
-					services: "1236",
-					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
-					distance: "7.5km",
-					tag: "舒适",
-				},
-				{
-					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-5.png",
-					name: "成都NICE造型沙龙",
-					type: "专业店｜2012年开业",
-					rating: "4.8",
-					designers: "8人",
-					services: "1236",
-					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
-					distance: "7.5km",
-					tag: "舒适",
-				},
-				{
-					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-6.png",
-					name: "成都NICE造型沙龙",
-					type: "专业店｜2012年开业",
-					rating: "4.8",
-					designers: "8人",
-					services: "1236",
-					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
-					distance: "7.5km",
-					tag: "舒适",
-				},
-			],
+			// 按分类存储的附近店铺数据
+			categoryStores: {
+				'品牌馆': [
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-6.png",
+						name: "成都NICE造型沙龙",
+						type: "品牌馆｜2012年开业",
+						rating: "4.8",
+						designers: "8人",
+						services: "1236",
+						amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
+						distance: "7.5km",
+						tag: "舒适",
+					},
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-1.png",
+						name: "成都NICE造型沙龙",
+						type: "品牌馆｜2012年开业",
+						rating: "4.8",
+						designers: "8人",
+						services: "1236",
+						amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
+						distance: "7.5km",
+						tag: "舒适",
+					},
+				],
+				'专业店': [
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-2.png",
+						name: "丝域养发馆",
+						type: "专业店｜2015年开业",
+						rating: "4.9",
+						designers: "12人",
+						services: "2568",
+						amenities: ["头皮检测", "养发护理", "免费停车"],
+						distance: "3.2km",
+						tag: "专业",
+					},
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-3.png",
+						name: "发之源专业美发",
+						type: "专业店｜2018年开业",
+						rating: "4.7",
+						designers: "6人",
+						services: "890",
+						amenities: ["专业染发", "烫发造型", "预约服务"],
+						distance: "4.8km",
+						tag: "口碑好",
+					},
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-4.png",
+						name: "造型专家工坊",
+						type: "专业店｜2020年开业",
+						rating: "4.6",
+						designers: "5人",
+						services: "456",
+						amenities: ["新店优惠", "免费设计"],
+						distance: "2.1km",
+						tag: "新店",
+					},
+				],
+				'品牌店': [
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-5.png",
+						name: "东田造型",
+						type: "品牌店｜2008年开业",
+						rating: "4.9",
+						designers: "20人",
+						services: "5680",
+						amenities: ["明星同款", "VIP包间", "代客泊车"],
+						distance: "5.6km",
+						tag: "明星店",
+					},
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-6.png",
+						name: "沙宣美发连锁",
+						type: "品牌店｜2010年开业",
+						rating: "4.8",
+						designers: "15人",
+						services: "3890",
+						amenities: ["国际品牌", "专业培训", "品质保证"],
+						distance: "6.3km",
+						tag: "连锁",
+					},
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-1.png",
+						name: "文峰美发",
+						type: "品牌店｜2005年开业",
+						rating: "4.7",
+						designers: "18人",
+						services: "8900",
+						amenities: ["老牌连锁", "会员优惠", "免费茶点"],
+						distance: "4.2km",
+						tag: "老牌",
+					},
+				],
+				'工作室': [
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-2.png",
+						name: "小林私人订制",
+						type: "工作室｜2019年开业",
+						rating: "4.9",
+						designers: "3人",
+						services: "680",
+						amenities: ["私人定制", "预约制", "一对一服务"],
+						distance: "1.8km",
+						tag: "私密",
+					},
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-3.png",
+						name: "美研造型工作室",
+						type: "工作室｜2021年开业",
+						rating: "4.8",
+						designers: "2人",
+						services: "320",
+						amenities: ["独立设计师", "作品展示", "咖啡茶饮"],
+						distance: "2.5km",
+						tag: "设计感",
+					},
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-4.png",
+						name: "花间发艺工作室",
+						type: "工作室｜2020年开业",
+						rating: "4.7",
+						designers: "4人",
+						services: "520",
+						amenities: ["日系风格", "花艺装饰", "拍照打卡"],
+						distance: "3.6km",
+						tag: "网红",
+					},
+				],
+				'综合店': [
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-5.png",
+						name: "美丽人生综合店",
+						type: "综合店｜2016年开业",
+						rating: "4.6",
+						designers: "25人",
+						services: "4560",
+						amenities: ["美发美甲", "美容SPA", "纹绣"],
+						distance: "3.8km",
+						tag: "一站式",
+					},
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-6.png",
+						name: "悦美汇生活馆",
+						type: "综合店｜2018年开业",
+						rating: "4.7",
+						designers: "30人",
+						services: "6780",
+						amenities: ["美发", "美容", "养生", "美甲"],
+						distance: "5.2km",
+						tag: "综合",
+					},
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-1.png",
+						name: "时尚芭莎会所",
+						type: "综合店｜2014年开业",
+						rating: "4.8",
+						designers: "22人",
+						services: "5230",
+						amenities: ["高端会所", "私人定制", "VIP服务"],
+						distance: "6.8km",
+						tag: "高端",
+					},
+				],
+			},
 		}
 	},
 	computed: {
 		currentStoreSlides() {
 			const slides = this.storeSlides[this.activeStoreTab]
 			return slides || []
+		},
+		currentNearbyStores() {
+			if (this.activeCategory === '品牌馆') {
+				// 品牌馆显示所有店铺
+				const allStores = []
+				Object.values(this.categoryStores).forEach(stores => {
+					allStores.push(...stores)
+				})
+				return allStores
+			}
+			return this.categoryStores[this.activeCategory] || []
 		}
 	},
 	methods: {
 		handleCategoryClick(item) {
-			console.log('Category clicked:', item)
+			// 切换分类
+			this.activeCategory = item.title
+			// 滚动到附近推荐区域
+			this.$nextTick(() => {
+				uni.createSelectorQuery().in(this).select('#brand-nearby-section').boundingClientRect(rect => {
+					if (rect) {
+						uni.pageScrollTo({
+							scrollTop: rect.top - 100,
+							duration: 0
+						})
+					}
+				}).exec()
+			})
 		},
 		switchTab(index) {
 			const tab = this.tabItems[index]
@@ -665,7 +779,7 @@ export default {
 	max-width: 100%;
 	margin: 0 auto;
 	align-items: stretch;
-	gap: 18rpx;
+	gap: 8rpx;
 	padding: 0 12rpx;
 	box-sizing: border-box;
 }
@@ -742,6 +856,7 @@ export default {
 	border: 0;
 	box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
 	box-sizing: border-box;
+	margin-top: 12rpx;
 }
 
 .card-header {
@@ -1069,6 +1184,7 @@ export default {
 	justify-content: space-between;
 	width: 100%;
 	box-sizing: border-box;
+	margin-top: 20rpx;
 }
 
 .nearby-title {
@@ -1105,8 +1221,7 @@ export default {
 	background-image: url('https://c.animaapp.com/mi5cgxi6ndVkfo/img/subtract.svg');
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
-	margin-top: -10rpx;
-	margin-bottom: -45rpx;
+	margin-top: 4rpx;
 }
 
 .tab-content {
@@ -1137,8 +1252,8 @@ export default {
 	flex-direction: column;
 	width: 100%;
 	align-items: stretch;
-	gap: 12rpx;
-	margin-top: 30rpx;
+	gap: 16rpx;
+	margin-top: 8rpx;
 	box-sizing: border-box;
 }
 
@@ -1177,17 +1292,13 @@ export default {
 	display: flex;
 	align-items: center;
 	gap: 8rpx;
-	width: 100%;
 }
 
-.store-name {
+.nearby-store-item .store-name {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
 	color: #000000;
 	font-size: 28rpx;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 }
 
 .store-tag-badge {

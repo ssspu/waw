@@ -18,11 +18,11 @@
 			</view>
 		</view>
 		
-		<!-- 预约选项 -->
-		<view class="booking-options">
-			<view 
-				v-for="(option, index) in bookingOptions" 
-				:key="index" 
+		<!-- 预约选项 - 测试阶段不显示 -->
+		<!-- <view class="booking-options">
+			<view
+				v-for="(option, index) in bookingOptions"
+				:key="index"
 				class="booking-card"
 				@tap="handleBookingClick(option)"
 			>
@@ -34,13 +34,14 @@
 					<image class="booking-icon" :src="option.icon" :alt="option.title" mode="aspectFit"></image>
 				</view>
 			</view>
-		</view>
+		</view> -->
 		
 		<!-- 排行榜 -->
 		<view class="ranking-card">
 			<view class="ranking-header">
 				<text class="ranking-title">排行榜</text>
-				<image class="more-icon" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-2.svg" mode="aspectFit"></image>
+				<!-- 测试阶段不显示 -->
+				<!-- <image class="more-icon" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-2.svg" mode="aspectFit"></image> -->
 			</view>
 			
 			<view class="ranking-tabs">
@@ -107,20 +108,20 @@
 		</view>
 		
 		<!-- 附近推荐 -->
-		<view class="nearby-section">
+		<view id="nearby-section" class="nearby-section">
 			<view class="nearby-header">
 				<text class="nearby-title">附近推荐</text>
-				<view class="filter-btn" @tap="handleFilter">
+				<!-- <view class="filter-btn" @tap="handleFilter">
 					<text class="filter-text">筛选</text>
 					<image class="filter-icon" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-3.svg" mode="aspectFit"></image>
-				</view>
+				</view> -->
 			</view>
-			
+
 			<!-- 分类标签 -->
 			<view class="category-tab">
 				<view class="tab-content">
 					<image class="tab-icon" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame.svg" mode="aspectFit"></image>
-					<text class="tab-text">美发师</text>
+					<text class="tab-text">{{ activeCategory }}</text>
 				</view>
 			</view>
 			
@@ -338,97 +339,239 @@ export default {
 					],
 				],
 			},
-			nearbyStylistsData: [
-				{
-					id: 7,
-					image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-11.png",
-					name: "李天天",
-					level: "高级",
-					role: "店长｜从业12年",
-					specialties: ["女士造型", "烫发设计", "短发造型"],
-					rating: "4.8",
-					services: "287",
-					works: "123",
-					tags: ["明星网红", "预约服务", "免费设计", "7天无忧"],
-					distance: "7.5km",
-				},
-				{
-					id: 8,
-					image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-7.png",
-					name: "李天天",
-					level: "高级",
-					role: "店长｜从业12年",
-					specialties: ["女士造型", "烫发设计", "短发造型"],
-					rating: "4.8",
-					services: "287",
-					works: "123",
-					tags: ["明星网红", "预约服务", "免费设计", "7天无忧"],
-					distance: "7.5km",
-				},
-				{
-					id: 9,
-					image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-8.png",
-					name: "李天天",
-					level: "高级",
-					role: "店长｜从业12年",
-					specialties: ["女士造型", "烫发设计", "短发造型"],
-					rating: "4.8",
-					services: "287",
-					works: "123",
-					tags: ["明星网红", "预约服务", "免费设计", "7天无忧"],
-					distance: "7.5km",
-				},
-				{
-					id: 10,
-					image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-9.png",
-					name: "李天天",
-					level: "高级",
-					role: "店长｜从业12年",
-					specialties: ["女士造型", "烫发设计", "短发造型"],
-					rating: "4.8",
-					services: "287",
-					works: "123",
-					tags: ["明星网红", "预约服务", "免费设计", "7天无忧"],
-					distance: "7.5km",
-				},
-				{
-					id: 11,
-					image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-10.png",
-					name: "李天天",
-					level: "高级",
-					role: "店长｜从业12年",
-					specialties: ["女士造型", "烫发设计", "短发造型"],
-					rating: "4.8",
-					services: "287",
-					works: "123",
-					tags: ["明星网红", "预约服务", "免费设计", "7天无忧"],
-					distance: "7.5km",
-				},
-				{
-					id: 12,
-					image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-11.png",
-					name: "李天天",
-					level: "高级",
-					role: "店长｜从业12年",
-					specialties: ["女士造型", "烫发设计", "短发造型"],
-					rating: "4.8",
-					services: "287",
-					works: "123",
-					tags: ["明星网红", "预约服务", "免费设计", "7天无忧"],
-					distance: "7.5km",
-				},
-			],
+			// 当前选中的分类
+			activeCategory: '美发师',
+			// 分类对应的美发师数据
+			categoryStylists: {
+				'美发师': [
+					{
+						id: 7,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-11.png",
+						name: "李天天",
+						level: "高级",
+						role: "店长｜从业12年",
+						specialties: ["女士造型", "烫发设计", "短发造型"],
+						rating: "4.8",
+						services: "287",
+						works: "123",
+						tags: ["明星网红", "预约服务", "免费设计", "7天无忧"],
+						distance: "7.5km",
+					},
+					{
+						id: 8,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-7.png",
+						name: "张美美",
+						level: "高级",
+						role: "店长｜从业12年",
+						specialties: ["女士造型", "烫发设计", "短发造型"],
+						rating: "4.8",
+						services: "287",
+						works: "123",
+						tags: ["明星网红", "预约服务", "免费设计", "7天无忧"],
+						distance: "7.5km",
+					},
+				],
+				'首席创意': [
+					{
+						id: 101,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-11.png",
+						name: "陈创意",
+						level: "首席",
+						role: "创意总监｜从业15年",
+						specialties: ["创意造型", "时尚剪裁", "概念设计"],
+						rating: "4.9",
+						services: "356",
+						works: "189",
+						tags: ["创意先锋", "时尚引领", "独特风格", "个性定制"],
+						distance: "3.2km",
+					},
+					{
+						id: 102,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-7.png",
+						name: "王艺术",
+						level: "首席",
+						role: "艺术总监｜从业13年",
+						specialties: ["艺术造型", "前卫设计", "潮流引领"],
+						rating: "4.8",
+						services: "298",
+						works: "167",
+						tags: ["艺术创作", "潮流达人", "独特视角", "创新设计"],
+						distance: "4.5km",
+					},
+					{
+						id: 103,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-8.png",
+						name: "林创新",
+						level: "首席",
+						role: "创新导师｜从业12年",
+						specialties: ["创新剪发", "概念造型", "艺术染发"],
+						rating: "4.9",
+						services: "312",
+						works: "145",
+						tags: ["创新先锋", "概念设计", "艺术表达", "个性打造"],
+						distance: "5.1km",
+					},
+				],
+				'总监店长': [
+					{
+						id: 201,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-9.png",
+						name: "张总监",
+						level: "总监",
+						role: "店长｜从业18年",
+						specialties: ["高端定制", "VIP服务", "团队管理"],
+						rating: "4.9",
+						services: "456",
+						works: "234",
+						tags: ["资深总监", "管理专家", "高端服务", "品质保障"],
+						distance: "2.8km",
+					},
+					{
+						id: 202,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-10.png",
+						name: "李店长",
+						level: "总监",
+						role: "技术总监｜从业16年",
+						specialties: ["技术培训", "品质把控", "高端剪裁"],
+						rating: "4.8",
+						services: "389",
+						works: "198",
+						tags: ["技术权威", "培训导师", "品质标杆", "经验丰富"],
+						distance: "3.6km",
+					},
+					{
+						id: 203,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-11.png",
+						name: "王总监",
+						level: "总监",
+						role: "运营总监｜从业15年",
+						specialties: ["门店运营", "客户维护", "精细服务"],
+						rating: "4.9",
+						services: "423",
+						works: "212",
+						tags: ["运营专家", "客户至上", "服务标杆", "团队领袖"],
+						distance: "4.2km",
+					},
+				],
+				'网红名师': [
+					{
+						id: 301,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-7.png",
+						name: "网红小美",
+						level: "名师",
+						role: "网红造型师｜从业8年",
+						specialties: ["网红造型", "直播教学", "潮流发型"],
+						rating: "4.9",
+						services: "567",
+						works: "345",
+						tags: ["百万粉丝", "直播达人", "潮流风向", "明星同款"],
+						distance: "1.5km",
+					},
+					{
+						id: 302,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-8.png",
+						name: "潮流小王",
+						level: "名师",
+						role: "潮流导师｜从业7年",
+						specialties: ["潮流剪发", "时尚染发", "个性造型"],
+						rating: "4.8",
+						services: "489",
+						works: "278",
+						tags: ["潮流先锋", "时尚达人", "个性定制", "年轻活力"],
+						distance: "2.3km",
+					},
+					{
+						id: 303,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-9.png",
+						name: "时尚阿杰",
+						level: "名师",
+						role: "时尚博主｜从业9年",
+						specialties: ["时尚造型", "氛围感设计", "日韩风格"],
+						rating: "4.9",
+						services: "523",
+						works: "312",
+						tags: ["时尚博主", "氛围感", "日韩风", "人气爆棚"],
+						distance: "3.1km",
+					},
+				],
+				'国际导师': [
+					{
+						id: 401,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-10.png",
+						name: "David Chen",
+						level: "国际",
+						role: "国际导师｜从业20年",
+						specialties: ["国际造型", "秀场设计", "明星御用"],
+						rating: "5.0",
+						services: "234",
+						works: "456",
+						tags: ["国际认证", "秀场经验", "明星御用", "顶级技术"],
+						distance: "5.8km",
+					},
+					{
+						id: 402,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-11.png",
+						name: "Michael Wang",
+						level: "国际",
+						role: "海外导师｜从业18年",
+						specialties: ["欧美风格", "高端定制", "国际趋势"],
+						rating: "4.9",
+						services: "198",
+						works: "389",
+						tags: ["海外经验", "欧美风格", "高端定制", "国际视野"],
+						distance: "6.2km",
+					},
+					{
+						id: 403,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-7.png",
+						name: "Sophie Li",
+						level: "国际",
+						role: "国际评委｜从业22年",
+						specialties: ["国际比赛", "评委导师", "顶级剪裁"],
+						rating: "5.0",
+						services: "156",
+						works: "423",
+						tags: ["国际评委", "比赛冠军", "顶级导师", "行业权威"],
+						distance: "7.5km",
+					},
+				],
+			},
 		}
 	},
 	computed: {
 		currentRankingSlides() {
 			const slides = this.rankingSlides[this.activeRankingTab]
 			return slides || []
+		},
+		// 根据当前选中分类获取美发师列表
+		nearbyStylistsData() {
+			// "美发师"显示全部设计师
+			if (this.activeCategory === '美发师') {
+				const allStylists = []
+				Object.values(this.categoryStylists).forEach(stylists => {
+					allStylists.push(...stylists)
+				})
+				return allStylists
+			}
+			return this.categoryStylists[this.activeCategory] || []
 		}
 	},
 	methods: {
 		handleCategoryClick(category) {
 			console.log('Category clicked:', category)
+			// 切换分类
+			this.activeCategory = category.title
+			// 滚动到附近推荐区域
+			this.$nextTick(() => {
+				uni.createSelectorQuery().in(this).select('#nearby-section').boundingClientRect(rect => {
+					if (rect) {
+						uni.pageScrollTo({
+							scrollTop: rect.top - 100,
+							duration: 100
+						})
+					}
+				}).exec()
+			})
 		},
 		handleBookingClick(option) {
 			console.log('Booking clicked:', option)
@@ -838,11 +981,12 @@ export default {
 	display: flex;
 	margin-top: -10rpx;
 	width: 180rpx;
-	padding: 10rpx 0 0 10rpx;
+	padding: 10rpx 0 0 8rpx;
 	height: 36rpx;
-	margin-left: 20rpx;
+	margin-left: 10rpx;
 	align-items: center;
-	gap: 12rpx;
+	justify-content: center;
+	gap: 8rpx;
 }
 
 .tab-icon {

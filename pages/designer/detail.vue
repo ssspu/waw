@@ -56,12 +56,20 @@
 			<view class="tab-content-wrapper">
 				<!-- 服务tab内容 -->
 				<view v-if="activeTab === 'service'" class="tab-content" :key="'service'">
-					<designer-service-tab-content :active-sub-tab="activeSubTabs.service"></designer-service-tab-content>
+					<designer-service-tab-content
+						:active-sub-tab="activeSubTabs.service"
+						@book-service="handleBookService"
+					></designer-service-tab-content>
 				</view>
-				
+
 				<!-- 预约tab内容 -->
 				<view v-if="activeTab === 'appointment'" class="tab-content" :key="'appointment'">
-					<designer-appointment-tab-content :active-sub-tab="activeSubTabs.appointment"></designer-appointment-tab-content>
+					<designer-appointment-tab-content
+						:active-sub-tab="activeSubTabs.appointment"
+						:selected-service="selectedBookingData"
+						@time-selected="handleTimeSelected"
+						@go-to-service="handleGoToService"
+					></designer-appointment-tab-content>
 				</view>
 				
 				<!-- 作品tab内容 -->
@@ -147,6 +155,8 @@ export default {
 		return {
 			activeTab: 'service',
 			showCouponPopup: false,
+			selectedBookingData: null, // 用户选择的服务数据
+			selectedTimeSlot: null, // 用户选择的时间段
 			activeSubTabs: {
 				service: 'hair-service',
 				appointment: 'today',
@@ -266,8 +276,55 @@ export default {
 		handleShare() {
 			console.log('Share clicked')
 		},
+		handleBookService(bookingData) {
+			// 保存用户选择的服务数据
+			this.selectedBookingData = bookingData
+			// 切换到预约tab
+			this.activeTab = 'appointment'
+			// 滚动页面以便用户看到预约内容
+			this.$nextTick(() => {
+				setTimeout(() => {
+					uni.pageScrollTo({
+						scrollTop: 99999,
+						duration: 300
+					})
+				}, 100)
+			})
+		},
+		handleTimeSelected(timeSlot) {
+			// 保存用户选择的时间段
+			this.selectedTimeSlot = timeSlot
+		},
+		handleGoToService() {
+			// 切换到服务tab
+			this.activeTab = 'service'
+		},
 		handleBooking() {
-			console.log('Booking clicked')
+			// 检查是否已选择服务
+			if (!this.selectedBookingData) {
+				uni.showToast({ title: '请先选择服务', icon: 'none' })
+				return
+			}
+			// 检查是否已选择时间
+			if (!this.selectedTimeSlot) {
+				uni.showToast({ title: '请选择预约时间', icon: 'none' })
+				return
+			}
+			// 构建完整的预约数据
+			const orderData = {
+				service: this.selectedBookingData.service,
+				hairLength: this.selectedBookingData.hairLength,
+				brand: this.selectedBookingData.brand,
+				price: this.selectedBookingData.price,
+				timeSlot: this.selectedTimeSlot,
+				date: this.activeSubTabs.appointment,
+				designer: this.designerInfo,
+				shop: this.shopInfo
+			}
+			// 跳转到订单详情页
+			uni.navigateTo({
+				url: '/pages/order/detail?data=' + encodeURIComponent(JSON.stringify(orderData))
+			})
 		},
 		handleClaimCoupon(coupon) {
 			console.log('Claim coupon:', coupon)

@@ -831,6 +831,15 @@ export default {
 			return `${percent}%`
 		}
 	},
+	onLoad(options) {
+		// 从URL参数获取tab，切换到对应标签
+		if (options.tab) {
+			const validTabs = ['designer', 'service', 'brand']
+			if (validTabs.includes(options.tab)) {
+				this.activeTab = options.tab
+			}
+		}
+	},
 	onReady() {
 		// 获取滑块轨道宽度
 		const query = uni.createSelectorQuery().in(this)

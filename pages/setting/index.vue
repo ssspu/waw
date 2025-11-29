@@ -100,8 +100,8 @@ export default {
 				{
 					items: [
 						{ label: "账号安全" },
-						{ label: "申请认证" },
-						{ label: "地址管理" },
+						// { label: "申请认证" },
+						// { label: "地址管理" },
 						{ label: "支付设置" },
 					],
 				},

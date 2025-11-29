@@ -1,7 +1,10 @@
 <template>
 	<view class="service-tab-content">
 		<!-- 服务列表 -->
-		<designer-profile-section :active-sub-tab="activeSubTab"></designer-profile-section>
+		<designer-profile-section
+			:active-sub-tab="activeSubTab"
+			@book-service="handleBookService"
+		></designer-profile-section>
 	</view>
 </template>
 
@@ -16,6 +19,12 @@ export default {
 		activeSubTab: {
 			type: String,
 			default: 'hair'
+		}
+	},
+	methods: {
+		handleBookService(bookingData) {
+			// 向上传递事件到detail.vue
+			this.$emit('book-service', bookingData)
 		}
 	}
 }

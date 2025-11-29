@@ -172,11 +172,12 @@ export default {
 	margin-top: 20rpx;
 	background: linear-gradient(180deg, #d0c1a7 0%, #887d6b 100%);
 	border-radius: 24rpx;
-	padding: 32rpx;
+	padding: 20rpx 20rpx 16rpx 32rpx;
 	position: relative;
 	overflow: hidden;
 	box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.15);
-	min-height: 340rpx;
+	width: 690rpx;
+	box-sizing: border-box;
 }
 
 .vip-card-decoration {
@@ -213,17 +214,15 @@ export default {
 .vip-card-header {
 	display: flex;
 	align-items: center;
-	gap: 16rpx;
 }
 
 .vip-icon-wrap {
-	width: 72rpx;
-	height: 72rpx;
-	border-radius: 16rpx;
-	background-color: rgba(255, 255, 255, 0.2);
+	width: 48rpx;
+	height: 48rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	margin-right: 12rpx;
 }
 
 .vip-icon {
@@ -231,48 +230,67 @@ export default {
 	height: 48rpx;
 }
 
+.vip-name {
+	font-family: 'FZCuHei-B03T', sans-serif;
+	font-size: 54rpx;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
+	color: #ffffff;
+}
+
 .vip-title-block {
 	display: flex;
 	flex-direction: row;
-	align-items: end;
+	align-items: center;
+	gap: 12rpx;
 }
 
-.vip-name {
-	color: #fff;
-	font-size: 48rpx;
+.vip-text {
+	color: #ffffff;
+	font-size: 44rpx;
 	font-weight: 600;
-	text-shadow: 0 2rpx 6rpx rgba(36, 0, 205, 0.5);
+	line-height: 1;
 }
 
 .vip-subtitle {
-	color: #fff;
-	font-size: 28rpx;
-	text-shadow: 0 2rpx 6rpx rgba(36, 0, 205, 0.4);
+	font-family: 'PingFang SC', sans-serif;
+	font-size: 32rpx;
+	font-style: normal;
+	font-weight: 500;
+	line-height: normal;
+	color: #ffffff;
 }
 
 .vip-card-body {
-	margin-top: 28rpx;
+	margin-top: 16rpx;
 	display: flex;
 	flex-direction: column;
-	gap: 14rpx;
+	gap: 12rpx;
 }
 
 .vip-card-title {
-	font-size: 32rpx;
-	color: #fff;
+	font-family: 'PingFang SC', sans-serif;
+	font-size: 30rpx;
+	font-style: normal;
 	font-weight: 500;
+	line-height: normal;
+	color: #ffffff;
 }
 
 .vip-card-desc {
-	font-size: 24rpx;
-	color: rgba(255, 255, 255, 0.85);
-	line-height: 1.4;
+	font-family: 'PingFang SC', sans-serif;
+	font-size: 22rpx;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
+	color: rgba(255, 255, 255, 0.8);
 }
 
 .vip-tags {
 	display: flex;
 	gap: 12rpx;
-	margin-top: 10rpx;
+	margin-top: 14rpx;
 	flex-wrap: wrap;
 }
 
@@ -281,15 +299,19 @@ export default {
 	align-items: center;
 	gap: 8rpx;
 	background-color: rgba(246, 246, 246, 0.2);
-	padding: 6rpx 14rpx;
-	border-radius: 24rpx;
-	color: #f3ebdd;
-	font-size: 22rpx;
+	padding: 4rpx 8rpx;
+	border-radius: 4rpx;
+	color: #F4ECDD;
+	font-family: 'PingFang SC', sans-serif;
+	font-size: 20rpx;
+	font-style: normal;
+	font-weight: 500;
+	line-height: normal;
 }
 
 .tag-icon {
-	width: 26rpx;
-	height: 26rpx;
+	width: 22rpx;
+	height: 22rpx;
 	background-color: rgba(255, 255, 255, 0.25);
 	border-radius: 50%;
 	display: flex;
@@ -298,17 +320,21 @@ export default {
 }
 
 .vip-card-footnote {
+	font-family: 'PingFang SC', sans-serif;
 	font-size: 20rpx;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
 	color: rgba(255, 255, 255, 0.3);
-	margin-top: 4rpx;
+	margin-top: 14rpx;
 }
 
 .vip-diamond {
 	position: absolute;
-	width: 160rpx;
-	height: 160rpx;
-	right: 40rpx;
-	top: 100rpx;
+	width: 164rpx;
+	height: 164rpx;
+	right: 26rpx;
+	top: 10rpx;
 }
 
 .benefits-panel {

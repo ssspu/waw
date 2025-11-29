@@ -40,37 +40,46 @@
 		</view>
 		
 		<!-- 主内容区域 -->
-		<scroll-view class="main-content" scroll-y>
+		<view class="main-content">
 			<!-- 协议卡片 -->
 			<view class="card">
 				<view class="card-header">
 					<text class="card-title">入驻平台协议</text>
 				</view>
-				<text class="card-desc">请认真阅读本平台入驻协议</text>
-				
+				<view class="card-desc">请认真阅读本平台入驻协议</view>
+
 				<!-- 协议内容区域 -->
 				<view class="agreement-content">
-					<scroll-view class="agreement-scroll" scroll-y>
-						<text class="agreement-text">
-							{{ agreementText }}
-						</text>
+					<scroll-view class="agreement-scroll" scroll-y @scrolltolower="onScrollToBottom">
+						<view class="agreements-list">
+							<view
+								v-for="(agreement, index) in agreements"
+								:key="index"
+								class="agreement-item"
+							>
+								<view class="agreement-title-row">
+									<text class="agreement-title">{{ agreement.title }}</text>
+								</view>
+								<view class="agreement-content-box">
+									<text class="agreement-text">{{ agreement.content }}</text>
+								</view>
+							</view>
+						</view>
 					</scroll-view>
 				</view>
-				
+
 				<!-- 同意协议 -->
 				<view class="agreement-check" @tap="toggleAgree">
-					<view class="checkbox" :class="{ checked: isAgreed }">
+					<view class="checkbox" :class="{ checked: isAgreed, disabled: !hasScrolledToBottom }">
 						<text v-if="isAgreed" class="check-icon">✓</text>
 					</view>
 					<view class="agreement-label">
 						<text class="label-text">我已阅读并同意</text>
-						<text class="label-link" @tap.stop="viewAgreement">《**入驻申请说明》</text>
+						<text class="label-link">《入驻平台协议》</text>
 					</view>
 				</view>
 			</view>
-			
-			<view class="bottom-spacer"></view>
-		</scroll-view>
+		</view>
 		
 		<!-- 底部按钮 -->
 		<view class="footer">
@@ -87,6 +96,8 @@
 </template>
 
 <script>
+import { agreementsData } from '@/data/agreements.js'
+
 export default {
 	data() {
 		return {
@@ -97,58 +108,23 @@ export default {
 				{ label: '结算信息', active: false }
 			],
 			isAgreed: false,
-			agreementText: `一、总则
-
-1.1 本协议是您与WAW平台之间关于设计师入驻事宜所订立的协议。
-
-1.2 您在申请入驻前，请务必仔细阅读本协议的全部内容。如您对本协议的任何条款有异议，请勿进行入驻申请。
-
-二、入驻条件
-
-2.1 申请人须年满18周岁，具有完全民事行为能力。
-
-2.2 申请人须持有有效的身份证件及相关职业资格证书。
-
-2.3 申请人须具备相应的专业技能和从业经验。
-
-三、权利与义务
-
-3.1 平台有权对入驻申请进行审核，并有权拒绝不符合条件的申请。
-
-3.2 入驻设计师应遵守平台的各项规则和制度。
-
-3.3 入驻设计师应保证所提供信息的真实性和准确性。
-
-四、服务费用
-
-4.1 平台将按照约定的比例收取服务费用。
-
-4.2 具体费用标准以平台公布的最新标准为准。
-
-五、协议变更
-
-5.1 平台有权根据需要修改本协议内容。
-
-5.2 协议修改后，平台将通过适当方式通知入驻设计师。
-
-六、其他条款
-
-6.1 本协议的解释权归WAW平台所有。
-
-6.2 如有争议，双方应友好协商解决。`
+			hasScrolledToBottom: false,
+			agreements: agreementsData
 		}
 	},
 	methods: {
 		handleBack() {
 			uni.navigateBack()
 		},
-		toggleAgree() {
-			this.isAgreed = !this.isAgreed
+		onScrollToBottom() {
+			this.hasScrolledToBottom = true
 		},
-		viewAgreement() {
-			uni.navigateTo({
-				url: '/pages/setting/agreement?type=settlement'
-			})
+		toggleAgree() {
+			if (!this.hasScrolledToBottom) {
+				uni.showToast({ title: '请先阅读完协议内容', icon: 'none' })
+				return
+			}
+			this.isAgreed = !this.isAgreed
 		},
 		handlePrev() {
 			uni.navigateBack()
@@ -319,7 +295,7 @@ export default {
 }
 
 .card-header {
-	margin-bottom: 8rpx;
+	margin-bottom: 12rpx;
 }
 
 .card-title {
@@ -333,21 +309,50 @@ export default {
 	font-family: 'PingFang SC';
 	font-size: 24rpx;
 	color: #999999;
-	margin-bottom: 24rpx;
+	margin-bottom: 12rpx;
 }
 
 .agreement-content {
 	background-color: #f8f8f8;
 	border-radius: 8rpx;
-	height: 894rpx;
+	height: 880rpx;
 	margin-bottom: 24rpx;
 	overflow: hidden;
 }
 
 .agreement-scroll {
 	height: 100%;
-	padding: 24rpx;
+	padding: 16rpx 12rpx;
 	box-sizing: border-box;
+}
+
+.agreements-list {
+	display: flex;
+	flex-direction: column;
+	gap: 24rpx;
+	margin-bottom: 24rpx;
+}
+
+.agreement-item {
+	background-color: #f8f8f8;
+	border-radius: 8rpx;
+	overflow: hidden;
+}
+
+.agreement-title-row {
+	padding: 16rpx;
+	border-bottom: 1rpx solid #e7e7e7;
+}
+
+.agreement-title {
+	font-family: 'PingFang SC';
+	font-weight: 600;
+	font-size: 28rpx;
+	color: #333333;
+}
+
+.agreement-content-box {
+	padding: 16rpx;
 }
 
 .agreement-text {
@@ -379,6 +384,11 @@ export default {
 	border-color: #333333;
 }
 
+.checkbox.disabled {
+	background-color: #f5f5f5;
+	border-color: #e0e0e0;
+}
+
 .check-icon {
 	font-size: 20rpx;
 	color: #ffffff;
@@ -387,6 +397,7 @@ export default {
 .agreement-label {
 	display: flex;
 	align-items: center;
+	flex-wrap: wrap;
 }
 
 .label-text {

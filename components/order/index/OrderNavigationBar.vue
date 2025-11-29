@@ -51,7 +51,7 @@ export default {
 .navigation-bar-section {
 	width: 100%;
 	background-color: #ffffff;
-	padding: 32rpx 30rpx;
+	padding: 24rpx 30rpx 0rpx;
 	box-sizing: border-box;
 	flex-shrink: 0;
 }
