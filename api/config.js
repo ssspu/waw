@@ -8,26 +8,27 @@ const ENV = {
   development: {
     baseUrl: 'http://localhost:3000/api',
     timeout: 30000,
-    debug: true
+    debug: true,
+    useMock: true // 开发环境默认开启 Mock
   },
   staging: {
     baseUrl: 'https://staging-api.waw.com/api',
     timeout: 30000,
-    debug: true
+    debug: true,
+    useMock: false
   },
   production: {
     baseUrl: 'https://api.waw.com/api',
     timeout: 15000,
-    debug: false
+    debug: false,
+    useMock: false
   }
 }
 
 // 当前环境 (可根据 uni-app 条件编译动态切换)
+let currentEnv = 'development'
 // #ifdef H5
-const currentEnv = process.env.NODE_ENV || 'development'
-// #endif
-// #ifndef H5
-const currentEnv = 'development' // 小程序环境默认开发模式，可根据需要修改
+currentEnv = process.env.NODE_ENV || 'development'
 // #endif
 
 // 导出当前环境配置
