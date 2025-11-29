@@ -59,11 +59,14 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
 	data() {
 		return {
 			isAgreed: true,
-			statusBarHeight: 0
+			statusBarHeight: 0,
+			loading: false
 		}
 	},
 	onLoad() {
@@ -82,7 +85,8 @@ export default {
 		toggleAgreement() {
 			this.isAgreed = !this.isAgreed
 		},
-		handleQuickLogin() {
+		// 一键登录（微信登录）
+		async handleQuickLogin() {
 			if (!this.isAgreed) {
 				uni.showToast({
 					title: '请先同意用户协议',
@@ -90,9 +94,50 @@ export default {
 				})
 				return
 			}
-			uni.reLaunch({
-				url: '/pages/index/index'
-			})
+			if (this.loading) return
+			this.loading = true
+
+			try {
+				// #ifdef MP-WEIXIN
+				// 微信小程序环境：获取微信登录code
+				const loginResult = await new Promise((resolve, reject) => {
+					uni.login({
+						provider: 'weixin',
+						success: resolve,
+						fail: reject
+					})
+				})
+
+				// 调用后端微信登录接口
+				const res = await api.auth.loginByWechat({
+					code: loginResult.code
+				})
+
+				if (res.code === 0) {
+					// 保存token
+					uni.setStorageSync('token', res.data.token)
+					uni.setStorageSync('refreshToken', res.data.refreshToken)
+					uni.setStorageSync('userInfo', res.data.userInfo)
+
+					uni.showToast({ title: '登录成功', icon: 'success' })
+					setTimeout(() => {
+						uni.reLaunch({ url: '/pages/index/index' })
+					}, 1000)
+				} else {
+					uni.showToast({ title: res.message || '登录失败', icon: 'none' })
+				}
+				// #endif
+
+				// #ifndef MP-WEIXIN
+				// 非微信小程序环境：直接跳转（开发测试用）
+				uni.reLaunch({ url: '/pages/index/index' })
+				// #endif
+			} catch (err) {
+				console.error('登录失败:', err)
+				uni.showToast({ title: '登录失败，请重试', icon: 'none' })
+			} finally {
+				this.loading = false
+			}
 		},
 		goToPasswordLogin() {
 			uni.navigateTo({
@@ -100,10 +145,14 @@ export default {
 			})
 		},
 		openUserAgreement() {
-			console.log('Open user agreement')
+			uni.navigateTo({
+				url: '/pages/common/webview?url=' + encodeURIComponent('https://example.com/user-agreement')
+			})
 		},
 		openPrivacyPolicy() {
-			console.log('Open privacy policy')
+			uni.navigateTo({
+				url: '/pages/common/webview?url=' + encodeURIComponent('https://example.com/privacy-policy')
+			})
 		}
 	}
 }

@@ -19,7 +19,7 @@
 		
 		<!-- 主内容 -->
 		<view class="main-content">
-			<designer-info-services-section :active-tab="activeTab"></designer-info-services-section>
+			<designer-info-services-section :active-tab="activeTab" :designer-id="designerId"></designer-info-services-section>
 		</view>
 		
 		<!-- 底部指示器 -->
@@ -38,8 +38,14 @@ export default {
 		DesignerInfoProfileSection,
 		DesignerInfoServicesSection
 	},
+	onLoad(options) {
+		if (options.id) {
+			this.designerId = options.id
+		}
+	},
 	data() {
 		return {
+			designerId: '1',
 			activeTab: 'designer'
 		}
 	},

@@ -45,6 +45,7 @@ export const paginate = (list, page = 1, pageSize = 10) => {
   const records = list.slice(start, end)
 
   return {
+    list: records,
     records,
     total,
     page: Number(page),

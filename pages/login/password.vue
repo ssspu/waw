@@ -79,6 +79,8 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
 	data() {
 		return {
@@ -86,7 +88,8 @@ export default {
 			password: '',
 			showPassword: false,
 			isAgreed: true,
-			statusBarHeight: 0
+			statusBarHeight: 0,
+			loading: false
 		}
 	},
 	onLoad() {
@@ -100,9 +103,13 @@ export default {
 		toggleAgreement() {
 			this.isAgreed = !this.isAgreed
 		},
-		handleLogin() {
+		async handleLogin() {
 			if (!this.phone) {
 				uni.showToast({ title: '请输入手机号码', icon: 'none' })
+				return
+			}
+			if (!/^1[3-9]\d{9}$/.test(this.phone)) {
+				uni.showToast({ title: '请输入正确的手机号码', icon: 'none' })
 				return
 			}
 			if (!this.password) {
@@ -113,10 +120,34 @@ export default {
 				uni.showToast({ title: '请先同意用户协议', icon: 'none' })
 				return
 			}
-			// 登录成功后跳转首页
-			uni.reLaunch({
-				url: '/pages/index/index'
-			})
+			if (this.loading) return
+			this.loading = true
+
+			try {
+				const res = await api.auth.loginByPassword({
+					phone: this.phone,
+					password: this.password
+				})
+
+				if (res.code === 0) {
+					// 保存token和用户信息
+					uni.setStorageSync('token', res.data.token)
+					uni.setStorageSync('refreshToken', res.data.refreshToken)
+					uni.setStorageSync('userInfo', res.data.userInfo)
+
+					uni.showToast({ title: '登录成功', icon: 'success' })
+					setTimeout(() => {
+						uni.reLaunch({ url: '/pages/index/index' })
+					}, 1000)
+				} else {
+					uni.showToast({ title: res.message || '登录失败', icon: 'none' })
+				}
+			} catch (err) {
+				console.error('登录失败:', err)
+				uni.showToast({ title: '登录失败，请重试', icon: 'none' })
+			} finally {
+				this.loading = false
+			}
 		},
 		goToRegister() {
 			uni.navigateTo({
@@ -124,7 +155,9 @@ export default {
 			})
 		},
 		handleForgetPassword() {
-			uni.showToast({ title: '忘记密码功能待开发', icon: 'none' })
+			uni.navigateTo({
+				url: '/pages/login/reset-password'
+			})
 		}
 	}
 }

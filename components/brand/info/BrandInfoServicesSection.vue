@@ -1,20 +1,25 @@
 <template>
 	<view class="services-section">
+		<!-- 加载状态 -->
+		<view v-if="loading" class="loading-state">
+			<text class="loading-text">加载中...</text>
+		</view>
+
 		<!-- 品牌介绍标签页内容 -->
-		<template v-if="activeTab === 'designer'">
-			<image 
-				class="profile-image" 
-				src="https://c.animaapp.com/mi5eklbiAEaKLJ/img/rectangle-191.svg" 
+		<template v-else-if="activeTab === 'designer'">
+			<image
+				class="profile-image"
+				:src="brand && brand.coverImage ? brand.coverImage : '/static/background-image/brand-cover.png'"
 				mode="aspectFill"
 			></image>
-			
+
 			<view class="card overview-card">
 				<view class="card-content">
 					<text class="card-title">品牌介绍</text>
-					
+
 					<view class="overview-list">
-						<view 
-							v-for="(item, index) in overviewItems" 
+						<view
+							v-for="(item, index) in overviewItems"
 							:key="index"
 							class="overview-item"
 						>
@@ -25,30 +30,30 @@
 										<text class="overview-value">{{ item.value }}</text>
 										<text v-if="item.extra" class="overview-extra">{{ item.extra }}</text>
 									</view>
-									<image 
+									<image
 										v-if="item.hasPhone"
-										class="phone-icon" 
-										src="https://c.animaapp.com/mi5eklbiAEaKLJ/img/phone.svg" 
+										class="phone-icon"
+										src="https://c.animaapp.com/mi5eklbiAEaKLJ/img/phone.svg"
 										mode="aspectFit"
 									></image>
 								</view>
 							</view>
 							<view class="separator-line"></view>
 						</view>
-						
+
 						<view class="overview-item personal-intro">
 							<text class="overview-label">品牌介绍</text>
 							<text class="personal-intro-text">
-								WAW Style 是一家专注于高端美发服务的品牌馆，拥有多年行业经验和专业团队。我们致力于为每一位顾客提供个性化的美发方案，打造独特的时尚造型。
+								{{ brand && brand.introduction ? brand.introduction : '暂无介绍' }}
 							</text>
 						</view>
 					</view>
 				</view>
 			</view>
 		</template>
-		
+
 		<!-- 服务特色标签页内容 -->
-		<template v-if="activeTab === 'service'">
+		<template v-else-if="activeTab === 'service'">
 			<view class="card service-card">
 				<view class="card-content">
 					<text class="card-title">服务特色</text>
@@ -114,48 +119,101 @@
 </template>
 
 <script>
+import api from '@/api/index.js'
+
 export default {
 	props: {
 		activeTab: {
 			type: String,
 			default: 'designer'
+		},
+		brandId: {
+			type: [String, Number],
+			default: '1'
 		}
 	},
 	data() {
 		return {
-			overviewItems: [
-				{ label: '品牌类型', value: '专业美发店' },
-				{ label: '成立时间', value: '2018年' },
-				{ label: '主营项目', value: '剪发、烫发、染发、护发' },
-				{ label: '营业时间', value: '周一 - 周日', extra: '10:00-22:00' },
-				{ label: '设计师数量', value: '12位' },
-				{ label: '联系电话', value: '+86 1891808747', hasPhone: true }
-			],
-			serviceFeatures: [
-				'全预约制',
-				'免费茶点',
-				'头皮检测',
-				'免费停车',
-				'烫染专业店',
-				'免费修眉',
-				'一对一服务',
-				'免费按摩',
-				'没有隐形消费',
-				'可上门服务'
-			],
-			otherFeatures: [
+			loading: false,
+			brand: null,
+			overviewItems: [],
+			serviceFeatures: [],
+			otherFeatures: [],
+			environmentFacilities: [],
+			generalFacilities: []
+		}
+	},
+	watch: {
+		brandId: {
+			handler(newVal) {
+				if (newVal) {
+					this.fetchBrandInfo()
+				}
+			},
+			immediate: true
+		}
+	},
+	methods: {
+		async fetchBrandInfo() {
+			if (!this.brandId) return
+
+			this.loading = true
+			try {
+				const res = await api.brand.getDetail(this.brandId)
+				if (res.code === 0 && res.data) {
+					this.brand = res.data
+					this.buildOverviewItems()
+					this.buildFeatures()
+				}
+			} catch (e) {
+				console.error('获取品牌信息失败:', e)
+			} finally {
+				this.loading = false
+			}
+		},
+		buildOverviewItems() {
+			if (!this.brand) return
+			const b = this.brand
+			this.overviewItems = [
+				{ label: '品牌类型', value: b.type || '专业美发店' },
+				{ label: '成立时间', value: b.establishedYear ? `${b.establishedYear}年` : '2018年' },
+				{ label: '主营项目', value: b.mainServices || '剪发、烫发、染发、护发' },
+				{ label: '营业时间', value: b.businessDays || '周一 - 周日', extra: b.businessHours || '10:00-22:00' },
+				{ label: '设计师数量', value: b.designerCount ? `${b.designerCount}位` : '12位' },
+				{ label: '联系电话', value: b.phone || '+86 1891808747', hasPhone: true }
+			]
+		},
+		buildFeatures() {
+			// 根据品牌数据生成服务特色
+			if (this.brand && this.brand.tags) {
+				this.serviceFeatures = this.brand.tags
+			} else {
+				this.serviceFeatures = [
+					'全预约制',
+					'免费茶点',
+					'头皮检测',
+					'免费停车',
+					'烫染专业店',
+					'免费修眉',
+					'一对一服务',
+					'免费按摩',
+					'没有隐形消费',
+					'可上门服务'
+				]
+			}
+			this.otherFeatures = [
 				'不可携带宠物',
 				'服务区不可吸烟'
-			],
-			environmentFacilities: [
+			]
+			this.environmentFacilities = [
 				'储物柜',
 				'免费Wifi',
 				'充电宝',
 				'可看电视',
 				'VIP专区',
 				'沙发座'
-			],
-			generalFacilities: [
+			]
+			this.generalFacilities = [
 				'特定吸烟区',
 				'电梯',
 				'有停车位',
@@ -168,6 +226,20 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.loading-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 100rpx 0;
+	width: 100%;
+}
+
+.loading-text {
+	font-size: 28rpx;
+	color: #999999;
+}
+
 .services-section {
 	display: flex;
 	flex-direction: column;

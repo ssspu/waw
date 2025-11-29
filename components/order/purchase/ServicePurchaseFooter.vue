@@ -2,53 +2,53 @@
 	<view class="footer-section">
 		<view class="navigation-bar">
 			<!-- 客服按钮 -->
-			<view 
-				class="nav-item" 
+			<view
+				class="nav-item"
 				@tap="handleCustomerService"
 			>
-				<image 
-					class="nav-icon" 
-					src="https://c.animaapp.com/mifnbli6udxphC/img/frame-2.svg" 
+				<image
+					class="nav-icon"
+					src="https://c.animaapp.com/mifnbli6udxphC/img/frame-2.svg"
 					mode="aspectFit"
 				></image>
 				<text class="nav-label">客服</text>
 			</view>
-			
+
 			<!-- 店铺按钮 -->
-			<view 
-				class="nav-item" 
+			<view
+				class="nav-item"
 				@tap="handleShop"
 			>
-				<image 
-					class="nav-icon" 
-					src="https://c.animaapp.com/mifnbli6udxphC/img/frame-4.svg" 
+				<image
+					class="nav-icon"
+					src="https://c.animaapp.com/mifnbli6udxphC/img/frame-4.svg"
 					mode="aspectFit"
 				></image>
 				<text class="nav-label">店铺</text>
 			</view>
-			
+
 			<!-- 收藏按钮 -->
-			<view 
-				class="nav-item" 
+			<view
+				class="nav-item"
 				@tap="handleFavorite"
 			>
-				<image 
-					class="nav-icon" 
-					src="https://c.animaapp.com/mifnbli6udxphC/img/frame-6.svg" 
+				<image
+					class="nav-icon"
+					:src="localFavorited ? '/static/icon/favorite-active.png' : 'https://c.animaapp.com/mifnbli6udxphC/img/frame-6.svg'"
 					mode="aspectFit"
 				></image>
-				<text class="nav-label">收藏</text>
+				<text class="nav-label">{{ localFavorited ? '已收藏' : '收藏' }}</text>
 			</view>
-			
+
 			<!-- 立即预定按钮 -->
-			<view 
-				class="booking-btn" 
+			<view
+				class="booking-btn"
 				@tap="handleBooking"
 			>
 				<text class="booking-text">立即预定</text>
 			</view>
 		</view>
-		
+
 		<!-- 底部指示器 -->
 		<view class="bottom-indicator">
 			<!-- <view class="indicator-bar"></view> -->
@@ -57,8 +57,37 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
 	name: 'ServicePurchaseFooter',
+	props: {
+		serviceId: {
+			type: [String, Number],
+			default: ''
+		},
+		designerId: {
+			type: [String, Number],
+			default: ''
+		},
+		isFavorited: {
+			type: Boolean,
+			default: false
+		}
+	},
+	data() {
+		return {
+			localFavorited: false
+		}
+	},
+	watch: {
+		isFavorited: {
+			immediate: true,
+			handler(val) {
+				this.localFavorited = val
+			}
+		}
+	},
 	methods: {
 		handleCustomerService() {
 			uni.navigateTo({
@@ -66,20 +95,45 @@ export default {
 			})
 		},
 		handleShop() {
-			uni.navigateTo({
-				url: '/pages/designer/detail'
-			})
+			if (this.designerId) {
+				uni.navigateTo({
+					url: `/pages/designer/detail?id=${this.designerId}`
+				})
+			}
 		},
-		handleFavorite() {
-			uni.showToast({
-				title: '已收藏',
-				icon: 'success'
-			})
+		async handleFavorite() {
+			if (!this.serviceId) return
+			try {
+				if (this.localFavorited) {
+					await api.service.unfavorite(this.serviceId)
+					this.localFavorited = false
+					uni.showToast({
+						title: '已取消收藏',
+						icon: 'success'
+					})
+				} else {
+					await api.service.favorite(this.serviceId)
+					this.localFavorited = true
+					uni.showToast({
+						title: '已收藏',
+						icon: 'success'
+					})
+				}
+				this.$emit('favorite-change', this.localFavorited)
+			} catch (err) {
+				console.error('收藏操作失败:', err)
+			}
 		},
 		handleBooking() {
-			uni.navigateTo({
-				url: '/pages/designer/booking'
-			})
+			if (this.designerId) {
+				uni.navigateTo({
+					url: `/pages/designer/booking?id=${this.designerId}`
+				})
+			} else {
+				uni.navigateTo({
+					url: '/pages/designer/booking'
+				})
+			}
 		}
 	}
 }

@@ -56,22 +56,22 @@
 			<view class="tab-content-wrapper">
 				<!-- 服务tab内容 -->
 				<view v-if="activeTab === 'service'" class="tab-content" :key="'service'">
-					<designer-service-tab-content :active-sub-tab="activeSubTabs.service"></designer-service-tab-content>
+					<designer-service-tab-content :active-sub-tab="activeSubTabs.service" :designer-id="designerId"></designer-service-tab-content>
 				</view>
-				
+
 				<!-- 预约tab内容 -->
 				<view v-if="activeTab === 'appointment'" class="tab-content" :key="'appointment'">
-					<designer-appointment-tab-content :active-sub-tab="activeSubTabs.appointment"></designer-appointment-tab-content>
+					<designer-appointment-tab-content :active-sub-tab="activeSubTabs.appointment" :designer-id="designerId"></designer-appointment-tab-content>
 				</view>
-				
+
 				<!-- 作品tab内容 -->
 				<view v-if="activeTab === 'works'" class="tab-content" :key="'works'">
-					<designer-works-tab-content :active-sub-tab="activeSubTabs.works"></designer-works-tab-content>
+					<designer-works-tab-content :active-sub-tab="activeSubTabs.works" :designer-id="designerId"></designer-works-tab-content>
 				</view>
-				
+
 				<!-- 点评tab内容 -->
 				<view v-if="activeTab === 'reviews'" class="tab-content" :key="'reviews'">
-					<designer-reviews-tab-content :active-sub-tab="activeSubTabs.reviews"></designer-reviews-tab-content>
+					<designer-reviews-tab-content :active-sub-tab="activeSubTabs.reviews" :designer-id="designerId"></designer-reviews-tab-content>
 				</view>
 			</view>
 			
@@ -109,6 +109,7 @@ import DesignerWorksTabContent from '../../components/designer/detail/DesignerWo
 import DesignerReviewsTabContent from '../../components/designer/detail/DesignerReviewsTabContent.vue'
 import DesignerPortfolioSection from '../../components/designer/detail/DesignerPortfolioSection.vue'
 import CouponPopup from '../../components/popup/CouponPopup.vue'
+import api from '@/api'
 
 export default {
 	components: {
@@ -126,6 +127,8 @@ export default {
 		// 可以从options中获取设计师ID等信息
 		if (options.id) {
 			console.log('Designer ID:', options.id)
+			this.designerId = options.id
+			this.fetchDesignerDetail()
 		}
 		// 支持从URL参数中指定初始tab
 		if (options.tab) {
@@ -145,8 +148,11 @@ export default {
 	},
 	data() {
 		return {
+			designerId: null,
 			activeTab: 'service',
 			showCouponPopup: false,
+			loading: false,
+			isFollowed: false,
 			activeSubTabs: {
 				service: 'hair-service',
 				appointment: 'today',
@@ -185,49 +191,36 @@ export default {
 					{ id: 'bad', title: '差评(9)' }
 				]
 			},
+			// 设计师数据（从API获取）
 			designerInfo: {
-				avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-153.png",
-				name: "朱一龙",
+				avatar: '',
+				name: '',
 				verifyIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2110.svg",
-				role: "技术总监",
+				role: '',
 				certIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2.svg",
-				certText: "职业认证",
+				certText: '',
 				certDot: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg",
-				skills: "染发设计、短发造型、女士晚装:",
-				introduction: "从业19年，毕业沙宣美发学院，擅长各种造型设计师有丰富的设计经验擅长..."
+				skills: '',
+				introduction: ''
 			},
-			serviceBadges: [
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "安心服务" },
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "7天无忧" },
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "免费设计" },
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "小吃水果" },
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "预约服务" }
-			],
-			statsData: [
-				{ value: "1244", label: "预约" },
-				{ value: "2000", label: "粉丝" },
-				{ value: "18", unit: "年", label: "从业" },
-				{ value: "4.8", unit: "分", label: "评分" }
-			],
+			serviceBadges: [],
+			statsData: [],
 			businessInfo: {
-				status: "营业中",
-				restDay: "周二休息",
-				hours: "10:00-21:00"
+				status: '',
+				restDay: '',
+				hours: ''
 			},
 			shopInfo: {
-				name: "NICE美发造型沙...",
-				address: "武侯区天府三家B7栋...",
-				distance: "距您2.7km"
+				name: '',
+				address: '',
+				distance: ''
 			},
-			promotions: [
-				{ text: "满100-5" },
-				{ text: "满500-50" }
-			],
+			promotions: [],
 			rightStats: {
 				serviceIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1.svg",
-				serviceCount: "281",
+				serviceCount: '0',
 				workIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-4.svg",
-				workCount: "234",
+				workCount: '0',
 				dotIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg"
 			}
 		}
@@ -241,6 +234,82 @@ export default {
 		}
 	},
 	methods: {
+		// 获取设计师详情
+		async fetchDesignerDetail() {
+			if (!this.designerId || this.loading) return
+			this.loading = true
+
+			try {
+				const res = await api.designer.getDetail(this.designerId)
+				if (res.code === 0) {
+					const data = res.data
+
+					// 转换设计师信息 - 对应mock数据字段
+					this.designerInfo = {
+						avatar: data.avatar,
+						name: data.name,
+						verifyIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2110.svg",
+						role: `${data.level || ''}${data.role || ''}`, // mock: level+role 如 "高级美发师"
+						certIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2.svg",
+						certText: data.position ? `${data.position}｜从业${data.experience || 0}年` : '', // mock: position+experience 如 "店长｜从业12年"
+						certDot: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg",
+						skills: (data.specialties || []).join('、'), // mock: specialties数组
+						introduction: data.introduction // mock: introduction字段
+					}
+
+					// 服务标签 - 从tags数组转换
+					this.serviceBadges = (data.tags || []).map(tag => ({
+						icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg",
+						label: tag
+					}))
+
+					// 统计数据 - 对应mock数据的statistics对象或顶级字段
+					const stats = data.statistics || {}
+					this.statsData = [
+						{ value: String(stats.appointmentCount || data.appointmentCount || 0), label: '预约' },
+						{ value: String(stats.followerCount || data.followerCount || 0), label: '粉丝' },
+						{ value: String(stats.experience || data.experience || 0), unit: '年', label: '从业' },
+						{ value: String(stats.rating || data.rating || 0), unit: '分', label: '评分' }
+					]
+
+					// 营业信息 - 设计师页面可能没有这个信息，使用所属品牌馆的信息
+					this.businessInfo = {
+						status: '营业中',
+						restDay: '周二休息',
+						hours: '10:00-21:00'
+					}
+
+					// 店铺位置信息 - 对应mock数据中的品牌馆信息
+					this.shopInfo = {
+						name: data.brandName, // mock: brandName字段
+						address: '', // 设计师没有独立地址，使用品牌馆地址
+						distance: '',
+						phone: '',
+						brandId: data.brandId // mock: brandId字段
+					}
+
+					// 促销信息 - 设计师可能没有独立促销
+					this.promotions = []
+
+					// 右侧统计 - 对应mock数据字段
+					this.rightStats = {
+						serviceIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1.svg",
+						serviceCount: String(data.serviceCount || 0), // mock: serviceCount
+						workIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-4.svg",
+						workCount: String(data.worksCount || 0), // mock: worksCount
+						dotIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg"
+					}
+
+					// 关注状态
+					this.isFollowed = data.isFollowed || false
+				}
+			} catch (err) {
+				console.error('获取设计师详情失败:', err)
+				uni.showToast({ title: '获取设计师信息失败', icon: 'none' })
+			} finally {
+				this.loading = false
+			}
+		},
 		handleTabChange(tabId) {
 			this.activeTab = tabId
 			const tabs = this.subTabs[tabId]
@@ -252,22 +321,52 @@ export default {
 			this.$set(this.activeSubTabs, this.activeTab, subTabId)
 		},
 		handleMoreInfo() {
-			uni.navigateTo({ url: '/pages/designer/info' })
+			uni.navigateTo({ url: `/pages/designer/info?id=${this.designerId}` })
 		},
-		handleFollow() {
-			console.log('Follow clicked')
+		async handleFollow() {
+			if (!this.designerId) return
+			try {
+				const res = this.isFollowed
+					? await api.designer.unfollow(this.designerId)
+					: await api.designer.follow(this.designerId)
+
+				if (res.code === 0) {
+					this.isFollowed = !this.isFollowed
+					uni.showToast({
+						title: this.isFollowed ? '关注成功' : '已取消关注',
+						icon: 'success'
+					})
+				}
+			} catch (err) {
+				console.error('关注操作失败:', err)
+				uni.showToast({ title: '操作失败', icon: 'none' })
+			}
 		},
 		handlePhone() {
-			console.log('Phone clicked')
+			// 拨打电话
+			if (this.shopInfo.phone) {
+				uni.makePhoneCall({ phoneNumber: this.shopInfo.phone })
+			} else {
+				uni.showToast({ title: '暂无联系电话', icon: 'none' })
+			}
 		},
 		handleNavigation() {
-			console.log('Navigation clicked')
+			// 打开地图导航
+			uni.openLocation({
+				latitude: this.shopInfo.latitude || 30.5728,
+				longitude: this.shopInfo.longitude || 104.0668,
+				name: this.shopInfo.name,
+				address: this.shopInfo.address
+			})
 		},
 		handleShare() {
 			console.log('Share clicked')
 		},
 		handleBooking() {
-			console.log('Booking clicked')
+			// 跳转到预约确认页面
+			uni.navigateTo({
+				url: `/pages/appointment/confirm?designerId=${this.designerId}`
+			})
 		},
 		handleClaimCoupon(coupon) {
 			console.log('Claim coupon:', coupon)

@@ -3,41 +3,50 @@
 		<scroll-view class="page-scroll" scroll-y enable-back-to-top>
 			<!-- 头部背景图片 -->
 			<view class="header-section">
-				<image 
-					class="header-bg-image" 
-					src="https://c.animaapp.com/mifnbli6udxphC/img/rectangle-186.png" 
+				<image
+					class="header-bg-image"
+					:src="serviceData.headerImage || 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-186.png'"
 					mode="aspectFill"
 				></image>
-				
-			
+
+
 				<!-- 返回按钮 -->
 				<view class="back-btn" @click="handleBack">
-					<image 
-						class="back-icon" 
-						src="https://c.animaapp.com/mifnbli6udxphC/img/frame-1877.svg" 
+					<image
+						class="back-icon"
+						src="https://c.animaapp.com/mifnbli6udxphC/img/frame-1877.svg"
 						mode="aspectFit"
 					></image>
 				</view>
-				
+
 				<!-- 标题 -->
-				<text class="page-title">洗剪吹</text>
-				
+				<text class="page-title">{{ serviceData.name || '' }}</text>
+
 				<!-- 右上角详情区域 -->
-				<ServicePurchaseDetailsSection />
+				<ServicePurchaseDetailsSection
+					:current-page="1"
+					:total-pages="serviceData.detailImages ? serviceData.detailImages.length : 0"
+				/>
 			</view>
-			
+
 			<!-- 主内容区域 -->
 			<view class="content-wrapper">
-				<ServicePurchaseProfileSection />
+				<ServicePurchaseProfileSection :service-data="serviceData" />
 			</view>
 		</scroll-view>
-		
+
 		<!-- 底部导航栏 -->
-		<ServicePurchaseFooter />
+		<ServicePurchaseFooter
+			:service-id="serviceId"
+			:designer-id="serviceData.designer ? serviceData.designer.id : ''"
+			:is-favorited="serviceData.isFavorited"
+			@favorite-change="handleFavoriteChange"
+		/>
 	</view>
 </template>
 
 <script>
+import api from '@/api'
 import ServicePurchaseDetailsSection from '../../components/order/purchase/ServicePurchaseDetailsSection.vue'
 import ServicePurchaseProfileSection from '../../components/order/purchase/ServicePurchaseProfileSection.vue'
 import ServicePurchaseFooter from '../../components/order/purchase/ServicePurchaseFooter.vue'
@@ -50,15 +59,38 @@ export default {
 	},
 	data() {
 		return {
-			serviceId: ''
+			serviceId: '',
+			serviceData: {},
+			loading: false
 		}
 	},
 	onLoad(options) {
-		if (options.id) {
-			this.serviceId = options.id
-		}
+		console.log('purchase onLoad options:', options)
+		// 获取服务ID，支持 id 或默认为 '1'
+		this.serviceId = options.id || '1'
+		this.fetchServiceDetail()
 	},
 	methods: {
+		async fetchServiceDetail() {
+			if (!this.serviceId || this.loading) return
+			this.loading = true
+			console.log('fetchServiceDetail serviceId:', this.serviceId)
+			try {
+				const res = await api.service.getDetail(this.serviceId)
+				console.log('fetchServiceDetail response:', res)
+				if (res.code === 0) {
+					this.serviceData = res.data
+					console.log('serviceData set:', this.serviceData)
+				}
+			} catch (err) {
+				console.error('获取服务详情失败:', err)
+			} finally {
+				this.loading = false
+			}
+		},
+		handleFavoriteChange(isFavorited) {
+			this.serviceData.isFavorited = isFavorited
+		},
 		handleBack() {
 			const pages = getCurrentPages && getCurrentPages()
 			if (pages && pages.length > 1) {

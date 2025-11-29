@@ -109,8 +109,7 @@ import BrandWorksTabContent from '../../components/brand/detail/BrandWorksTabCon
 import BrandReviewsTabContent from '../../components/brand/detail/BrandReviewsTabContent.vue'
 import BrandPortfolioSection from '../../components/brand/detail/BrandPortfolioSection.vue'
 import CouponPopup from '../../components/popup/CouponPopup.vue'
-// 导入品牌馆数据
-import brandData from './brand-data.js'
+import api from '@/api'
 
 export default {
 	components: {
@@ -130,6 +129,7 @@ export default {
 		if (options.id) {
 			console.log('Brand ID:', options.id)
 			this.brandId = options.id
+			this.fetchBrandDetail()
 		}
 		// 支持从URL参数中指定初始tab
 		if (options.tab) {
@@ -141,6 +141,8 @@ export default {
 			brandId: null,
 			activeTab: 'service',
 			showCouponPopup: false,
+			loading: false,
+			isFollowed: false,
 			activeSubTabs: {
 				service: 'hair',
 				appointment: 'hair-service',
@@ -174,36 +176,36 @@ export default {
 					{ id: 'bad', title: '差评(9)' }
 				]
 			},
-			// 使用brand-data.js中的品牌数据
+			// 品牌数据（从API获取）
 			designerInfo: {
-				avatar: brandData.brandInfo.avatar,
-				name: brandData.brandInfo.name,
+				avatar: '',
+				name: '',
 				verifyIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-3.svg",
-				role: brandData.brandInfo.badge,
-				certIcon: brandData.brandInfo.certIcon,
-				certText: brandData.brandInfo.certification,
+				role: '',
+				certIcon: '',
+				certText: '',
 				certDot: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg",
-				skills: brandData.brandInfo.nature,
-				introduction: brandData.brandInfo.introduction
+				skills: '',
+				introduction: ''
 			},
-			serviceBadges: brandData.serviceBadges,
-			statsData: brandData.statistics,
+			serviceBadges: [],
+			statsData: [],
 			businessInfo: {
-				status: brandData.businessInfo.status,
-				restDay: brandData.businessInfo.restDay,
-				hours: brandData.businessInfo.hours
+				status: '',
+				restDay: '',
+				hours: ''
 			},
 			shopInfo: {
-				name: brandData.addressInfo.street,
-				address: brandData.addressInfo.detail,
-				distance: brandData.addressInfo.distance
+				name: '',
+				address: '',
+				distance: ''
 			},
-			promotions: brandData.promotions.map(p => ({ text: p.label })),
+			promotions: [],
 			rightStats: {
-				serviceIcon: brandData.rightStats.designerIcon,
-				serviceCount: String(brandData.rightStats.designerCount),
-				workIcon: brandData.rightStats.worksIcon,
-				workCount: String(brandData.rightStats.worksCount),
+				serviceIcon: '',
+				serviceCount: '0',
+				workIcon: '',
+				workCount: '0',
 				dotIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg"
 			}
 		}
@@ -217,6 +219,92 @@ export default {
 		}
 	},
 	methods: {
+		// 获取品牌馆详情
+		async fetchBrandDetail() {
+			if (!this.brandId || this.loading) return
+			this.loading = true
+
+			try {
+				const res = await api.brand.getDetail(this.brandId)
+				if (res.code === 0) {
+					const data = res.data
+
+					// 计算经营年份
+					let yearsInBusiness = 0
+					if (data.establishDate) {
+						const establishYear = new Date(data.establishDate).getFullYear()
+						yearsInBusiness = new Date().getFullYear() - establishYear
+					}
+
+					// 转换品牌信息 - 对应mock数据字段
+					this.designerInfo = {
+						avatar: data.avatar,
+						name: data.name,
+						verifyIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-3.svg",
+						role: data.badge, // mock: badge字段如"舒适"、"精品"
+						certIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg",
+						certText: data.certification, // mock: certification字段如"企业认证"
+						certDot: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg",
+						skills: data.nature, // mock: nature字段如"工作室、专业店"
+						introduction: data.introduction // mock: introduction字段
+					}
+
+					// 服务标签 - 从tags数组转换
+					this.serviceBadges = (data.tags || []).map(tag => ({
+						icon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1891.svg",
+						label: tag
+					}))
+
+					// 统计数据 - 对应mock数据字段
+					this.statsData = [
+						{ value: String(data.appointmentCount || 0), label: '预约' },
+						{ value: String(data.followerCount || 0), label: '粉丝' },
+						{ value: String(yearsInBusiness), unit: '年', label: '经营' },
+						{ value: String(data.rating || 0), unit: '分', label: '评分' }
+					]
+
+					// 营业信息 - 对应mock数据字段
+					this.businessInfo = {
+						status: data.status === 'open' ? '营业中' : (data.status === 'rest' ? '休息中' : '已打烊'),
+						restDay: data.restDay, // mock: restDay字段如"周一休息"
+						hours: data.businessHours // mock: businessHours字段如"10:00-21:00"
+					}
+
+					// 店铺位置信息 - 对应mock数据的address对象
+					const addr = data.address || {}
+					this.shopInfo = {
+						name: addr.street || '', // mock: address.street
+						address: addr.detail || '', // mock: address.detail
+						distance: data.distance ? `距您${data.distance}km` : '',
+						phone: data.phone, // mock: phone字段
+						latitude: addr.latitude,
+						longitude: addr.longitude
+					}
+
+					// 促销信息 - 对应mock数据的promotions数组
+					this.promotions = (data.promotions || []).map(p => ({
+						text: typeof p === 'string' ? p : (p.label || p.name || '')
+					}))
+
+					// 右侧统计 - 对应mock数据字段
+					this.rightStats = {
+						serviceIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-1.svg",
+						serviceCount: String(data.designerCount || 0), // mock: designerCount
+						workIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-4.svg",
+						workCount: String(data.worksCount || 0), // mock: worksCount
+						dotIcon: "https://c.animaapp.com/mi5l377nJk1HHO/img/frame-2.svg"
+					}
+
+					// 关注状态
+					this.isFollowed = data.isFollowed || false
+				}
+			} catch (err) {
+				console.error('获取品牌详情失败:', err)
+				uni.showToast({ title: '获取品牌信息失败', icon: 'none' })
+			} finally {
+				this.loading = false
+			}
+		},
 		handleTabChange(tabId) {
 			this.activeTab = tabId
 			const tabs = this.subTabs[tabId]
@@ -228,16 +316,43 @@ export default {
 			this.$set(this.activeSubTabs, this.activeTab, subTabId)
 		},
 		handleMoreInfo() {
-			uni.navigateTo({ url: '/pages/brand/info' })
+			uni.navigateTo({ url: `/pages/brand/info?id=${this.brandId}` })
 		},
-		handleFollow() {
-			console.log('Follow clicked')
+		async handleFollow() {
+			if (!this.brandId) return
+			try {
+				const res = this.isFollowed
+					? await api.brand.unfollow(this.brandId)
+					: await api.brand.follow(this.brandId)
+
+				if (res.code === 0) {
+					this.isFollowed = !this.isFollowed
+					uni.showToast({
+						title: this.isFollowed ? '关注成功' : '已取消关注',
+						icon: 'success'
+					})
+				}
+			} catch (err) {
+				console.error('关注操作失败:', err)
+				uni.showToast({ title: '操作失败', icon: 'none' })
+			}
 		},
 		handlePhone() {
-			console.log('Phone clicked')
+			// 拨打电话
+			if (this.shopInfo.phone) {
+				uni.makePhoneCall({ phoneNumber: this.shopInfo.phone })
+			} else {
+				uni.showToast({ title: '暂无联系电话', icon: 'none' })
+			}
 		},
 		handleNavigation() {
-			console.log('Navigation clicked')
+			// 打开地图导航
+			uni.openLocation({
+				latitude: this.shopInfo.latitude || 30.5728,
+				longitude: this.shopInfo.longitude || 104.0668,
+				name: this.designerInfo.name,
+				address: this.shopInfo.address
+			})
 		},
 		handleShare() {
 			console.log('Share clicked')

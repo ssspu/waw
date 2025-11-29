@@ -80,19 +80,31 @@
 				</view>
 			</view>
 			
+			<!-- 空数据状态 -->
+			<view v-if="!loading && galleryImages.length === 0" class="empty-state">
+				<image class="empty-icon" src="/static/icon/empty-works.png" mode="aspectFit"></image>
+				<text class="empty-text">暂无作品内容</text>
+			</view>
+
+			<!-- 加载状态 -->
+			<view v-if="loading" class="loading-state">
+				<text class="loading-text">加载中...</text>
+			</view>
+
 			<!-- 作品画廊 -->
-			<scroll-view 
-				class="gallery-scroll" 
-				scroll-y 
+			<scroll-view
+				v-if="!loading && galleryImages.length > 0"
+				class="gallery-scroll"
+				scroll-y
 				:style="{ height: scrollHeight + 'px' }"
 				@scrolltolower="handleScrollToBottom"
 			>
 				<view class="gallery-grid">
-					<image 
-						v-for="(image, index) in galleryImages" 
+					<image
+						v-for="(image, index) in galleryImages"
 						:key="index"
-						class="gallery-image" 
-						:src="image.src" 
+						class="gallery-image"
+						:src="image.src"
 						mode="aspectFill"
 						@tap="handleImageClick(image.src, index)"
 					></image>
@@ -103,9 +115,22 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
+	props: {
+		designerId: {
+			type: [String, Number],
+			default: null
+		},
+		activeSubTab: {
+			type: String,
+			default: 'female'
+		}
+	},
 	data() {
 		return {
+			loading: false,
 			scrollHeight: 0,
 			selectedFace: 'oval',
 			hairVolume: 'less',
@@ -146,28 +171,20 @@ export default {
 					]
 				}
 			],
-			galleryImages: [
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" }
-			]
+			galleryImages: []
+		}
+	},
+	watch: {
+		designerId: {
+			immediate: true,
+			handler(newVal) {
+				if (newVal) {
+					this.fetchWorks()
+				}
+			}
+		},
+		activeSubTab() {
+			this.fetchWorks()
 		}
 	},
 	mounted() {
@@ -175,6 +192,31 @@ export default {
 		this.scrollHeight = systemInfo.windowHeight
 	},
 	methods: {
+		// 获取设计师作品
+		async fetchWorks() {
+			if (!this.designerId || this.loading) return
+			this.loading = true
+			try {
+				const res = await api.designer.getWorks(this.designerId, {
+					type: this.activeSubTab,
+					page: 1,
+					pageSize: 20
+				})
+				if (res.code === 0) {
+					const data = res.data
+					const list = data.list || data.records || []
+					this.galleryImages = list.map(w => ({
+						src: w.image,
+						title: w.title,
+						description: w.description
+					}))
+				}
+			} catch (err) {
+				console.error('获取作品列表失败:', err)
+			} finally {
+				this.loading = false
+			}
+		},
 		handleFaceChange(value) {
 			this.selectedFace = value
 		},
@@ -345,4 +387,43 @@ export default {
 	cursor: pointer;
 }
 
+/* 空数据和加载状态 */
+.empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 80rpx 40rpx;
+	width: 100%;
+	background-color: #ffffff;
+	border-radius: 12rpx;
+	box-sizing: border-box;
+}
+
+.empty-icon {
+	width: 160rpx;
+	height: 160rpx;
+	margin-bottom: 24rpx;
+	opacity: 0.6;
+}
+
+.empty-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 28rpx;
+	color: #a6a6a6;
+}
+
+.loading-state {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 60rpx 0;
+	width: 100%;
+}
+
+.loading-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 26rpx;
+	color: #a6a6a6;
+}
 </style>

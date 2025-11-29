@@ -18,24 +18,24 @@
 
 			<view class="user-header">
 				<view class="avatar-wrapper">
-					<image 
-						class="avatar" 
-						src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/ellipse-77.svg" 
+					<image
+						class="avatar"
+						:src="userInfo.avatar || 'https://c.animaapp.com/mi5lwd2pQMRb0W/img/ellipse-77.svg'"
 						mode="aspectFill"
 					></image>
 				</view>
-				
+
 				<view class="user-details">
 					<view class="name-row">
-						<text class="user-name">Javen</text>
-						<image 
-							class="verify-icon" 
-							src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-2110.svg" 
+						<text class="user-name">{{ userInfo.nickname || '未登录' }}</text>
+						<image
+							class="verify-icon"
+							src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-2110.svg"
 							mode="aspectFit"
 						></image>
 					</view>
-					<text class="user-level">金牌会员</text>
-					<text class="user-bio">来自星星的盗梦者，一切都要回答火星</text>
+					<text class="user-level">{{ vipLevelText }}</text>
+					<text class="user-bio">{{ userInfo.signature || '这个人很懒，什么都没留下~' }}</text>
 				</view>
 			</view>
 			
@@ -72,25 +72,63 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
 	data() {
 		return {
+			userInfo: {
+				nickname: '',
+				avatar: '',
+				vipLevel: 0,
+				signature: ''
+			},
 			statsData: [
-				{ value: "1244", label: "关注" },
-				{ value: "234", label: "浏览" },
-				{ value: "1245", label: "收藏" },
+				{ value: "0", label: "关注", key: "followCount" },
+				{ value: "0", label: "浏览", key: "browseCount" },
+				{ value: "0", label: "收藏", key: "favoriteCount" },
 			],
-			territoryAvatars: [
-				"https://c.animaapp.com/mi5lwd2pQMRb0W/img/ellipse-78-5.png",
-				"https://c.animaapp.com/mi5lwd2pQMRb0W/img/ellipse-78-5.png",
-				"https://c.animaapp.com/mi5lwd2pQMRb0W/img/ellipse-78-5.png",
-				"https://c.animaapp.com/mi5lwd2pQMRb0W/img/ellipse-78-5.png",
-				"https://c.animaapp.com/mi5lwd2pQMRb0W/img/ellipse-78-5.png",
-				"https://c.animaapp.com/mi5lwd2pQMRb0W/img/ellipse-78-5.png",
-			],
+			territoryAvatars: [],
 		}
 	},
+	computed: {
+		vipLevelText() {
+			const levels = ['普通会员', '银牌会员', '金牌会员', '钻石会员']
+			return levels[this.userInfo.vipLevel] || '普通会员'
+		}
+	},
+	mounted() {
+		this.fetchUserInfo()
+	},
 	methods: {
+		// 获取用户信息
+		async fetchUserInfo() {
+			try {
+				const res = await api.user.getInfo()
+				if (res.code === 0) {
+					this.userInfo = res.data
+					// 更新统计数据
+					this.statsData[0].value = String(res.data.followCount || 0)
+					this.statsData[1].value = String(res.data.browseCount || 0)
+					this.statsData[2].value = String(res.data.favoriteCount || 0)
+				}
+			} catch (err) {
+				console.error('获取用户信息失败:', err)
+			}
+			// 获取私人设计师头像
+			this.fetchTerritoryDesigners()
+		},
+		// 获取私人领地设计师
+		async fetchTerritoryDesigners() {
+			try {
+				const res = await api.territory.getMyDesigners({ page: 1, pageSize: 6 })
+				if (res.code === 0 && res.data.list) {
+					this.territoryAvatars = res.data.list.map(d => d.avatar || '/static/avatar/avatar.png')
+				}
+			} catch (err) {
+				console.error('获取私人设计师失败:', err)
+			}
+		},
 		handleStatClick(stat) {
 			if (stat.label === '关注') {
 				uni.navigateTo({ url: '/pages/mine/follow-list' })

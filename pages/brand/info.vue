@@ -18,7 +18,7 @@
 		
 		<!-- 主内容 -->
 		<view class="main-content">
-			<brand-info-services-section :active-tab="activeTab"></brand-info-services-section>
+			<brand-info-services-section :active-tab="activeTab" :brand-id="brandId"></brand-info-services-section>
 		</view>
 		
 		<!-- 底部指示器 -->
@@ -37,8 +37,14 @@ export default {
 		BrandInfoProfileSection,
 		BrandInfoServicesSection
 	},
+	onLoad(options) {
+		if (options.id) {
+			this.brandId = options.id
+		}
+	},
 	data() {
 		return {
+			brandId: '1',
 			activeTab: 'designer'
 		}
 	},

@@ -156,5 +156,20 @@ export default {
    */
   getPaymentMethods() {
     return get(`${COMMON_PREFIX}/payment-methods`)
+  },
+
+  /**
+   * 获取排行榜数据
+   * @param {Object} params - { type?: 排行榜类型(rookie/pro/service) }
+   */
+  getRanking(params = {}) {
+    return get(`${COMMON_PREFIX}/ranking`, params)
+  },
+
+  /**
+   * 获取所有排行榜数据（一次性返回三个榜单）
+   */
+  getAllRanking() {
+    return get(`${COMMON_PREFIX}/ranking/all`)
   }
 }

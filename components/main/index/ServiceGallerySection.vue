@@ -62,110 +62,78 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
 	props: {
 		showCategoryHeader: {
 			type: Boolean,
 			default: true
+		},
+		categoryId: {
+			type: String,
+			default: ''
 		}
 	},
 	data() {
 		return {
-			serviceCards: [
-				{
-					id: 1,
-					image: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-169-6.png",
-					title: "烫发",
-					description: "发型提案+染发+造型",
-					price: "799",
-					stylist: {
-						name: "李天天",
-						role: "美发师",
-						avatar: "https://c.animaapp.com/mi5bcgvrGbkedE/img/ellipse-34.svg",
-					},
-					rating: "4.8",
-					reviews: "768",
-					distance: "6.7km",
-				},
-				{
-					id: 2,
-					image: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-169-6.png",
-					title: "烫发",
-					description: "发型提案+染发+造型",
-					price: "799",
-					stylist: {
-						name: "李天天",
-						role: "美发师",
-						avatar: "https://c.animaapp.com/mi5bcgvrGbkedE/img/ellipse-34.svg",
-					},
-					rating: "4.8",
-					reviews: "768",
-					distance: "6.7km",
-				},
-				{
-					id: 3,
-					image: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-169-6.png",
-					title: "烫发",
-					description: "发型提案+染发+造型",
-					price: "799",
-					stylist: {
-						name: "李天天",
-						role: "美发师",
-						avatar: "https://c.animaapp.com/mi5bcgvrGbkedE/img/ellipse-34.svg",
-					},
-					rating: "4.8",
-					reviews: "768",
-					distance: "6.7km",
-				},
-				{
-					id: 4,
-					image: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-169-6.png",
-					title: "烫发",
-					description: "发型提案+染发+造型",
-					price: "799",
-					stylist: {
-						name: "李天天",
-						role: "美发师",
-						avatar: "https://c.animaapp.com/mi5bcgvrGbkedE/img/ellipse-34.svg",
-					},
-					rating: "4.8",
-					reviews: "768",
-					distance: "6.7km",
-				},
-				{
-					id: 5,
-					image: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-169-6.png",
-					title: "烫发",
-					description: "发型提案+染发+造型",
-					price: "799",
-					stylist: {
-						name: "李天天",
-						role: "美发师",
-						avatar: "https://c.animaapp.com/mi5bcgvrGbkedE/img/ellipse-34.svg",
-					},
-					rating: "4.8",
-					reviews: "768",
-					distance: "6.7km",
-				},
-				{
-					id: 6,
-					image: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-169-6.png",
-					title: "烫发",
-					description: "发型提案+染发+造型",
-					price: "799",
-					stylist: {
-						name: "李天天",
-						role: "美发师",
-						avatar: "https://c.animaapp.com/mi5bcgvrGbkedE/img/ellipse-34.svg",
-					},
-					rating: "4.8",
-					reviews: "768",
-					distance: "6.7km",
-				},
-			],
+			loading: false,
+			page: 1,
+			pageSize: 20,
+			hasMore: true,
+			serviceCards: [],
 		}
 	},
+	mounted() {
+		this.fetchServices()
+	},
 	methods: {
+		// 获取服务列表
+		async fetchServices() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const params = {
+					page: this.page,
+					pageSize: this.pageSize
+				}
+				if (this.categoryId) {
+					params.categoryId = this.categoryId
+				}
+				const res = await api.service.getList(params)
+				if (res.code === 0) {
+					const list = (res.data.list || []).map(s => this.transformService(s))
+					if (this.page === 1) {
+						this.serviceCards = list
+					} else {
+						this.serviceCards = [...this.serviceCards, ...list]
+					}
+					this.hasMore = res.data.hasMore
+				}
+			} catch (err) {
+				console.error('获取服务列表失败:', err)
+			} finally {
+				this.loading = false
+			}
+		},
+		// 转换服务数据 - 对应mock数据 services
+		transformService(s) {
+			return {
+				id: s.id,
+				image: s.image,
+				title: s.name,
+				description: s.description || `${s.categoryName || ''}服务`,
+				price: String(s.price || 0),
+				stylist: {
+					name: s.designerName || s.brandName || '设计师',
+					role: s.categoryName || '美发服务',
+					avatar: s.designerAvatar || 'https://c.animaapp.com/mi5bcgvrGbkedE/img/ellipse-34.svg',
+				},
+				rating: String(s.rating || 4.8),
+				reviews: String(s.reviewCount || 0),
+				distance: s.distance || ''
+			}
+		},
 		handleCardClick(card) {
 		// 跳转到服务订单购买页面，并传递服务卡片的 id
 		uni.navigateTo({

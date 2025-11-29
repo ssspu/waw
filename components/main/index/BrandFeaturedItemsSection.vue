@@ -194,9 +194,12 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
 	data() {
 		return {
+			loading: false,
 			categoryItems: [
 				{
 					icon: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-2006-1.svg",
@@ -227,396 +230,11 @@ export default {
 			activeStoreTab: "star",
 			storeSwiperIndex: 0,
 			storeSlides: {
-				star: [
-					[
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-1.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221-2.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-					],
-					[
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-1.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221-2.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-1.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221-2.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-					],
-					[
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-1.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221-2.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-					],
-					[
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-1.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221-2.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-1.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221-2.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-					],
-				],
-				popular: [
-					[
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-1.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221-2.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-					],
-					[
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-1.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221-2.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-1.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221-2.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-					],
-				],
-				men: [
-					[
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-1.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221-2.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-					],
-					[
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-1.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221-2.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-						{
-							image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-1.png",
-							overlay: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221-2.svg",
-							name: "成都NICE造型沙龙",
-							type: "专业店｜2012年开业",
-							rating: "4.8",
-							designers: "8人",
-							services: "1236",
-							amenities: ["代客泊车", "免费茶点"],
-							distance: "7.5km",
-							tag: "舒适",
-						},
-					],
-				],
+				star: [],
+				popular: [],
+				men: [],
 			},
-			nearbyStores: [
-				{
-					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-6.png",
-					name: "成都NICE造型沙龙",
-					type: "专业店｜2012年开业",
-					rating: "4.8",
-					designers: "8人",
-					services: "1236",
-					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
-					distance: "7.5km",
-					tag: "舒适",
-				},
-				{
-					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-1.png",
-					name: "成都NICE造型沙龙",
-					type: "专业店｜2012年开业",
-					rating: "4.8",
-					designers: "8人",
-					services: "1236",
-					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
-					distance: "7.5km",
-					tag: "舒适",
-				},
-				{
-					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-2.png",
-					name: "成都NICE造型沙龙",
-					type: "专业店｜2012年开业",
-					rating: "4.8",
-					designers: "8人",
-					services: "1236",
-					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
-					distance: "7.5km",
-					tag: "舒适",
-				},
-				{
-					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-3.png",
-					name: "成都NICE造型沙龙",
-					type: "专业店｜2012年开业",
-					rating: "4.8",
-					designers: "8人",
-					services: "1236",
-					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
-					distance: "7.5km",
-					tag: "舒适",
-				},
-				{
-					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-4.png",
-					name: "成都NICE造型沙龙",
-					type: "专业店｜2012年开业",
-					rating: "4.8",
-					designers: "8人",
-					services: "1236",
-					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
-					distance: "7.5km",
-					tag: "舒适",
-				},
-				{
-					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-5.png",
-					name: "成都NICE造型沙龙",
-					type: "专业店｜2012年开业",
-					rating: "4.8",
-					designers: "8人",
-					services: "1236",
-					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
-					distance: "7.5km",
-					tag: "舒适",
-				},
-				{
-					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-6.png",
-					name: "成都NICE造型沙龙",
-					type: "专业店｜2012年开业",
-					rating: "4.8",
-					designers: "8人",
-					services: "1236",
-					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
-					distance: "7.5km",
-					tag: "舒适",
-				},
-			],
+			nearbyStores: [],
 		}
 	},
 	computed: {
@@ -625,7 +243,73 @@ export default {
 			return slides || []
 		}
 	},
+	mounted() {
+		this.fetchBrandList()
+	},
 	methods: {
+		// 获取品牌列表
+		async fetchBrandList() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await api.brand.getList({ page: 1, pageSize: 20 })
+				if (res.code === 0) {
+					const list = res.data.list || []
+					if (list.length > 0) {
+						// 更新附近店铺列表
+						this.nearbyStores = list.map(b => this.transformBrand(b))
+
+						// 更新精选店slides - 每3个为一组
+						const transformedList = list.map(b => this.transformBrandForSlide(b))
+						const slideGroups = []
+						for (let i = 0; i < transformedList.length; i += 3) {
+							slideGroups.push(transformedList.slice(i, i + 3))
+						}
+						if (slideGroups.length > 0) {
+							this.storeSlides.star = slideGroups
+							this.storeSlides.popular = slideGroups
+							this.storeSlides.men = slideGroups
+						}
+					}
+				}
+			} catch (err) {
+				console.error('获取品牌列表失败:', err)
+			} finally {
+				this.loading = false
+			}
+		},
+		// 转换品牌数据 - 用于附近店铺列表
+		transformBrand(b) {
+			// 计算经营年限
+			let yearsInBusiness = ''
+			if (b.establishDate) {
+				const establishYear = new Date(b.establishDate).getFullYear()
+				const years = new Date().getFullYear() - establishYear
+				yearsInBusiness = `${years}年开业`
+			}
+			return {
+				id: b.id,
+				image: b.avatar || b.coverImage, // mock: avatar或coverImage字段
+				name: b.name, // mock: name字段
+				type: `${b.nature || '专业店'}｜${yearsInBusiness || '2012年开业'}`, // mock: nature字段
+				rating: String(b.rating || 4.8), // mock: rating字段
+				designers: `${b.designerCount || 0}人`, // mock: designerCount字段
+				services: String(b.serviceCount || 0), // mock: serviceCount字段
+				amenities: b.tags || ['代客泊车', '免费茶点', '共享工位', '7天无忧'], // mock: tags字段
+				distance: b.distance || '7.5km', // mock: distance字段
+				tag: b.badge || '舒适', // mock: badge字段
+			}
+		},
+		// 转换品牌数据 - 用于精选店滑动列表
+		transformBrandForSlide(b) {
+			const baseData = this.transformBrand(b)
+			return {
+				...baseData,
+				image: b.coverImage || b.avatar || 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png',
+				overlay: 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221.svg',
+				amenities: (b.tags || ['代客泊车', '免费茶点']).slice(0, 2), // 精选店只显示2个标签
+			}
+		},
 		handleCategoryClick(item) {
 			console.log('Category clicked:', item)
 		},
