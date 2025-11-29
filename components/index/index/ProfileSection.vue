@@ -1575,18 +1575,18 @@ export default {
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 316rpx;
-	height: 316rpx;
+	width: 100%;
+	height: 318rpx;
 	border-radius: 8rpx 8rpx 0 0;
 	background: linear-gradient(180deg, rgba(244, 244, 244, 1) 0%);
 }
 
 .designer-img {
 	position: absolute;
-	top: 2rpx;
+	top: 0;
 	left: 0;
-	width: 316rpx;
-	height: 316rpx;
+	width: 100%;
+	height: 318rpx;
 }
 
 .designer-info {
