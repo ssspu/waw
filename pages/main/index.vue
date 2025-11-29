@@ -201,34 +201,33 @@ export default {
 			// 切换服务分类
 			this.selectedServiceCategory = service.label
 			// 滚动到列表区域
-			this.$nextTick(() => {
-				uni.createSelectorQuery().select('#service-gallery-section').boundingClientRect(rect => {
-					if (rect) {
-						uni.pageScrollTo({
-							scrollTop: rect.top - 100,
-							duration: 150
-						})
-					}
-				}).exec()
-			})
+			this.scrollToServiceGallery()
 		},
 		handleRecommendationCardClick(card) {
 			// 只处理套餐优选和防脱护理
 			if (card.id === 'package' || card.id === 'haircare') {
 				this.selectedServiceCategory = card.title
 				// 滚动到列表区域
-				this.$nextTick(() => {
-					uni.createSelectorQuery().select('#service-gallery-section').boundingClientRect(rect => {
-						if (rect) {
-							uni.pageScrollTo({
-								scrollTop: rect.top - 100,
-								duration: 150
-							})
-						}
-					}).exec()
-				})
+				this.scrollToServiceGallery()
 			}
 			// 会员特区可以跳转到会员页面（暂不处理）
+		},
+		scrollToServiceGallery() {
+			this.$nextTick(() => {
+				const query = uni.createSelectorQuery().in(this)
+				query.select('#service-gallery-section').boundingClientRect()
+				query.selectViewport().scrollOffset()
+				query.exec((res) => {
+					if (res && res[0] && res[1]) {
+						const elementRect = res[0]
+						const scrollOffset = res[1]
+						uni.pageScrollTo({
+							scrollTop: scrollOffset.scrollTop + elementRect.top - 100,
+							duration: 100
+						})
+					}
+				})
+			})
 		}
 	}
 }

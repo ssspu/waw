@@ -391,7 +391,7 @@ export default {
 	display: flex;
 	align-items: center;
 	gap: 12rpx;
-	padding: 0 12rpx;
+	padding: 0 20rpx;
 	height: 60rpx;
 	background-image: url('https://c.animaapp.com/mi5bcgvrGbkedE/img/subtract.svg');
 	background-size: 100% 100%;
