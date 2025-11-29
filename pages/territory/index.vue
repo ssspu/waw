@@ -350,8 +350,26 @@ export default {
 .navbar-content {
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
 	padding: 24rpx 32rpx;
 	box-sizing: border-box;
+}
+
+.nav-left {
+	width: 64rpx;
+}
+
+.nav-title {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-weight: 500;
+	font-size: 32rpx;
+	color: #333333;
+}
+
+.nav-right {
+	width: 64rpx;
+	display: flex;
+	justify-content: flex-end;
 }
 
 
@@ -403,9 +421,9 @@ export default {
 .top-nav-fixed .top-nav {
 	display: flex;
 	align-items: center;
-	gap: 40rpx;
+	gap: 32rpx;
 	width: 100%;
-	padding: 24rpx 30rpx 0 30rpx;
+	padding: 16rpx 30rpx 0 30rpx;
 	box-sizing: border-box;
 }
 
@@ -430,9 +448,9 @@ export default {
 .top-nav-fixed .sub-nav {
 	display: flex;
 	align-items: center;
-	gap: 24rpx;
+	gap: 32rpx;
 	width: 100%;
-	padding: 20rpx 30rpx 0 30rpx;
+	padding: 16rpx 30rpx 0 30rpx;
 	box-sizing: border-box;
 }
 
@@ -529,7 +547,7 @@ export default {
 .card-content {
 	display: flex;
 	flex-direction: column;
-	gap: 20rpx;
+	gap: 16rpx;
 	padding: 24rpx;
 }
 

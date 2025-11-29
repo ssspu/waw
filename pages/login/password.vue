@@ -67,18 +67,41 @@
 					</view>
 				</view>
 				<text class="agreement-text">我已阅读并同意</text>
-				<text class="agreement-link">《用户协议》《隐私协议》</text>
+				<text class="agreement-link" @tap="openUserAgreement">《用户协议》</text>
+				<text class="agreement-link" @tap="openPrivacyPolicy">《隐私协议》</text>
 			</view>
 		</view>
-		
+
 		<!-- 底部指示条 -->
 		<view class="home-indicator">
 			<!-- <view class="indicator-bar"></view> -->
+		</view>
+
+		<!-- 协议弹窗 -->
+		<view class="agreement-modal" v-if="showModal" @tap="closeModal">
+			<view class="modal-content" @tap.stop>
+				<view class="modal-header">
+					<text class="modal-title">{{ currentAgreement.title }}</text>
+					<view class="modal-close" @tap="closeModal">
+						<text class="close-icon">×</text>
+					</view>
+				</view>
+				<scroll-view class="modal-body" scroll-y @scrolltolower="onScrollToBottom">
+					<text class="modal-text">{{ currentAgreement.content }}</text>
+				</scroll-view>
+				<view class="modal-footer">
+					<view class="modal-btn" :class="{ disabled: !canCloseModal }" @tap="handleModalConfirm">
+						<text class="modal-btn-text">{{ modalBtnText }}</text>
+					</view>
+				</view>
+			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+import { getUserAgreement, getPrivacyPolicy } from '@/data/agreements.js'
+
 export default {
 	data() {
 		return {
@@ -86,12 +109,39 @@ export default {
 			password: '',
 			showPassword: false,
 			isAgreed: true,
-			statusBarHeight: 0
+			statusBarHeight: 0,
+			showModal: false,
+			currentAgreement: {
+				title: '',
+				content: ''
+			},
+			hasScrolledToBottom: false,
+			modalCountdown: 10,
+			modalTimer: null
+		}
+	},
+	computed: {
+		canCloseModal() {
+			return this.hasScrolledToBottom && this.modalCountdown <= 0
+		},
+		modalBtnText() {
+			if (this.modalCountdown > 0) {
+				return `我知道了 (${this.modalCountdown}s)`
+			}
+			if (!this.hasScrolledToBottom) {
+				return '请阅读完协议内容'
+			}
+			return '我知道了'
 		}
 	},
 	onLoad() {
 		const systemInfo = uni.getSystemInfoSync()
 		this.statusBarHeight = systemInfo.statusBarHeight || 44
+	},
+	onUnload() {
+		if (this.modalTimer) {
+			clearInterval(this.modalTimer)
+		}
 	},
 	methods: {
 		goBack() {
@@ -125,6 +175,55 @@ export default {
 		},
 		handleForgetPassword() {
 			uni.showToast({ title: '忘记密码功能待开发', icon: 'none' })
+		},
+		openUserAgreement() {
+			const agreement = getUserAgreement()
+			this.currentAgreement = agreement
+			this.openModal()
+		},
+		openPrivacyPolicy() {
+			const agreement = getPrivacyPolicy()
+			this.currentAgreement = agreement
+			this.openModal()
+		},
+		openModal() {
+			this.showModal = true
+			this.hasScrolledToBottom = false
+			this.modalCountdown = 10
+			this.startModalCountdown()
+		},
+		startModalCountdown() {
+			if (this.modalTimer) {
+				clearInterval(this.modalTimer)
+			}
+			this.modalTimer = setInterval(() => {
+				this.modalCountdown--
+				if (this.modalCountdown <= 0) {
+					clearInterval(this.modalTimer)
+					this.modalTimer = null
+				}
+			}, 1000)
+		},
+		onScrollToBottom() {
+			this.hasScrolledToBottom = true
+		},
+		handleModalConfirm() {
+			if (!this.canCloseModal) {
+				if (this.modalCountdown > 0) {
+					uni.showToast({ title: '请等待倒计时结束', icon: 'none' })
+				} else if (!this.hasScrolledToBottom) {
+					uni.showToast({ title: '请先阅读完协议内容', icon: 'none' })
+				}
+				return
+			}
+			this.closeModal()
+		},
+		closeModal() {
+			this.showModal = false
+			if (this.modalTimer) {
+				clearInterval(this.modalTimer)
+				this.modalTimer = null
+			}
 		}
 	}
 }
@@ -348,5 +447,108 @@ export default {
 	height: 10rpx;
 	background-color: #000000;
 	border-radius: 100rpx;
+}
+
+// 协议弹窗
+.agreement-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 60rpx 24rpx;
+	box-sizing: border-box;
+}
+
+.modal-content {
+	width: 100%;
+	min-height: 70vh;
+	max-height: 85vh;
+	background-color: #ffffff;
+	border-radius: 12rpx;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 24rpx 30rpx;
+	border-bottom: 1rpx solid #eeeeee;
+	flex-shrink: 0;
+}
+
+.modal-title {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-weight: 500;
+	color: #333333;
+	font-size: 30rpx;
+	flex: 1;
+	padding-right: 20rpx;
+}
+
+.modal-close {
+	width: 44rpx;
+	height: 44rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+.close-icon {
+	font-size: 44rpx;
+	color: #999999;
+	line-height: 1;
+}
+
+.modal-body {
+	flex: 1;
+	padding: 24rpx 30rpx;
+	max-height: 70vh;
+	box-sizing: border-box;
+}
+
+.modal-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 26rpx;
+	color: #333333;
+	line-height: 1.8;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	word-break: break-all;
+}
+
+.modal-footer {
+	padding: 24rpx 30rpx 40rpx;
+	flex-shrink: 0;
+}
+
+.modal-btn {
+	width: 100%;
+	height: 72rpx;
+	background-color: #6d58f1;
+	border-radius: 36rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	&.disabled {
+		background-color: #cccccc;
+	}
+}
+
+.modal-btn-text {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-weight: 500;
+	color: #ffffff;
+	font-size: 26rpx;
 }
 </style>

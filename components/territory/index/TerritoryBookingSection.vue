@@ -12,23 +12,23 @@
 				</view>
 				<text class="info-price">{{ bookingData.price }}</text>
 			</view>
-			
+
 			<!-- 分隔线 -->
 			<view class="separator-line"></view>
-			
+
 			<!-- 服务提供者信息 -->
 			<view class="service-info">
 				<view class="service-left">
 					<!-- 头像 -->
 					<view class="avatar-wrapper">
 						<view class="avatar-bg"></view>
-						<image 
-							class="avatar" 
-							:src="stylistData.avatar" 
+						<image
+							class="avatar"
+							:src="stylistData.avatar"
 							mode="aspectFill"
 						></image>
 					</view>
-					
+
 					<!-- 详情 -->
 					<view class="service-details">
 						<view class="service-header">
@@ -40,32 +40,32 @@
 								<text class="badge-text">{{ stylistData.level }}</text>
 							</view>
 						</view>
-						
+
 						<text class="service-role">{{ stylistData.position }}｜{{ stylistData.experience }}</text>
-						
+
 						<view class="service-skills">
 							<text class="skills-label">擅长:</text>
-							<view 
-								v-for="(specialty, index) in stylistData.specialties" 
-								:key="index" 
+							<view
+								v-for="(specialty, index) in stylistData.specialties"
+								:key="index"
 								class="skill-badge"
 							>
 								<text class="skill-text">{{ specialty }}</text>
 							</view>
 						</view>
-						
+
 						<view class="service-stats">
 							<view class="rating-section">
 								<text class="rating-score">{{ stylistData.rating }}</text>
 								<view class="star-wrapper">
-									<image 
-										class="star-icon" 
-										src="https://c.animaapp.com/mi5kx1ohxTkA7e/img/star-1.svg" 
+									<image
+										class="star-icon"
+										src="https://c.animaapp.com/mi5kx1ohxTkA7e/img/star-1.svg"
 										mode="aspectFit"
 									></image>
 								</view>
 							</view>
-							
+
 							<view class="stats-section">
 								<view class="stat-item">
 									<text class="stat-label">服务</text>
@@ -81,7 +81,7 @@
 					</view>
 				</view>
 			</view>
-			
+
 			<!-- 底部操作 -->
 			<view class="action-bar">
 				<text class="more-link" @tap="handleMore">更多</text>
@@ -149,7 +149,7 @@ export default {
 .card-content {
 	display: flex;
 	flex-direction: column;
-	gap: 20rpx;
+	gap: 16rpx;
 	padding: 24rpx;
 	box-sizing: border-box;
 }
@@ -346,8 +346,14 @@ export default {
 
 .stat-item {
 	display: inline-flex;
-	align-items: flex-end;
+	align-items: center;
 	gap: 4rpx;
+}
+
+.stat-icon {
+	width: 24rpx;
+	height: 24rpx;
+	flex-shrink: 0;
 }
 
 .stat-label {

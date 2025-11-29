@@ -12,6 +12,9 @@
 				<view class="back-btn" @tap="goBack">
 					<image class="back-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1877.svg" mode="aspectFit"></image>
 				</view>
+				<view class="share-btn" @tap="handleShare">
+					<image class="share-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1879-1.svg" mode="aspectFit"></image>
+				</view>
 			</view>
 		<!-- </view> -->
 	</view>
@@ -29,6 +32,9 @@ export default {
 					url: '/pages/brand/index'
 				})
 			}
+		},
+		handleShare() {
+			this.$emit('share')
 		}
 	}
 }
@@ -73,15 +79,15 @@ export default {
 }
 
 .header-actions {
-	// margin-top: 135rpx;
 	position: absolute;
 	top: 100rpx;
-	margin-left: 40rpx;
+	left: 40rpx;
+	right: 210rpx;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	width: 100%;
 	box-sizing: border-box;
+	z-index: 10;
 }
 
 .back-btn {
@@ -111,5 +117,16 @@ export default {
 	width: 220rpx;
 	height: 124rpx;
 	opacity: 0;
+}
+
+.share-btn {
+	width: 60rpx;
+	height: 60rpx;
+	cursor: pointer;
+}
+
+.share-icon {
+	width: 100%;
+	height: 100%;
 }
 </style>

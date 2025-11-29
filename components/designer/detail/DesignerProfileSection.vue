@@ -253,7 +253,31 @@ export default {
 			return this.selectedBrands[serviceId] || (this.brandOptions && this.brandOptions.length > 0 ? this.brandOptions[0].id : null)
 		},
 		handleBook(service) {
-			console.log('Book service:', service)
+			// 获取选择的头发长度
+			const selectedHairLengthId = this.getSelectedHairLength(service.id)
+			const selectedHairLength = this.hairLengthOptions.find(opt => opt.id === selectedHairLengthId)
+
+			// 获取选择的品牌
+			const selectedBrandId = this.getSelectedBrand(service.id)
+			const selectedBrand = this.brandOptions.find(opt => opt.id === selectedBrandId)
+
+			// 构建选择的服务数据
+			const bookingData = {
+				service: {
+					id: service.id,
+					title: service.title,
+					description: service.description,
+					estimatedTime: service.estimatedTime,
+					image: service.image,
+					discount: service.discount
+				},
+				hairLength: selectedHairLength,
+				brand: selectedBrand,
+				price: selectedBrand ? selectedBrand.price : service.price
+			}
+
+			// 触发事件传递数据到父组件
+			this.$emit('book-service', bookingData)
 		}
 	}
 }

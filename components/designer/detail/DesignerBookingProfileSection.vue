@@ -87,6 +87,7 @@ export default {
 	},
 	methods: {
 		handleSlotClick(period, index) {
+			let selectedSlot = null
 			if (period === 'morning') {
 				const slot = this.morningSlots[index]
 				if (slot.status === 'booked') {
@@ -101,10 +102,13 @@ export default {
 				})
 				// 重置所有下午时间段的选择状态
 				this.afternoonSlots.forEach((s) => {
-					s.status = 'available'
+					if (s.status === 'selected') {
+						s.status = 'available'
+					}
 				})
 				// 设置当前选择
 				slot.status = 'selected'
+				selectedSlot = { period: 'morning', time: slot.time }
 			} else if (period === 'afternoon') {
 				const slot = this.afternoonSlots[index]
 				if (slot.status === 'booked') {
@@ -125,6 +129,11 @@ export default {
 				})
 				// 设置当前选择
 				slot.status = 'selected'
+				selectedSlot = { period: 'afternoon', time: slot.time }
+			}
+			// 触发时间选择事件
+			if (selectedSlot) {
+				this.$emit('time-selected', selectedSlot)
 			}
 		}
 	}

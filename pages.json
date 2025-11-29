@@ -127,6 +127,24 @@
 		}
 	},
 	{
+		"path": "pages/mine/promotion",
+		"style": {
+			"navigationBarTitleText": "推广佣金",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/mine/beans",
+		"style": {
+			"navigationBarTitleText": "美豆",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
 		"path": "pages/mine/qr-code-card",
 		"style": {
 			"navigationBarTitleText": "二维码名片",

@@ -49,10 +49,8 @@
 				
 				<view class="form-item clickable" @tap="selectSettlementType">
 					<text class="form-label">结算方式</text>
-					<view class="form-right">
-						<text class="form-value">{{ formData.settlementType }}</text>
-						<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
-					</view>
+					<text class="form-value">{{ formData.settlementType }}</text>
+					<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
 				</view>
 				<view class="form-divider"></view>
 			</view>

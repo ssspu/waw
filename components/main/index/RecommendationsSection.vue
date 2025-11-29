@@ -40,15 +40,6 @@
 				</view>
 			</view>
 		</view>
-		
-		<!-- 附近推荐标题 -->
-		<view class="recommendations-header">
-			<text class="recommendations-title">附近推荐</text>
-			<view class="filter-btn" @tap="handleFilter">
-				<text class="filter-text">筛选</text>
-				<image class="filter-icon" src="https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-1.svg" mode="aspectFit"></image>
-			</view>
-		</view>
 	</view>
 </template>
 
@@ -83,7 +74,8 @@ export default {
 	},
 	methods: {
 		handleCardClick(card) {
-			console.log('Card clicked:', card)
+			// 向上发送点击事件，让父组件处理分类切换
+			this.$emit('card-click', card)
 		},
 		handleFilter() {
 			console.log('Filter clicked')

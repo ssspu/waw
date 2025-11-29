@@ -90,16 +90,23 @@
 									</view>
 								</template>
 								<template v-else>
-									<image 
-										v-if="order.hasIcon"
-										class="action-icon" 
-										src="/static/icon/more.png" 
+									<image
+										v-if="order.hasIcon && order.tab === 'pending-use'"
+										class="action-icon"
+										src="/static/icon/more.png"
+										mode="aspectFit"
+										@tap.stop="handleShowQrcode(order)"
+									></image>
+									<image
+										v-else-if="order.hasIcon"
+										class="action-icon"
+										src="/static/icon/more.png"
 										mode="aspectFit"
 									></image>
-									<view class="detail-btn" @tap="handleDetail(order)">
+									<view class="detail-btn" @tap.stop="handleDetail(order)">
 										<text class="btn-text">详情</text>
 									</view>
-									<view class="primary-btn" @tap="handlePrimaryAction(order)">
+									<view class="primary-btn" @tap.stop="handlePrimaryAction(order)">
 										<text class="btn-text primary">{{ order.primaryButton }}</text>
 									</view>
 								</template>
@@ -147,6 +154,46 @@
 			</view>
 		</view>
 		
+		<!-- 二维码弹窗 -->
+		<view class="qrcode-modal" v-if="showQrcodeModal" @tap="handleCloseQrcodeModal">
+			<view class="qrcode-modal-content" @tap.stop>
+				<view class="qrcode-modal-header">
+					<text class="qrcode-modal-title">核销二维码</text>
+					<view class="qrcode-close-btn" @tap="handleCloseQrcodeModal">
+						<text class="qrcode-close-icon">×</text>
+					</view>
+				</view>
+				<view class="qrcode-modal-body">
+					<view class="qrcode-container">
+						<image
+							class="qrcode-image"
+							src="/static/icon/qrcode-demo.png"
+							mode="aspectFit"
+						></image>
+					</view>
+					<text class="qrcode-tip">请向服务人员出示此二维码完成核销</text>
+					<view class="order-info-list">
+						<view class="order-info-row">
+							<text class="order-info-label">订单编号：</text>
+							<text class="order-info-value">{{ currentQrcodeOrder?.orderNumber }}</text>
+						</view>
+						<view class="order-info-row">
+							<text class="order-info-label">服务项目：</text>
+							<text class="order-info-value">{{ currentQrcodeOrder?.serviceName }}</text>
+						</view>
+						<view class="order-info-row">
+							<text class="order-info-label">服务时间：</text>
+							<text class="order-info-value">{{ currentQrcodeOrder?.time }}</text>
+						</view>
+						<view class="order-info-row">
+							<text class="order-info-label">服务金额：</text>
+							<text class="order-info-value price">¥{{ currentQrcodeOrder?.price }}</text>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+
 		<!-- 取消订单弹窗 -->
 		<view class="cancel-modal" v-if="showCancelModal" @tap="handleCloseModal">
 			<view class="modal-content" @tap.stop>
@@ -203,9 +250,11 @@ export default {
 			countdownTimer: null,
 			showCancelModal: false,
 			showMoreModal: false,
+			showQrcodeModal: false,
 			selectedReasonIndex: null,
 			currentCancelOrder: null,
 			currentMoreOrder: null,
+			currentQrcodeOrder: null,
 			cancelReasons: [
 				'价格有点贵',
 				'时间选择有问题',
@@ -437,6 +486,14 @@ export default {
 					}
 				})
 			}, 1000)
+		},
+		handleShowQrcode(order) {
+			this.currentQrcodeOrder = order
+			this.showQrcodeModal = true
+		},
+		handleCloseQrcodeModal() {
+			this.showQrcodeModal = false
+			this.currentQrcodeOrder = null
 		},
 		handleMore(order) {
 			this.currentMoreOrder = order
@@ -1225,6 +1282,132 @@ export default {
 	font-weight: 400;
 	color: #666666;
 	text-align: center;
+}
+
+/* 二维码图标样式 */
+.qrcode-icon {
+	cursor: pointer;
+}
+
+/* 二维码弹窗 */
+.qrcode-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.6);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+.qrcode-modal-content {
+	width: 600rpx;
+	background-color: #ffffff;
+	border-radius: 24rpx;
+	overflow: hidden;
+}
+
+.qrcode-modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 32rpx 32rpx 24rpx;
+	border-bottom: 2rpx solid #f0f0f0;
+	position: relative;
+}
+
+.qrcode-modal-title {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 32rpx;
+	font-weight: 500;
+	color: #333333;
+	text-align: center;
+}
+
+.qrcode-close-btn {
+	width: 48rpx;
+	height: 48rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	right: 24rpx;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.qrcode-close-icon {
+	font-size: 48rpx;
+	color: #999999;
+	line-height: 1;
+}
+
+.qrcode-modal-body {
+	padding: 40rpx 32rpx;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 24rpx;
+}
+
+.qrcode-container {
+	width: 400rpx;
+	height: 400rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #ffffff;
+	border: 2rpx solid #f0f0f0;
+	border-radius: 16rpx;
+}
+
+.qrcode-image {
+	width: 360rpx;
+	height: 360rpx;
+}
+
+.qrcode-tip {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 26rpx;
+	color: #999999;
+	text-align: center;
+}
+
+.order-info-list {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 16rpx;
+	padding: 24rpx;
+	background-color: #f8f8f8;
+	border-radius: 12rpx;
+}
+
+.order-info-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.order-info-label {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 26rpx;
+	color: #999999;
+}
+
+.order-info-value {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 26rpx;
+	color: #333333;
+}
+
+.order-info-value.price {
+	color: #ff6b35;
+	font-weight: 500;
 }
 </style>
 

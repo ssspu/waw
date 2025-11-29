@@ -2,10 +2,13 @@
 	<view class="screen">
 		<view class="status-bar" style="height: 44rpx;"></view>
 
-		<!-- 背景图片 -->
-		<image 
-			class="bg-image-1" 
-			:src="currentHeaderBg" 
+		<!-- 背景图片 - 预加载所有背景图避免切换闪烁 -->
+		<image
+			v-for="(tab, key) in assets"
+			:key="'header-' + key"
+			class="bg-image-1"
+			:class="{ active: activeTab === key }"
+			:src="tab.headerBg"
 			mode="aspectFill"
 		></image>
 		<!-- <image 
@@ -39,10 +42,16 @@
 		<view class="tabs-bg"></view>
 		
 		<!-- Tabs + 内容区背景 -->
-		<view 
-			class="content-section" 
-			:style="{ backgroundImage: assets[activeTab].tabBg ? `url(${assets[activeTab].tabBg})` : 'none' }"
-		>
+		<view class="content-section">
+			<!-- 预加载所有背景图，通过 opacity 切换避免闪烁 -->
+			<image
+				v-for="(tab, key) in assets"
+				:key="key"
+				class="content-bg-image"
+				:class="{ active: activeTab === key }"
+				:src="tab.tabBg"
+				mode="widthFix"
+			></image>
 			<!-- Tabs -->
 			<view class="tabs-wrapper">
 				<view class="tabs-list">
@@ -68,15 +77,15 @@
 			<view class="main-content" :class="{ 'reviews-fullwidth': activeTab === 'reviews' }">
 				<!-- 设计师板块 -->
 				<view v-if="activeTab === 'designer'" :key="'designer'" class="designer-content animate-fade-up">
-					<design-section></design-section>
+					<design-section :key="'designer-section-' + tabSwitchCount"></design-section>
 				</view>
 
 				<!-- 优服务板块 -->
 				<view v-if="activeTab === 'service'" :key="'service'" class="service-content animate-fade-up">
-					<featured-services-section></featured-services-section>
-					<recommendations-section></recommendations-section>
+					<featured-services-section @service-click="handleServiceCategoryClick"></featured-services-section>
+					<recommendations-section @card-click="handleRecommendationCardClick"></recommendations-section>
 					<vip-section></vip-section>
-					<service-gallery-section></service-gallery-section>
+					<service-gallery-section :selected-category="selectedServiceCategory"></service-gallery-section>
 				</view>
 
 				<!-- 品牌馆板块 -->
@@ -113,6 +122,8 @@ export default {
 	data() {
 		return {
 			activeTab: 'designer',
+			selectedServiceCategory: '', // 空字符串表示"优服务"显示全部
+			tabSwitchCount: 0, // 用于重置组件状态
 			tabItems: [
 				{ value: "designer", label: "设计师" },
 				{ value: "service", label: "优服务" },
@@ -177,11 +188,47 @@ export default {
 		},
 		switchTab(value) {
 			this.activeTab = value
+			// 切换tabs时重置分类为默认
+			this.selectedServiceCategory = ''
+			this.tabSwitchCount++
 		},
 		handleSearchClick() {
 			uni.navigateTo({
-				url: '/pages/main/search'
+				url: `/pages/main/search?tab=${this.activeTab}`
 			})
+		},
+		handleServiceCategoryClick(service) {
+			// 切换服务分类
+			this.selectedServiceCategory = service.label
+			// 滚动到列表区域
+			this.$nextTick(() => {
+				uni.createSelectorQuery().select('#service-gallery-section').boundingClientRect(rect => {
+					if (rect) {
+						uni.pageScrollTo({
+							scrollTop: rect.top - 100,
+							duration: 150
+						})
+					}
+				}).exec()
+			})
+		},
+		handleRecommendationCardClick(card) {
+			// 只处理套餐优选和防脱护理
+			if (card.id === 'package' || card.id === 'haircare') {
+				this.selectedServiceCategory = card.title
+				// 滚动到列表区域
+				this.$nextTick(() => {
+					uni.createSelectorQuery().select('#service-gallery-section').boundingClientRect(rect => {
+						if (rect) {
+							uni.pageScrollTo({
+								scrollTop: rect.top - 100,
+								duration: 150
+							})
+						}
+					}).exec()
+				})
+			}
+			// 会员特区可以跳转到会员页面（暂不处理）
 		}
 	}
 }
@@ -196,6 +243,14 @@ export default {
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
+	// 禁用微信小程序点击高亮
+	-webkit-tap-highlight-color: transparent;
+	tap-highlight-color: transparent;
+
+	// 所有可点击元素禁用高亮
+	view, text, image {
+		-webkit-tap-highlight-color: transparent;
+	}
 }
 
 .bg-image-1 {
@@ -206,7 +261,11 @@ export default {
 	height: 772rpx;
 	object-fit: cover;
 	z-index: 0;
-	transition: opacity 0.3s ease;
+	opacity: 0;
+
+	&.active {
+		opacity: 1;
+	}
 }
 
 .bg-image-2 {
@@ -336,14 +395,26 @@ export default {
 	margin-top: 438rpx;
 	width: 100%;
 	min-height: calc(100vh - 438rpx);
-	padding-bottom: 60rpx;
-	background-size: 100% auto;
-	background-position: center top;
-	background-repeat: no-repeat;
+	padding-bottom: 20rpx;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	box-sizing: border-box;
+}
+
+.content-bg-image {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: auto;
+	z-index: 0;
+	pointer-events: none;
+	opacity: 0;
+
+	&.active {
+		opacity: 1;
+	}
 }
 
 .tabs-bg {
@@ -399,8 +470,11 @@ export default {
 	flex: 1;
 	cursor: pointer;
 	box-sizing: border-box;
-	transition: color 0.3s ease;
-	
+	transition: color 0.15s ease;
+	// 禁用微信小程序点击高亮
+	-webkit-tap-highlight-color: transparent;
+	tap-highlight-color: transparent;
+
 	&.active {
 		top: -10rpx;
 	}
@@ -413,11 +487,13 @@ export default {
 	font-weight: normal;
 	line-height: 1.2;
 	white-space: nowrap;
-	transition: color 0.3s ease;
+	transition: color 0.15s ease;
 	position: relative;
 	top: 16rpx;
 	z-index: 2;
-	
+	// 禁用微信小程序点击高亮
+	-webkit-tap-highlight-color: transparent;
+
 	&.active {
 		font-family: 'DIN_Black-Regular', Helvetica;
 		font-weight: 700;
@@ -442,7 +518,7 @@ export default {
 	flex-direction: column;
 	// align-items: stretch; // Removed to avoid stretching fixed width items if any
 	gap: 18rpx;
-	padding: 20rpx 12rpx 100rpx;
+	padding: 20rpx 12rpx 40rpx;
 	top: -15rpx;
 	width: 100%;
 

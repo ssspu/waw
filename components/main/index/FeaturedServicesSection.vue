@@ -58,7 +58,7 @@ export default {
 	},
 	methods: {
 		handleServiceClick(service) {
-			console.log('Service clicked:', service)
+			this.$emit('service-click', service)
 		}
 	}
 }

@@ -241,6 +241,7 @@ export default {
 .card-content {
 	display: flex;
 	flex-direction: column;
+	gap: 16rpx;
 	padding: 24rpx;
 	box-sizing: border-box;
 }
