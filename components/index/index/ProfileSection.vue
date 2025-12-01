@@ -32,10 +32,11 @@
 				</view>
 			</view>
 			<view class="quick-actions-bottom">
-				<view 
-					v-for="(action, index) in bottomActions" 
-					:key="index" 
+				<view
+					v-for="(action, index) in bottomActions"
+					:key="index"
 					class="bottom-action-item"
+					:class="{ disabled: action.title === '会员' }"
 					@tap="handleBottomAction(action, index)"
 				>
 					<image class="action-icon" :src="action.icon" mode="aspectFit"></image>
@@ -74,7 +75,7 @@
 		
 		<!-- 设计师 -->
 		<view class="designers-card animate-fade-in" style="animation-delay: 300ms;">
-			<view class="card-header" @tap="handleSectionHeaderClick('designer')">
+			<view class="card-header" @tap="handleDesignerSectionClick">
 				<text class="card-title">设计师</text>
 				<image class="more-icon" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-7.svg" mode="aspectFit"></image>
 			</view>
@@ -1248,10 +1249,8 @@ export default {
 					url: '/pages/order/index?tab=pending-use'
 				})
 			} else if (action.title === '会员') {
-				// 跳转到加入会员页面
-				uni.navigateTo({
-					url: '/pages/mine/vip'
-				})
+				// 测试阶段禁用跳转
+				return
 			} else if (action.title === '入驻中') {
 				// 跳转到申请入驻页面
 				uni.navigateTo({
@@ -1261,6 +1260,12 @@ export default {
 		},
 		handleNearbyDesignerClick() {
 			// 测试阶段跳转路径 - 跳转到main/index页的设计师tabs，滚动到附近推荐列表区域
+			uni.navigateTo({
+				url: '/pages/main/index?tab=designer&scrollTo=nearby'
+			})
+		},
+		handleDesignerSectionClick() {
+			// 点击设计师板块标题，跳转到main/index页的设计师tabs，滚动到附近推荐列表区域
 			uni.navigateTo({
 				url: '/pages/main/index?tab=designer&scrollTo=nearby'
 			})
@@ -1401,6 +1406,10 @@ export default {
 	flex-direction: column;
 	align-items: center;
 	gap: 6rpx;
+
+	&.disabled {
+		opacity: 0.4;
+	}
 }
 
 .action-title-small {

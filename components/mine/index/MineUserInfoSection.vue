@@ -1,12 +1,12 @@
 <template>
 	<view class="user-info-section">
 		<view class="user-card">
-			<!-- VIP背景层（在白色卡片后面） -->
-			<view class="vip-chip-bg-layer">
+			<!-- VIP背景层（在白色卡片后面，测试阶段禁用） -->
+			<view class="vip-chip-bg-layer disabled">
 				<image class="vip-chip-bg" src="/static/background-image/mine_vip_bg.png" mode="aspectFit"></image>
 			</view>
-			<!-- VIP可点击文字层（在最上层） -->
-			<view class="vip-chip-clickable" @tap="handleVipClick">
+			<!-- VIP可点击文字层（测试阶段禁用） -->
+			<view class="vip-chip-clickable disabled">
 				<view class="vip-title-row">
 					<text class="vip-chip-title">VIP会员专享</text>
 					<view class="arrow-bg">
@@ -156,6 +156,10 @@ export default {
 	right: 0;
 	z-index: -2;
 	pointer-events: none;
+
+	&.disabled {
+		opacity: 0.6;
+	}
 }
 
 .vip-chip-bg {
@@ -177,6 +181,11 @@ export default {
 	line-height: 1.2;
 	gap: 6rpx;
 	padding: 20rpx 28rpx 24rpx 32rpx;
+
+	&.disabled {
+		opacity: 0.6;
+		pointer-events: none;
+	}
 }
 
 .vip-title-row {

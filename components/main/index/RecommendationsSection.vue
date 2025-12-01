@@ -1,18 +1,18 @@
 <template>
 	<view class="recommendations-section">
 		<view class="recommendations-section-inner">
-		<!-- 大卡片 - 会员特区 -->
-		<view class="large-card" @tap="handleCardClick(recommendationCards[0])">
+		<!-- 大卡片 - 会员特区（测试阶段禁用） -->
+		<view class="large-card disabled">
 			<view class="card-content">
-				<image 
-					class="card-icon" 
-					:src="recommendationCards[0].icon" 
+				<image
+					class="card-icon"
+					:src="recommendationCards[0].icon"
 					:alt="recommendationCards[0].title"
 					mode="aspectFit"
 				></image>
 				<view class="card-info">
 					<text class="card-title">{{ recommendationCards[0].title }}</text>
-					<text class="card-subtitle">{{ recommendationCards[0].subtitle }}</text>
+					<text class="card-subtitle">建设中...</text>
 				</view>
 			</view>
 		</view>
@@ -156,6 +156,11 @@ export default {
 	overflow: hidden;
 	box-sizing: border-box;
 	cursor: pointer;
+
+	&.disabled {
+		opacity: 0.4;
+		pointer-events: none;
+	}
 }
 
 .card-content {

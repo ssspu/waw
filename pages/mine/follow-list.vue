@@ -252,9 +252,9 @@ export default {
 		},
 		handlePromotion(designer) {
 			if (designer.promotionStatus === 'apply') {
-				// 跳转到申请推广页面或显示申请弹窗
+				// 显示申请已发送弹窗
 				uni.showToast({
-					title: '申请推广',
+					title: '申请已发送',
 					icon: 'none'
 				})
 			} else if (designer.promotionStatus === 'pending') {
@@ -272,7 +272,7 @@ export default {
 		handleStorePromotion(store) {
 			if (store.promotionStatus === 'apply') {
 				uni.showToast({
-					title: '申请推广',
+					title: '申请已发送',
 					icon: 'none'
 				})
 			} else if (store.promotionStatus === 'pending') {

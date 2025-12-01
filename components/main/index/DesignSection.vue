@@ -411,6 +411,97 @@ export default {
 						tags: ["创新先锋", "概念设计", "艺术表达", "个性打造"],
 						distance: "5.1km",
 					},
+					{
+						id: 104,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-9.png",
+						name: "赵灵感",
+						level: "首席",
+						role: "灵感导师｜从业14年",
+						specialties: ["灵感造型", "个性剪裁", "潮流染发"],
+						rating: "4.9",
+						services: "378",
+						works: "201",
+						tags: ["灵感无限", "个性表达", "潮流先锋", "匠心独运"],
+						distance: "2.8km",
+					},
+					{
+						id: 105,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-10.png",
+						name: "孙时尚",
+						level: "首席",
+						role: "时尚总监｜从业16年",
+						specialties: ["时尚造型", "秀场设计", "明星同款"],
+						rating: "5.0",
+						services: "425",
+						works: "256",
+						tags: ["时尚教父", "秀场经验", "明星御用", "潮流风向"],
+						distance: "3.9km",
+					},
+					{
+						id: 106,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-11.png",
+						name: "周先锋",
+						level: "首席",
+						role: "先锋设计师｜从业11年",
+						specialties: ["先锋造型", "实验设计", "跨界融合"],
+						rating: "4.8",
+						services: "267",
+						works: "178",
+						tags: ["先锋派", "实验风格", "跨界创新", "独树一帜"],
+						distance: "4.2km",
+					},
+					{
+						id: 107,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-7.png",
+						name: "吴美学",
+						level: "首席",
+						role: "美学总监｜从业13年",
+						specialties: ["美学造型", "色彩搭配", "整体设计"],
+						rating: "4.9",
+						services: "334",
+						works: "192",
+						tags: ["美学大师", "色彩专家", "整体形象", "品味独到"],
+						distance: "5.6km",
+					},
+					{
+						id: 108,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-8.png",
+						name: "郑潮流",
+						level: "首席",
+						role: "潮流导师｜从业10年",
+						specialties: ["潮流剪发", "街头风格", "日韩造型"],
+						rating: "4.8",
+						services: "289",
+						works: "156",
+						tags: ["潮流达人", "街头文化", "日韩风", "年轻活力"],
+						distance: "2.1km",
+					},
+					{
+						id: 109,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-9.png",
+						name: "钱艺匠",
+						level: "首席",
+						role: "艺术匠人｜从业17年",
+						specialties: ["匠心造型", "精细剪裁", "高端定制"],
+						rating: "5.0",
+						services: "398",
+						works: "234",
+						tags: ["匠心精神", "精益求精", "高端定制", "细节控"],
+						distance: "6.3km",
+					},
+					{
+						id: 110,
+						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-10.png",
+						name: "李风格",
+						level: "首席",
+						role: "风格设计师｜从业12年",
+						specialties: ["风格塑造", "形象改造", "气质提升"],
+						rating: "4.9",
+						services: "321",
+						works: "187",
+						tags: ["风格大师", "形象顾问", "气质提升", "个人IP"],
+						distance: "3.7km",
+					},
 				],
 				'总监店长': [
 					{
@@ -557,20 +648,43 @@ export default {
 		}
 	},
 	methods: {
+		// 供父组件调用的滚动方法
+		scrollToNearby() {
+			this.$nextTick(() => {
+				const query = uni.createSelectorQuery().in(this)
+				query.select('#nearby-section').boundingClientRect()
+				query.selectViewport().scrollOffset()
+				query.exec((res) => {
+					if (res && res[0] && res[1]) {
+						const elementRect = res[0]
+						const scrollOffset = res[1]
+						uni.pageScrollTo({
+							scrollTop: scrollOffset.scrollTop + elementRect.top,
+							duration: 100
+						})
+					}
+				})
+			})
+		},
 		handleCategoryClick(category) {
 			console.log('Category clicked:', category)
 			// 切换分类
 			this.activeCategory = category.title
 			// 滚动到附近推荐区域
 			this.$nextTick(() => {
-				uni.createSelectorQuery().in(this).select('#nearby-section').boundingClientRect(rect => {
-					if (rect) {
+				const query = uni.createSelectorQuery().in(this)
+				query.select('#nearby-section').boundingClientRect()
+				query.selectViewport().scrollOffset()
+				query.exec((res) => {
+					if (res && res[0] && res[1]) {
+						const elementRect = res[0]
+						const scrollOffset = res[1]
 						uni.pageScrollTo({
-							scrollTop: rect.top - 100,
+							scrollTop: scrollOffset.scrollTop + elementRect.top,
 							duration: 100
 						})
 					}
-				}).exec()
+				})
 			})
 		},
 		handleBookingClick(option) {

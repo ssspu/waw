@@ -149,6 +149,30 @@
 				</view>
 			</view>
 		</view>
+
+		<!-- 简介编辑弹窗 -->
+		<view class="bio-modal" v-if="showBioModal" @tap="closeBioModal">
+			<view class="bio-modal-content" @tap.stop>
+				<view class="bio-modal-header">
+					<text class="bio-modal-title">修改简介</text>
+					<text class="bio-modal-close" @tap="closeBioModal">×</text>
+				</view>
+				<textarea
+					class="bio-textarea"
+					v-model="tempBio"
+					placeholder="请输入1-30字简介"
+					maxlength="30"
+					:focus="showBioModal"
+				></textarea>
+				<view class="bio-modal-footer">
+					<text class="bio-char-count">{{ tempBio.length }}/30</text>
+					<view class="bio-modal-btns">
+						<view class="bio-btn bio-btn-cancel" @tap="closeBioModal">取消</view>
+						<view class="bio-btn bio-btn-confirm" @tap="confirmBio">确定</view>
+					</view>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -174,26 +198,121 @@ export default {
 				profession: '美发师',
 				region: '四川-成都',
 				bio: '输入1-30字简介'
-			}
+			},
+			showBioModal: false,
+			tempBio: ''
 		}
 	},
 	methods: {
 		handleAvatarClick() {
 			uni.showActionSheet({
-				itemList: ['拍照', '从相册选择', '删除'],
+				itemList: ['拍照', '从相册选择'],
 				success: (res) => {
-					console.log('Avatar action:', res.tapIndex)
+					if (res.tapIndex === 0) {
+						// 拍照
+						uni.chooseImage({
+							count: 1,
+							sourceType: ['camera'],
+							success: (result) => {
+								this.userInfo.avatar = result.tempFilePaths[0]
+								uni.showToast({ title: '头像已更新', icon: 'success' })
+							}
+						})
+					} else if (res.tapIndex === 1) {
+						// 从相册选择
+						uni.chooseImage({
+							count: 1,
+							sourceType: ['album'],
+							success: (result) => {
+								this.userInfo.avatar = result.tempFilePaths[0]
+								uni.showToast({ title: '头像已更新', icon: 'success' })
+							}
+						})
+					}
 				}
 			})
 		},
 		handleItemClick(item) {
-			console.log('Edit:', item.label)
+			if (item.key === 'nickname') {
+				this.editNickname()
+			} else if (item.key === 'gender') {
+				this.editGender()
+			} else if (item.key === 'profession') {
+				this.editProfession()
+			} else if (item.key === 'region') {
+				this.editRegion()
+			}
+		},
+		editNickname() {
+			uni.showModal({
+				title: '修改昵称',
+				editable: true,
+				placeholderText: '请输入昵称',
+				content: this.userInfo.nickname,
+				success: (res) => {
+					if (res.confirm && res.content) {
+						this.userInfo.nickname = res.content
+						uni.showToast({ title: '昵称已更新', icon: 'success' })
+					}
+				}
+			})
+		},
+		editGender() {
+			uni.showActionSheet({
+				itemList: ['男', '女', '保密'],
+				success: (res) => {
+					const genders = ['男', '女', '保密']
+					this.userInfo.gender = genders[res.tapIndex]
+					uni.showToast({ title: '性别已更新', icon: 'success' })
+				}
+			})
+		},
+		editProfession() {
+			uni.showModal({
+				title: '修改职业',
+				editable: true,
+				placeholderText: '请输入职业',
+				content: this.userInfo.profession,
+				success: (res) => {
+					if (res.confirm && res.content) {
+						this.userInfo.profession = res.content
+						uni.showToast({ title: '职业已更新', icon: 'success' })
+					}
+				}
+			})
+		},
+		editRegion() {
+			uni.showModal({
+				title: '修改地区',
+				editable: true,
+				placeholderText: '请输入地区，如：四川-成都',
+				content: this.userInfo.region,
+				success: (res) => {
+					if (res.confirm && res.content) {
+						this.userInfo.region = res.content
+						uni.showToast({ title: '地区已更新', icon: 'success' })
+					}
+				}
+			})
 		},
 		handleQRCodeClick() {
-			console.log('Edit QR code')
+			uni.navigateTo({
+				url: '/pages/mine/qr-code-card'
+			})
 		},
 		handleBioClick() {
-			console.log('Edit bio')
+			this.tempBio = this.userInfo.bio === '输入1-30字简介' ? '' : this.userInfo.bio
+			this.showBioModal = true
+		},
+		closeBioModal() {
+			this.showBioModal = false
+		},
+		confirmBio() {
+			if (this.tempBio.trim()) {
+				this.userInfo.bio = this.tempBio
+				uni.showToast({ title: '简介已更新', icon: 'success' })
+			}
+			this.showBioModal = false
 		}
 	}
 }
@@ -337,5 +456,92 @@ export default {
 	width: 24rpx;
 	height: 24rpx;
 	flex-shrink: 0;
+}
+
+/* 简介编辑弹窗 */
+.bio-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 999;
+}
+
+.bio-modal-content {
+	width: 600rpx;
+	background-color: #ffffff;
+	border-radius: 16rpx;
+	padding: 32rpx;
+	box-sizing: border-box;
+}
+
+.bio-modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 24rpx;
+}
+
+.bio-modal-title {
+	font-size: 32rpx;
+	font-weight: 500;
+	color: #333333;
+}
+
+.bio-modal-close {
+	font-size: 48rpx;
+	color: #999999;
+	line-height: 1;
+}
+
+.bio-textarea {
+	width: 100%;
+	height: 240rpx;
+	padding: 20rpx;
+	border: 2rpx solid #e5e5e5;
+	border-radius: 12rpx;
+	font-size: 28rpx;
+	color: #333333;
+	box-sizing: border-box;
+	background-color: #f9f9f9;
+}
+
+.bio-modal-footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 24rpx;
+}
+
+.bio-char-count {
+	font-size: 24rpx;
+	color: #999999;
+}
+
+.bio-modal-btns {
+	display: flex;
+	align-items: center;
+	gap: 20rpx;
+}
+
+.bio-btn {
+	padding: 16rpx 40rpx;
+	border-radius: 8rpx;
+	font-size: 28rpx;
+}
+
+.bio-btn-cancel {
+	background-color: #f5f5f5;
+	color: #666666;
+}
+
+.bio-btn-confirm {
+	background-color: #333333;
+	color: #ffffff;
 }
 </style>

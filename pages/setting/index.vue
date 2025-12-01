@@ -102,7 +102,7 @@ export default {
 						{ label: "账号安全" },
 						// { label: "申请认证" },
 						// { label: "地址管理" },
-						{ label: "支付设置" },
+						// { label: "支付设置" }, // 测试阶段不需要
 					],
 				},
 				{
@@ -115,7 +115,7 @@ export default {
 				{
 					items: [
 						{ label: "反馈意见" },
-						{ label: "关于众美" },
+						// { label: "关于众美" }, // 测试阶段不需要
 						{ label: "协议与条款" },
 					],
 				},
