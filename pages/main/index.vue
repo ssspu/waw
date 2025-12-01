@@ -77,7 +77,7 @@
 			<view class="main-content" :class="{ 'reviews-fullwidth': activeTab === 'reviews' }">
 				<!-- 设计师板块 -->
 				<view v-if="activeTab === 'designer'" :key="'designer'" class="designer-content animate-fade-up">
-					<design-section :key="'designer-section-' + tabSwitchCount"></design-section>
+					<design-section ref="designSection" :key="'designer-section-' + tabSwitchCount"></design-section>
 				</view>
 
 				<!-- 优服务板块 -->
@@ -85,7 +85,7 @@
 					<featured-services-section @service-click="handleServiceCategoryClick"></featured-services-section>
 					<recommendations-section @card-click="handleRecommendationCardClick"></recommendations-section>
 					<vip-section></vip-section>
-					<service-gallery-section :selected-category="selectedServiceCategory"></service-gallery-section>
+					<service-gallery-section ref="serviceGallerySection" :selected-category="selectedServiceCategory"></service-gallery-section>
 				</view>
 
 				<!-- 品牌馆板块 -->
@@ -181,6 +181,15 @@ export default {
 		} else {
 			console.log('没有接收到tab参数，使用默认标签: designer')
 		}
+
+		// 处理滚动到附近推荐
+		if (options.scrollTo === 'nearby') {
+			this.$nextTick(() => {
+				setTimeout(() => {
+					this.scrollToNearbySection()
+				}, 500) // 等待页面渲染完成
+			})
+		}
 	},
 	methods: {
 		goBack() {
@@ -213,20 +222,20 @@ export default {
 			// 会员特区可以跳转到会员页面（暂不处理）
 		},
 		scrollToServiceGallery() {
+			// 通过 ref 调用子组件方法，确保微信小程序中也能正常工作
 			this.$nextTick(() => {
-				const query = uni.createSelectorQuery().in(this)
-				query.select('#service-gallery-section').boundingClientRect()
-				query.selectViewport().scrollOffset()
-				query.exec((res) => {
-					if (res && res[0] && res[1]) {
-						const elementRect = res[0]
-						const scrollOffset = res[1]
-						uni.pageScrollTo({
-							scrollTop: scrollOffset.scrollTop + elementRect.top - 100,
-							duration: 100
-						})
-					}
-				})
+				if (this.$refs.serviceGallerySection) {
+					this.$refs.serviceGallerySection.scrollToTop()
+				}
+			})
+		},
+		scrollToNearbySection() {
+			// 滚动到附近推荐区域，使其直接显示在屏幕顶端
+			// 通过 ref 调用子组件方法，确保微信小程序中也能正常工作
+			this.$nextTick(() => {
+				if (this.$refs.designSection) {
+					this.$refs.designSection.scrollToNearby()
+				}
 			})
 		}
 	}

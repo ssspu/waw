@@ -39,21 +39,21 @@
 			
 			<!-- 资产详情卡片 -->
 			<view class="asset-detail-card">
-				<view class="balance-section">
+				<view class="balance-section" @tap="handleBalanceClick">
 					<text class="section-label">余额(元)</text>
 					<text class="section-value">1200.00</text>
 				</view>
-				
+
 				<view class="asset-list">
-					<view class="asset-item">
+					<view class="asset-item" @tap="handlePlatformRewardClick">
 						<text class="item-label">平台奖励</text>
 						<text class="item-value">2806.00</text>
 					</view>
-					<view class="asset-item">
+					<view class="asset-item" @tap="handlePromotionClick">
 						<text class="item-label">推广佣金</text>
 						<text class="item-value">1200.00</text>
 					</view>
-					<view class="asset-item">
+					<view class="asset-item" @tap="handleBeansClick">
 						<text class="item-label">美豆</text>
 						<text class="item-value">1000.00</text>
 					</view>
@@ -109,6 +109,26 @@ export default {
 		handleAssetDetail() {
 			uni.navigateTo({
 				url: '/pages/mine/asset-detail'
+			})
+		},
+		handleBalanceClick() {
+			uni.navigateTo({
+				url: '/pages/mine/balance'
+			})
+		},
+		handlePlatformRewardClick() {
+			uni.navigateTo({
+				url: '/pages/mine/platform-reward'
+			})
+		},
+		handlePromotionClick() {
+			uni.navigateTo({
+				url: '/pages/mine/promotion'
+			})
+		},
+		handleBeansClick() {
+			uni.navigateTo({
+				url: '/pages/mine/beans'
 			})
 		}
 	}

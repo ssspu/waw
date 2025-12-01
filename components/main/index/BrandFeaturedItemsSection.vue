@@ -601,6 +601,83 @@ export default {
 						distance: "2.1km",
 						tag: "新店",
 					},
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-5.png",
+						name: "匠心美发专业店",
+						type: "专业店｜2016年开业",
+						rating: "4.8",
+						designers: "8人",
+						services: "1560",
+						amenities: ["精细剪裁", "日式服务", "免费饮品"],
+						distance: "3.8km",
+						tag: "匠心",
+					},
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-6.png",
+						name: "青丝专业造型",
+						type: "专业店｜2017年开业",
+						rating: "4.7",
+						designers: "7人",
+						services: "1120",
+						amenities: ["烫染专家", "会员折扣", "预约优先"],
+						distance: "5.2km",
+						tag: "烫染",
+					},
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-1.png",
+						name: "发型研究所",
+						type: "专业店｜2019年开业",
+						rating: "4.9",
+						designers: "10人",
+						services: "780",
+						amenities: ["形象诊断", "一对一服务", "无推销"],
+						distance: "2.6km",
+						tag: "高评",
+					},
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-2.png",
+						name: "剪艺专业美发",
+						type: "专业店｜2014年开业",
+						rating: "4.6",
+						designers: "9人",
+						services: "2340",
+						amenities: ["十年老店", "技术过硬", "价格实惠"],
+						distance: "4.1km",
+						tag: "老店",
+					},
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-3.png",
+						name: "锋芒造型专业店",
+						type: "专业店｜2021年开业",
+						rating: "4.8",
+						designers: "6人",
+						services: "320",
+						amenities: ["潮流设计", "年轻团队", "新客特惠"],
+						distance: "1.8km",
+						tag: "潮流",
+					},
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-4.png",
+						name: "秀发专业护理中心",
+						type: "专业店｜2013年开业",
+						rating: "4.7",
+						designers: "11人",
+						services: "3560",
+						amenities: ["护发专家", "头皮养护", "深层修复"],
+						distance: "6.5km",
+						tag: "护发",
+					},
+					{
+						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-5.png",
+						name: "形象设计专业馆",
+						type: "专业店｜2018年开业",
+						rating: "4.9",
+						designers: "8人",
+						services: "980",
+						amenities: ["整体形象", "私人顾问", "VIP服务"],
+						distance: "3.5km",
+						tag: "形象",
+					},
 				],
 				'品牌店': [
 					{
@@ -733,14 +810,19 @@ export default {
 			this.activeCategory = item.title
 			// 滚动到附近推荐区域
 			this.$nextTick(() => {
-				uni.createSelectorQuery().in(this).select('#brand-nearby-section').boundingClientRect(rect => {
-					if (rect) {
+				const query = uni.createSelectorQuery().in(this)
+				query.select('#brand-nearby-section').boundingClientRect()
+				query.selectViewport().scrollOffset()
+				query.exec((res) => {
+					if (res && res[0] && res[1]) {
+						const elementRect = res[0]
+						const scrollOffset = res[1]
 						uni.pageScrollTo({
-							scrollTop: rect.top - 100,
-							duration: 0
+							scrollTop: scrollOffset.scrollTop + elementRect.top,
+							duration: 100
 						})
 					}
-				}).exec()
+				})
 			})
 		},
 		switchTab(index) {

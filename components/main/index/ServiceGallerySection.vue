@@ -103,6 +103,86 @@ export default {
 					stylist: { name: "张美美", role: "高级造型师", avatar: "https://c.animaapp.com/mi5bcgvrGbkedE/img/ellipse-34.svg" },
 					rating: "4.9", reviews: "328", distance: "5.1km",
 				},
+				{
+					id: 25,
+					category: '造型',
+					image: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-169-6.png",
+					title: "晚宴造型",
+					description: "精致晚宴发型+整体搭配",
+					price: "688",
+					stylist: { name: "王晚宴", role: "资深造型师", avatar: "https://c.animaapp.com/mi5bcgvrGbkedE/img/ellipse-34.svg" },
+					rating: "4.8", reviews: "234", distance: "4.2km",
+				},
+				{
+					id: 26,
+					category: '造型',
+					image: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-169-6.png",
+					title: "约会造型",
+					description: "清新自然+甜美风格",
+					price: "168",
+					stylist: { name: "刘甜甜", role: "造型师", avatar: "https://c.animaapp.com/mi5bcgvrGbkedE/img/ellipse-34.svg" },
+					rating: "4.9", reviews: "456", distance: "2.8km",
+				},
+				{
+					id: 27,
+					category: '造型',
+					image: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-169-6.png",
+					title: "职场造型",
+					description: "干练专业+商务风格",
+					price: "198",
+					stylist: { name: "陈职场", role: "形象顾问", avatar: "https://c.animaapp.com/mi5bcgvrGbkedE/img/ellipse-34.svg" },
+					rating: "4.8", reviews: "389", distance: "3.5km",
+				},
+				{
+					id: 28,
+					category: '造型',
+					image: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-169-6.png",
+					title: "派对造型",
+					description: "时尚潮流+个性张扬",
+					price: "258",
+					stylist: { name: "赵派对", role: "潮流造型师", avatar: "https://c.animaapp.com/mi5bcgvrGbkedE/img/ellipse-34.svg" },
+					rating: "4.7", reviews: "267", distance: "5.6km",
+				},
+				{
+					id: 29,
+					category: '造型',
+					image: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-169-6.png",
+					title: "写真造型",
+					description: "艺术写真+多风格切换",
+					price: "388",
+					stylist: { name: "孙艺术", role: "艺术造型师", avatar: "https://c.animaapp.com/mi5bcgvrGbkedE/img/ellipse-34.svg" },
+					rating: "4.9", reviews: "178", distance: "4.8km",
+				},
+				{
+					id: 30,
+					category: '造型',
+					image: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-169-6.png",
+					title: "复古造型",
+					description: "经典复古+优雅风情",
+					price: "328",
+					stylist: { name: "钱复古", role: "复古造型专家", avatar: "https://c.animaapp.com/mi5bcgvrGbkedE/img/ellipse-34.svg" },
+					rating: "4.8", reviews: "145", distance: "6.1km",
+				},
+				{
+					id: 31,
+					category: '造型',
+					image: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-169-6.png",
+					title: "日韩造型",
+					description: "日韩风格+氛围感造型",
+					price: "238",
+					stylist: { name: "周日韩", role: "日韩造型师", avatar: "https://c.animaapp.com/mi5bcgvrGbkedE/img/ellipse-34.svg" },
+					rating: "4.9", reviews: "512", distance: "3.1km",
+				},
+				{
+					id: 32,
+					category: '造型',
+					image: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-169-6.png",
+					title: "舞台造型",
+					description: "舞台表演+夸张风格",
+					price: "588",
+					stylist: { name: "吴舞台", role: "舞台造型师", avatar: "https://c.animaapp.com/mi5bcgvrGbkedE/img/ellipse-34.svg" },
+					rating: "4.8", reviews: "98", distance: "7.2km",
+				},
 				// 剪发类
 				{
 					id: 3,
@@ -351,6 +431,24 @@ export default {
 		}
 	},
 	methods: {
+		// 供父组件调用的滚动方法
+		scrollToTop() {
+			this.$nextTick(() => {
+				const query = uni.createSelectorQuery().in(this)
+				query.select('#service-gallery-section').boundingClientRect()
+				query.selectViewport().scrollOffset()
+				query.exec((res) => {
+					if (res && res[0] && res[1]) {
+						const elementRect = res[0]
+						const scrollOffset = res[1]
+						uni.pageScrollTo({
+							scrollTop: scrollOffset.scrollTop + elementRect.top,
+							duration: 100
+						})
+					}
+				})
+			})
+		},
 		handleCardClick(card) {
 			// 跳转到服务订单购买页面，并传递服务卡片的 id
 			uni.navigateTo({

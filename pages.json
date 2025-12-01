@@ -145,6 +145,24 @@
 		}
 	},
 	{
+		"path": "pages/mine/balance",
+		"style": {
+			"navigationBarTitleText": "余额",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/mine/platform-reward",
+		"style": {
+			"navigationBarTitleText": "平台奖励",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
 		"path": "pages/mine/qr-code-card",
 		"style": {
 			"navigationBarTitleText": "二维码名片",
