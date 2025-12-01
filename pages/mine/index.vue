@@ -6,7 +6,7 @@
 				src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/rectangle-186.png" 
 				mode="aspectFill"
 			></image>
-			<view class="hero-toolbar">
+			<view class="hero-toolbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 				<view class="toolbar-btns">
 					<view class="toolbar-btn" @tap="handleOnlineService">
 						<image class="toolbar-icon" src="/static/icon/online—service.png" mode="aspectFit"></image>
@@ -37,6 +37,15 @@ export default {
 		MineUserInfoSection,
 		MineProfileSection,
 		BottomTabBar
+	},
+	data() {
+		return {
+			statusBarHeight: 44
+		}
+	},
+	onLoad() {
+		// 从持久化存储获取状态栏高度
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
 		handleOnlineService() {
@@ -75,17 +84,19 @@ export default {
 }
 
 .hero-toolbar {
-	// background-color: #fcc;
 	position: absolute;
-	top: 80rpx;
+	top: 0;
 	left: 30rpx;
 	display: flex;
 	align-items: center;
+	height: 88rpx;
 }
 
 .toolbar-btns {
 	display: flex;
 	align-items: center;
+	justify-content: center;
+	height: 100%;
 	gap: 20rpx;
 }
 
@@ -99,8 +110,8 @@ export default {
 }
 
 .toolbar-icon {
-	width: 56rpx;
-	height: 56rpx;
+	width: 70rpx;
+	height: 70rpx;
 }
 
 .hero-btn::after {

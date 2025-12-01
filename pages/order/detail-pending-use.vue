@@ -95,7 +95,7 @@
 						<text class="price-text">¥799</text>
 					</view>
 					<view class="price-item">
-						<text class="price-label">运费</text>
+						<text class="price-label">优惠金额</text>
 						<text class="price-text">¥0</text>
 					</view>
 					<view class="price-item total">

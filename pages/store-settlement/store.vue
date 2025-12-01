@@ -1,7 +1,7 @@
 <template>
 	<view class="screen">
 		<!-- 头部导航 -->
-		<view class="header">
+		<view class="header" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="nav-bar">
 				<view class="nav-left">
 					<view class="back-btn" @tap="handleBack">
@@ -176,6 +176,7 @@
 export default {
 	data() {
 		return {
+			statusBarHeight: 44,
 			formData: {
 				category: '',
 				storeName: '',
@@ -189,6 +190,9 @@ export default {
 				extraUrl: ''
 			}
 		}
+	},
+	onLoad() {
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
 		handleBack() {

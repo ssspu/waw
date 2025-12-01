@@ -1,7 +1,6 @@
 <template>
 	<view class="search-page">
-		<view class="status-bar-space"></view>
-		<view class="navbar">
+		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
 				<view class="back-btn" @tap="handleBack">
 					<image class="back-icon" src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" mode="aspectFit"></image>
@@ -443,6 +442,7 @@ export default {
 	},
 	data() {
 		return {
+			statusBarHeight: 44,
 			activeTab: 'designer', // 默认显示设计师标签
 			tabs: [
 				{ label: '服务', value: 'service' },
@@ -832,6 +832,9 @@ export default {
 		}
 	},
 	onLoad(options) {
+		// 从持久化存储获取状态栏高度
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+
 		// 从URL参数获取tab，切换到对应标签
 		if (options.tab) {
 			const validTabs = ['designer', 'service', 'brand']
@@ -1137,11 +1140,6 @@ export default {
 	flex-direction: column;
 }
 
-.status-bar-space {
-	height: 88rpx;
-	width: 100%;
-	background-color: #ffffff;
-}
 
 .navbar {
 	background-color: #ffffff;

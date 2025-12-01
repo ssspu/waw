@@ -50,16 +50,17 @@
 		
 		<!-- 作品集 -->
 		<view class="portfolio-card animate-fade-in" style="animation-delay: 200ms;">
-			<view class="card-header">
+			<view class="card-header" @tap="handlePortfolioHeaderClick">
 				<text class="card-title">作品集</text>
 				<image class="more-icon" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-7.svg" mode="aspectFit"></image>
 			</view>
 			<view class="portfolio-content">
-				<view 
-					v-for="(item, index) in portfolioItems" 
-					:key="index" 
+				<view
+					v-for="(item, index) in portfolioItems"
+					:key="index"
 					class="portfolio-item"
 					:style="{ left: index === 0 ? '0' : '314rpx' }"
+					@tap="handlePortfolioItemClick(item, index)"
 				>
 					<image class="portfolio-img" :src="item.image" mode="aspectFill"></image>
 					<image class="portfolio-overlay" :src="item.overlay" mode="aspectFill"></image>
@@ -1268,6 +1269,20 @@ export default {
 			// 点击设计师板块标题，跳转到main/index页的设计师tabs，滚动到附近推荐列表区域
 			uni.navigateTo({
 				url: '/pages/main/index?tab=designer&scrollTo=nearby'
+			})
+		},
+		handlePortfolioHeaderClick() {
+			// 点击作品集标题箭头，跳转到作品集首页
+			uni.navigateTo({
+				url: '/pages/portfolio/index'
+			})
+		},
+		handlePortfolioItemClick(item, index) {
+			// 点击作品图片，跳转到作品详情页
+			// index 0 是女士，index 1 是男士
+			const category = index === 0 ? 'women' : 'men'
+			uni.navigateTo({
+				url: `/pages/portfolio/detail?id=${index + 1}&category=${category}`
 			})
 		}
 	},

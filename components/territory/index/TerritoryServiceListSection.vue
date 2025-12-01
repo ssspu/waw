@@ -222,7 +222,10 @@ export default {
 			// 实现删除逻辑
 		},
 		handleBookAgain() {
-			console.log('Book again clicked')
+			// 跳转到设计师详情页
+			uni.navigateTo({
+				url: '/pages/designer/info'
+			})
 		}
 	}
 }

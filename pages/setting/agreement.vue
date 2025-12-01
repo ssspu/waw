@@ -2,7 +2,6 @@
 	<view class="setting-detail-page">
 		<!-- 悬浮标题栏 -->
 		<view class="fixed-header">
-			<view class="status-bar-space"></view>
 			<SettingDetailHeader title="协议与条款" />
 		</view>
 

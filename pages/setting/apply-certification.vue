@@ -1,6 +1,5 @@
 <template>
 	<view class="setting-detail-page">
-		<view class="status-bar-space"></view>
 		<SettingDetailHeader title="实名认证" />
 
 		<view class="main-content">

@@ -1,13 +1,14 @@
 <template>
 	<view class="header">
-		<image 
-			class="header-bg" 
-			src="https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-186.png" 
+		<image
+			class="header-bg"
+			src="https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-186.png"
 			mode="aspectFill"
 		></image>
 		<view class="header-overlay"></view>
 
-		<!-- <view class="header-content"> -->
+		<!-- 自定义导航栏 -->
+		<view class="custom-navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="header-actions">
 				<view class="back-btn" @tap="goBack">
 					<image class="back-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1877.svg" mode="aspectFit"></image>
@@ -16,12 +17,21 @@
 					<image class="share-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1879-1.svg" mode="aspectFit"></image>
 				</view>
 			</view>
-		<!-- </view> -->
+		</view>
 	</view>
 </template>
 
 <script>
 export default {
+	data() {
+		return {
+			statusBarHeight: 44
+		}
+	},
+	created() {
+		// 从持久化存储获取状态栏高度
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+	},
 	methods: {
 		goBack() {
 			const pages = getCurrentPages && getCurrentPages()
@@ -77,32 +87,33 @@ export default {
 	box-sizing: border-box;
 }
 
-.header-actions {
+// 自定义导航栏
+.custom-navbar {
 	position: absolute;
-	top: 100rpx;
-	left: 40rpx;
-	right: 210rpx;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 10;
+}
+
+.header-actions {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	padding: 20rpx 40rpx;
+	padding-right: 210rpx;
 	box-sizing: border-box;
-	z-index: 10;
 }
 
 .back-btn {
 	width: 64rpx;
 	height: 64rpx;
 	border-radius: 32rpx;
-	// background: rgba(255, 255, 255, 0.18);
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	backdrop-filter: blur(6rpx);
-	box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
 	cursor: pointer;
 	flex-shrink: 0;
-	z-index: 10;
-	opacity: 1;
 }
 
 .back-icon {

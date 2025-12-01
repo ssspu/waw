@@ -1,11 +1,10 @@
 <template>
 	<view class="service-list-section">
 		<view class="order-list">
-			<view 
-				v-for="(order, index) in filteredOrders" 
-				:key="index" 
+			<view
+				v-for="(order, index) in filteredOrders"
+				:key="index"
 				class="order-card"
-				@tap="handleOrderCardClick(order)"
 			>
 				<view class="card-content">
 					<!-- 订单头部 -->
@@ -24,7 +23,7 @@
 					<!-- 订单详情 -->
 					<view class="order-details">
 						<view class="service-info">
-							<text class="service-name">{{ order.serviceName }}</text>
+							<text class="service-name" @tap="handleDetail(order)">{{ order.serviceName }}</text>
 							<view class="service-meta">
 								<text class="meta-label">服务:</text>
 								<view class="meta-content">
@@ -521,11 +520,22 @@ export default {
 		},
 		handleDetail(order) {
 			// 根据订单状态或tab跳转到对应详情页
-			if (order.status === '待付款') {
+			if (order.status === '待付款' || order.tab === 'pending-payment') {
 				uni.navigateTo({
 					url: `/pages/order/detail?orderId=${order.orderNumber}`
 				})
-			} else if (order.tab === 'pending-use') {
+			} else if (order.tab === 'pending-confirm') {
+				// 待确认订单跳转到待确认详情页
+				uni.navigateTo({
+					url: `/pages/order/detail-pending-confirm?orderId=${order.orderNumber}`
+				})
+			} else if (order.tab === 'pending-review') {
+				// 待评价订单跳转到待评价详情页
+				uni.navigateTo({
+					url: `/pages/order/detail-pending-review?orderId=${order.orderNumber}`
+				})
+			} else {
+				// 其他状态（待使用等）都跳转到待使用详情页
 				uni.navigateTo({
 					url: `/pages/order/detail-pending-use?orderId=${order.orderNumber}`
 				})
@@ -585,24 +595,10 @@ export default {
 			this.currentCancelOrder = null
 		},
 		handlePay(order) {
-			console.log('Pay clicked:', order)
-			// 跳转到支付页面
+			// 跳转到待付款订单详情页
 			uni.navigateTo({
-				url: `/pages/payment/index?orderId=${order.orderNumber}`
+				url: `/pages/order/detail?orderId=${order.orderNumber}`
 			})
-		},
-		handleOrderCardClick(order) {
-			// 待付款订单点击卡片跳转到订单详情
-			if (order.status === '待付款') {
-				uni.navigateTo({
-					url: `/pages/order/detail?orderId=${order.orderNumber}`
-				})
-			} else if (order.tab === 'pending-use') {
-				// 待使用订单点击卡片跳转到待使用详情页
-				uni.navigateTo({
-					url: `/pages/order/detail-pending-use?orderId=${order.orderNumber}`
-				})
-			}
 		}
 	}
 }

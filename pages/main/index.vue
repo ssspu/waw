@@ -1,7 +1,5 @@
 <template>
 	<view class="screen">
-		<view class="status-bar" style="height: 44rpx;"></view>
-
 		<!-- 背景图片 - 预加载所有背景图避免切换闪烁 -->
 		<image
 			v-for="(tab, key) in assets"
@@ -11,38 +9,30 @@
 			:src="tab.headerBg"
 			mode="aspectFill"
 		></image>
-		<!-- <image 
-			v-if="currentMainBg"
-			class="bg-image-2" 
-			:src="currentMainBg" 
-			mode="aspectFill"
-		></image> -->
-		
-		<!-- 状态栏和头部 -->
-		<view class="header-wrapper">
-			<!-- 导航栏 -->
-			<view class="nav-bar">
+
+		<!-- 自定义导航栏 -->
+		<view class="custom-navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
+			<view class="navbar-content">
 				<view class="nav-left">
 					<view class="back-btn" @tap="goBack">
 						<image class="back-icon" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-4.svg" mode="aspectFit"></image>
 					</view>
 					<text class="nav-title">美发</text>
 				</view>
-				<view class="nav-bar-right">
-					<!-- 搜索栏 -->
-					<view class="search-bar" @tap="handleSearchClick">
-						<image class="search-icon" :src="currentBadgeIcon" mode="aspectFit"></image>
-						<text class="search-text">{{ currentTabLabel }}</text>
-					</view>
+				<!-- 搜索栏 -->
+				<view class="search-bar" @tap="handleSearchClick">
+					<image class="search-icon" :src="currentBadgeIcon" mode="aspectFit"></image>
+					<text class="search-text">{{ currentTabLabel }}</text>
 				</view>
 			</view>
 		</view>
 		
-		<!-- Tabs 背景块 -->
-		<view class="tabs-bg"></view>
+		
 		
 		<!-- Tabs + 内容区背景 -->
 		<view class="content-section">
+			<!-- Tabs 背景块 -->
+			<view class="tabs-bg"></view>
 			<!-- 预加载所有背景图，通过 opacity 切换避免闪烁 -->
 			<image
 				v-for="(tab, key) in assets"
@@ -121,6 +111,7 @@ export default {
 	},
 	data() {
 		return {
+			statusBarHeight: 44,
 			activeTab: 'designer',
 			selectedServiceCategory: '', // 空字符串表示"优服务"显示全部
 			tabSwitchCount: 0, // 用于重置组件状态
@@ -168,6 +159,9 @@ export default {
 		}
 	},
 	onLoad(options) {
+		// 从持久化存储获取状态栏高度
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+
 		console.log('main页面 onLoad, 接收到的参数:', options)
 		if (options.tab) {
 			// Ensure the tab exists
@@ -289,32 +283,24 @@ export default {
 	transition: opacity 0.3s ease;
 }
 
-.header-wrapper {
+// 自定义导航栏
+.custom-navbar {
 	position: relative;
-	z-index: 10;
 	width: 100%;
+	z-index: 10;
 }
 
-.nav-bar {
-	position: relative;
-	padding: 62rpx 30rpx;
+.navbar-content {
 	display: flex;
 	align-items: center;
-	white-space: nowrap;
-}
-
-.nav-bar-right {
-	position: relative;
-	display: flex;
-	align-items: center;
-	gap: 12rpx;
-	margin-left: 30rpx;
+	padding: 20rpx 30rpx;
+	gap: 16rpx;
 }
 
 .nav-left {
 	display: flex;
 	align-items: center;
-	gap: 48rpx;
+	gap: 16rpx;
 }
 
 .back-btn {
@@ -330,6 +316,12 @@ export default {
 	height: 32rpx;
 }
 
+.nav-title {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 32rpx;
+	font-weight: 500;
+	color: #ffffff;
+}
 
 .logo-group {
 	width: 256rpx;
@@ -427,14 +419,14 @@ export default {
 
 .tabs-bg {
 	position: absolute;
-	top: 678rpx;
+	top: 10rpx;
 	left: 0;
 	right: 0;
 	height: 100rpx;
 	background-color: #e6e6e6;
 	border-radius: 36rpx 36rpx 0 0;
 	box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.08);
-	z-index: 5;
+	z-index: 0;
 }
 
 .tabs-wrapper {

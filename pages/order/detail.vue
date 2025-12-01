@@ -1,10 +1,7 @@
 <template>
 	<view class="order-detail-page">
-		<view class="status-bar-space"></view>
-
-		
 		<!-- 导航栏 -->
-		<view class="navbar">
+		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
 				<view class="back-btn" @tap="handleBack">
 					<image 
@@ -85,14 +82,21 @@
 						<text class="price-label">商品金额</text>
 						<text class="price-text">¥{{ productInfo.price }}</text>
 					</view>
-					<view class="price-item">
-						<text class="price-label">运费</text>
-						<text class="price-text">¥0</text>
+					<view class="price-item coupon-row" @tap="handleOpenCoupon">
+						<text class="price-label">优惠金额</text>
+						<view class="coupon-value-row">
+							<text class="price-text">-¥{{ discountAmount }}</text>
+							<image
+								class="arrow-right-icon"
+								src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame-1.svg"
+								mode="aspectFit"
+							></image>
+						</view>
 					</view>
 					<view class="price-item total">
 						<text class="price-label">合计支付</text>
 						<view class="total-price">
-							<text class="total-price-value">¥{{ productInfo.price }}</text>
+							<text class="total-price-value">¥{{ finalPrice }}</text>
 						</view>
 					</view>
 				</view>
@@ -176,16 +180,70 @@
 				</view>
 			</view>
 		</view>
+
+		<!-- 优惠券弹窗 -->
+		<coupon-popup
+			:visible="showCouponPopup"
+			:coupons="coupons"
+			mode="select"
+			:selected-id="selectedCoupon ? selectedCoupon.id : null"
+			@close="showCouponPopup = false"
+			@select="handleSelectCoupon"
+		></coupon-popup>
 	</view>
 </template>
 
 <script>
+import CouponPopup from '@/components/popup/CouponPopup.vue'
+
 export default {
+	components: {
+		CouponPopup
+	},
 	data() {
 		return {
+			statusBarHeight: 44,
 			countdown: '00:30:00',
 			countdownTimer: null,
 			showCancelModal: false,
+			showCouponPopup: false,
+			selectedCoupon: null,
+			discountAmount: 0,
+			coupons: [
+				{
+					id: 1,
+					amount: '50',
+					discount: 50,
+					condition: '满200可用',
+					minAmount: 200,
+					tag: '商家券',
+					title: '新人专享优惠券',
+					description: '服务类产品均可使用',
+					validUntil: '2025.12.31 23:59'
+				},
+				{
+					id: 2,
+					amount: '100',
+					discount: 100,
+					condition: '满500可用',
+					minAmount: 500,
+					tag: '平台券',
+					title: '会员专属优惠券',
+					description: '服务类产品均可使用',
+					validUntil: '2025.12.31 23:59'
+				},
+				{
+					id: 3,
+					amount: '30',
+					discount: 30,
+					condition: '满100可用',
+					minAmount: 100,
+					tag: '商家券',
+					title: '节日特惠券',
+					description: '服务类产品均可使用',
+					validUntil: '2025.12.31 23:59'
+				}
+			],
 			selectedReasonIndex: null,
 			cancelReasons: [
 				'价格有点贵',
@@ -215,7 +273,15 @@ export default {
 			}
 		}
 	},
+	computed: {
+		finalPrice() {
+			const price = parseFloat(this.productInfo.price) || 0
+			return Math.max(0, price - this.discountAmount)
+		}
+	},
 	onLoad(options) {
+		// 从持久化存储获取状态栏高度
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 		// 从预约页面传递的数据
 		if (options.data) {
 			try {
@@ -324,6 +390,34 @@ export default {
 			uni.navigateTo({
 				url: `/pages/payment/index?orderId=${this.orderInfo.orderNumber}`
 			})
+		},
+		handleOpenCoupon() {
+			this.showCouponPopup = true
+		},
+		handleSelectCoupon(coupon) {
+			if (coupon) {
+				// 检查是否满足使用条件
+				const price = parseFloat(this.productInfo.price) || 0
+				if (price >= coupon.minAmount) {
+					this.selectedCoupon = coupon
+					this.discountAmount = coupon.discount
+					uni.showToast({
+						title: `已使用${coupon.title}`,
+						icon: 'none'
+					})
+				} else {
+					uni.showToast({
+						title: `需满${coupon.minAmount}元才能使用`,
+						icon: 'none'
+					})
+					return
+				}
+			} else {
+				// 取消使用优惠券
+				this.selectedCoupon = null
+				this.discountAmount = 0
+			}
+			this.showCouponPopup = false
 		},
 		parseOrderData(orderData) {
 			// 解析服务信息
@@ -630,6 +724,21 @@ export default {
 	align-items: center;
 	justify-content: space-between;
 	flex-wrap: nowrap;
+}
+
+.price-item.coupon-row {
+	cursor: pointer;
+}
+
+.coupon-value-row {
+	display: flex;
+	align-items: center;
+	gap: 8rpx;
+}
+
+.arrow-right-icon {
+	width: 24rpx;
+	height: 24rpx;
 }
 
 .price-item.total {

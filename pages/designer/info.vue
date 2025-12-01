@@ -1,13 +1,11 @@
 <template>
 	<view class="info-page">
 		<!-- 自定义导航栏 -->
-		<view class="custom-navbar">
-			<view class="status-bar-spacer"></view>
+		<view class="custom-navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
 				<view class="nav-left" @tap="goBack">
 					<image class="back-icon" src="https://c.animaapp.com/mi5eklbiAEaKLJ/img/frame-1.svg" mode="aspectFit"></image>
 				</view>
-
 			</view>
 
 			<designer-info-profile-section
@@ -40,8 +38,13 @@ export default {
 	},
 	data() {
 		return {
+			statusBarHeight: 44,
 			activeTab: 'designer'
 		}
+	},
+	onLoad() {
+		// 从持久化存储获取状态栏高度
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
 		goBack() {
@@ -77,10 +80,6 @@ export default {
 	border-bottom: 2rpx solid #f1f1f1;
 }
 
-.status-bar-spacer {
-	height: 80rpx;
-}
-
 .navbar-content {
 	width: 100%;
 	min-height: 120rpx;
@@ -114,6 +113,7 @@ export default {
 	justify-content: center;
 	position: absolute;
 	left: 30rpx;
+	z-index: 20;
 }
 
 .back-icon {
@@ -125,15 +125,14 @@ export default {
 .nav-right {
 	display: flex;
 	align-items: center;
-	justify-content: flex-start;
-	gap: 12rpx;
 	flex-shrink: 0;
 	cursor: pointer;
-	width: 64rpx;
-	height: 64rpx;
+	width: 60rpx;
+	height: 60rpx;
 	justify-content: center;
 	position: absolute;
 	right: 30rpx;
+	z-index: 20;
 }
 
 .navbar-tabs {
@@ -142,9 +141,8 @@ export default {
 }
 
 .share-icon {
-	width: 32rpx;
-	height: 32rpx;
-	flex-shrink: 0;
+	width: 100%;
+	height: 100%;
 }
 
 .main-content {

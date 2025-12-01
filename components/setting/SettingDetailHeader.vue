@@ -1,11 +1,11 @@
 <template>
-	<view class="custom-header">
+	<view class="custom-header" :style="{ paddingTop: statusBarHeight + 'px' }">
 		<view class="navbar-content">
 			<view class="nav-left">
 				<view class="back-btn" @tap="goBack">
-					<image 
-						class="back-icon" 
-						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" 
+					<image
+						class="back-icon"
+						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg"
 						mode="aspectFit"
 					></image>
 				</view>
@@ -22,6 +22,14 @@ export default {
 			type: String,
 			required: true
 		}
+	},
+	data() {
+		return {
+			statusBarHeight: 44
+		}
+	},
+	created() {
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
 		goBack() {
@@ -44,6 +52,7 @@ export default {
 	align-items: center;
 	padding: 24rpx 32rpx;
 	box-sizing: border-box;
+	gap: 24rpx;
 }
 
 .nav-left {
@@ -52,7 +61,6 @@ export default {
 	justify-content: center;
 	width: 32rpx;
 	height: 32rpx;
-	z-index: 2;
 }
 
 .back-btn {
@@ -68,5 +76,11 @@ export default {
 	flex-shrink: 0;
 }
 
+.nav-title {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 32rpx;
+	font-weight: 500;
+	color: #333333;
+}
 </style>
 

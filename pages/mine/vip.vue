@@ -1,7 +1,6 @@
 <template>
 	<view class="vip-page">
-		<view class="status-bar-space"></view>
-		<view class="header">
+		<view class="header" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="title-row">
 				<view class="back-btn" @tap="handleBack">
 					<image class="back-arrow-icon" src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" mode="aspectFit" />
@@ -67,6 +66,7 @@
 export default {
 	data() {
 		return {
+			statusBarHeight: 44,
 			tags: ['安心服务', '免费设计', '预约服务'],
 			benefits: [
 				'赠送一份价值365元的精美产品大礼包',
@@ -77,6 +77,9 @@ export default {
 				'自用省钱、分享赚钱，“美丽天使”'
 			]
 		}
+	},
+	onLoad() {
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
 		handleBack() {

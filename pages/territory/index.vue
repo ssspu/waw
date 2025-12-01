@@ -1,8 +1,7 @@
 <template>
 	<view class="territory-page">
-		<view class="status-bar-space"></view>
 		<!-- 自定义导航栏 -->
-		<view class="custom-header">
+		<view class="custom-header" :style="{ paddingTop: statusBarHeight + 'px' }">
 			
 			<!-- 导航栏内容 -->
 			<view class="navbar-content">
@@ -199,6 +198,7 @@ export default {
 	},
 	data() {
 		return {
+			statusBarHeight: 44,
 			activeTopTab: 'designer',
 			activeSubTab: 'hairstylist',
 			activeBrandTab: 'hair',
@@ -270,6 +270,9 @@ export default {
 			showShareModal: false
 		}
 	},
+	onLoad() {
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+	},
 	methods: {
 		goBack() {
 			uni.navigateBack()
@@ -300,7 +303,10 @@ export default {
 			this.showShareModal = false
 		},
 		handleBookAgain() {
-			console.log('Book again clicked')
+			// 跳转到品牌馆详情页
+			uni.navigateTo({
+				url: '/pages/brand/info'
+			})
 		},
 		handleMore() {
 			console.log('More clicked')
@@ -421,9 +427,9 @@ export default {
 .top-nav-fixed .top-nav {
 	display: flex;
 	align-items: center;
-	gap: 32rpx;
+	gap: 48rpx;
 	width: 100%;
-	padding: 16rpx 30rpx 0 30rpx;
+	padding: 16rpx 30rpx 24rpx 30rpx;
 	box-sizing: border-box;
 }
 
@@ -432,14 +438,14 @@ export default {
 }
 
 .top-nav-fixed .top-nav-label {
-	font-family: 'PingFang_SC-Semibold', Helvetica;
-	font-weight: normal;
-	color: #666666;
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-weight: 500;
+	color: #a6a6a6;
 	font-size: 28rpx;
 	text-align: center;
-	
+
 	&.active {
-		font-weight: 600;
+		font-weight: 500;
 		color: #000000;
 	}
 }
@@ -448,16 +454,17 @@ export default {
 .top-nav-fixed .sub-nav {
 	display: flex;
 	align-items: center;
-	gap: 32rpx;
 	width: 100%;
-	padding: 16rpx 30rpx 0 30rpx;
+	padding: 16rpx 0 0 0;
 	box-sizing: border-box;
 }
 
 .top-nav-fixed .sub-nav-item {
+	flex: 1;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	justify-content: center;
 	position: relative;
 	cursor: pointer;
 	padding-bottom: 16rpx;
@@ -465,10 +472,10 @@ export default {
 
 .top-nav-fixed .sub-nav-label {
 	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 400;
+	font-weight: 500;
 	color: #a6a6a6;
 	font-size: 28rpx;
-	
+
 	&.active {
 		font-weight: 500;
 		color: #000000;
@@ -477,8 +484,8 @@ export default {
 
 .top-nav-fixed .sub-nav-indicator {
 	position: absolute;
-	bottom: -2rpx;
-	width: 24rpx;
+	bottom: 0;
+	width: 32rpx;
 	height: 4rpx;
 	background-color: #000000;
 	border-radius: 2rpx;

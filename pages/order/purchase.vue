@@ -3,25 +3,26 @@
 		<scroll-view class="page-scroll" scroll-y enable-back-to-top>
 			<!-- 头部背景图片 -->
 			<view class="header-section">
-				<image 
-					class="header-bg-image" 
-					src="https://c.animaapp.com/mifnbli6udxphC/img/rectangle-186.png" 
+				<image
+					class="header-bg-image"
+					src="https://c.animaapp.com/mifnbli6udxphC/img/rectangle-186.png"
 					mode="aspectFill"
 				></image>
-				
-			
-				<!-- 返回按钮 -->
-				<view class="back-btn" @click="handleBack">
-					<image 
-						class="back-icon" 
-						src="https://c.animaapp.com/mifnbli6udxphC/img/frame-1877.svg" 
-						mode="aspectFit"
-					></image>
+
+				<!-- 自定义导航栏 -->
+				<view class="custom-navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
+					<view class="navbar-content">
+						<view class="back-btn" @click="handleBack">
+							<image
+								class="back-icon"
+								src="https://c.animaapp.com/mifnbli6udxphC/img/frame-1877.svg"
+								mode="aspectFit"
+							></image>
+						</view>
+						<text class="nav-title">洗剪吹</text>
+					</view>
 				</view>
-				
-				<!-- 标题 -->
-				<text class="page-title">洗剪吹</text>
-				
+
 				<!-- 右上角详情区域 -->
 				<ServicePurchaseDetailsSection />
 			</view>
@@ -50,10 +51,14 @@ export default {
 	},
 	data() {
 		return {
+			statusBarHeight: 44,
 			serviceId: ''
 		}
 	},
 	onLoad(options) {
+		// 从持久化存储获取状态栏高度
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+
 		if (options.id) {
 			this.serviceId = options.id
 		}
@@ -103,40 +108,45 @@ export default {
 	height: 100%;
 }
 
+// 自定义导航栏
+.custom-navbar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 30;
+}
 
-
+.navbar-content {
+	display: flex;
+	align-items: center;
+	padding: 20rpx 30rpx;
+	gap: 16rpx;
+}
 
 .back-btn {
-	position: absolute;
-	top: 102rpx;
-	left: 30rpx;
-	width: 60rpx;
-	height: 60rpx;
+	width: 64rpx;
+	height: 64rpx;
+	border-radius: 32rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	z-index: 30;
 	cursor: pointer;
+	flex-shrink: 0;
 }
 
 .back-icon {
-	width: 100%;
-	height: 100%;
+	width: 60rpx;
+	height: 60rpx;
+	flex-shrink: 0;
+	filter: brightness(0) invert(1);
 }
 
-.page-title {
-	position: absolute;
-	top: 112rpx;
-	left: 114rpx;
+.nav-title {
 	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-size: 30rpx;
+	font-size: 32rpx;
 	font-weight: 500;
 	color: #ffffff;
-	z-index: 10;
-	opacity: 0;
-	transform: translateY(-32rpx);
-	animation: fadeIn 0.5s ease-out forwards;
-	animation-delay: 200ms;
 }
 
 .content-wrapper {
