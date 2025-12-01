@@ -1,8 +1,7 @@
 <template>
 	<view class="setting-page">
-		<view class="status-bar-space"></view>
 		<!-- 自定义导航栏 -->
-		<view class="custom-header">
+		<view class="custom-header" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
 				<view class="nav-left">
 					<view class="back-btn" @tap="goBack">
@@ -91,6 +90,7 @@
 export default {
 	data() {
 		return {
+			statusBarHeight: 44,
 			settingsGroups: [
 				{
 					items: [
@@ -121,6 +121,9 @@ export default {
 				},
 			],
 		}
+	},
+	onLoad() {
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
 		goBack() {
@@ -257,6 +260,14 @@ export default {
 	align-items: center;
 	padding: 24rpx 32rpx;
 	box-sizing: border-box;
+	gap: 24rpx;
+}
+
+.nav-title {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 32rpx;
+	font-weight: 500;
+	color: #333333;
 }
 
 .nav-left {

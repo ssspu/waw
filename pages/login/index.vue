@@ -10,10 +10,10 @@
 					<image class="nav-icon" src="https://c.animaapp.com/mi5ng54v4eM3X6/img/frame.svg" mode="aspectFit"></image>
 				</view>
 				<text class="nav-title">账户登录</text>
-				<view class="nav-right">
+				<!-- <view class="nav-right">
 					<image class="nav-icon" src="/static/icon/more.svg" mode="aspectFit"></image>
 					<image class="nav-icon" src="/static/icon/scan.svg" mode="aspectFit"></image>
-				</view>
+				</view> -->
 			</view>
 		</view>
 
@@ -111,9 +111,8 @@ export default {
 		}
 	},
 	onLoad() {
-		// 获取状态栏高度
-		const systemInfo = uni.getSystemInfoSync()
-		this.statusBarHeight = systemInfo.statusBarHeight || 44
+		// 从持久化存储获取状态栏高度
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	onUnload() {
 		if (this.modalTimer) {

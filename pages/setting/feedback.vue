@@ -1,6 +1,5 @@
 <template>
 	<view class="setting-detail-page">
-		<view class="status-bar-space"></view>
 		<SettingDetailHeader title="反馈与建议" />
 		
 		<view class="main-content">

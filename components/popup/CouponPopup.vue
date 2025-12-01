@@ -1,56 +1,80 @@
 <template>
 	<view class="popup-overlay" v-if="visible" @tap="handleClose">
 		<view class="popup-container" @tap.stop>
-			<view class="sheet-handle"></view>
 			<!-- 弹窗头部 -->
 			<view class="popup-header">
 				<text class="popup-title">优惠券</text>
+				<text v-if="mode === 'select'" class="popup-subtitle">已选择推荐券，{{ selectedCount }}张共优惠 ¥ {{ totalDiscount }}</text>
 				<view class="close-btn" @tap="handleClose">
 					<text class="close-icon">×</text>
 				</view>
 			</view>
-			
+
+			<!-- 选择模式下的统计信息 -->
+			<view v-if="mode === 'select'" class="select-summary">
+				<view class="summary-left">
+					<text class="summary-text">已选择{{ selectedCount }}张券，共优惠 </text>
+					<text class="summary-price">¥ {{ totalDiscount }}</text>
+				</view>
+				<view class="summary-right" @tap="handleAutoSelect">
+					<text class="auto-select-text">已选择推荐券</text>
+				</view>
+			</view>
+
 			<!-- 优惠券列表 -->
 			<scroll-view class="coupon-list" scroll-y>
-				<view 
-					v-for="coupon in displayCoupons" 
-					:key="coupon.id" 
+				<view
+					v-for="coupon in displayCoupons"
+					:key="coupon.id"
 					class="coupon-card"
 				>
-					<view class="coupon-card-inner">
-						<!-- 金额区域 -->
-						<view class="coupon-amount">
+					<view
+						class="coupon-card-inner"
+						:class="{ 'selected': mode === 'select' && selectedCouponId === coupon.id }"
+						@tap="mode === 'select' ? handleSelect(coupon) : null"
+					>
+						<!-- 左侧金额区域 -->
+						<view class="coupon-left">
 							<view class="amount-row">
 								<text class="amount-symbol">¥</text>
-								<text class="amount-value">{{ coupon.amount }}</text>
+								<text class="amount-value">{{ coupon.amount || coupon.discount }}</text>
 							</view>
-							<text class="amount-condition">{{ coupon.condition }}</text>
+							<text class="amount-condition">{{ coupon.condition || `满${coupon.minAmount}元使用` }}</text>
 						</view>
-						
-						<!-- 优惠券信息 -->
-						<view class="coupon-info">
-							<text class="coupon-title">{{ coupon.title }}</text>
-							<text class="coupon-desc">{{ coupon.description }}</text>
-							<text class="coupon-date">{{ coupon.startDate }} - {{ coupon.endDate }}</text>
-							<view class="coupon-progress">
-								<text class="progress-text">已领取: {{ coupon.claimed }}张</text>
-								<!-- <view class="dot"></view> -->
-								<text class="progress-text">剩余: {{ coupon.remaining }}张</text>
+
+						<!-- 右侧信息区域 -->
+						<view class="coupon-right">
+							<view class="coupon-main">
+								<text class="coupon-title">{{ coupon.title }}</text>
+								<text class="coupon-desc">{{ coupon.description || '服务类产品均可使用' }}</text>
+								<text class="coupon-date">有效期至：{{ coupon.startDate ? coupon.endDate : coupon.validUntil }}</text>
 							</view>
-						</view>
-						
-						<!-- 领取按钮 -->
-						<view class="claim-btn" :class="{ 'claimed': coupon.isClaimed }" @tap="handleClaim(coupon)">
-							<text class="claim-text">{{ coupon.isClaimed ? '已领取' : '领取' }}</text>
+
+							<!-- 选择按钮（选择模式） -->
+							<view v-if="mode === 'select'" class="select-radio" :class="{ 'checked': selectedCouponId === coupon.id }">
+								<text v-if="selectedCouponId === coupon.id" class="radio-check">✓</text>
+							</view>
+
+							<!-- 领取按钮（领取模式） -->
+							<view v-if="mode === 'claim'" class="claim-btn" :class="{ 'claimed': coupon.isClaimed }" @tap.stop="handleClaim(coupon)">
+								<text class="claim-text">{{ coupon.isClaimed ? '已领取' : '领取' }}</text>
+							</view>
 						</view>
 					</view>
 				</view>
-				
+
 				<!-- 底部提示 -->
 				<view class="list-footer">
 					<text class="footer-text">没有更多了...</text>
 				</view>
 			</scroll-view>
+
+			<!-- 确认按钮 -->
+			<view class="confirm-section">
+				<view class="confirm-btn" @tap="handleConfirmSelect">
+					<text class="confirm-text">确认</text>
+				</view>
+			</view>
 		</view>
 	</view>
 </template>
@@ -63,56 +87,64 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		// 模式: 'claim' 领取模式, 'select' 选择模式
+		mode: {
+			type: String,
+			default: 'claim'
+		},
+		// 当前选中的优惠券ID（选择模式）
+		selectedId: {
+			type: [Number, String, null],
+			default: null
+		},
 		coupons: {
 			type: Array,
 			default: () => [
 				{
 					id: 1,
-					amount: '10',
-					condition: '满300元使用',
-					title: '洗剪吹优惠券',
+					amount: '21',
+					condition: '满30可用',
+					minAmount: 30,
+					tag: '商家券',
+					title: '吃不胖饰品的店',
 					description: '服务类产品均可使用',
-					startDate: '2020.05.05',
-					endDate: '2020.11.05',
-					claimed: 0,
-					remaining: 1000,
+					validUntil: '2026.02.13 17:57',
 					isClaimed: false
 				},
 				{
 					id: 2,
-					amount: '50',
-					condition: '满300元使用',
-					title: '洗剪吹优惠券',
+					amount: '21',
+					condition: '满30可用',
+					minAmount: 30,
+					tag: '商家券',
+					title: '吃不胖饰品的店',
 					description: '服务类产品均可使用',
-					startDate: '2020.05.05',
-					endDate: '2020.11.05',
-					claimed: 0,
-					remaining: 1000,
+					validUntil: '2026.02.13 17:57',
 					isClaimed: false
-				},
-				{
-					id: 3,
-					amount: '120',
-					condition: '满1000元使用',
-					title: '洗剪吹优惠券',
-					description: '服务类产品均可使用',
-					startDate: '2020.05.05',
-					endDate: '2020.11.05',
-					claimed: 0,
-					remaining: 1000,
-					isClaimed: true
 				}
 			]
 		}
 	},
 	data() {
 		return {
-			internalCoupons: []
+			internalCoupons: [],
+			selectedCouponId: null,
+			tempSelectedCoupon: null,
+			expandedCouponId: null
 		}
 	},
 	computed: {
 		displayCoupons() {
 			return this.internalCoupons.length > 0 ? this.internalCoupons : this.coupons
+		},
+		selectedCount() {
+			return this.selectedCouponId !== null ? 1 : 0
+		},
+		totalDiscount() {
+			if (this.tempSelectedCoupon) {
+				return parseFloat(this.tempSelectedCoupon.amount || this.tempSelectedCoupon.discount) || 0
+			}
+			return 0
 		}
 	},
 	watch: {
@@ -120,8 +152,22 @@ export default {
 			immediate: true,
 			deep: true,
 			handler(newCoupons) {
-				// 深拷贝优惠券数据到内部状态
 				this.internalCoupons = JSON.parse(JSON.stringify(newCoupons))
+			}
+		},
+		visible: {
+			handler(newVal) {
+				if (newVal && this.mode === 'select') {
+					this.selectedCouponId = this.selectedId
+					this.tempSelectedCoupon = this.selectedId ? this.coupons.find(c => c.id === this.selectedId) : null
+					this.expandedCouponId = null
+				}
+			}
+		},
+		selectedId: {
+			immediate: true,
+			handler(newVal) {
+				this.selectedCouponId = newVal
 			}
 		}
 	},
@@ -133,20 +179,48 @@ export default {
 			if (coupon.isClaimed) {
 				return
 			}
-			
-			// 找到对应的优惠券并更新状态
 			const index = this.internalCoupons.findIndex(c => c.id === coupon.id)
 			if (index !== -1) {
-				// 更新为已领取状态
 				this.$set(this.internalCoupons[index], 'isClaimed', true)
-				// 更新领取数量
-				this.$set(this.internalCoupons[index], 'claimed', this.internalCoupons[index].claimed + 1)
-				// 更新剩余数量
-				this.$set(this.internalCoupons[index], 'remaining', this.internalCoupons[index].remaining - 1)
+				if (this.internalCoupons[index].claimed !== undefined) {
+					this.$set(this.internalCoupons[index], 'claimed', this.internalCoupons[index].claimed + 1)
+				}
+				if (this.internalCoupons[index].remaining !== undefined) {
+					this.$set(this.internalCoupons[index], 'remaining', this.internalCoupons[index].remaining - 1)
+				}
 			}
-			
-			// 触发父组件的领取事件
 			this.$emit('claim', coupon)
+		},
+		handleSelect(coupon) {
+			if (coupon === null) {
+				this.selectedCouponId = null
+				this.tempSelectedCoupon = null
+			} else {
+				this.selectedCouponId = coupon.id
+				this.tempSelectedCoupon = coupon
+			}
+		},
+		handleAutoSelect() {
+			// 自动选择最优惠的券
+			if (this.displayCoupons.length > 0) {
+				const bestCoupon = this.displayCoupons.reduce((prev, current) => {
+					const prevAmount = parseFloat(prev.amount || prev.discount) || 0
+					const currentAmount = parseFloat(current.amount || current.discount) || 0
+					return currentAmount > prevAmount ? current : prev
+				})
+				this.handleSelect(bestCoupon)
+			}
+		},
+		toggleDetail(couponId) {
+			if (this.expandedCouponId === couponId) {
+				this.expandedCouponId = null
+			} else {
+				this.expandedCouponId = couponId
+			}
+		},
+		handleConfirmSelect() {
+			this.$emit('select', this.tempSelectedCoupon)
+			this.$emit('close')
 		}
 	}
 }
@@ -164,37 +238,23 @@ export default {
 	display: flex;
 	align-items: flex-end;
 	justify-content: center;
-	padding: 0;
-	box-sizing: border-box;
 }
 
 .popup-container {
 	width: 100vw;
-	max-height: 85vh;
+	max-height: 80vh;
 	background-color: #ffffff;
-	border-radius: 32rpx 32rpx 0 0;
+	border-radius: 24rpx 24rpx 0 0;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
-	padding-bottom: constant(safe-area-inset-bottom, 0);
-	padding-bottom: env(safe-area-inset-bottom, 0);
-	box-shadow: 0 -20rpx 40rpx rgba(0, 0, 0, 0.08);
-}
-
-.sheet-handle {
-	width: 80rpx;
-	height: 8rpx;
-	border-radius: 100rpx;
-	background-color: rgba(0, 0, 0, 0.08);
-	align-self: center;
-	margin-top: 16rpx;
 }
 
 .popup-header {
 	display: flex;
+	flex-direction: column;
 	align-items: center;
-	justify-content: center;
-	padding: 24rpx 60rpx 32rpx;
+	padding: 32rpx 60rpx 20rpx;
 	position: relative;
 	border-bottom: 1rpx solid #f5f5f5;
 }
@@ -203,13 +263,20 @@ export default {
 	font-family: 'PingFang_SC-Semibold', Helvetica;
 	font-size: 32rpx;
 	color: #333333;
+	font-weight: 600;
+}
+
+.popup-subtitle {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 24rpx;
+	color: #999999;
+	margin-top: 8rpx;
 }
 
 .close-btn {
 	position: absolute;
 	right: 30rpx;
-	top: 50%;
-	transform: translateY(-50%);
+	top: 32rpx;
 	width: 48rpx;
 	height: 48rpx;
 	display: flex;
@@ -223,18 +290,60 @@ export default {
 	line-height: 1;
 }
 
+/* 选择统计信息 */
+.select-summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 20rpx 32rpx;
+	background-color: #f8f8f8;
+	border-radius: 12rpx;
+	margin: 16rpx 24rpx;
+}
+
+.summary-left {
+	display: flex;
+	align-items: center;
+}
+
+.summary-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 24rpx;
+	color: #333333;
+}
+
+.summary-price {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 24rpx;
+	color: #333333;
+	font-weight: 600;
+}
+
+.summary-right {
+	display: flex;
+	align-items: center;
+}
+
+.auto-select-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 24rpx;
+	color: #666666;
+}
+
+/* 优惠券列表 */
 .coupon-list {
 	flex: 1;
-	padding: 0 32rpx 40rpx;
+	padding: 0 24rpx;
 	max-height: inherit;
 	box-sizing: border-box;
 	background-color: #f7f7f7;
 }
 
 .coupon-card {
-	padding-top: 24rpx;
+	margin-bottom: 20rpx;
+
 	&:first-child {
-		padding-top: 32rpx;
+		margin-top: 24rpx;
 	}
 }
 
@@ -243,35 +352,41 @@ export default {
 	align-items: stretch;
 	background: #ffffff;
 	border-radius: 16rpx;
-	box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.05);
-	padding: 28rpx 24rpx;
+	overflow: hidden;
+	box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
 }
 
-.coupon-amount {
+.coupon-card-inner.selected {
+	box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+}
+
+/* 左侧金额区域 */
+.coupon-left {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	min-width: 140rpx;
-	margin-right: 28rpx;
-	border-right: 1rpx dashed #f0f0f0;
-	padding-right: 24rpx;
+	min-width: 160rpx;
+	padding: 28rpx 20rpx;
+	background-color: #ffffff;
+	border-right: 1rpx dashed #e8e8e8;
 }
 
 .amount-row {
 	display: flex;
-	align-items: flex-end;
+	align-items: baseline;
 }
 
 .amount-symbol {
 	font-family: 'PingFang_SC-Semibold', Helvetica;
 	font-size: 24rpx;
 	color: #333333;
+	font-weight: 600;
 }
 
 .amount-value {
 	font-family: 'DIN-Bold', Helvetica;
-	font-size: 48rpx;
+	font-size: 56rpx;
 	font-weight: bold;
 	color: #333333;
 	line-height: 1;
@@ -281,22 +396,40 @@ export default {
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-size: 20rpx;
 	color: #999999;
-	margin-top: 4rpx;
+	margin-top: 8rpx;
 }
 
-.coupon-info {
+/* 右侧信息区域 */
+.coupon-right {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	padding: 20rpx 24rpx;
+	background-color: #ffffff;
+}
+
+.coupon-main {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
 	gap: 8rpx;
-	min-width: 0;
-	justify-content: center;
+}
+
+.coupon-title-row {
+	display: flex;
+	align-items: center;
+	gap: 8rpx;
+}
+
+.coupon-tag {
+	display: none;
 }
 
 .coupon-title {
 	font-family: 'PingFang_SC-Semibold', Helvetica;
-	font-size: 30rpx;
+	font-size: 28rpx;
 	color: #333333;
+	font-weight: 600;
 }
 
 .coupon-desc {
@@ -311,10 +444,42 @@ export default {
 	color: #999999;
 }
 
+.coupon-detail-row {
+	display: flex;
+	align-items: center;
+	gap: 4rpx;
+	margin-top: 4rpx;
+}
+
+.detail-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 20rpx;
+	color: #cccccc;
+}
+
+.detail-arrow {
+	font-size: 18rpx;
+	color: #cccccc;
+}
+
+.coupon-detail-content {
+	padding-top: 12rpx;
+	border-top: 1rpx solid #f5f5f5;
+	margin-top: 8rpx;
+}
+
+.detail-desc {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 22rpx;
+	color: #999999;
+	line-height: 1.5;
+}
+
 .coupon-progress {
 	display: flex;
-	gap: 10rpx;
 	align-items: center;
+	gap: 16rpx;
+	margin-top: 4rpx;
 }
 
 .progress-text {
@@ -323,28 +488,47 @@ export default {
 	color: #cccccc;
 }
 
-.dot {
-	width: 6rpx;
-	height: 6rpx;
+/* 选择按钮 */
+.select-radio {
+	width: 44rpx;
+	height: 44rpx;
 	border-radius: 50%;
-	background-color: #e0e0e0;
+	border: 2rpx solid #e0e0e0;
+	background-color: #ffffff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	margin-left: 16rpx;
+
+	&.checked {
+		background-color: #333333;
+		border-color: #333333;
+	}
 }
 
+.radio-check {
+	color: #ffffff;
+	font-size: 24rpx;
+	font-weight: bold;
+	line-height: 1;
+}
+
+/* 领取按钮 */
 .claim-btn {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	min-width: 120rpx;
 	height: 64rpx;
-	padding: 0 26rpx;
+	padding: 0 24rpx;
 	background-color: #333333;
-	border-radius: 12rpx;
-	margin-left: 20rpx;
-	align-self: center;
-	transition: all 0.3s ease;
-	
+	border-radius: 32rpx;
+	margin-left: 16rpx;
+
 	&.claimed {
-		background-color: #e5e5e5;
+		background-color: #f5f5f5;
+		border: 1rpx solid #e0e0e0;
 		pointer-events: none;
 	}
 }
@@ -353,21 +537,70 @@ export default {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-size: 24rpx;
 	color: #ffffff;
-	
-	.claimed & {
-		color: #999999;
+}
+
+.claim-btn.claimed .claim-text {
+	color: #999999;
+}
+
+/* 不使用优惠券 */
+.no-coupon-card {
+	padding: 32rpx 24rpx;
+	background-color: #ffffff;
+	border-radius: 16rpx;
+	box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+
+	&.selected {
+		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
 	}
 }
 
+.no-coupon-content {
+	flex: 1;
+}
+
+.no-coupon-text {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 28rpx;
+	color: #333333;
+}
+
+/* 底部 */
 .list-footer {
 	display: flex;
 	justify-content: center;
-	padding: 40rpx 0 20rpx;
+	padding: 32rpx 0 20rpx;
 }
 
 .footer-text {
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-size: 24rpx;
 	color: #cccccc;
+}
+
+/* 确认按钮 */
+.confirm-section {
+	padding: 24rpx 32rpx;
+	padding-bottom: calc(24rpx + constant(safe-area-inset-bottom, 0));
+	padding-bottom: calc(24rpx + env(safe-area-inset-bottom, 0));
+	background-color: #ffffff;
+	border-top: 1rpx solid #f5f5f5;
+}
+
+.confirm-btn {
+	width: 100%;
+	height: 88rpx;
+	background-color: #333333;
+	border-radius: 44rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.confirm-text {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 32rpx;
+	color: #ffffff;
+	font-weight: 600;
 }
 </style>

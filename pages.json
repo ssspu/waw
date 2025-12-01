@@ -343,6 +343,24 @@
 		}
 	},
 	{
+		"path": "pages/order/detail-pending-confirm",
+		"style": {
+			"navigationBarTitleText": "订单详情",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/order/detail-pending-review",
+		"style": {
+			"navigationBarTitleText": "订单详情",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
 		"path": "pages/order/service-review",
 		"style": {
 			"navigationBarTitleText": "服务点评",
@@ -369,6 +387,33 @@
 				"navigationBarBackgroundColor": "#f2f2f2"
 			}
 		},
+	{
+		"path": "pages/portfolio/index",
+		"style": {
+			"navigationBarTitleText": "作品集",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/portfolio/filter",
+		"style": {
+			"navigationBarTitleText": "作品集",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/portfolio/detail",
+		"style": {
+			"navigationBarTitleText": "作品详情",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
 	{
 		"path": "pages/territory/index",
 		"style": {

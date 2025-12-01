@@ -1,15 +1,14 @@
 <template>
 	<view class="message-detail-page">
 		<!-- 导航栏 -->
-		<view class="navbar">
+		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
 				<view class="nav-left">
 					<view class="back-btn" @tap="handleBack">
-						<image class="back-icon" src="/static/icon/arrow-left.png" mode="aspectFit"></image>
+						<image class="back-icon" src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" mode="aspectFit"></image>
 					</view>
-					<text class="nav-title">消息详情</text>
 				</view>
-				<view class="nav-right"></view>
+				<text class="nav-title">消息详情</text>
 			</view>
 		</view>
 		
@@ -60,6 +59,7 @@
 export default {
 	data() {
 		return {
+			statusBarHeight: 44,
 			messageDetail: {
 				id: 1,
 				title: '系统通知',
@@ -74,6 +74,7 @@ export default {
 		}
 	},
 	onLoad(options) {
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 		if (options.id) {
 			// 根据 id 获取消息详情
 			this.loadMessageDetail(options.id)
@@ -103,46 +104,44 @@ export default {
 
 .navbar {
 	background-color: #ffffff;
-	padding-top: 88rpx;
 }
 
 .navbar-content {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	height: 88rpx;
-	padding: 0 30rpx;
+	padding: 24rpx 32rpx;
+	box-sizing: border-box;
+	gap: 24rpx;
 }
 
 .nav-left {
 	display: flex;
 	align-items: center;
-	gap: 16rpx;
+	justify-content: center;
+	width: 32rpx;
+	height: 32rpx;
 }
 
 .back-btn {
-	width: 60rpx;
-	height: 60rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	cursor: pointer;
 }
 
 .back-icon {
-	width: 40rpx;
-	height: 40rpx;
+	width: 32rpx;
+	height: 32rpx;
+	flex-shrink: 0;
 }
 
 .nav-title {
-	font-family: 'PingFang SC';
+	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-size: 32rpx;
 	font-weight: 500;
 	color: #333333;
 }
 
-.nav-right {
-	width: 60rpx;
-}
 
 .detail-card {
 	margin: 24rpx;

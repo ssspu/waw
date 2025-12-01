@@ -1,46 +1,17 @@
 <template>
 	<view class="coupon-page">
-		<!-- 自定义导航栏 -->
-		<view class="custom-header">
-			<!-- 状态栏 -->
-			<!-- <view class="status-bar">
-				<text class="time">9:41</text>
-				<view class="status-icons">
-					<image 
-						class="status-icon" 
-						src="https://c.animaapp.com/mi5m9weyYgJtGL/img/cellular-connection.svg" 
-						mode="aspectFit"
-					></image>
-					<image 
-						class="status-icon" 
-						src="https://c.animaapp.com/mi5m9weyYgJtGL/img/wifi.svg" 
-						mode="aspectFit"
-					></image>
-					<image 
-						class="status-icon" 
-						src="https://c.animaapp.com/mi5m9weyYgJtGL/img/battery.png" 
-						mode="aspectFit"
-					></image>
-				</view>
-			</view> -->
-			
-			<!-- 导航栏内容 -->
+		<!-- 导航栏 -->
+		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
-				<view class="nav-left">
-					<view class="back-btn" @tap="goBack">
-						<text class="back-icon">‹</text>
-					</view>
+				<view class="back-btn" @tap="goBack">
+					<image
+						class="back-icon"
+						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg"
+						mode="aspectFit"
+					></image>
 				</view>
-				<text class="nav-title">优惠券</text>
-				<view class="nav-right"></view>
+				<text class="navbar-title">优惠券</text>
 			</view>
-			
-			<!-- Logo -->
-			<!-- <image 
-				class="logo" 
-				src="https://c.animaapp.com/mi5m9weyYgJtGL/img/group-8.png" 
-				mode="aspectFit"
-			></image> -->
 		</view>
 		
 		<!-- Tab导航栏 -->
@@ -72,8 +43,12 @@ export default {
 	},
 	data() {
 		return {
+			statusBarHeight: 44,
 			activeTab: 'service'
 		}
+	},
+	onLoad() {
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
 		goBack() {
@@ -103,118 +78,43 @@ export default {
 	box-sizing: border-box;
 }
 
-.custom-header {
+.navbar {
 	position: relative;
 	width: 100%;
 	background-color: #ffffff;
-	flex-shrink: 0;
-}
-
-.status-bar {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: 88rpx;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 0 32rpx;
-	box-sizing: border-box;
-}
-
-.time {
-	font-family: 'Inter', Helvetica;
-	font-size: 28rpx;
-	color: #000000;
-	font-weight: normal;
-}
-
-.status-icons {
-	display: flex;
-	align-items: center;
-	gap: 8rpx;
-}
-
-.status-icon {
-	width: 34rpx;
-	height: 22rpx;
-	flex-shrink: 0;
+	z-index: 10;
 }
 
 .navbar-content {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 88rpx;
+	padding: 0 30rpx;
 	position: relative;
-	width: 100%;
-	height: 164rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 88rpx 30rpx 32rpx;
-	box-sizing: border-box;
-}
-
-.nav-left {
-	position: absolute;
-	left: 30rpx;
-	top: 50%;
-	transform: translateY(-50%);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 32rpx;
-	height: 32rpx;
-	z-index: 2;
 }
 
 .back-btn {
+	width: 32rpx;
+	height: 32rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	cursor: pointer;
 }
 
 .back-icon {
-	font-size: 48rpx;
+	width: 32rpx;
+	height: 32rpx;
+}
+
+.navbar-title {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 32rpx;
+	font-weight: 500;
 	color: #333333;
-	line-height: 1;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.nav-right {
 	position: absolute;
-	right: 30rpx;
-	top: 50%;
-	transform: translateY(-50%);
-	display: flex;
-	align-items: center;
-	gap: 32rpx;
-	z-index: 2;
-}
-
-.action-btn {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 48rpx;
-	height: 48rpx;
-	cursor: pointer;
-}
-
-.action-text {
-	font-size: 40rpx;
-	color: #333333;
-	line-height: 1;
-}
-
-.logo {
-	position: absolute;
-	top: 88rpx;
-	right: 30rpx;
-	width: 256rpx;
-	height: 144rpx;
-	z-index: 1;
+	left: 50%;
+	transform: translateX(-50%);
 }
 
 .coupon-content {

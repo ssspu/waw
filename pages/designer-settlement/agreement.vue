@@ -1,7 +1,7 @@
 <template>
 	<view class="screen">
 		<!-- 头部导航 -->
-		<view class="header">
+		<view class="header" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="nav-bar">
 				<view class="nav-left">
 					<view class="back-btn" @tap="handleBack">
@@ -101,6 +101,7 @@ import { agreementsData } from '@/data/agreements.js'
 export default {
 	data() {
 		return {
+			statusBarHeight: 44,
 			steps: [
 				{ label: '身份认证', active: false },
 				{ label: '职业认证', active: false },
@@ -111,6 +112,9 @@ export default {
 			hasScrolledToBottom: false,
 			agreements: agreementsData
 		}
+	},
+	onLoad() {
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
 		handleBack() {
