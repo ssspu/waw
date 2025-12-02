@@ -151,8 +151,8 @@ export default {
 
 .price-tag {
 	display: flex;
-	align-items: flex-end;
-	gap: 6rpx;
+	align-items: baseline;
+	gap: 4rpx;
 }
 
 .price-block {
@@ -164,8 +164,8 @@ export default {
 
 .price-text {
 	display: flex;
-	align-items: flex-end;
-	gap: 6rpx;
+	align-items: baseline;
+	gap: 4rpx;
 }
 
 .currency {
