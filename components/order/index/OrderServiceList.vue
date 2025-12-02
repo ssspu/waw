@@ -88,6 +88,14 @@
 										<text class="btn-text primary">立即付款</text>
 									</view>
 								</template>
+								<template v-else-if="order.tab === 'after-sale'">
+									<view class="detail-btn" @tap.stop="handleContactMerchant(order)">
+										<text class="btn-text">联系商家</text>
+									</view>
+									<view class="primary-btn" @tap.stop="handleDetail(order)">
+										<text class="btn-text primary">查看详情</text>
+									</view>
+								</template>
 								<template v-else>
 									<image
 										v-if="order.hasIcon && order.tab === 'pending-use'"
@@ -431,6 +439,27 @@ export default {
 					primaryButton: "立即评价",
 					tab: "pending-review"
 				},
+				{
+					orderNumber: "CDD83290895",
+					status: "退款",
+					statusColor: "#ffa77b",
+					serviceName: "洗剪吹",
+					serviceDetails: "洗护+修剪+造型",
+					duration: "预计1小时",
+					time: "今天11:00",
+					provider: {
+						name: "李天天",
+						badge: "美发师",
+						avatar: "https://c.animaapp.com/mi5lwlq8FxTpMa/img/ellipse-34.svg",
+						rating: "4.8",
+						reviews: "23",
+					},
+					price: "799",
+					quantity: "x1",
+					hasIcon: false,
+					primaryButton: "查看详情",
+					tab: "after-sale"
+				},
 			],
 		}
 	},
@@ -534,6 +563,11 @@ export default {
 				uni.navigateTo({
 					url: `/pages/order/detail-pending-review?orderId=${order.orderNumber}`
 				})
+			} else if (order.tab === 'after-sale') {
+				// 售后订单跳转到售后详情页
+				uni.navigateTo({
+					url: `/pages/order/detail-after-sale?orderId=${order.orderNumber}`
+				})
 			} else {
 				// 其他状态（待使用等）都跳转到待使用详情页
 				uni.navigateTo({
@@ -549,6 +583,11 @@ export default {
 			} else {
 				console.log('Primary action clicked:', order.primaryButton)
 			}
+		},
+		handleContactMerchant(order) {
+			// 联系商家
+			this.currentMoreOrder = order
+			this.showMoreModal = true
 		},
 		handleCancel(order) {
 			this.currentCancelOrder = order

@@ -1,1 +1,0 @@
-export { ServiceCardSection } from "./ServiceCardSection";

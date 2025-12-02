@@ -32,7 +32,7 @@ export default {
 		return {
 			tabItems: [
 				{ id: "service", label: "服务券" },
-				{ id: "product", label: "商品券" },
+				// { id: "product", label: "商品券" }, // 测试阶段隐藏
 				{ id: "ended", label: "已结束" },
 			],
 		}
@@ -57,7 +57,7 @@ export default {
 .tab-list {
 	display: flex;
 	align-items: flex-start;
-	justify-content: space-between;
+	justify-content: space-around;
 	width: 100%;
 }
 

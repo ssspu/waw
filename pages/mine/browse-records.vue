@@ -6,10 +6,11 @@
 					<image class="back-icon" src="/static/mine/favorites/vector.svg" mode="aspectFit"></image>
 				</view>
 				<text class="navbar-title">浏览记录</text>
+				<view class="nav-placeholder"></view>
 			</view>
 			<view class="tabs">
-				<view 
-					v-for="tab in tabs" 
+				<view
+					v-for="tab in tabs"
 					:key="tab.value"
 					class="tab-item"
 					:class="{ active: activeTab === tab.value }"
@@ -27,6 +28,7 @@
 					:key="item.id"
 					:item="item"
 					mode="record"
+					@tap="handleServiceTap"
 					@action="handleCardAction"
 				/>
 			</view>
@@ -86,7 +88,16 @@ export default {
 					price: 799,
 					discount: '预约优惠10%',
 					ctaText: '快速预约',
-					cover: '/static/mine/favorites/rectangle-169.png'
+					cover: '/static/mine/favorites/rectangle-169.png',
+					stylist: {
+						id: 101,
+						name: '李天天',
+						title: '资深设计师',
+						rating: '4.9',
+						reviews: 128,
+						location: '成都市锦江区春熙路',
+						distance: '2.5km'
+					}
 				},
 				{
 					id: 2,
@@ -97,7 +108,16 @@ export default {
 					price: 1299,
 					discount: '预约优惠10%',
 					ctaText: '快速预约',
-					cover: '/static/mine/favorites/rectangle-169.png'
+					cover: '/static/mine/favorites/rectangle-169.png',
+					stylist: {
+						id: 102,
+						name: '王小美',
+						title: '首席设计师',
+						rating: '4.8',
+						reviews: 256,
+						location: '成都市武侯区天府三街',
+						distance: '3.2km'
+					}
 				},
 				{
 					id: 3,
@@ -108,7 +128,16 @@ export default {
 					price: 1699,
 					discount: '预约优惠10%',
 					ctaText: '快速预约',
-					cover: '/static/mine/favorites/rectangle-169.png'
+					cover: '/static/mine/favorites/rectangle-169.png',
+					stylist: {
+						id: 103,
+						name: '张大师',
+						title: '技术总监',
+						rating: '5.0',
+						reviews: 512,
+						location: '成都市高新区环球中心',
+						distance: '5.1km'
+					}
 				},
 				{
 					id: 4,
@@ -119,7 +148,16 @@ export default {
 					price: 599,
 					discount: '预约优惠10%',
 					ctaText: '快速预约',
-					cover: '/static/mine/favorites/rectangle-169.png'
+					cover: '/static/mine/favorites/rectangle-169.png',
+					stylist: {
+						id: 104,
+						name: '刘造型',
+						title: '高级设计师',
+						rating: '4.7',
+						reviews: 89,
+						location: '成都市青羊区太升南路',
+						distance: '1.8km'
+					}
 				}
 			],
 			brandRecords: [
@@ -186,10 +224,16 @@ export default {
 		switchTab(value) {
 			this.activeTab = value
 		},
+		handleServiceTap(item) {
+			// 跳转到设计师详情页查看服务
+			uni.navigateTo({
+				url: `/pages/designer/detail?serviceId=${item.id}`
+			})
+		},
 		handleCardAction(item) {
-			uni.showToast({
-				title: `预约 ${item.name}`,
-				icon: 'none'
+			// 跳转到设计师详情页进行预约
+			uni.navigateTo({
+				url: `/pages/designer/detail?serviceId=${item.id}&designerId=${item.stylist?.id || ''}`
 			})
 		},
 		handleStoreSelect(store) {
@@ -248,6 +292,10 @@ export default {
 	position: absolute;
 	left: 50%;
 	transform: translateX(-50%);
+}
+
+.nav-placeholder {
+	width: 64rpx;
 }
 
 .toggle-btn {

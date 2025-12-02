@@ -114,10 +114,12 @@
 						<text class="info-label">支付方式</text>
 						<text class="info-value">{{ orderInfo.paymentMethod }}</text>
 					</view>
+					<!-- 众美积分 - 测试阶段隐藏
 					<view class="info-item">
 						<text class="info-label">众美积分</text>
 						<text class="info-value">{{ orderInfo.points }}</text>
 					</view>
+					-->
 					<view class="info-item">
 						<text class="info-label">订单编号</text>
 						<view class="order-number-row">

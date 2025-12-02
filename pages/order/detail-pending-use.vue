@@ -1,31 +1,16 @@
 <template>
 	<view class="order-detail-page">
-		<view class="status-bar-space"></view>
 		<!-- 导航栏 -->
-		<view class="navbar">
+		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
 				<view class="back-btn" @tap="handleBack">
-					<image 
-						class="back-icon" 
-						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" 
+					<image
+						class="back-icon"
+						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg"
 						mode="aspectFit"
 					></image>
 				</view>
 				<text class="navbar-title">订单详情</text>
-				<view class="navbar-right">
-					<view class="nav-icon-btn">
-						<view class="nav-dots">
-							<view class="dot"></view>
-							<view class="dot"></view>
-							<view class="dot"></view>
-						</view>
-					</view>
-					<view class="nav-icon-btn">
-						<view class="nav-circle">
-							<view class="circle-dot"></view>
-						</view>
-					</view>
-				</view>
 			</view>
 		</view>
 		
@@ -33,10 +18,11 @@
 		<view class="order-status-section">
 			<view class="status-content">
 				<text class="status-title">您有待使用订单</text>
-				<image 
-					class="status-icon" 
-					src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-2117.svg" 
+				<image
+					class="status-icon"
+					src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-2117.svg"
 					mode="aspectFit"
+					@tap="handleShowQrcode"
 				></image>
 			</view>
 			<view class="status-desc">
@@ -145,6 +131,46 @@
 				<text class="btn-text">订单完成</text>
 			</view>
 		</view>
+
+		<!-- 二维码弹窗 -->
+		<view class="qrcode-modal" v-if="showQrcodeModal" @tap="handleCloseQrcodeModal">
+			<view class="qrcode-modal-content" @tap.stop>
+				<view class="qrcode-modal-header">
+					<text class="qrcode-modal-title">核销二维码</text>
+					<view class="qrcode-close-btn" @tap="handleCloseQrcodeModal">
+						<text class="qrcode-close-icon">×</text>
+					</view>
+				</view>
+				<view class="qrcode-modal-body">
+					<view class="qrcode-container">
+						<image
+							class="qrcode-image"
+							src="/static/icon/qrcode-demo.png"
+							mode="aspectFit"
+						></image>
+					</view>
+					<text class="qrcode-tip">请向服务人员出示此二维码完成核销</text>
+					<view class="qrcode-info-list">
+						<view class="qrcode-info-row">
+							<text class="qrcode-info-label">订单编号：</text>
+							<text class="qrcode-info-value">{{ orderInfo.orderNumber }}</text>
+						</view>
+						<view class="qrcode-info-row">
+							<text class="qrcode-info-label">服务项目：</text>
+							<text class="qrcode-info-value">欧莱雅植物洗护套装</text>
+						</view>
+						<view class="qrcode-info-row">
+							<text class="qrcode-info-label">服务时间：</text>
+							<text class="qrcode-info-value">{{ orderInfo.createTime }}</text>
+						</view>
+						<view class="qrcode-info-row">
+							<text class="qrcode-info-label">服务金额：</text>
+							<text class="qrcode-info-value price">¥799</text>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -152,6 +178,8 @@
 export default {
 	data() {
 		return {
+			statusBarHeight: 44,
+			showQrcodeModal: false,
 			orderInfo: {
 				createTime: '2022-04-22 12:04:22',
 				paymentMethod: '在线支付',
@@ -161,6 +189,7 @@ export default {
 		}
 	},
 	onLoad(options) {
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 		// 可以从 options 中获取订单ID等信息
 		if (options.orderId) {
 			// 根据订单ID加载订单详情
@@ -180,6 +209,12 @@ export default {
 					})
 				}
 			})
+		},
+		handleShowQrcode() {
+			this.showQrcodeModal = true
+		},
+		handleCloseQrcodeModal() {
+			this.showQrcodeModal = false
 		},
 		handleModifyTime() {
 			// 修改时间逻辑
@@ -621,6 +656,134 @@ export default {
 
 .complete-btn .btn-text {
 	color: #ffffff;
+}
+
+/* 二维码弹窗 */
+.qrcode-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.6);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+.qrcode-modal-content {
+	width: 600rpx;
+	background-color: #ffffff;
+	border-radius: 24rpx;
+	overflow: hidden;
+}
+
+.qrcode-modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 32rpx 32rpx 24rpx;
+	border-bottom: 2rpx solid #f0f0f0;
+	position: relative;
+}
+
+.qrcode-modal-title {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 32rpx;
+	font-weight: 500;
+	color: #333333;
+	text-align: center;
+}
+
+.qrcode-close-btn {
+	width: 48rpx;
+	height: 48rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	right: 24rpx;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.qrcode-close-icon {
+	font-size: 48rpx;
+	color: #999999;
+	line-height: 1;
+}
+
+.qrcode-modal-body {
+	padding: 40rpx 32rpx;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 24rpx;
+}
+
+.qrcode-container {
+	width: 400rpx;
+	height: 400rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #ffffff;
+	border: 2rpx solid #f0f0f0;
+	border-radius: 16rpx;
+}
+
+.qrcode-image {
+	width: 360rpx;
+	height: 360rpx;
+}
+
+.qrcode-tip {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 26rpx;
+	color: #999999;
+	text-align: center;
+}
+
+.qrcode-info-list {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 16rpx;
+	padding: 24rpx;
+	background-color: #f8f8f8;
+	border-radius: 12rpx;
+	box-sizing: border-box;
+}
+
+.qrcode-info-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.qrcode-info-label {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 26rpx;
+	color: #999999;
+}
+
+.qrcode-info-value {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 26rpx;
+	color: #333333;
+}
+
+.qrcode-info-value.price {
+	color: #ff6b35;
+	font-weight: 500;
+}
+
+.status-icon {
+	width: 48rpx;
+	height: 48rpx;
+	cursor: pointer;
 }
 </style>
 

@@ -136,7 +136,7 @@ export default {
 		handleOrderItemClick(item) {
 			console.log('Order item clicked:', item)
 			// 根据不同的订单状态跳转到订单页面
-			if (item.label === '待付款' || item.label === '待确认' || item.label === '待使用' || item.label === '待评价') {
+			if (item.label === '待付款' || item.label === '待确认' || item.label === '待使用' || item.label === '待评价' || item.label === '退款/售后') {
 				uni.navigateTo({ url: '/pages/order/index?tab=' + this.getOrderTabId(item.label) })
 			}
 		},
@@ -175,7 +175,8 @@ export default {
 				'待付款': 'pending-payment',
 				'待确认': 'pending-confirm',
 				'待使用': 'pending-use',
-				'待评价': 'pending-review'
+				'待评价': 'pending-review',
+				'退款/售后': 'after-sale'
 			}
 			return map[label] || 'all'
 		}
