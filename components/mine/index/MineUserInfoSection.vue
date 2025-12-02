@@ -1,19 +1,19 @@
 <template>
 	<view class="user-info-section">
 		<view class="user-card">
-			<view class="vip-chip" @tap="handleVipClick">
-				<view class="vip-chip-text">
-					<view class="vip-title-row">
-						<text class="vip-chip-title">VIP会员专享</text>
-						<view class="arrow-bg">
-							<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
-						</view>
+			<!-- VIP背景层（在白色卡片后面，测试阶段禁用） -->
+			<view class="vip-chip-bg-layer disabled">
+				<image class="vip-chip-bg" src="/static/background-image/mine_vip_bg.png" mode="aspectFit"></image>
+			</view>
+			<!-- VIP可点击文字层（测试阶段禁用） -->
+			<view class="vip-chip-clickable disabled">
+				<view class="vip-title-row">
+					<text class="vip-chip-title">VIP会员专享</text>
+					<view class="arrow-bg">
+						<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
 					</view>
-					<text class="vip-chip-desc">超值补贴优惠专享</text>
 				</view>
-				<!-- <view class="vip-chip-arrow">
-					<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
-				</view> -->
+				<text class="vip-chip-desc">建设中...</text>
 			</view>
 
 			<view class="user-header">
@@ -187,41 +187,43 @@ export default {
 	pointer-events: none;
 }
 
-.vip-chip {
+/* VIP背景层 - 在白色卡片后面 */
+.vip-chip-bg-layer {
 	position: absolute;
 	top: 0.1rem;
-	right: -0.25rem;
-	// background: linear-gradient(134deg, #E9D9C1 0%, #B19F84 100%);
-	// border-top-right-radius: 40rpx;
-	// border-bottom-left-radius: 40rpx;
-	// border-bottom-right-radius: 40rpx;
-	padding: 20rpx 28rpx 24rpx 32rpx;
-	display: flex;
-	align-items: center;
-	min-width: 100rpx;
-	// box-shadow: 0 12rpx 20rpx rgba(177, 159, 132, 0.4);
-}
-.vip-chip::before {
-	content: '';
-	position: absolute;
-	top:4rpx;
-	left: -170rpx;
-	width: 200%;
-	height: 200%;
-	background-image: url('/static/background-image/mine_vip_bg.png');
-	background-size: contain;
-	// background-position: center;
-	background-repeat: no-repeat;
-	z-index: -10;
+	right: 0;
+	z-index: -2;
 	pointer-events: none;
+
+	&.disabled {
+		opacity: 0.6;
+	}
 }
 
-.vip-chip-text {
+.vip-chip-bg {
+	width: 280rpx;
+	height: 120rpx;
+	position: relative;
+	right: -10rpx;
+	top: 4rpx;
+}
+
+/* VIP可点击文字层 - 在最上层 */
+.vip-chip-clickable {
+	position: absolute;
+	top: 0.1rem;
+	right: 0;
+	z-index: 100;
 	display: flex;
 	flex-direction: column;
 	line-height: 1.2;
 	gap: 6rpx;
-	margin-left: 20rpx;
+	padding: 20rpx 28rpx 24rpx 32rpx;
+
+	&.disabled {
+		opacity: 0.6;
+		pointer-events: none;
+	}
 }
 
 .vip-title-row {

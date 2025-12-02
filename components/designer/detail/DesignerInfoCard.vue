@@ -140,9 +140,6 @@
 			
 			<!-- 右侧统计 -->
 			<view class="right-stats">
-				<view class="share-btn" @tap="handleShare">
-					<image class="share-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1879-1.svg" mode="aspectFit"></image>
-				</view>
 				<view class="stats-badge">
 					<view class="stat-group">
 						<image class="stat-icon" :src="rightStats.serviceIcon" mode="aspectFit"></image>
@@ -153,7 +150,7 @@
 					<view class="stat-group">
 						<image class="stat-icon" :src="rightStats.workIcon" mode="aspectFit"></image>
 						<text class="stat-count">({{ rightStats.workCount }})</text>
-						<image class="stat-dot" :src="rightStats.dotIcon" mode="aspectFit"></image>
+						<image class="stat-dot" src="/static/icons/arrow-right.svg" mode="aspectFit"></image>
 					</view>
 				</view>
 			</view>
@@ -813,41 +810,25 @@ export default {
 }
 
 .right-stats {
-	margin-top: -320rpx;
 	position: absolute;
-	top: 0;
-	right: 0;
+	top: 30rpx;
+	right: 10rpx;
 	display: flex;
 	flex-direction: column;
-	gap: 284rpx;
-	width: 336rpx;
-	height: 404rpx;
+	align-items: flex-end;
 	z-index: 10;
 	pointer-events: none;
-	
-	.share-btn,
+
 	.stats-badge {
 		pointer-events: auto;
 	}
 }
 
-.share-btn {
-	margin-left: 50rpx;
-	width: 60rpx;
-	height: 60rpx;
-	cursor: pointer;
-}
-
-.share-icon {
-	width: 100%;
-	height: 100%;
-}
-
 .stats-badge {
 	display: inline-flex;
 	align-items: center;
-	gap: 6rpx;
-	padding: 6rpx 24rpx;
+	gap: 2rpx;
+	padding: 6rpx 12rpx;
 	background-color: rgba(0, 0, 0, 0.2);
 	border-radius: 34rpx;
 	backdrop-filter: blur(6rpx);
@@ -856,7 +837,7 @@ export default {
 .stat-group {
 	display: inline-flex;
 	align-items: center;
-	gap: 6rpx;
+	gap: 2rpx;
 }
 
 .stat-icon {

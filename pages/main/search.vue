@@ -1,7 +1,6 @@
 <template>
 	<view class="search-page">
-		<view class="status-bar-space"></view>
-		<view class="navbar">
+		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
 				<view class="back-btn" @tap="handleBack">
 					<image class="back-icon" src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" mode="aspectFit"></image>
@@ -434,7 +433,6 @@
 <script>
 import ServiceGallerySection from '../../components/main/index/ServiceGallerySection.vue'
 import NearbyStoreItem from '../../components/common/NearbyStoreItem.vue'
-import api from '@/api'
 
 export default {
 	name: 'SearchPage',
@@ -444,10 +442,7 @@ export default {
 	},
 	data() {
 		return {
-			loading: false,
-			page: 1,
-			pageSize: 20,
-			hasMore: true,
+			statusBarHeight: 44,
 			activeTab: 'designer', // 默认显示设计师标签
 			tabs: [
 				{ label: '服务', value: 'service' },
@@ -836,6 +831,18 @@ export default {
 			return `${percent}%`
 		}
 	},
+	onLoad(options) {
+		// 从持久化存储获取状态栏高度
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+
+		// 从URL参数获取tab，切换到对应标签
+		if (options.tab) {
+			const validTabs = ['designer', 'service', 'brand']
+			if (validTabs.includes(options.tab)) {
+				this.activeTab = options.tab
+			}
+		}
+	},
 	onReady() {
 		// 获取滑块轨道宽度
 		const query = uni.createSelectorQuery().in(this)
@@ -853,68 +860,7 @@ export default {
 		},
 		handleSearch() {
 			console.log('Search keyword:', this.searchKeyword)
-			// 执行搜索
-			this.doSearch()
-		},
-		// 执行搜索
-		async doSearch() {
-			if (this.loading) return
-			this.loading = true
-			this.page = 1
-			try {
-				const res = await api.common.search({
-					keyword: this.searchKeyword,
-					type: this.activeTab, // designer/service/brand
-					page: this.page,
-					pageSize: this.pageSize
-				})
-				if (res.code === 0) {
-					const list = res.data.list || []
-					this.hasMore = res.data.hasMore
-					// 根据当前tab更新对应数据
-					if (this.activeTab === 'designer') {
-						this.nearbyStylistsData = list.map(d => this.transformDesigner(d))
-					} else if (this.activeTab === 'brand') {
-						this.brandRecords = list.map(b => this.transformBrand(b))
-					}
-					// service 由 ServiceGallerySection 组件处理
-				}
-			} catch (err) {
-				console.error('搜索失败:', err)
-			} finally {
-				this.loading = false
-			}
-		},
-		// 转换设计师数据 - 对应mock数据 designers: [{ id, name, avatar, role, rating }]
-		transformDesigner(d) {
-			return {
-				id: d.id,
-				image: d.avatar, // mock: avatar字段
-				name: d.name, // mock: name字段
-				level: '高级',
-				role: d.role || '美发师', // mock: role字段
-				specialties: ['女士造型', '烫发设计', '短发造型'],
-				rating: String(d.rating || 4.8), // mock: rating字段
-				services: '0',
-				works: '0',
-				tags: ['预约服务', '技术专业'],
-				distance: ''
-			}
-		},
-		// 转换品牌数据 - 对应mock数据 brands: [{ id, name, avatar, rating }]
-		transformBrand(b) {
-			return {
-				id: b.id,
-				name: b.name, // mock: name字段
-				tag: '舒适',
-				type: '专业店',
-				rating: String(b.rating || 4.8), // mock: rating字段
-				designers: '8人',
-				services: '0',
-				distance: '',
-				amenities: ['预约服务', '免费设计'],
-				image: b.avatar // mock: avatar字段
-			}
+			// TODO: 实现搜索逻辑
 		},
 		handleInput(e) {
 			this.searchKeyword = e.detail.value
@@ -926,10 +872,6 @@ export default {
 			this.activeTab = value
 			// 切换标签时关闭所有下拉菜单
 			this.closeAllDropdowns()
-			// 切换标签时重新搜索
-			if (this.searchKeyword) {
-				this.doSearch()
-			}
 		},
 		handleStylistClick(stylist) {
 			uni.navigateTo({
@@ -1198,11 +1140,6 @@ export default {
 	flex-direction: column;
 }
 
-.status-bar-space {
-	height: 88rpx;
-	width: 100%;
-	background-color: #ffffff;
-}
 
 .navbar {
 	background-color: #ffffff;

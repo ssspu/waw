@@ -1,8 +1,7 @@
 <template>
 	<view class="territory-page">
-		<view class="status-bar-space"></view>
 		<!-- 自定义导航栏 -->
-		<view class="custom-header">
+		<view class="custom-header" :style="{ paddingTop: statusBarHeight + 'px' }">
 			
 			<!-- 导航栏内容 -->
 			<view class="navbar-content">
@@ -191,7 +190,6 @@
 <script>
 import TerritoryHeaderSection from '../../components/territory/index/TerritoryHeaderSection.vue'
 import TerritoryServiceListSection from '../../components/territory/index/TerritoryServiceListSection.vue'
-import api from '@/api'
 
 export default {
 	components: {
@@ -200,11 +198,11 @@ export default {
 	},
 	data() {
 		return {
+			statusBarHeight: 44,
 			activeTopTab: 'designer',
 			activeSubTab: 'hairstylist',
 			activeBrandTab: 'hair',
 			avatarImage: '/static/avatar/avatar.png',
-			loading: false,
 			designerSubTabs: [
 				{ id: 'hairstylist', label: '美发师' },
 				{ id: 'beautician', label: '美容师' },
@@ -219,126 +217,65 @@ export default {
 				{ id: 'nail', label: '美甲' },
 				{ id: 'body', label: '美体' }
 			],
-			brandCards: [],
-			designerList: [],
-			showShareModal: false,
-			page: 1,
-			pageSize: 10
+			brandCards: [
+				{
+					headerInfo: ['2025-05-05', '｜', '洗剪吹', '｜', '欧莱雅生化烫'],
+					price: 888,
+					name: '成都NICE造型沙龙',
+					type: '品牌',
+					level: '舒适',
+					role: '专业店｜2012年开业',
+					specialties: ['女士造型', '烫发设计', '短发造型'],
+					rating: 4.8,
+					designers: 8,
+					services: 1236
+				},
+				{
+					headerInfo: ['2025-05-05', '｜', '洗剪吹', '｜', '欧莱雅生化烫'],
+					price: 888,
+					name: '成都NICE造型沙龙',
+					type: '品牌',
+					level: '舒适',
+					role: '专业店｜2012年开业',
+					specialties: ['女士造型', '烫发设计', '短发造型'],
+					rating: 4.8,
+					designers: 8,
+					services: 1236
+				},
+				{
+					headerInfo: ['2025-05-05', '｜', '洗剪吹', '｜', '欧莱雅生化烫'],
+					price: 888,
+					name: '成都NICE造型沙龙',
+					type: '品牌',
+					level: '舒适',
+					role: '专业店｜2012年开业',
+					specialties: ['女士造型', '烫发设计', '短发造型'],
+					rating: 4.8,
+					designers: 8,
+					services: 1236
+				},
+				{
+					headerInfo: ['2025-05-05', '｜', '洗剪吹', '｜', '欧莱雅生化烫'],
+					price: 888,
+					name: '成都NICE造型沙龙',
+					type: '品牌',
+					level: '舒适',
+					role: '专业店｜2012年开业',
+					specialties: ['女士造型', '烫发设计', '短发造型'],
+					rating: 4.8,
+					designers: 8,
+					services: 1236
+				}
+			],
+			showShareModal: false
 		}
 	},
 	onLoad() {
-		this.fetchDesigners()
-	},
-	watch: {
-		activeTopTab: {
-			handler(newVal) {
-				this.page = 1
-				if (newVal === 'designer') {
-					this.fetchDesigners()
-				} else {
-					this.fetchBrands()
-				}
-			}
-		},
-		activeSubTab: {
-			handler() {
-				if (this.activeTopTab === 'designer') {
-					this.page = 1
-					this.fetchDesigners()
-				}
-			}
-		},
-		activeBrandTab: {
-			handler() {
-				if (this.activeTopTab === 'brand') {
-					this.page = 1
-					this.fetchBrands()
-				}
-			}
-		}
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
 		goBack() {
 			uni.navigateBack()
-		},
-		// 获取私人设计师列表
-		async fetchDesigners() {
-			if (this.loading) return
-			this.loading = true
-			try {
-				const res = await api.territory.getMyDesigners({
-					category: this.activeSubTab,
-					page: this.page,
-					pageSize: this.pageSize
-				})
-				if (res.code === 0) {
-					this.designerList = (res.data.list || []).map(item => this.transformDesigner(item))
-				}
-			} catch (err) {
-				console.error('获取设计师列表失败:', err)
-				uni.showToast({ title: '获取数据失败', icon: 'none' })
-			} finally {
-				this.loading = false
-			}
-		},
-		// 获取私人品牌馆列表
-		async fetchBrands() {
-			if (this.loading) return
-			this.loading = true
-			try {
-				const res = await api.territory.getMyBrands({
-					category: this.activeBrandTab,
-					page: this.page,
-					pageSize: this.pageSize
-				})
-				if (res.code === 0) {
-					this.brandCards = (res.data.list || []).map(item => this.transformBrand(item))
-				}
-			} catch (err) {
-				console.error('获取品牌馆列表失败:', err)
-				uni.showToast({ title: '获取数据失败', icon: 'none' })
-			} finally {
-				this.loading = false
-			}
-		},
-		// 转换设计师数据格式
-		transformDesigner(item) {
-			return {
-				id: item.id,
-				avatar: item.avatar || '/static/avatar/avatar.png',
-				name: item.name,
-				role: item.role || item.title,
-				level: item.level,
-				specialties: item.specialties || item.skills || [],
-				rating: item.rating || 0,
-				services: item.serviceCount || 0,
-				lastServiceDate: item.lastServiceTime,
-				lastServiceName: item.lastServiceName
-			}
-		},
-		// 转换品牌馆数据格式
-		transformBrand(item) {
-			const lastService = item.lastService || {}
-			return {
-				id: item.id,
-				headerInfo: [
-					lastService.date || '',
-					'｜',
-					lastService.serviceName || '',
-					'｜',
-					lastService.productName || ''
-				],
-				price: lastService.price || 0,
-				name: item.name,
-				avatar: item.avatar || item.logo,
-				type: item.type || '品牌',
-				level: item.level || '舒适',
-				role: `${item.shopType || '专业店'}｜${item.openYear || ''}年开业`,
-				specialties: item.specialties || item.tags || [],
-				rating: item.rating || 0,
-				designers: item.designerCount || 0,
-				services: item.serviceCount || 0
-			}
 		},
 		handleMore() {
 			console.log('More clicked')
@@ -355,55 +292,24 @@ export default {
 		handleBrandTabChange(tabId) {
 			this.activeBrandTab = tabId
 		},
-		// 推广功能
-		async handlePromote(card) {
-			try {
-				const shareInfo = await api.territory.getBrandShareInfo(card.id)
-				if (shareInfo.code === 0) {
-					this.showShareModal = true
-				}
-			} catch (err) {
-				console.error('获取分享信息失败:', err)
-			}
+		handlePromote() {
+			this.showShareModal = true
 		},
 		closeShareModal() {
 			this.showShareModal = false
 		},
-		async handleShare(type, card) {
-			try {
-				await api.territory.recordShare({
-					type: this.activeTopTab,
-					targetId: card.id,
-					channel: type
-				})
-			} catch (err) {
-				console.error('记录分享失败:', err)
-			}
+		handleShare(type) {
+			console.log('Share via:', type)
 			this.showShareModal = false
 		},
-		// 再次预约
-		async handleBookAgain(card) {
-			try {
-				// 跳转到对应的详情页面进行预约
-				if (this.activeTopTab === 'brand') {
-					uni.navigateTo({
-						url: `/pages/brand/detail?id=${card.id}`
-					})
-				} else {
-					uni.navigateTo({
-						url: `/pages/designer/detail?id=${card.id}&tab=appointment`
-					})
-				}
-			} catch (err) {
-				console.error('再次预约失败:', err)
-				uni.showToast({ title: '操作失败', icon: 'none' })
-			}
-		},
-		// 查看品牌馆详情
-		handleBrandDetail(card) {
+		handleBookAgain() {
+			// 跳转到品牌馆详情页
 			uni.navigateTo({
-				url: `/pages/brand/detail?id=${card.id}`
+				url: '/pages/brand/info'
 			})
+		},
+		handleMore() {
+			console.log('More clicked')
 		}
 	}
 }
@@ -450,8 +356,26 @@ export default {
 .navbar-content {
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
 	padding: 24rpx 32rpx;
 	box-sizing: border-box;
+}
+
+.nav-left {
+	width: 64rpx;
+}
+
+.nav-title {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-weight: 500;
+	font-size: 32rpx;
+	color: #333333;
+}
+
+.nav-right {
+	width: 64rpx;
+	display: flex;
+	justify-content: flex-end;
 }
 
 
@@ -503,9 +427,9 @@ export default {
 .top-nav-fixed .top-nav {
 	display: flex;
 	align-items: center;
-	gap: 40rpx;
+	gap: 48rpx;
 	width: 100%;
-	padding: 24rpx 30rpx 0 30rpx;
+	padding: 16rpx 30rpx 24rpx 30rpx;
 	box-sizing: border-box;
 }
 
@@ -514,14 +438,14 @@ export default {
 }
 
 .top-nav-fixed .top-nav-label {
-	font-family: 'PingFang_SC-Semibold', Helvetica;
-	font-weight: normal;
-	color: #666666;
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-weight: 500;
+	color: #a6a6a6;
 	font-size: 28rpx;
 	text-align: center;
-	
+
 	&.active {
-		font-weight: 600;
+		font-weight: 500;
 		color: #000000;
 	}
 }
@@ -530,16 +454,17 @@ export default {
 .top-nav-fixed .sub-nav {
 	display: flex;
 	align-items: center;
-	gap: 24rpx;
 	width: 100%;
-	padding: 20rpx 30rpx 0 30rpx;
+	padding: 16rpx 0 0 0;
 	box-sizing: border-box;
 }
 
 .top-nav-fixed .sub-nav-item {
+	flex: 1;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	justify-content: center;
 	position: relative;
 	cursor: pointer;
 	padding-bottom: 16rpx;
@@ -547,10 +472,10 @@ export default {
 
 .top-nav-fixed .sub-nav-label {
 	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 400;
+	font-weight: 500;
 	color: #a6a6a6;
 	font-size: 28rpx;
-	
+
 	&.active {
 		font-weight: 500;
 		color: #000000;
@@ -559,8 +484,8 @@ export default {
 
 .top-nav-fixed .sub-nav-indicator {
 	position: absolute;
-	bottom: -2rpx;
-	width: 24rpx;
+	bottom: 0;
+	width: 32rpx;
 	height: 4rpx;
 	background-color: #000000;
 	border-radius: 2rpx;
@@ -629,7 +554,7 @@ export default {
 .card-content {
 	display: flex;
 	flex-direction: column;
-	gap: 20rpx;
+	gap: 16rpx;
 	padding: 24rpx;
 }
 

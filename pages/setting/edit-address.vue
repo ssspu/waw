@@ -1,6 +1,5 @@
 <template>
 	<view class="setting-detail-page">
-		<view class="status-bar-space"></view>
 		<SettingDetailHeader title="编辑收货地址" />
 
 		<view class="main-content">

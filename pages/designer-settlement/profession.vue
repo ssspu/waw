@@ -1,7 +1,7 @@
 <template>
 	<view class="screen">
 		<!-- 头部导航 -->
-		<view class="header">
+		<view class="header" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="nav-bar">
 				<view class="nav-left">
 					<view class="back-btn" @tap="handleBack">
@@ -116,10 +116,15 @@
 				</view>
 				<view class="form-divider"></view>
 				
-				<view class="form-item">
-					<text class="form-label">取证时间</text>
-					<input class="form-input" v-model="formData.certDate" placeholder="获得证书时间 2025-10-30" />
-				</view>
+				<picker mode="date" :value="formData.certDate" :end="currentDate" @change="onCertDateChange">
+					<view class="form-item clickable">
+						<text class="form-label">取证时间</text>
+						<text class="form-value" :class="{ placeholder: !formData.certDate }">
+							{{ formData.certDate || '请选择取证时间' }}
+						</text>
+						<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
+					</view>
+				</picker>
 				<view class="form-divider"></view>
 				
 				<view class="form-item">
@@ -150,6 +155,7 @@
 export default {
 	data() {
 		return {
+			statusBarHeight: 44,
 			steps: [
 				{ label: '身份认证', active: false },
 				{ label: '职业认证', active: true },
@@ -167,7 +173,22 @@ export default {
 			}
 		}
 	},
+	computed: {
+		currentDate() {
+			const date = new Date()
+			const year = date.getFullYear()
+			const month = String(date.getMonth() + 1).padStart(2, '0')
+			const day = String(date.getDate()).padStart(2, '0')
+			return `${year}-${month}-${day}`
+		}
+	},
+	onLoad() {
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+	},
 	methods: {
+		onCertDateChange(e) {
+			this.formData.certDate = e.detail.value
+		},
 		handleBack() {
 			uni.navigateBack()
 		},
@@ -512,6 +533,7 @@ export default {
 }
 
 .form-value {
+	flex: 1;
 	font-family: 'PingFang SC';
 	font-size: 28rpx;
 	color: #666666;

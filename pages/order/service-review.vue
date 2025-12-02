@@ -1,8 +1,7 @@
 <template>
 	<view class="service-review-page">
-		<view class="status-bar-space"></view>
 		<!-- 导航栏 -->
-		<view class="navbar">
+		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
 				<view class="back-btn" @tap="handleBack">
 					<image 
@@ -142,6 +141,7 @@
 export default {
 	data() {
 		return {
+			statusBarHeight: 44,
 			commentText: '',
 			selectedTags: [0], // 默认选中第一个标签
 			feedbackTags: [
@@ -160,6 +160,10 @@ export default {
 				{ label: '环境', score: 4.8 }
 			]
 		}
+	},
+	onLoad() {
+		// 从持久化存储获取状态栏高度
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	computed: {
 		averageRating() {

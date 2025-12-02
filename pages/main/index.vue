@@ -1,48 +1,47 @@
 <template>
 	<view class="screen">
-		<view class="status-bar" style="height: 44rpx;"></view>
-
-		<!-- 背景图片 -->
-		<image 
-			class="bg-image-1" 
-			:src="currentHeaderBg" 
+		<!-- 背景图片 - 预加载所有背景图避免切换闪烁 -->
+		<image
+			v-for="(tab, key) in assets"
+			:key="'header-' + key"
+			class="bg-image-1"
+			:class="{ active: activeTab === key }"
+			:src="tab.headerBg"
 			mode="aspectFill"
 		></image>
-		<!-- <image 
-			v-if="currentMainBg"
-			class="bg-image-2" 
-			:src="currentMainBg" 
-			mode="aspectFill"
-		></image> -->
-		
-		<!-- 状态栏和头部 -->
-		<view class="header-wrapper">
-			<!-- 导航栏 -->
-			<view class="nav-bar">
+
+		<!-- 自定义导航栏 -->
+		<view class="custom-navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
+			<view class="navbar-content">
 				<view class="nav-left">
 					<view class="back-btn" @tap="goBack">
 						<image class="back-icon" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-4.svg" mode="aspectFit"></image>
 					</view>
 					<text class="nav-title">美发</text>
 				</view>
-				<view class="nav-bar-right">
-					<!-- 搜索栏 -->
-					<view class="search-bar" @tap="handleSearchClick">
-						<image class="search-icon" :src="currentBadgeIcon" mode="aspectFit"></image>
-						<text class="search-text">{{ currentTabLabel }}</text>
-					</view>
+				<!-- 搜索栏 -->
+				<view class="search-bar" @tap="handleSearchClick">
+					<image class="search-icon" :src="currentBadgeIcon" mode="aspectFit"></image>
+					<text class="search-text">{{ currentTabLabel }}</text>
 				</view>
 			</view>
 		</view>
 		
-		<!-- Tabs 背景块 -->
-		<view class="tabs-bg"></view>
+		
 		
 		<!-- Tabs + 内容区背景 -->
-		<view 
-			class="content-section" 
-			:style="{ backgroundImage: assets[activeTab].tabBg ? `url(${assets[activeTab].tabBg})` : 'none' }"
-		>
+		<view class="content-section">
+			<!-- Tabs 背景块 -->
+			<view class="tabs-bg"></view>
+			<!-- 预加载所有背景图，通过 opacity 切换避免闪烁 -->
+			<image
+				v-for="(tab, key) in assets"
+				:key="key"
+				class="content-bg-image"
+				:class="{ active: activeTab === key }"
+				:src="tab.tabBg"
+				mode="widthFix"
+			></image>
 			<!-- Tabs -->
 			<view class="tabs-wrapper">
 				<view class="tabs-list">
@@ -68,15 +67,15 @@
 			<view class="main-content" :class="{ 'reviews-fullwidth': activeTab === 'reviews' }">
 				<!-- 设计师板块 -->
 				<view v-if="activeTab === 'designer'" :key="'designer'" class="designer-content animate-fade-up">
-					<design-section></design-section>
+					<design-section ref="designSection" :key="'designer-section-' + tabSwitchCount"></design-section>
 				</view>
 
 				<!-- 优服务板块 -->
 				<view v-if="activeTab === 'service'" :key="'service'" class="service-content animate-fade-up">
-					<featured-services-section></featured-services-section>
-					<recommendations-section></recommendations-section>
+					<featured-services-section @service-click="handleServiceCategoryClick"></featured-services-section>
+					<recommendations-section @card-click="handleRecommendationCardClick"></recommendations-section>
 					<vip-section></vip-section>
-					<service-gallery-section></service-gallery-section>
+					<service-gallery-section ref="serviceGallerySection" :selected-category="selectedServiceCategory"></service-gallery-section>
 				</view>
 
 				<!-- 品牌馆板块 -->
@@ -112,7 +111,10 @@ export default {
 	},
 	data() {
 		return {
+			statusBarHeight: 44,
 			activeTab: 'designer',
+			selectedServiceCategory: '', // 空字符串表示"优服务"显示全部
+			tabSwitchCount: 0, // 用于重置组件状态
 			tabItems: [
 				{ value: "designer", label: "设计师" },
 				{ value: "service", label: "优服务" },
@@ -157,6 +159,9 @@ export default {
 		}
 	},
 	onLoad(options) {
+		// 从持久化存储获取状态栏高度
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+
 		console.log('main页面 onLoad, 接收到的参数:', options)
 		if (options.tab) {
 			// Ensure the tab exists
@@ -170,6 +175,15 @@ export default {
 		} else {
 			console.log('没有接收到tab参数，使用默认标签: designer')
 		}
+
+		// 处理滚动到附近推荐
+		if (options.scrollTo === 'nearby') {
+			this.$nextTick(() => {
+				setTimeout(() => {
+					this.scrollToNearbySection()
+				}, 500) // 等待页面渲染完成
+			})
+		}
 	},
 	methods: {
 		goBack() {
@@ -177,10 +191,45 @@ export default {
 		},
 		switchTab(value) {
 			this.activeTab = value
+			// 切换tabs时重置分类为默认
+			this.selectedServiceCategory = ''
+			this.tabSwitchCount++
 		},
 		handleSearchClick() {
 			uni.navigateTo({
-				url: '/pages/main/search'
+				url: `/pages/main/search?tab=${this.activeTab}`
+			})
+		},
+		handleServiceCategoryClick(service) {
+			// 切换服务分类
+			this.selectedServiceCategory = service.label
+			// 滚动到列表区域
+			this.scrollToServiceGallery()
+		},
+		handleRecommendationCardClick(card) {
+			// 只处理套餐优选和防脱护理
+			if (card.id === 'package' || card.id === 'haircare') {
+				this.selectedServiceCategory = card.title
+				// 滚动到列表区域
+				this.scrollToServiceGallery()
+			}
+			// 会员特区可以跳转到会员页面（暂不处理）
+		},
+		scrollToServiceGallery() {
+			// 通过 ref 调用子组件方法，确保微信小程序中也能正常工作
+			this.$nextTick(() => {
+				if (this.$refs.serviceGallerySection) {
+					this.$refs.serviceGallerySection.scrollToTop()
+				}
+			})
+		},
+		scrollToNearbySection() {
+			// 滚动到附近推荐区域，使其直接显示在屏幕顶端
+			// 通过 ref 调用子组件方法，确保微信小程序中也能正常工作
+			this.$nextTick(() => {
+				if (this.$refs.designSection) {
+					this.$refs.designSection.scrollToNearby()
+				}
 			})
 		}
 	}
@@ -196,6 +245,14 @@ export default {
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
+	// 禁用微信小程序点击高亮
+	-webkit-tap-highlight-color: transparent;
+	tap-highlight-color: transparent;
+
+	// 所有可点击元素禁用高亮
+	view, text, image {
+		-webkit-tap-highlight-color: transparent;
+	}
 }
 
 .bg-image-1 {
@@ -206,7 +263,11 @@ export default {
 	height: 772rpx;
 	object-fit: cover;
 	z-index: 0;
-	transition: opacity 0.3s ease;
+	opacity: 0;
+
+	&.active {
+		opacity: 1;
+	}
 }
 
 .bg-image-2 {
@@ -222,32 +283,24 @@ export default {
 	transition: opacity 0.3s ease;
 }
 
-.header-wrapper {
+// 自定义导航栏
+.custom-navbar {
 	position: relative;
-	z-index: 10;
 	width: 100%;
+	z-index: 10;
 }
 
-.nav-bar {
-	position: relative;
-	padding: 62rpx 30rpx;
+.navbar-content {
 	display: flex;
 	align-items: center;
-	white-space: nowrap;
-}
-
-.nav-bar-right {
-	position: relative;
-	display: flex;
-	align-items: center;
-	gap: 12rpx;
-	margin-left: 30rpx;
+	padding: 20rpx 30rpx;
+	gap: 16rpx;
 }
 
 .nav-left {
 	display: flex;
 	align-items: center;
-	gap: 48rpx;
+	gap: 16rpx;
 }
 
 .back-btn {
@@ -263,6 +316,12 @@ export default {
 	height: 32rpx;
 }
 
+.nav-title {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 32rpx;
+	font-weight: 500;
+	color: #ffffff;
+}
 
 .logo-group {
 	width: 256rpx;
@@ -336,26 +395,38 @@ export default {
 	margin-top: 438rpx;
 	width: 100%;
 	min-height: calc(100vh - 438rpx);
-	padding-bottom: 60rpx;
-	background-size: 100% auto;
-	background-position: center top;
-	background-repeat: no-repeat;
+	padding-bottom: 20rpx;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	box-sizing: border-box;
 }
 
+.content-bg-image {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: auto;
+	z-index: 0;
+	pointer-events: none;
+	opacity: 0;
+
+	&.active {
+		opacity: 1;
+	}
+}
+
 .tabs-bg {
 	position: absolute;
-	top: 678rpx;
+	top: 10rpx;
 	left: 0;
 	right: 0;
 	height: 100rpx;
 	background-color: #e6e6e6;
 	border-radius: 36rpx 36rpx 0 0;
 	box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.08);
-	z-index: 5;
+	z-index: 0;
 }
 
 .tabs-wrapper {
@@ -399,8 +470,11 @@ export default {
 	flex: 1;
 	cursor: pointer;
 	box-sizing: border-box;
-	transition: color 0.3s ease;
-	
+	transition: color 0.15s ease;
+	// 禁用微信小程序点击高亮
+	-webkit-tap-highlight-color: transparent;
+	tap-highlight-color: transparent;
+
 	&.active {
 		top: -10rpx;
 	}
@@ -413,11 +487,13 @@ export default {
 	font-weight: normal;
 	line-height: 1.2;
 	white-space: nowrap;
-	transition: color 0.3s ease;
+	transition: color 0.15s ease;
 	position: relative;
 	top: 16rpx;
 	z-index: 2;
-	
+	// 禁用微信小程序点击高亮
+	-webkit-tap-highlight-color: transparent;
+
 	&.active {
 		font-family: 'DIN_Black-Regular', Helvetica;
 		font-weight: 700;
@@ -442,7 +518,7 @@ export default {
 	flex-direction: column;
 	// align-items: stretch; // Removed to avoid stretching fixed width items if any
 	gap: 18rpx;
-	padding: 20rpx 12rpx 100rpx;
+	padding: 20rpx 12rpx 40rpx;
 	top: -15rpx;
 	width: 100%;
 

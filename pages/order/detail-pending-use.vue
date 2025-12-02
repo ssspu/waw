@@ -46,31 +46,8 @@
 		
 		<!-- 主内容 -->
 		<view class="main-content">
-			<!-- 商品卡片（包含第一个商品、美发师信息、第二个商品） -->
+			<!-- 商品卡片 -->
 			<view class="product-card">
-				<!-- 第一个商品信息（服务） -->
-				<view class="product-section">
-					<image 
-						class="product-image" 
-						src="/static/icon/rectangle-169.png" 
-						mode="aspectFill"
-					></image>
-					<view class="product-info">
-						<view class="product-left">
-							<text class="product-name">欧莱雅植物洗护套装一套</text>
-							<text class="product-category">洗护</text>
-							<text class="product-duration">1小时</text>
-						</view>
-						<view class="product-right">
-							<view class="price-row">
-								<text class="price-symbol">¥</text>
-								<text class="price-value">799</text>
-							</view>
-							<text class="quantity">*1</text>
-						</view>
-					</view>
-				</view>
-				
 				<!-- 美发师信息 -->
 				<view class="provider-section">
 					<view class="provider-info">
@@ -118,7 +95,7 @@
 						<text class="price-text">¥799</text>
 					</view>
 					<view class="price-item">
-						<text class="price-label">运费</text>
+						<text class="price-label">优惠金额</text>
 						<text class="price-text">¥0</text>
 					</view>
 					<view class="price-item total">
@@ -142,10 +119,11 @@
 						<text class="info-label">支付方式</text>
 						<text class="info-value">{{ orderInfo.paymentMethod }}</text>
 					</view>
-					<view class="info-item">
+					<!-- 测试版先隐藏 -->
+					<!-- <view class="info-item">
 						<text class="info-label">众美积分</text>
 						<text class="info-value">{{ orderInfo.points }}</text>
-					</view>
+					</view> -->
 					<view class="info-item">
 						<text class="info-label">订单编号</text>
 						<view class="order-number-row">
@@ -446,9 +424,6 @@ export default {
 }
 
 .provider-section {
-	padding: 20rpx 0 0 0;
-	margin-top: 20rpx;
-	border-top: 2rpx solid #f0f0f0;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;

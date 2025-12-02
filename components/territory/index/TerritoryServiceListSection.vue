@@ -222,7 +222,10 @@ export default {
 			// 实现删除逻辑
 		},
 		handleBookAgain() {
-			console.log('Book again clicked')
+			// 跳转到设计师详情页
+			uni.navigateTo({
+				url: '/pages/designer/info'
+			})
 		}
 	}
 }
@@ -241,6 +244,7 @@ export default {
 .card-content {
 	display: flex;
 	flex-direction: column;
+	gap: 16rpx;
 	padding: 24rpx;
 	box-sizing: border-box;
 }

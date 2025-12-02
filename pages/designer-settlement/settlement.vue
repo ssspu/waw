@@ -1,7 +1,7 @@
 <template>
 	<view class="screen">
 		<!-- 头部导航 -->
-		<view class="header">
+		<view class="header" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="nav-bar">
 				<view class="nav-left">
 					<view class="back-btn" @tap="handleBack">
@@ -49,10 +49,8 @@
 				
 				<view class="form-item clickable" @tap="selectSettlementType">
 					<text class="form-label">结算方式</text>
-					<view class="form-right">
-						<text class="form-value">{{ formData.settlementType }}</text>
-						<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
-					</view>
+					<text class="form-value">{{ formData.settlementType }}</text>
+					<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
 				</view>
 				<view class="form-divider"></view>
 			</view>
@@ -112,6 +110,7 @@
 export default {
 	data() {
 		return {
+			statusBarHeight: 44,
 			steps: [
 				{ label: '身份认证', active: false },
 				{ label: '职业认证', active: false },
@@ -126,6 +125,9 @@ export default {
 				accountNumber: ''
 			}
 		}
+	},
+	onLoad() {
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
 		handleBack() {

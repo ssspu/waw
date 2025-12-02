@@ -1,11 +1,7 @@
 <template>
 	<view class="qr-code-page">
-		<view class="status-bar-space"></view>
-		<!-- 状态栏 -->
-		<view class="status-bar"></view>
-		
 		<!-- 导航栏 -->
-		<view class="navbar">
+		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
 				<view class="back-btn" @tap="handleBack">
 					<image 
@@ -97,8 +93,11 @@
 export default {
 	data() {
 		return {
-			
+			statusBarHeight: 44
 		}
+	},
+	onLoad() {
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
 		handleBack() {

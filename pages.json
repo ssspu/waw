@@ -127,6 +127,42 @@
 		}
 	},
 	{
+		"path": "pages/mine/promotion",
+		"style": {
+			"navigationBarTitleText": "推广佣金",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/mine/beans",
+		"style": {
+			"navigationBarTitleText": "美豆",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/mine/balance",
+		"style": {
+			"navigationBarTitleText": "余额",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/mine/platform-reward",
+		"style": {
+			"navigationBarTitleText": "平台奖励",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
 		"path": "pages/mine/qr-code-card",
 		"style": {
 			"navigationBarTitleText": "二维码名片",
@@ -307,6 +343,24 @@
 		}
 	},
 	{
+		"path": "pages/order/detail-pending-confirm",
+		"style": {
+			"navigationBarTitleText": "订单详情",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/order/detail-pending-review",
+		"style": {
+			"navigationBarTitleText": "订单详情",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
 		"path": "pages/order/service-review",
 		"style": {
 			"navigationBarTitleText": "服务点评",
@@ -333,6 +387,33 @@
 				"navigationBarBackgroundColor": "#f2f2f2"
 			}
 		},
+	{
+		"path": "pages/portfolio/index",
+		"style": {
+			"navigationBarTitleText": "作品集",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/portfolio/filter",
+		"style": {
+			"navigationBarTitleText": "作品集",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/portfolio/detail",
+		"style": {
+			"navigationBarTitleText": "作品详情",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
 	{
 		"path": "pages/territory/index",
 		"style": {

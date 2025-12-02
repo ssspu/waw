@@ -1,8 +1,7 @@
 <template>
 	<view class="order-page">
-		<view class="status-bar-space"></view>
 		<!-- 自定义导航栏 -->
-		<view class="custom-header">
+		<view class="custom-header" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<!-- 导航栏内容 -->
 			<view class="navbar-content">
 				<view class="nav-left">
@@ -47,10 +46,14 @@ export default {
 	},
 	data() {
 		return {
+			statusBarHeight: 44,
 			activeTab: 'all'
 		}
 	},
 	onLoad(options) {
+		// 从持久化存储获取状态栏高度
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+
 		if (options.tab) {
 			this.activeTab = options.tab
 		}

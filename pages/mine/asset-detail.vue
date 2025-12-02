@@ -1,10 +1,7 @@
 <template>
 	<view class="asset-detail-page">
-		<view class="status-bar-space"></view>
-		<!-- 状态栏 -->
-		
 		<!-- 导航栏 -->
-		<view class="navbar">
+		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
 				<view class="back-btn" @tap="handleBack">
 					<image 
@@ -60,6 +57,7 @@ export default {
 	},
 	data() {
 		return {
+			statusBarHeight: 44,
 			assetRecords: [
 				{
 					title: '成都美发沙龙',
@@ -87,6 +85,9 @@ export default {
 				}
 			]
 		}
+	},
+	onLoad() {
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
 		handleBack() {

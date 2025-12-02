@@ -1,7 +1,6 @@
 <template>
 	<view class="favorites-page">
-		<view class="status-bar-space"></view>
-		<view class="navbar">
+		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
 				<view class="back-btn" @tap="handleBack">
 					<image class="back-icon" src="/static/mine/favorites/vector.svg" mode="aspectFit"></image>
@@ -37,6 +36,7 @@ export default {
 	},
 	data() {
 		return {
+			statusBarHeight: 44,
 			favorites: [
 				{
 					id: 1,
@@ -76,6 +76,9 @@ export default {
 				}
 			]
 		}
+	},
+	onLoad() {
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
 		handleBack() {

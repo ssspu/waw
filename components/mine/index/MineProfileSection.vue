@@ -150,6 +150,14 @@ export default {
 			if (item.label === '资产') {
 				uni.navigateTo({ url: '/pages/mine/asset' })
 			}
+			// 点击推广佣金跳转到推广佣金页面
+			if (item.label === '推广佣金') {
+				uni.navigateTo({ url: '/pages/mine/promotion' })
+			}
+			// 点击美豆跳转到美豆页面
+			if (item.label === '美豆') {
+				uni.navigateTo({ url: '/pages/mine/beans' })
+			}
 		},
 		handleSettlementItemClick(item) {
 			console.log('Settlement item clicked:', item)

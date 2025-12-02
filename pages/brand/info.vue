@@ -1,8 +1,7 @@
 <template>
 	<view class="info-page">
 		<!-- 自定义导航栏 -->
-		<view class="custom-navbar">
-			<view class="status-bar-spacer"></view>
+		<view class="custom-navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
 				<view class="nav-left" @tap="goBack">
 					<image class="back-icon" src="https://c.animaapp.com/mi5eklbiAEaKLJ/img/frame-1.svg" mode="aspectFit"></image>
@@ -18,7 +17,7 @@
 		
 		<!-- 主内容 -->
 		<view class="main-content">
-			<brand-info-services-section :active-tab="activeTab" :brand-id="brandId"></brand-info-services-section>
+			<brand-info-services-section :active-tab="activeTab"></brand-info-services-section>
 		</view>
 		
 		<!-- 底部指示器 -->
@@ -37,16 +36,15 @@ export default {
 		BrandInfoProfileSection,
 		BrandInfoServicesSection
 	},
-	onLoad(options) {
-		if (options.id) {
-			this.brandId = options.id
-		}
-	},
 	data() {
 		return {
-			brandId: '1',
+			statusBarHeight: 44,
 			activeTab: 'designer'
 		}
+	},
+	onLoad() {
+		// 从持久化存储获取状态栏高度
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
 		goBack() {
@@ -82,10 +80,6 @@ export default {
 	border-bottom: 2rpx solid #f1f1f1;
 }
 
-.status-bar-spacer {
-	height: 80rpx;
-}
-
 .navbar-content {
 	width: 100%;
 	min-height: 120rpx;
@@ -108,6 +102,7 @@ export default {
 	justify-content: center;
 	position: absolute;
 	left: 30rpx;
+	z-index: 20;
 }
 
 .back-icon {

@@ -1,48 +1,32 @@
 <template>
 	<view class="screen">
-		<!-- 状态栏占位 -->
-		<view class="status-bar" style="height: 44rpx;"></view>
-		
-		<!-- 状态栏内容 -->
-	<!-- 	<view class="header">
-			<text class="time">9:41</text>
-			<view class="status-icons">
-				<image class="status-icon" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/cellular-connection.svg" mode="aspectFit"></image>
-				<image class="status-icon" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/wifi.svg" mode="aspectFit"></image>
-				<image class="status-icon" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/battery.png" mode="aspectFit"></image>
-			</view>
-		</view> -->
-		
-		<!-- Logo 组 -->
-	<!-- 	<image 
-			class="logo-group animate-fade-in" 
-			style="animation-delay: 400ms;"
-			src="https://c.animaapp.com/mi4v97d2OSuz2g/img/group-7.png" 
-			mode="aspectFit"
-		></image> -->
-		
-		<!-- 位置和角色 Badge -->
-		<view class="location-badge animate-fade-in" style="animation-delay: 400ms;" @tap="handleSearchClick">
-			<view class="badge-content">
-				<view class="location-info">
-					<text class="location-text">成都市</text>
-					<text class="chevron-down">▼</text>
-				</view>
-				<view class="divider"></view>
-				<view class="role-info">
-					<image class="role-icon" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-3.svg" mode="aspectFit"></image>
-					<text class="role-text">设计师</text>
+		<!-- 自定义导航栏 -->
+		<view class="custom-navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
+			<view class="navbar-content">
+				<!-- Logo -->
+				<image
+					class="logo animate-fade-in"
+					style="animation-delay: 400ms;"
+					src="https://c.animaapp.com/mi4v97d2OSuz2g/img/image-23.png"
+					mode="aspectFit"
+				></image>
+
+				<!-- 位置和角色 Badge -->
+				<view class="location-badge animate-fade-in" style="animation-delay: 600ms;" @tap="handleSearchClick">
+					<view class="badge-content">
+						<view class="location-info">
+							<text class="location-text">成都市</text>
+							<text class="chevron-down">▼</text>
+						</view>
+						<view class="divider"></view>
+						<view class="role-info">
+							<image class="role-icon" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-3.svg" mode="aspectFit"></image>
+							<text class="role-text">设计师</text>
+						</view>
+					</view>
 				</view>
 			</view>
 		</view>
-		
-		<!-- Logo -->
-		<image 
-			class="logo animate-fade-in" 
-			style="animation-delay: 600ms;"
-			src="https://c.animaapp.com/mi4v97d2OSuz2g/img/image-23.png" 
-			mode="aspectFit"
-		></image>
 		
 		<!-- 主内容区域 -->
 		<view class="content-wrapper">
@@ -79,11 +63,12 @@ export default {
 	},
 	data() {
 		return {
-			
+			statusBarHeight: 44
 		}
 	},
 	onLoad() {
-		
+		// 从持久化存储获取状态栏高度
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
 		handleSearchClick() {
@@ -104,54 +89,27 @@ export default {
 	padding-bottom: 192rpx; //底部tab空出
 }
 
-.status-bar {
-	height: 44rpx;
-}
-
-.header {
-	position: absolute;
-	top: 0;
-	left: 0;
+// 自定义导航栏
+.custom-navbar {
+	position: relative;
 	width: 100%;
+	z-index: 10;
+}
+
+.navbar-content {
+	display: flex;
+	align-items: center;
 	height: 88rpx;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 0 36rpx;
-	box-sizing: border-box;
+	padding: 0 30rpx;
+	gap: 20rpx;
 }
 
-.time {
-	font-family: 'Inter', Helvetica;
-	font-size: 28rpx;
-	color: #333333;
-	font-weight: normal;
-}
-
-.status-icons {
-	display: flex;
-	align-items: center;
-	gap: 8rpx;
-}
-
-.status-icon {
-	width: 18rpx;
-	height: 18rpx;
-}
-
-.logo-group {
-	position: absolute;
-	top: 62rpx;
-	left: 494rpx;
-	width: 256rpx;
-	height: 144rpx;
+.logo {
+	width: 104rpx;
+	height: 30rpx;
 }
 
 .location-badge {
-	position: absolute;
-	top: 104rpx;
-	left: 154rpx;
-	width: 362rpx;
 	height: 60rpx;
 	background-color: #ffffff;
 	border-radius: 52rpx;
@@ -159,7 +117,6 @@ export default {
 	display: flex;
 	align-items: center;
 	box-sizing: border-box;
-	cursor: pointer;
 }
 
 .badge-content {
@@ -209,19 +166,10 @@ export default {
 	color: #a6a6a6;
 }
 
-.logo {
-	position: absolute;
-	top: 118rpx;
-	left: 30rpx;
-	width: 104rpx;
-	height: 30rpx;
-}
-
 .content-wrapper {
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	margin-top: 180rpx;
 }
 
 .profile-header-section {

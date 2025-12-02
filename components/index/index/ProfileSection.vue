@@ -9,7 +9,7 @@
 					</view>
 					<text class="alert-text">hey,快去看看你周边设计师吧！</text>
 				</view>
-				<view class="close-btn">
+				<view class="close-btn" @tap="handleNearbyDesignerClick">
 					<image class="close-icon" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-6.svg" mode="aspectFit"></image>
 				</view>
 			</view>
@@ -32,10 +32,11 @@
 				</view>
 			</view>
 			<view class="quick-actions-bottom">
-				<view 
-					v-for="(action, index) in bottomActions" 
-					:key="index" 
+				<view
+					v-for="(action, index) in bottomActions"
+					:key="index"
 					class="bottom-action-item"
+					:class="{ disabled: action.title === '会员' }"
 					@tap="handleBottomAction(action, index)"
 				>
 					<image class="action-icon" :src="action.icon" mode="aspectFit"></image>
@@ -49,16 +50,17 @@
 		
 		<!-- 作品集 -->
 		<view class="portfolio-card animate-fade-in" style="animation-delay: 200ms;">
-			<view class="card-header">
+			<view class="card-header" @tap="handlePortfolioHeaderClick">
 				<text class="card-title">作品集</text>
 				<image class="more-icon" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-7.svg" mode="aspectFit"></image>
 			</view>
 			<view class="portfolio-content">
-				<view 
-					v-for="(item, index) in portfolioItems" 
-					:key="index" 
+				<view
+					v-for="(item, index) in portfolioItems"
+					:key="index"
 					class="portfolio-item"
 					:style="{ left: index === 0 ? '0' : '314rpx' }"
+					@tap="handlePortfolioItemClick(item, index)"
 				>
 					<image class="portfolio-img" :src="item.image" mode="aspectFill"></image>
 					<image class="portfolio-overlay" :src="item.overlay" mode="aspectFill"></image>
@@ -74,7 +76,7 @@
 		
 		<!-- 设计师 -->
 		<view class="designers-card animate-fade-in" style="animation-delay: 300ms;">
-			<view class="card-header" @tap="handleSectionHeaderClick('designer')">
+			<view class="card-header" @tap="handleDesignerSectionClick">
 				<text class="card-title">设计师</text>
 				<image class="more-icon" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-7.svg" mode="aspectFit"></image>
 			</view>
@@ -205,10 +207,10 @@
 		<view class="services-section animate-fade-in" style="animation-delay: 500ms;">
 			<view class="services-header">
 				<text class="services-title" @tap="handleSectionHeaderClick('service')">优服务</text>
-				<view class="filter-btn">
+				<!-- <view class="filter-btn">
 					<text class="filter-text">筛选</text>
 					<image class="filter-icon" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-5.svg" mode="aspectFit"></image>
-				</view>
+				</view> -->
 			</view>
 			<scroll-view class="service-tabs-scroll" scroll-x>
 				<view class="service-tabs-container">
@@ -244,8 +246,10 @@
 									<image class="avatar-img-small" :src="service.avatar" mode="aspectFill"></image>
 								</view>
 								<view class="designer-details">
-									<text class="designer-name-small">{{ service.designerName }}</text>
-									<text class="designer-role-small">{{ service.designerRole }}</text>
+									<view class="designer-name-row">
+										<text class="designer-name-small">{{ service.designerName }}</text>
+										<text class="designer-role-small">{{ service.designerRole }}</text>
+									</view>
 									<view class="designer-rating">
 										<text class="rating-score-small">{{ service.rating }}</text>
 										<text class="star-small">★</text>
@@ -302,7 +306,7 @@ export default {
 				{
 					icon: "https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-2007.svg",
 					title: "会员",
-					subtitle: "VIP平台特权",
+					subtitle: "建设中...",
 				},
 				{
 					icon: "https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-2008.svg",
@@ -485,15 +489,45 @@ export default {
 					url: '/pages/coupon/index'
 				})
 			} else if (action.title === '预约单') {
-				// 可以添加预约单页面跳转
-				console.log('跳转到预约单页面')
+				// 跳转到我的订单页面，激活待使用tab
+				uni.navigateTo({
+					url: '/pages/order/index?tab=pending-use'
+				})
 			} else if (action.title === '会员') {
-				// 可以添加会员页面跳转
-				console.log('跳转到会员页面')
+				// 测试阶段禁用跳转
+				return
 			} else if (action.title === '入驻中') {
-				// 可以添加入驻页面跳转
-				console.log('跳转入驻页面')
+				// 跳转到申请入驻页面
+				uni.navigateTo({
+					url: '/pages/mine/apply-settlement'
+				})
 			}
+		},
+		handleNearbyDesignerClick() {
+			// 测试阶段跳转路径 - 跳转到main/index页的设计师tabs，滚动到附近推荐列表区域
+			uni.navigateTo({
+				url: '/pages/main/index?tab=designer&scrollTo=nearby'
+			})
+		},
+		handleDesignerSectionClick() {
+			// 点击设计师板块标题，跳转到main/index页的设计师tabs，滚动到附近推荐列表区域
+			uni.navigateTo({
+				url: '/pages/main/index?tab=designer&scrollTo=nearby'
+			})
+		},
+		handlePortfolioHeaderClick() {
+			// 点击作品集标题箭头，跳转到作品集首页
+			uni.navigateTo({
+				url: '/pages/portfolio/index'
+			})
+		},
+		handlePortfolioItemClick(item, index) {
+			// 点击作品图片，跳转到作品详情页
+			// index 0 是女士，index 1 是男士
+			const category = index === 0 ? 'women' : 'men'
+			uni.navigateTo({
+				url: `/pages/portfolio/detail?id=${index + 1}&category=${category}`
+			})
 		}
 	},
 }
@@ -631,6 +665,10 @@ export default {
 	flex-direction: column;
 	align-items: center;
 	gap: 6rpx;
+
+	&.disabled {
+		opacity: 0.4;
+	}
 }
 
 .action-title-small {
@@ -805,18 +843,18 @@ export default {
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 316rpx;
-	height: 316rpx;
+	width: 100%;
+	height: 318rpx;
 	border-radius: 8rpx 8rpx 0 0;
 	background: linear-gradient(180deg, rgba(244, 244, 244, 1) 0%);
 }
 
 .designer-img {
 	position: absolute;
-	top: 2rpx;
+	top: 0;
 	left: 0;
-	width: 316rpx;
-	height: 316rpx;
+	width: 100%;
+	height: 318rpx;
 }
 
 .designer-info {
@@ -1217,6 +1255,13 @@ export default {
 	display: flex;
 	flex-direction: column;
 	gap: 4rpx;
+}
+
+.designer-name-row {
+	display: flex;
+	flex-direction: row;
+	align-items: baseline;
+	gap: 8rpx;
 }
 
 .designer-name-small {

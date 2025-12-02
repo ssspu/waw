@@ -1,11 +1,10 @@
 <template>
 	<view class="service-list-section">
 		<view class="order-list">
-			<view 
-				v-for="(order, index) in filteredOrders" 
-				:key="index" 
+			<view
+				v-for="(order, index) in filteredOrders"
+				:key="index"
 				class="order-card"
-				@tap="handleOrderCardClick(order)"
 			>
 				<view class="card-content">
 					<!-- 订单头部 -->
@@ -24,7 +23,7 @@
 					<!-- 订单详情 -->
 					<view class="order-details">
 						<view class="service-info">
-							<text class="service-name">{{ order.serviceName }}</text>
+							<text class="service-name" @tap="handleDetail(order)">{{ order.serviceName }}</text>
 							<view class="service-meta">
 								<text class="meta-label">服务:</text>
 								<view class="meta-content">
@@ -90,16 +89,23 @@
 									</view>
 								</template>
 								<template v-else>
-									<image 
-										v-if="order.hasIcon"
-										class="action-icon" 
-										src="/static/icon/more.png" 
+									<image
+										v-if="order.hasIcon && order.tab === 'pending-use'"
+										class="action-icon"
+										src="/static/icon/more.png"
+										mode="aspectFit"
+										@tap.stop="handleShowQrcode(order)"
+									></image>
+									<image
+										v-else-if="order.hasIcon"
+										class="action-icon"
+										src="/static/icon/more.png"
 										mode="aspectFit"
 									></image>
-									<view class="detail-btn" @tap="handleDetail(order)">
+									<view class="detail-btn" @tap.stop="handleDetail(order)">
 										<text class="btn-text">详情</text>
 									</view>
-									<view class="primary-btn" @tap="handlePrimaryAction(order)">
+									<view class="primary-btn" @tap.stop="handlePrimaryAction(order)">
 										<text class="btn-text primary">{{ order.primaryButton }}</text>
 									</view>
 								</template>
@@ -147,6 +153,46 @@
 			</view>
 		</view>
 		
+		<!-- 二维码弹窗 -->
+		<view class="qrcode-modal" v-if="showQrcodeModal" @tap="handleCloseQrcodeModal">
+			<view class="qrcode-modal-content" @tap.stop>
+				<view class="qrcode-modal-header">
+					<text class="qrcode-modal-title">核销二维码</text>
+					<view class="qrcode-close-btn" @tap="handleCloseQrcodeModal">
+						<text class="qrcode-close-icon">×</text>
+					</view>
+				</view>
+				<view class="qrcode-modal-body">
+					<view class="qrcode-container">
+						<image
+							class="qrcode-image"
+							src="/static/icon/qrcode-demo.png"
+							mode="aspectFit"
+						></image>
+					</view>
+					<text class="qrcode-tip">请向服务人员出示此二维码完成核销</text>
+					<view class="order-info-list">
+						<view class="order-info-row">
+							<text class="order-info-label">订单编号：</text>
+							<text class="order-info-value">{{ currentQrcodeOrder?.orderNumber }}</text>
+						</view>
+						<view class="order-info-row">
+							<text class="order-info-label">服务项目：</text>
+							<text class="order-info-value">{{ currentQrcodeOrder?.serviceName }}</text>
+						</view>
+						<view class="order-info-row">
+							<text class="order-info-label">服务时间：</text>
+							<text class="order-info-value">{{ currentQrcodeOrder?.time }}</text>
+						</view>
+						<view class="order-info-row">
+							<text class="order-info-label">服务金额：</text>
+							<text class="order-info-value price">¥{{ currentQrcodeOrder?.price }}</text>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+
 		<!-- 取消订单弹窗 -->
 		<view class="cancel-modal" v-if="showCancelModal" @tap="handleCloseModal">
 			<view class="modal-content" @tap.stop>
@@ -191,8 +237,6 @@
 </template>
 
 <script>
-import api from '@/api'
-
 export default {
 	props: {
 		activeTab: {
@@ -205,13 +249,11 @@ export default {
 			countdownTimer: null,
 			showCancelModal: false,
 			showMoreModal: false,
+			showQrcodeModal: false,
 			selectedReasonIndex: null,
 			currentCancelOrder: null,
 			currentMoreOrder: null,
-			loading: false,
-			page: 1,
-			pageSize: 10,
-			hasMore: true,
+			currentQrcodeOrder: null,
 			cancelReasons: [
 				'价格有点贵',
 				'时间选择有问题',
@@ -219,22 +261,185 @@ export default {
 				'暂时不需要了',
 				'其他'
 			],
-			serviceOrders: [],
+			serviceOrders: [
+				{
+					orderNumber: "CDD83290895",
+					status: "已确认",
+					statusColor: "#ffa77b",
+					serviceName: "洗剪吹",
+					serviceDetails: "洗护+修剪+造型",
+					duration: "预计1小时",
+					time: "今天11:00",
+					provider: {
+						name: "李天天",
+						badge: "美发师",
+						avatar: "https://c.animaapp.com/mi5lwlq8FxTpMa/img/ellipse-34.svg",
+						rating: "4.8",
+						reviews: "23",
+					},
+					price: "799",
+					quantity: "x1",
+					hasIcon: true,
+					primaryButton: "订单完成",
+					tab: "all"
+				},
+				{
+					orderNumber: "CDD83290895",
+					status: "待付款",
+					statusColor: "#ffa77b",
+					remainingTime: "00:15:00",
+					serviceName: "洗剪吹",
+					serviceDetails: "洗护+修剪+造型",
+					duration: "预计1小时",
+					time: "今天11:00",
+					provider: {
+						name: "李天天",
+						badge: "美发师",
+						avatar: "https://c.animaapp.com/mi5lwlq8FxTpMa/img/ellipse-34.svg",
+						rating: "4.8",
+						reviews: "23",
+					},
+					price: "799",
+					quantity: "x1",
+					hasIcon: false,
+					primaryButton: "立即付款",
+					tab: "pending-payment"
+				},
+				{
+					orderNumber: "CDD83290895",
+					status: "待确认",
+					statusColor: "#ffa77b",
+					serviceName: "洗剪吹",
+					serviceDetails: "洗护+修剪+造型",
+					duration: "预计1小时",
+					time: "今天11:00",
+					provider: {
+						name: "造型美发沙龙",
+						badge: null,
+						avatar: "https://c.animaapp.com/mi5lwlq8FxTpMa/img/ellipse-34-1.svg",
+						rating: "4.8",
+						reviews: "23",
+					},
+					price: "799",
+					quantity: "x1",
+					hasIcon: false,
+					primaryButton: "正在确认",
+					tab: "pending-confirm"
+				},
+				{
+					orderNumber: "CDD83290895",
+					status: "已确认",
+					statusColor: "#ffa77b",
+					serviceName: "洗剪吹",
+					serviceDetails: "洗护+修剪+造型",
+					duration: "预计1小时",
+					time: "今天11:00",
+					provider: {
+						name: "李天天",
+						badge: "美发师",
+						avatar: "https://c.animaapp.com/mi5lwlq8FxTpMa/img/ellipse-34.svg",
+						rating: "4.8",
+						reviews: "23",
+					},
+					price: "799",
+					quantity: "x1",
+					hasIcon: true,
+					primaryButton: "订单完成",
+					tab: "pending-use"
+				},
+				{
+					orderNumber: "CDD83290895",
+					status: "已确认",
+					statusColor: "#ffa77b",
+					serviceName: "洗剪吹",
+					serviceDetails: "洗护+修剪+造型",
+					duration: "预计1小时",
+					time: "今天11:00",
+					provider: {
+						name: "李天天",
+						badge: "美发师",
+						avatar: "https://c.animaapp.com/mi5lwlq8FxTpMa/img/ellipse-34.svg",
+						rating: "4.8",
+						reviews: "23",
+					},
+					price: "799",
+					quantity: "x1",
+					hasIcon: true,
+					primaryButton: "订单完成",
+					tab: "pending-use"
+				},
+				{
+					orderNumber: "CDD83290895",
+					status: "已确认",
+					statusColor: "#ffa77b",
+					serviceName: "洗剪吹",
+					serviceDetails: "洗护+修剪+造型",
+					duration: "预计1小时",
+					time: "今天11:00",
+					provider: {
+						name: "李天天",
+						badge: "美发师",
+						avatar: "https://c.animaapp.com/mi5lwlq8FxTpMa/img/ellipse-34.svg",
+						rating: "4.8",
+						reviews: "23",
+					},
+					price: "799",
+					quantity: "x1",
+					hasIcon: true,
+					primaryButton: "订单完成",
+					tab: "pending-use"
+				},
+				{
+					orderNumber: "CDD83290895",
+					status: "已确认",
+					statusColor: "#ffa77b",
+					serviceName: "洗剪吹",
+					serviceDetails: "洗护+修剪+造型",
+					duration: "预计1小时",
+					time: "今天11:00",
+					provider: {
+						name: "李天天",
+						badge: "美发师",
+						avatar: "https://c.animaapp.com/mi5lwlq8FxTpMa/img/ellipse-34.svg",
+						rating: "4.8",
+						reviews: "23",
+					},
+					price: "799",
+					quantity: "x1",
+					hasIcon: true,
+					primaryButton: "订单完成",
+					tab: "pending-use"
+				},
+				{
+					orderNumber: "CDD83290895",
+					status: "已确认",
+					statusColor: "#ffa77b",
+					serviceName: "洗剪吹",
+					serviceDetails: "洗护+修剪+造型",
+					duration: "预计1小时",
+					time: "今天11:00",
+					provider: {
+						name: "李天天",
+						badge: "美发师",
+						avatar: "https://c.animaapp.com/mi5lwlq8FxTpMa/img/ellipse-34.svg",
+						rating: "4.8",
+						reviews: "23",
+					},
+					price: "799",
+					quantity: "x1",
+					hasIcon: false,
+					primaryButton: "立即评价",
+					tab: "pending-review"
+				},
+			],
 		}
 	},
 	computed: {
 		filteredOrders() {
-			return this.serviceOrders
-		}
-	},
-	watch: {
-		activeTab: {
-			handler() {
-				this.page = 1
-				this.serviceOrders = []
-				this.fetchOrders()
-			},
-			immediate: true
+			if (this.activeTab === 'all') {
+				return this.serviceOrders
+			}
+			return this.serviceOrders.filter(order => order.tab === this.activeTab)
 		}
 	},
 	mounted() {
@@ -248,109 +453,6 @@ export default {
 		}
 	},
 	methods: {
-		// 获取订单列表
-		async fetchOrders() {
-			if (this.loading) return
-			this.loading = true
-			try {
-				// 将tab映射为API状态参数
-				const statusMap = {
-					'all': 'all',
-					'pending-payment': 'pending_payment',
-					'pending-confirm': 'confirmed',
-					'pending-use': 'pending_use',
-					'pending-review': 'completed'
-				}
-				const status = statusMap[this.activeTab] || 'all'
-
-				const res = await api.order.getList({
-					status: status === 'all' ? undefined : status,
-					page: this.page,
-					pageSize: this.pageSize
-				})
-
-				if (res.code === 0) {
-					const list = (res.data.list || []).map(order => this.transformOrder(order))
-					if (this.page === 1) {
-						this.serviceOrders = list
-					} else {
-						this.serviceOrders = [...this.serviceOrders, ...list]
-					}
-					this.hasMore = res.data.hasMore
-				}
-			} catch (err) {
-				console.error('获取订单列表失败:', err)
-				uni.showToast({ title: '获取订单失败', icon: 'none' })
-			} finally {
-				this.loading = false
-			}
-		},
-		// 转换订单数据格式
-		transformOrder(order) {
-			const statusMap = {
-				'pending_payment': { text: '待付款', color: '#ffa77b', tab: 'pending-payment', primaryButton: '立即付款' },
-				'confirmed': { text: '已确认', color: '#ffa77b', tab: 'pending-use', primaryButton: '订单完成' },
-				'pending_use': { text: '待使用', color: '#52c41a', tab: 'pending-use', primaryButton: '订单完成' },
-				'completed': { text: '已完成', color: '#999999', tab: 'pending-review', primaryButton: order.hasReviewed ? '查看评价' : '立即评价' },
-				'cancelled': { text: '已取消', color: '#999999', tab: 'all', primaryButton: '再次预约' }
-			}
-			const statusInfo = statusMap[order.status] || { text: order.statusText, color: '#999', tab: 'all', primaryButton: '详情' }
-
-			// 计算剩余支付时间
-			let remainingTime = null
-			if (order.status === 'pending_payment' && order.payDeadline) {
-				const deadline = new Date(order.payDeadline).getTime()
-				const now = Date.now()
-				const diff = Math.max(0, deadline - now)
-				const hours = Math.floor(diff / 3600000)
-				const minutes = Math.floor((diff % 3600000) / 60000)
-				const seconds = Math.floor((diff % 60000) / 1000)
-				remainingTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-			}
-
-			return {
-				orderNumber: order.id,
-				status: statusInfo.text,
-				statusColor: statusInfo.color,
-				remainingTime,
-				serviceName: order.serviceName,
-				serviceDetails: '洗护+修剪+造型',
-				duration: '预计1小时',
-				time: this.formatAppointmentTime(order.appointmentTime),
-				provider: {
-					name: order.designerName || order.brandName,
-					badge: order.designerId ? '美发师' : null,
-					avatar: order.designerAvatar || '/static/avatar/avatar.png',
-					rating: '4.8',
-					reviews: '23',
-				},
-				price: String(order.payAmount),
-				quantity: 'x1',
-				hasIcon: order.status !== 'pending_payment',
-				primaryButton: statusInfo.primaryButton,
-				tab: statusInfo.tab,
-				rawOrder: order
-			}
-		},
-		// 格式化预约时间
-		formatAppointmentTime(time) {
-			if (!time) return ''
-			const date = new Date(time)
-			const today = new Date()
-			const tomorrow = new Date(today)
-			tomorrow.setDate(tomorrow.getDate() + 1)
-
-			const hours = String(date.getHours()).padStart(2, '0')
-			const minutes = String(date.getMinutes()).padStart(2, '0')
-
-			if (date.toDateString() === today.toDateString()) {
-				return `今天${hours}:${minutes}`
-			} else if (date.toDateString() === tomorrow.toDateString()) {
-				return `明天${hours}:${minutes}`
-			} else {
-				return `${date.getMonth() + 1}月${date.getDate()}日 ${hours}:${minutes}`
-			}
-		},
 		startCountdown() {
 			// 为所有待付款订单启动倒计时
 			this.countdownTimer = setInterval(() => {
@@ -384,6 +486,14 @@ export default {
 				})
 			}, 1000)
 		},
+		handleShowQrcode(order) {
+			this.currentQrcodeOrder = order
+			this.showQrcodeModal = true
+		},
+		handleCloseQrcodeModal() {
+			this.showQrcodeModal = false
+			this.currentQrcodeOrder = null
+		},
 		handleMore(order) {
 			this.currentMoreOrder = order
 			this.showMoreModal = true
@@ -410,11 +520,22 @@ export default {
 		},
 		handleDetail(order) {
 			// 根据订单状态或tab跳转到对应详情页
-			if (order.status === '待付款') {
+			if (order.status === '待付款' || order.tab === 'pending-payment') {
 				uni.navigateTo({
 					url: `/pages/order/detail?orderId=${order.orderNumber}`
 				})
-			} else if (order.tab === 'pending-use') {
+			} else if (order.tab === 'pending-confirm') {
+				// 待确认订单跳转到待确认详情页
+				uni.navigateTo({
+					url: `/pages/order/detail-pending-confirm?orderId=${order.orderNumber}`
+				})
+			} else if (order.tab === 'pending-review') {
+				// 待评价订单跳转到待评价详情页
+				uni.navigateTo({
+					url: `/pages/order/detail-pending-review?orderId=${order.orderNumber}`
+				})
+			} else {
+				// 其他状态（待使用等）都跳转到待使用详情页
 				uni.navigateTo({
 					url: `/pages/order/detail-pending-use?orderId=${order.orderNumber}`
 				})
@@ -442,7 +563,7 @@ export default {
 		handleSelectReason(index) {
 			this.selectedReasonIndex = index
 		},
-		async handleConfirmCancel() {
+		handleConfirmCancel() {
 			if (this.selectedReasonIndex === null) {
 				uni.showToast({
 					title: '请选择取消原因',
@@ -450,53 +571,34 @@ export default {
 				})
 				return
 			}
-
+			
+			// 这里可以调用取消订单的API
 			const reason = this.cancelReasons[this.selectedReasonIndex]
-
-			// 调用取消订单API
+			console.log('取消订单原因:', reason, '订单:', this.currentCancelOrder)
+			
+			// 更新订单状态
 			if (this.currentCancelOrder) {
-				try {
-					const res = await api.order.cancel(this.currentCancelOrder.orderNumber, { reason })
-					if (res.code === 0) {
-						// 从列表中移除已取消的订单
-						const orderIndex = this.serviceOrders.findIndex(o => o.orderNumber === this.currentCancelOrder.orderNumber)
-						if (orderIndex !== -1) {
-							this.serviceOrders.splice(orderIndex, 1)
-						}
-						uni.showToast({
-							title: '订单已取消',
-							icon: 'success'
-						})
-					}
-				} catch (err) {
-					console.error('取消订单失败:', err)
-					uni.showToast({ title: '取消失败', icon: 'none' })
+				const orderIndex = this.serviceOrders.findIndex(o => o.orderNumber === this.currentCancelOrder.orderNumber)
+				if (orderIndex !== -1) {
+					// 可以从列表中移除或更新状态
+					// this.serviceOrders.splice(orderIndex, 1)
 				}
 			}
-
+			
+			uni.showToast({
+				title: '订单已取消',
+				icon: 'success'
+			})
+			
 			this.showCancelModal = false
 			this.selectedReasonIndex = null
 			this.currentCancelOrder = null
 		},
 		handlePay(order) {
-			console.log('Pay clicked:', order)
-			// 跳转到支付页面
+			// 跳转到待付款订单详情页
 			uni.navigateTo({
-				url: `/pages/payment/index?orderId=${order.orderNumber}`
+				url: `/pages/order/detail?orderId=${order.orderNumber}`
 			})
-		},
-		handleOrderCardClick(order) {
-			// 待付款订单点击卡片跳转到订单详情
-			if (order.status === '待付款') {
-				uni.navigateTo({
-					url: `/pages/order/detail?orderId=${order.orderNumber}`
-				})
-			} else if (order.tab === 'pending-use') {
-				// 待使用订单点击卡片跳转到待使用详情页
-				uni.navigateTo({
-					url: `/pages/order/detail-pending-use?orderId=${order.orderNumber}`
-				})
-			}
 		}
 	}
 }
@@ -1176,6 +1278,132 @@ export default {
 	font-weight: 400;
 	color: #666666;
 	text-align: center;
+}
+
+/* 二维码图标样式 */
+.qrcode-icon {
+	cursor: pointer;
+}
+
+/* 二维码弹窗 */
+.qrcode-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.6);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+.qrcode-modal-content {
+	width: 600rpx;
+	background-color: #ffffff;
+	border-radius: 24rpx;
+	overflow: hidden;
+}
+
+.qrcode-modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 32rpx 32rpx 24rpx;
+	border-bottom: 2rpx solid #f0f0f0;
+	position: relative;
+}
+
+.qrcode-modal-title {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 32rpx;
+	font-weight: 500;
+	color: #333333;
+	text-align: center;
+}
+
+.qrcode-close-btn {
+	width: 48rpx;
+	height: 48rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	right: 24rpx;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.qrcode-close-icon {
+	font-size: 48rpx;
+	color: #999999;
+	line-height: 1;
+}
+
+.qrcode-modal-body {
+	padding: 40rpx 32rpx;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 24rpx;
+}
+
+.qrcode-container {
+	width: 400rpx;
+	height: 400rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #ffffff;
+	border: 2rpx solid #f0f0f0;
+	border-radius: 16rpx;
+}
+
+.qrcode-image {
+	width: 360rpx;
+	height: 360rpx;
+}
+
+.qrcode-tip {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 26rpx;
+	color: #999999;
+	text-align: center;
+}
+
+.order-info-list {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 16rpx;
+	padding: 24rpx;
+	background-color: #f8f8f8;
+	border-radius: 12rpx;
+}
+
+.order-info-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.order-info-label {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 26rpx;
+	color: #999999;
+}
+
+.order-info-value {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 26rpx;
+	color: #333333;
+}
+
+.order-info-value.price {
+	color: #ff6b35;
+	font-weight: 500;
 }
 </style>
 

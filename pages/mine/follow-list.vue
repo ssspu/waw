@@ -1,7 +1,6 @@
 <template>
 	<view class="follow-list-page">
-		<view class="status-bar-space"></view>
-		<view class="navbar">
+		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
 				<view class="back-btn" @tap="handleBack">
 					<image class="back-icon" src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" mode="aspectFit"></image>
@@ -151,6 +150,7 @@
 export default {
 	data() {
 		return {
+			statusBarHeight: 44,
 			activeTab: 'designer',
 			tabs: [
 				{ label: '设计师', value: 'designer', count: 3 },
@@ -223,6 +223,9 @@ export default {
 			]
 		}
 	},
+	onLoad() {
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+	},
 	methods: {
 		handleBack() {
 			uni.navigateBack()
@@ -252,9 +255,9 @@ export default {
 		},
 		handlePromotion(designer) {
 			if (designer.promotionStatus === 'apply') {
-				// 跳转到申请推广页面或显示申请弹窗
+				// 显示申请已发送弹窗
 				uni.showToast({
-					title: '申请推广',
+					title: '申请已发送',
 					icon: 'none'
 				})
 			} else if (designer.promotionStatus === 'pending') {
@@ -272,7 +275,7 @@ export default {
 		handleStorePromotion(store) {
 			if (store.promotionStatus === 'apply') {
 				uni.showToast({
-					title: '申请推广',
+					title: '申请已发送',
 					icon: 'none'
 				})
 			} else if (store.promotionStatus === 'pending') {

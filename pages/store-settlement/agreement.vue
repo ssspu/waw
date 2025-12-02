@@ -1,7 +1,7 @@
 <template>
 	<view class="screen">
 		<!-- 头部导航 -->
-		<view class="header">
+		<view class="header" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="nav-bar">
 				<view class="nav-left">
 					<view class="back-btn" @tap="handleBack">
@@ -40,37 +40,46 @@
 		</view>
 		
 		<!-- 主内容区域 -->
-		<scroll-view class="main-content" scroll-y>
+		<view class="main-content">
 			<!-- 协议卡片 -->
 			<view class="card">
 				<view class="card-header">
 					<text class="card-title">入驻平台协议</text>
 				</view>
-				<text class="card-desc">请认真阅读本平台入驻协议</text>
-				
+				<view class="card-desc">请认真阅读本平台入驻协议</view>
+
 				<!-- 协议内容区域 -->
 				<view class="agreement-content">
-					<scroll-view class="agreement-scroll" scroll-y>
-						<text class="agreement-text">
-							{{ agreementText }}
-						</text>
+					<scroll-view class="agreement-scroll" scroll-y @scrolltolower="onScrollToBottom">
+						<view class="agreements-list">
+							<view
+								v-for="(agreement, index) in agreements"
+								:key="index"
+								class="agreement-item"
+							>
+								<view class="agreement-title-row">
+									<text class="agreement-title">{{ agreement.title }}</text>
+								</view>
+								<view class="agreement-content-box">
+									<text class="agreement-text">{{ agreement.content }}</text>
+								</view>
+							</view>
+						</view>
 					</scroll-view>
 				</view>
-				
+
 				<!-- 同意协议 -->
 				<view class="agreement-check" @tap="toggleAgree">
-					<view class="checkbox" :class="{ checked: isAgreed }">
+					<view class="checkbox" :class="{ checked: isAgreed, disabled: !hasScrolledToBottom }">
 						<text v-if="isAgreed" class="check-icon">✓</text>
 					</view>
 					<view class="agreement-label">
 						<text class="label-text">我已阅读并同意</text>
-						<text class="label-link" @tap.stop="viewAgreement">《**入驻申请说明》</text>
+						<text class="label-link">《入驻平台协议》</text>
 					</view>
 				</view>
 			</view>
-			
-			<view class="bottom-spacer"></view>
-		</scroll-view>
+		</view>
 		
 		<!-- 底部按钮 -->
 		<view class="footer">
@@ -87,72 +96,33 @@
 </template>
 
 <script>
+import { agreementsData } from '@/data/agreements.js'
+
 export default {
 	data() {
 		return {
+			statusBarHeight: 44,
 			isAgreed: false,
-			agreementText: `一、总则
-
-1.1 本协议是用户（以下简称"您"）与本平台之间关于入驻本平台成为商家所订立的协议。
-
-1.2 您在申请入驻流程中点击同意本协议之前，应当认真阅读本协议。请您务必审慎阅读、充分理解各条款内容，特别是免除或者限制责任的条款、法律适用和争议解决条款。
-
-1.3 当您按照入驻流程提示填写信息、阅读并同意本协议且完成全部入驻流程后，即表示您已充分阅读、理解并接受本协议的全部内容。
-
-二、入驻条件
-
-2.1 您应当是具有完全民事权利能力和完全民事行为能力的自然人、法人或其他组织。
-
-2.2 您应当具备经营相关商品或服务的资质和能力。
-
-2.3 您提交的入驻资料应当真实、准确、完整，如有变更应及时更新。
-
-三、商家权利与义务
-
-3.1 商家有权在平台上发布商品或服务信息，开展经营活动。
-
-3.2 商家应当遵守国家法律法规，不得从事违法违规经营活动。
-
-3.3 商家应当保证所售商品或提供的服务质量，对消费者负责。
-
-3.4 商家应当按照平台规则参与平台活动，维护平台秩序。
-
-四、平台权利与义务
-
-4.1 平台有权对商家入驻申请进行审核，有权拒绝不符合条件的申请。
-
-4.2 平台有权对商家经营行为进行监督管理，对违规行为进行处理。
-
-4.3 平台应当为商家提供必要的技术支持和服务。
-
-五、费用与结算
-
-5.1 商家应当按照平台规定缴纳相关费用。
-
-5.2 平台将按照约定的结算周期和方式与商家进行结算。
-
-六、协议终止
-
-6.1 商家可以申请退出平台，但应当完成未完成的订单和售后服务。
-
-6.2 平台有权在商家严重违规时终止本协议。
-
-七、其他
-
-7.1 本协议的解释、效力及纠纷解决，适用中华人民共和国法律。
-
-7.2 本协议未尽事宜，按照平台规则执行。`
+			hasScrolledToBottom: false,
+			agreements: agreementsData
 		}
+	},
+	onLoad() {
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
 		handleBack() {
 			uni.navigateBack()
 		},
-		toggleAgree() {
-			this.isAgreed = !this.isAgreed
+		onScrollToBottom() {
+			this.hasScrolledToBottom = true
 		},
-		viewAgreement() {
-			uni.showToast({ title: '查看协议详情', icon: 'none' })
+		toggleAgree() {
+			if (!this.hasScrolledToBottom) {
+				uni.showToast({ title: '请先阅读完协议内容', icon: 'none' })
+				return
+			}
+			this.isAgreed = !this.isAgreed
 		},
 		handlePrev() {
 			uni.navigateBack()
@@ -317,7 +287,7 @@ export default {
 }
 
 .card-header {
-	margin-bottom: 8rpx;
+	margin-bottom: 12rpx;
 }
 
 .card-title {
@@ -331,21 +301,50 @@ export default {
 	font-family: 'PingFang SC';
 	font-size: 24rpx;
 	color: #999999;
-	margin-bottom: 24rpx;
+	margin-bottom: 12rpx;
 }
 
 .agreement-content {
 	background-color: #f8f8f8;
 	border-radius: 8rpx;
-	height: 700rpx;
+	height: 880rpx;
 	margin-bottom: 24rpx;
 	overflow: hidden;
 }
 
 .agreement-scroll {
 	height: 100%;
-	padding: 24rpx;
+	padding: 16rpx 12rpx;
 	box-sizing: border-box;
+}
+
+.agreements-list {
+	display: flex;
+	flex-direction: column;
+	gap: 24rpx;
+	margin-bottom: 24rpx;
+}
+
+.agreement-item {
+	background-color: #f8f8f8;
+	border-radius: 8rpx;
+	overflow: hidden;
+}
+
+.agreement-title-row {
+	padding: 16rpx;
+	border-bottom: 1rpx solid #e7e7e7;
+}
+
+.agreement-title {
+	font-family: 'PingFang SC';
+	font-weight: 600;
+	font-size: 28rpx;
+	color: #333333;
+}
+
+.agreement-content-box {
+	padding: 16rpx;
 }
 
 .agreement-text {
@@ -377,6 +376,11 @@ export default {
 	border-color: #333333;
 }
 
+.checkbox.disabled {
+	background-color: #f5f5f5;
+	border-color: #e0e0e0;
+}
+
 .check-icon {
 	font-size: 20rpx;
 	color: #ffffff;
@@ -397,10 +401,6 @@ export default {
 	font-family: 'PingFang SC';
 	font-size: 24rpx;
 	color: #6d58f1;
-}
-
-.bottom-spacer {
-	height: 180rpx;
 }
 
 .footer {

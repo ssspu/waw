@@ -1,18 +1,18 @@
 <template>
 	<view class="recommendations-section">
 		<view class="recommendations-section-inner">
-		<!-- 大卡片 - 会员特区 -->
-		<view class="large-card" @tap="handleCardClick(recommendationCards[0])">
+		<!-- 大卡片 - 会员特区（测试阶段禁用） -->
+		<view class="large-card disabled">
 			<view class="card-content">
-				<image 
-					class="card-icon" 
-					:src="recommendationCards[0].icon" 
+				<image
+					class="card-icon"
+					:src="recommendationCards[0].icon"
 					:alt="recommendationCards[0].title"
 					mode="aspectFit"
 				></image>
 				<view class="card-info">
 					<text class="card-title">{{ recommendationCards[0].title }}</text>
-					<text class="card-subtitle">{{ recommendationCards[0].subtitle }}</text>
+					<text class="card-subtitle">建设中...</text>
 				</view>
 			</view>
 		</view>
@@ -38,15 +38,6 @@
 						></image>
 					</view>
 				</view>
-			</view>
-		</view>
-		
-		<!-- 附近推荐标题 -->
-		<view class="recommendations-header">
-			<text class="recommendations-title">附近推荐</text>
-			<view class="filter-btn" @tap="handleFilter">
-				<text class="filter-text">筛选</text>
-				<image class="filter-icon" src="https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-1.svg" mode="aspectFit"></image>
 			</view>
 		</view>
 	</view>
@@ -83,7 +74,8 @@ export default {
 	},
 	methods: {
 		handleCardClick(card) {
-			console.log('Card clicked:', card)
+			// 向上发送点击事件，让父组件处理分类切换
+			this.$emit('card-click', card)
 		},
 		handleFilter() {
 			console.log('Filter clicked')
@@ -164,6 +156,11 @@ export default {
 	overflow: hidden;
 	box-sizing: border-box;
 	cursor: pointer;
+
+	&.disabled {
+		opacity: 0.4;
+		pointer-events: none;
+	}
 }
 
 .card-content {

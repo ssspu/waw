@@ -1,26 +1,18 @@
 <template>
 	<view class="customer-service-page">
-		<view class="status-bar-space"></view>
 		<!-- 自定义头部 -->
-		<view class="custom-header">
+		<view class="custom-header" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
 				<view class="nav-left">
 					<view class="back-btn" @tap="goBack">
-						<image 
-							class="back-icon" 
-							src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" 
+						<image
+							class="back-icon"
+							src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg"
 							mode="aspectFit"
 						></image>
 					</view>
 				</view>
 				<text class="nav-title">客服中心</text>
-				<view class="nav-right">
-					<image 
-						class="nav-icon" 
-						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame-1881.svg" 
-						mode="aspectFit"
-					></image>
-				</view>
 			</view>
 		</view>
 		
@@ -88,6 +80,7 @@
 export default {
 	data() {
 		return {
+			statusBarHeight: 44,
 			searchKeyword: '',
 			activeMainTab: 0,
 			activeSubTab: 0,
@@ -107,6 +100,9 @@ export default {
 				'收到的商品有瑕疵'
 			]
 		}
+	},
+	onLoad() {
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
 		goBack() {
@@ -153,12 +149,11 @@ export default {
 }
 
 .navbar-content {
-	position: relative;
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	padding: 88rpx 32rpx 24rpx;
+	padding: 24rpx 32rpx;
 	box-sizing: border-box;
+	gap: 24rpx;
 }
 
 .nav-left {
@@ -167,7 +162,13 @@ export default {
 	justify-content: center;
 	width: 32rpx;
 	height: 32rpx;
-	z-index: 2;
+}
+
+.nav-title {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 32rpx;
+	font-weight: 500;
+	color: #333333;
 }
 
 .back-btn {

@@ -1,10 +1,7 @@
 <template>
 	<view class="order-detail-page">
-		<view class="status-bar-space"></view>
-
-		
 		<!-- 导航栏 -->
-		<view class="navbar">
+		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
 				<view class="back-btn" @tap="handleBack">
 					<image 
@@ -33,23 +30,46 @@
 		<view class="main-content">
 			<!-- 商品详情 -->
 			<view class="product-section">
-				<image 
-					class="product-image" 
-					src="/static/icon/rectangle-169.png" 
+				<image
+					class="product-image"
+					:src="productInfo.image"
 					mode="aspectFill"
 				></image>
 				<view class="product-info">
 					<view class="product-left">
-						<text class="product-name">欧莱雅植物洗护套装一套</text>
-						<text class="product-category">洗护</text>
-						<text class="product-duration">1小时</text>
+						<text class="product-name">{{ productInfo.name }}</text>
+						<text class="product-category">{{ productInfo.category }}</text>
+						<text class="product-duration">{{ productInfo.duration }}</text>
 					</view>
 					<view class="product-right">
 						<view class="price-row">
 							<text class="price-symbol">¥</text>
-							<text class="price-value">799</text>
+							<text class="price-value">{{ productInfo.price }}</text>
 						</view>
 						<text class="quantity">*1</text>
+					</view>
+				</view>
+			</view>
+
+			<!-- 预约信息（如果有） -->
+			<view v-if="bookingInfo.designer" class="booking-info-section">
+				<text class="section-title">预约信息</text>
+				<view class="info-list">
+					<view class="info-item">
+						<text class="info-label">设计师</text>
+						<text class="info-value">{{ bookingInfo.designer }}</text>
+					</view>
+					<view class="info-item">
+						<text class="info-label">预约日期</text>
+						<text class="info-value">{{ bookingInfo.date }}</text>
+					</view>
+					<view class="info-item">
+						<text class="info-label">预约时间</text>
+						<text class="info-value">{{ bookingInfo.time }}</text>
+					</view>
+					<view class="info-item">
+						<text class="info-label">门店地址</text>
+						<text class="info-value">{{ bookingInfo.address }}</text>
 					</view>
 				</view>
 			</view>
@@ -60,16 +80,23 @@
 				<view class="price-list">
 					<view class="price-item">
 						<text class="price-label">商品金额</text>
-						<text class="price-text">¥799</text>
+						<text class="price-text">¥{{ productInfo.price }}</text>
 					</view>
-					<view class="price-item">
-						<text class="price-label">运费</text>
-						<text class="price-text">¥0</text>
+					<view class="price-item coupon-row" @tap="handleOpenCoupon">
+						<text class="price-label">优惠金额</text>
+						<view class="coupon-value-row">
+							<text class="price-text">-¥{{ discountAmount }}</text>
+							<image
+								class="arrow-right-icon"
+								src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame-1.svg"
+								mode="aspectFit"
+							></image>
+						</view>
 					</view>
 					<view class="price-item total">
 						<text class="price-label">合计支付</text>
 						<view class="total-price">
-							<text class="total-price-value">¥799</text>
+							<text class="total-price-value">¥{{ finalPrice }}</text>
 						</view>
 					</view>
 				</view>
@@ -153,16 +180,70 @@
 				</view>
 			</view>
 		</view>
+
+		<!-- 优惠券弹窗 -->
+		<coupon-popup
+			:visible="showCouponPopup"
+			:coupons="coupons"
+			mode="select"
+			:selected-id="selectedCoupon ? selectedCoupon.id : null"
+			@close="showCouponPopup = false"
+			@select="handleSelectCoupon"
+		></coupon-popup>
 	</view>
 </template>
 
 <script>
+import CouponPopup from '@/components/popup/CouponPopup.vue'
+
 export default {
+	components: {
+		CouponPopup
+	},
 	data() {
 		return {
+			statusBarHeight: 44,
 			countdown: '00:30:00',
 			countdownTimer: null,
 			showCancelModal: false,
+			showCouponPopup: false,
+			selectedCoupon: null,
+			discountAmount: 0,
+			coupons: [
+				{
+					id: 1,
+					amount: '50',
+					discount: 50,
+					condition: '满200可用',
+					minAmount: 200,
+					tag: '商家券',
+					title: '新人专享优惠券',
+					description: '服务类产品均可使用',
+					validUntil: '2025.12.31 23:59'
+				},
+				{
+					id: 2,
+					amount: '100',
+					discount: 100,
+					condition: '满500可用',
+					minAmount: 500,
+					tag: '平台券',
+					title: '会员专属优惠券',
+					description: '服务类产品均可使用',
+					validUntil: '2025.12.31 23:59'
+				},
+				{
+					id: 3,
+					amount: '30',
+					discount: 30,
+					condition: '满100可用',
+					minAmount: 100,
+					tag: '商家券',
+					title: '节日特惠券',
+					description: '服务类产品均可使用',
+					validUntil: '2025.12.31 23:59'
+				}
+			],
 			selectedReasonIndex: null,
 			cancelReasons: [
 				'价格有点贵',
@@ -171,6 +252,19 @@ export default {
 				'暂时不需要了',
 				'其他'
 			],
+			productInfo: {
+				image: '/static/icon/rectangle-169.png',
+				name: '欧莱雅植物洗护套装一套',
+				category: '洗护',
+				duration: '1小时',
+				price: '799'
+			},
+			bookingInfo: {
+				designer: '',
+				date: '',
+				time: '',
+				address: ''
+			},
 			orderInfo: {
 				createTime: '2022-04-22 12:04:22',
 				paymentMethod: '在线支付',
@@ -179,12 +273,33 @@ export default {
 			}
 		}
 	},
+	computed: {
+		finalPrice() {
+			const price = parseFloat(this.productInfo.price) || 0
+			return Math.max(0, price - this.discountAmount)
+		}
+	},
 	onLoad(options) {
+		// 从持久化存储获取状态栏高度
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+		// 从预约页面传递的数据
+		if (options.data) {
+			try {
+				const orderData = JSON.parse(decodeURIComponent(options.data))
+				this.parseOrderData(orderData)
+			} catch (e) {
+				console.error('解析订单数据失败:', e)
+			}
+		}
 		// 可以从 options 中获取订单ID等信息
 		if (options.orderId) {
 			// 根据订单ID加载订单详情
 		}
 		this.startCountdown()
+		// 生成订单号
+		this.orderInfo.orderNumber = this.generateOrderNumber()
+		// 设置创建时间
+		this.orderInfo.createTime = this.formatDateTime(new Date())
 	},
 	onUnload() {
 		if (this.countdownTimer) {
@@ -275,6 +390,85 @@ export default {
 			uni.navigateTo({
 				url: `/pages/payment/index?orderId=${this.orderInfo.orderNumber}`
 			})
+		},
+		handleOpenCoupon() {
+			this.showCouponPopup = true
+		},
+		handleSelectCoupon(coupon) {
+			if (coupon) {
+				// 检查是否满足使用条件
+				const price = parseFloat(this.productInfo.price) || 0
+				if (price >= coupon.minAmount) {
+					this.selectedCoupon = coupon
+					this.discountAmount = coupon.discount
+					uni.showToast({
+						title: `已使用${coupon.title}`,
+						icon: 'none'
+					})
+				} else {
+					uni.showToast({
+						title: `需满${coupon.minAmount}元才能使用`,
+						icon: 'none'
+					})
+					return
+				}
+			} else {
+				// 取消使用优惠券
+				this.selectedCoupon = null
+				this.discountAmount = 0
+			}
+			this.showCouponPopup = false
+		},
+		parseOrderData(orderData) {
+			// 解析服务信息
+			if (orderData.service) {
+				this.productInfo = {
+					image: orderData.service.image || '/static/icon/rectangle-169.png',
+					name: `${orderData.service.title}${orderData.brand ? ' - ' + orderData.brand.name : ''}`,
+					category: orderData.hairLength ? orderData.hairLength.label : '',
+					duration: orderData.service.estimatedTime || '1小时',
+					price: orderData.price || '799'
+				}
+			}
+			// 解析预约信息
+			if (orderData.designer) {
+				this.bookingInfo = {
+					designer: orderData.designer.name || '',
+					date: this.formatDate(orderData.date),
+					time: orderData.timeSlot ? orderData.timeSlot.time : '',
+					address: orderData.shop ? `${orderData.shop.name} ${orderData.shop.address}` : ''
+				}
+			}
+		},
+		formatDate(dateId) {
+			// 根据日期ID转换为可读日期
+			const dateMap = {
+				'today': '今天',
+				'tomorrow': '明天'
+			}
+			if (dateMap[dateId]) {
+				return dateMap[dateId]
+			}
+			// 如果是日期格式如 "1205"，转换为 "12月05日"
+			if (dateId && dateId.length === 4) {
+				return `${dateId.slice(0, 2)}月${dateId.slice(2)}日`
+			}
+			return dateId || ''
+		},
+		formatDateTime(date) {
+			const year = date.getFullYear()
+			const month = String(date.getMonth() + 1).padStart(2, '0')
+			const day = String(date.getDate()).padStart(2, '0')
+			const hours = String(date.getHours()).padStart(2, '0')
+			const minutes = String(date.getMinutes()).padStart(2, '0')
+			const seconds = String(date.getSeconds()).padStart(2, '0')
+			return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+		},
+		generateOrderNumber() {
+			// 生成订单号：前缀 + 时间戳 + 随机数
+			const timestamp = Date.now().toString().slice(-10)
+			const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0')
+			return `CD${timestamp}${random}`
 		}
 	}
 }
@@ -501,7 +695,8 @@ export default {
 }
 
 .price-section,
-.order-info-section {
+.order-info-section,
+.booking-info-section {
 	background-color: #ffffff;
 	border-radius: 12rpx;
 	padding: 24rpx 20rpx;
@@ -529,6 +724,21 @@ export default {
 	align-items: center;
 	justify-content: space-between;
 	flex-wrap: nowrap;
+}
+
+.price-item.coupon-row {
+	cursor: pointer;
+}
+
+.coupon-value-row {
+	display: flex;
+	align-items: center;
+	gap: 8rpx;
+}
+
+.arrow-right-icon {
+	width: 24rpx;
+	height: 24rpx;
 }
 
 .price-item.total {
