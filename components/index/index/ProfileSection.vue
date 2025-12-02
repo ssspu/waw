@@ -1278,11 +1278,11 @@ export default {
 			})
 		},
 		handlePortfolioItemClick(item, index) {
-			// 点击作品图片，跳转到作品详情页
+			// 点击作品图片，跳转到作品集首页并选中对应分类
 			// index 0 是女士，index 1 是男士
 			const category = index === 0 ? 'women' : 'men'
 			uni.navigateTo({
-				url: `/pages/portfolio/detail?id=${index + 1}&category=${category}`
+				url: `/pages/portfolio/index?category=${category}`
 			})
 		}
 	},

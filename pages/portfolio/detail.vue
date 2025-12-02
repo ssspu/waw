@@ -1,8 +1,7 @@
 <template>
 	<view class="portfolio-detail-page">
-		<view class="status-bar-space"></view>
 		<!-- 导航栏 -->
-		<view class="navbar">
+		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
 				<view class="back-btn" @tap="handleBack">
 					<image
@@ -12,19 +11,7 @@
 					></image>
 				</view>
 				<text class="navbar-title">作品详情</text>
-				<view class="navbar-right">
-					<view class="nav-icon-btn">
-						<view class="nav-dots">
-							<view class="dot"></view>
-							<view class="dot"></view>
-						</view>
-					</view>
-					<view class="nav-icon-btn">
-						<view class="nav-circle">
-							<view class="circle-dot"></view>
-						</view>
-					</view>
-				</view>
+				<view class="navbar-right"></view>
 			</view>
 		</view>
 
@@ -42,7 +29,7 @@
 						<image
 							v-if="designerInfo.verified"
 							class="verified-icon"
-							src="https://c.animaapp.com/mimycn40ClpGDL/img/renzhengyonghu.svg"
+							src="/static/icon/verified.png"
 							mode="aspectFit"
 						></image>
 					</view>
@@ -50,7 +37,7 @@
 						<text class="tag-text">{{ designerInfo.title }}</text>
 						<text class="tag-divider">|</text>
 						<view class="certification-tag" @tap.stop="handleCertClick">
-							<image class="cert-icon" src="https://c.animaapp.com/mimycn40ClpGDL/img/zhiyerenzheng.svg" mode="aspectFit"></image>
+							<image class="cert-icon" src="/static/icon/certification.png" mode="aspectFit"></image>
 							<text class="cert-text">职业认证</text>
 							<image class="cert-arrow" src="/static/icon/right.png" mode="aspectFit"></image>
 						</view>
@@ -61,21 +48,41 @@
 				<view class="msg-btn" @tap="handleMessage">
 					<text class="msg-text">私信TA</text>
 				</view>
-				<view class="follow-btn" @tap="handleFollow">
+				<view class="follow-btn" :class="{ 'followed': isFollowed }" @tap="handleFollow">
+					<text class="follow-check" v-if="isFollowed">✓</text>
 					<text class="follow-text">{{ isFollowed ? '已关注' : '+ 关注' }}</text>
 				</view>
 			</view>
 		</view>
 
-		<!-- 作品大图 -->
+		<!-- 作品内容 -->
 		<scroll-view class="content-scroll" scroll-y>
+			<!-- 作品大图轮播 -->
 			<view class="main-image-wrapper">
-				<image
-					class="main-image"
-					:src="workDetail.image"
-					mode="widthFix"
-					@tap="handlePreviewImage"
-				></image>
+				<swiper
+					class="image-swiper"
+					:indicator-dots="false"
+					:current="currentImageIndex"
+					@change="handleSwiperChange"
+				>
+					<swiper-item v-for="(img, index) in workDetail.images" :key="index">
+						<image
+							class="main-image"
+							:src="img"
+							mode="aspectFill"
+							@tap="handlePreviewImage(index)"
+						></image>
+					</swiper-item>
+				</swiper>
+			</view>
+			<!-- 轮播指示点 -->
+			<view class="swiper-dots" v-if="workDetail.images.length > 1">
+				<view
+					v-for="(img, index) in workDetail.images"
+					:key="index"
+					class="swiper-dot"
+					:class="{ 'active': currentImageIndex === index }"
+				></view>
 			</view>
 
 			<!-- 互动数据 -->
@@ -84,15 +91,15 @@
 					<view class="interaction-item" @tap="handleLike">
 						<image
 							class="interaction-icon"
-							:src="isLiked ? 'https://c.animaapp.com/mimycn40ClpGDL/img/dianzan-active.svg' : 'https://c.animaapp.com/mimycn40ClpGDL/img/dianzan.svg'"
+							:src="isLiked ? '/static/icon/thumb-up-fill.png' : '/static/icon/thumb-up-line@2x.png'"
 							mode="aspectFit"
 						></image>
-						<text class="interaction-count">{{ workDetail.likes }}</text>
+						<text class="interaction-count" :class="{ 'liked': isLiked }">{{ workDetail.likes }}</text>
 					</view>
 					<view class="interaction-item" @tap="handleOpenComment">
 						<image
 							class="interaction-icon"
-							src="https://c.animaapp.com/mimycn40ClpGDL/img/pinglun.svg"
+							src="/static/icon/chat-1-line@2x.png"
 							mode="aspectFit"
 						></image>
 						<text class="interaction-count">{{ workDetail.comments }}</text>
@@ -100,7 +107,7 @@
 					<view class="interaction-item" @tap="handleShare">
 						<image
 							class="interaction-icon"
-							src="https://c.animaapp.com/mimycn40ClpGDL/img/zhuanfa.svg"
+							src="/static/icon/share-forward-line@2x.png"
 							mode="aspectFit"
 						></image>
 						<text class="interaction-count">{{ workDetail.shares }}</text>
@@ -110,7 +117,7 @@
 					<view class="favorite-item" @tap="handleFavorite">
 						<image
 							class="favorite-icon"
-							:src="isFavorited ? 'https://c.animaapp.com/mimycn40ClpGDL/img/shoucang-active.svg' : 'https://c.animaapp.com/mimycn40ClpGDL/img/shoucang.svg'"
+							:src="isFavorited ? '/static/icon/star-fill.png' : '/static/icon/star.png'"
 							mode="aspectFit"
 						></image>
 					</view>
@@ -119,10 +126,11 @@
 
 			<!-- 评论区 -->
 			<view class="comment-section">
-				<text class="comment-title">评论·{{ commentList.length }}</text>
+				<text class="comment-title">评论·{{ commentTotal }}</text>
 
-				<!-- 评论输入 -->
+				<!-- 评论输入框 -->
 				<view class="comment-input-row">
+					<image class="current-avatar" :src="userAvatar" mode="aspectFill"></image>
 					<view class="comment-input-box" @tap="handleOpenComment">
 						<text class="comment-placeholder">请说说你的看法吧……</text>
 					</view>
@@ -167,9 +175,12 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 
-const isFollowed = ref(false)
+const statusBarHeight = ref(44)
+const isFollowed = ref(true)
 const isLiked = ref(false)
 const isFavorited = ref(false)
+const currentImageIndex = ref(0)
+const commentTotal = ref(268)
 const userAvatar = ref('https://c.animaapp.com/mimycn40ClpGDL/img/---192.png')
 
 const designerInfo = ref({
@@ -182,7 +193,11 @@ const designerInfo = ref({
 
 const workDetail = ref({
 	id: 1,
-	image: 'https://c.animaapp.com/mimycn40ClpGDL/img/---182.svg',
+	images: [
+		'https://c.animaapp.com/mimycn40ClpGDL/img/---182.svg',
+		'https://c.animaapp.com/mimycn40ClpGDL/img/---182.svg',
+		'https://c.animaapp.com/mimycn40ClpGDL/img/---182.svg'
+	],
 	likes: 188,
 	comments: 188,
 	favorites: 188,
@@ -221,18 +236,19 @@ const commentList = ref([
 ])
 
 onMounted(() => {
-	// 获取页面参数
+	// 获取状态栏高度
+	const systemInfo = uni.getSystemInfoSync()
+	statusBarHeight.value = systemInfo.statusBarHeight || 44
+
 	const pages = getCurrentPages()
 	const currentPage = pages[pages.length - 1]
 	const options = currentPage.options || {}
 	if (options.id) {
-		// 根据id加载作品详情
 		loadWorkDetail(options.id)
 	}
 })
 
 const loadWorkDetail = (id) => {
-	// 加载作品详情
 	console.log('加载作品详情:', id)
 }
 
@@ -268,15 +284,18 @@ const handleFollow = () => {
 	})
 }
 
-const handlePreviewImage = () => {
+const handleSwiperChange = (e) => {
+	currentImageIndex.value = e.detail.current
+}
+
+const handlePreviewImage = (index) => {
 	uni.previewImage({
-		urls: [workDetail.value.image],
-		current: workDetail.value.image
+		urls: workDetail.value.images,
+		current: workDetail.value.images[index]
 	})
 }
 
 const handleOpenComment = () => {
-	// 打开评论输入框
 	uni.showToast({
 		title: '评论功能开发中',
 		icon: 'none'
@@ -319,16 +338,11 @@ const handleSend = () => {
 .portfolio-detail-page {
 	width: 100%;
 	min-height: 100vh;
-	background-color: #f2f2f2;
+	background-color: #ffffff;
 	display: flex;
 	flex-direction: column;
 	overflow-x: hidden;
 	box-sizing: border-box;
-}
-
-.status-bar-space {
-	height: var(--status-bar-height, 44px);
-	background-color: #ffffff;
 }
 
 .navbar {
@@ -412,13 +426,13 @@ const handleSend = () => {
 	background-color: #000000;
 }
 
+/* 设计师信息区域 */
 .designer-section {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 24rpx 30rpx;
+	padding: 20rpx 30rpx;
 	background-color: #ffffff;
-	border-bottom: 1rpx solid #f0f0f0;
 }
 
 .designer-info {
@@ -429,8 +443,8 @@ const handleSend = () => {
 }
 
 .designer-avatar {
-	width: 80rpx;
-	height: 80rpx;
+	width: 72rpx;
+	height: 72rpx;
 	border-radius: 50%;
 	flex-shrink: 0;
 }
@@ -438,7 +452,7 @@ const handleSend = () => {
 .designer-details {
 	display: flex;
 	flex-direction: column;
-	gap: 8rpx;
+	gap: 6rpx;
 }
 
 .designer-name-row {
@@ -455,20 +469,20 @@ const handleSend = () => {
 }
 
 .verified-icon {
-	width: 32rpx;
-	height: 32rpx;
+	width: 28rpx;
+	height: 28rpx;
 }
 
 .designer-tags {
 	display: flex;
 	align-items: center;
-	gap: 12rpx;
+	gap: 10rpx;
 }
 
 .tag-text {
 	font-family: 'PingFang SC';
 	font-size: 22rpx;
-	color: #666666;
+	color: #999999;
 }
 
 .tag-divider {
@@ -483,32 +497,36 @@ const handleSend = () => {
 }
 
 .cert-icon {
-	width: 24rpx;
-	height: 24rpx;
+	width: 22rpx;
+	height: 22rpx;
 }
 
 .cert-text {
 	font-family: 'PingFang SC';
 	font-size: 22rpx;
-	color: #666666;
+	color: #999999;
 }
 
 .cert-arrow {
-	width: 20rpx;
-	height: 20rpx;
+	width: 18rpx;
+	height: 18rpx;
 	opacity: 0.5;
 }
 
 .action-btns {
 	display: flex;
 	align-items: center;
-	gap: 16rpx;
+	gap: 12rpx;
 }
 
 .msg-btn {
-	padding: 12rpx 24rpx;
+	width: 134rpx;
+	height: 60rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	background-color: #f5f5f5;
-	border-radius: 32rpx;
+	border-radius: 8rpx;
 }
 
 .msg-text {
@@ -518,9 +536,24 @@ const handleSend = () => {
 }
 
 .follow-btn {
-	padding: 12rpx 24rpx;
+	width: 144rpx;
+	height: 60rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	background-color: #333333;
-	border-radius: 32rpx;
+	border-radius: 8rpx;
+	gap: 4rpx;
+
+	&.followed {
+		background-color: #f5f5f5;
+		border: 1rpx solid #e5e5e5;
+	}
+}
+
+.follow-check {
+	font-size: 22rpx;
+	color: #333333;
 }
 
 .follow-text {
@@ -529,6 +562,11 @@ const handleSend = () => {
 	color: #ffffff;
 }
 
+.follow-btn.followed .follow-text {
+	color: #333333;
+}
+
+/* 作品内容区域 */
 .content-scroll {
 	flex: 1;
 	padding-bottom: 120rpx;
@@ -538,10 +576,38 @@ const handleSend = () => {
 	width: 100%;
 }
 
-.main-image {
-	width: 100%;
+.image-swiper {
+	width: 750rpx;
+	height: 1000rpx;
 }
 
+.main-image {
+	width: 100%;
+	height: 100%;
+}
+
+.swiper-dots {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12rpx;
+	padding: 20rpx 0;
+	background-color: #ffffff;
+}
+
+.swiper-dot {
+	width: 12rpx;
+	height: 12rpx;
+	border-radius: 50%;
+	background-color: #e0e0e0;
+	transition: all 0.3s;
+
+	&.active {
+		background-color: #333333;
+	}
+}
+
+/* 互动数据区域 */
 .interaction-section {
 	display: flex;
 	align-items: center;
@@ -553,7 +619,7 @@ const handleSend = () => {
 .interaction-left {
 	display: flex;
 	align-items: center;
-	gap: 48rpx;
+	gap: 40rpx;
 }
 
 .interaction-item {
@@ -569,8 +635,12 @@ const handleSend = () => {
 
 .interaction-count {
 	font-family: 'PingFang SC';
-	font-size: 24rpx;
-	color: #666666;
+	font-size: 26rpx;
+	color: #333333;
+
+	&.liked {
+		color: #ff4d4f;
+	}
 }
 
 .interaction-right {
@@ -589,10 +659,11 @@ const handleSend = () => {
 	height: 44rpx;
 }
 
+/* 评论区域 */
 .comment-section {
 	background-color: #ffffff;
 	padding: 24rpx 30rpx;
-	margin-top: 12rpx;
+	border-top: 1rpx solid #f5f5f5;
 }
 
 .comment-title {
@@ -607,14 +678,22 @@ const handleSend = () => {
 .comment-input-row {
 	display: flex;
 	align-items: center;
-	margin-bottom: 24rpx;
+	gap: 16rpx;
+	margin-bottom: 32rpx;
+}
+
+.current-avatar {
+	width: 56rpx;
+	height: 56rpx;
+	border-radius: 50%;
+	flex-shrink: 0;
 }
 
 .comment-input-box {
 	flex: 1;
-	height: 64rpx;
+	height: 56rpx;
 	background-color: #f6f6f6;
-	border-radius: 32rpx;
+	border-radius: 28rpx;
 	display: flex;
 	align-items: center;
 	padding: 0 24rpx;
@@ -629,7 +708,7 @@ const handleSend = () => {
 .comment-list {
 	display: flex;
 	flex-direction: column;
-	gap: 32rpx;
+	gap: 28rpx;
 }
 
 .comment-item {
@@ -639,8 +718,8 @@ const handleSend = () => {
 }
 
 .commenter-avatar {
-	width: 64rpx;
-	height: 64rpx;
+	width: 56rpx;
+	height: 56rpx;
 	border-radius: 50%;
 	flex-shrink: 0;
 }
@@ -655,7 +734,7 @@ const handleSend = () => {
 .comment-header {
 	display: flex;
 	align-items: center;
-	gap: 16rpx;
+	gap: 12rpx;
 }
 
 .commenter-name {
@@ -675,9 +754,10 @@ const handleSend = () => {
 	font-family: 'PingFang SC';
 	font-size: 26rpx;
 	color: #333333;
-	line-height: 1.6;
+	line-height: 1.5;
 }
 
+/* 底部操作栏 */
 .footer-bar {
 	position: fixed;
 	bottom: 0;
@@ -689,7 +769,7 @@ const handleSend = () => {
 	padding: 16rpx 30rpx;
 	padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
 	background-color: #ffffff;
-	box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+	border-top: 1rpx solid #f0f0f0;
 	box-sizing: border-box;
 }
 
@@ -710,7 +790,7 @@ const handleSend = () => {
 }
 
 .send-btn {
-	padding: 12rpx 32rpx;
+	padding: 14rpx 36rpx;
 	background-color: #333333;
 	border-radius: 32rpx;
 }

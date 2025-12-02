@@ -1,6 +1,6 @@
 <template>
 	<view class="portfolio-page">
-		<view class="status-bar-space"></view>
+		<view class="status-bar-space" :style="{ height: statusBarHeight + 'px' }"></view>
 		<!-- 导航栏 -->
 		<view class="navbar">
 			<view class="navbar-content">
@@ -12,38 +12,16 @@
 					></image>
 				</view>
 				<text class="navbar-title">作品集</text>
-				<view class="navbar-right">
-					<view class="nav-icon-btn">
-						<view class="nav-dots">
-							<view class="dot"></view>
-							<view class="dot"></view>
-							<view class="dot"></view>
-						</view>
-					</view>
-					<view class="nav-icon-btn">
-						<view class="nav-circle">
-							<view class="circle-dot"></view>
-						</view>
-					</view>
-				</view>
+				<view class="navbar-right"></view>
 			</view>
 		</view>
 
 		<!-- 搜索和筛选区域 -->
 		<view class="filter-section">
 			<!-- 搜索框 -->
-			<view class="search-box">
-				<image
-					class="search-icon"
-					src="/static/icon/search.png"
-					mode="aspectFit"
-				></image>
-				<input
-					class="search-input"
-					placeholder="请输入关键词搜索"
-					placeholder-class="search-placeholder"
-					v-model="searchKeyword"
-				/>
+			<view class="search-box" @tap="handleSearchClick">
+				<image class="search-icon" src="/static/icon/search.png" mode="aspectFit"></image>
+				<text class="search-placeholder">请输入关键词搜索</text>
 			</view>
 
 			<!-- 分类和筛选 -->
@@ -60,23 +38,195 @@
 						<view v-if="activeCategory === category.value" class="category-indicator"></view>
 					</view>
 				</view>
-				<view class="filter-btn" @tap="handleOpenFilter">
+				<view class="filter-btn" @tap="handleToggleFilter">
 					<text class="filter-text">筛选</text>
 					<image
 						class="filter-arrow"
+						:class="{ rotate: showFilterDrawer }"
 						src="/static/icon/down.png"
 						mode="aspectFit"
 					></image>
 				</view>
 			</view>
+
+			<!-- 下拉筛选卡片 -->
+			<view class="filter-drawer" :class="{ show: showFilterDrawer }">
+				<view class="filter-card">
+					<view class="filter-content">
+						<!-- 脸型选择 -->
+						<view class="filter-row">
+							<text class="filter-label">脸型</text>
+							<view class="face-type-group">
+								<view
+									v-for="(face, index) in faceTypes"
+									:key="face.id"
+									class="face-type-item"
+									:class="{ active: selectedFace === face.id }"
+									@tap="handleFaceChange(face.id)"
+								>
+									<image
+										class="face-icon"
+										:src="selectedFace === face.id ? face.activeIcon : face.icon"
+										mode="aspectFit"
+									></image>
+								</view>
+							</view>
+						</view>
+
+						<!-- 发量选择 -->
+						<view class="filter-row">
+							<text class="filter-label">发量</text>
+							<view class="toggle-group">
+								<view
+									v-for="(option, index) in hairAmountOptions"
+									:key="option.value"
+									class="toggle-item"
+									:class="{ active: hairVolume === option.value }"
+									@tap="hairVolume = option.value"
+								>
+									<text class="toggle-text" :class="{ active: hairVolume === option.value }">
+										{{ option.label }}
+									</text>
+								</view>
+							</view>
+						</view>
+
+						<!-- 发质选择 -->
+						<view class="filter-row">
+							<text class="filter-label">发质</text>
+							<view class="toggle-group">
+								<view
+									v-for="(option, index) in hairQualityOptions"
+									:key="option.value"
+									class="toggle-item"
+									:class="{ active: hairQuality === option.value }"
+									@tap="hairQuality = option.value"
+								>
+									<text class="toggle-text" :class="{ active: hairQuality === option.value }">
+										{{ option.label }}
+									</text>
+								</view>
+							</view>
+						</view>
+
+						<!-- 粗细选择 -->
+						<view class="filter-row">
+							<text class="filter-label">粗细</text>
+							<view class="toggle-group">
+								<view
+									v-for="(option, index) in hairThicknessOptions"
+									:key="option.value"
+									class="toggle-item"
+									:class="{ active: hairThickness === option.value }"
+									@tap="hairThickness = option.value"
+								>
+									<text class="toggle-text" :class="{ active: hairThickness === option.value }">
+										{{ option.label }}
+									</text>
+								</view>
+							</view>
+						</view>
+					</view>
+
+					<!-- 底部按钮 -->
+					<view class="filter-footer">
+						<view class="reset-btn" @tap="handleReset">
+							<text class="reset-text">重置</text>
+						</view>
+						<view class="confirm-btn" @tap="handleConfirmFilter">
+							<text class="confirm-text">确定</text>
+						</view>
+					</view>
+				</view>
+			</view>
 		</view>
 
+		<!-- 筛选标签卡片 - 独立区块 -->
+		<view class="filter-tags-card" v-if="showFilterTags">
+			<view class="filter-tags-content">
+				<!-- 脸型标签 -->
+				<view class="filter-tag-wrapper">
+					<view class="filter-tag-item" @tap="handleTagClick('face')">
+						<text class="tag-label">脸型</text>
+						<image class="tag-face-icon" :src="selectedFaceIcon" mode="aspectFit"></image>
+						<image class="tag-arrow-icon" :class="{ rotate: activeTagDropdown === 'face' }" src="/static/icon/down.png" mode="aspectFit"></image>
+					</view>
+					<!-- 脸型下拉选项 -->
+					<view class="tag-dropdown" v-if="activeTagDropdown === 'face'">
+						<view class="face-options">
+							<view
+								v-for="(face, index) in faceTypes"
+								:key="face.id"
+								class="face-option-item"
+								:class="{ active: selectedFace === face.id }"
+								@tap.stop="handleFaceSelect(face.id)"
+							>
+								<image class="face-option-icon" :src="face.icon" mode="aspectFit"></image>
+							</view>
+						</view>
+					</view>
+				</view>
+				<!-- 发量标签 -->
+				<view class="filter-tag-wrapper">
+					<view class="filter-tag-item" @tap="handleTagClick('volume')">
+						<text class="tag-label">发量</text>
+						<text class="tag-value">{{ selectedVolumeLabel }}</text>
+						<image class="tag-arrow-icon" :class="{ rotate: activeTagDropdown === 'volume' }" src="/static/icon/down.png" mode="aspectFit"></image>
+					</view>
+					<!-- 发量下拉选项 -->
+					<view class="tag-dropdown" v-if="activeTagDropdown === 'volume'">
+						<view class="text-options">
+							<view
+								v-for="(option, index) in hairAmountOptions"
+								:key="option.value"
+								class="text-option-item"
+								:class="{ active: hairVolume === option.value }"
+								@tap.stop="handleVolumeSelect(option.value)"
+							>
+								<text class="option-text">{{ option.label }}</text>
+							</view>
+						</view>
+					</view>
+				</view>
+				<!-- 发质标签 -->
+				<view class="filter-tag-wrapper">
+					<view class="filter-tag-item" @tap="handleTagClick('quality')">
+						<text class="tag-label">发质</text>
+						<text class="tag-value">{{ selectedQualityLabel }}</text>
+						<image class="tag-arrow-icon" :class="{ rotate: activeTagDropdown === 'quality' }" src="/static/icon/down.png" mode="aspectFit"></image>
+					</view>
+					<!-- 发质下拉选项 -->
+					<view class="tag-dropdown" v-if="activeTagDropdown === 'quality'">
+						<view class="text-options">
+							<view
+								v-for="(option, index) in hairQualityOptions"
+								:key="option.value"
+								class="text-option-item"
+								:class="{ active: hairQuality === option.value }"
+								@tap.stop="handleQualitySelect(option.value)"
+							>
+								<text class="option-text">{{ option.label }}</text>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+
+		<!-- 筛选按钮的遮罩层 -->
+		<view class="filter-mask" v-if="showFilterDrawer" @tap="handleCloseFilter"></view>
+
 		<!-- 作品列表 -->
-		<scroll-view class="gallery-scroll" scroll-y>
+		<scroll-view
+			class="gallery-scroll"
+			scroll-y
+			@scrolltolower="handleLoadMore"
+			:lower-threshold="100"
+		>
 			<view class="gallery-grid">
 				<view
-					v-for="(item, index) in galleryList"
-					:key="index"
+					v-for="(item, index) in displayList"
+					:key="item.id"
 					class="gallery-item"
 					@tap="handleItemClick(item)"
 				>
@@ -84,105 +234,50 @@
 						class="gallery-image"
 						:src="item.image"
 						mode="aspectFill"
+						lazy-load
 					></image>
 				</view>
 			</view>
-		</scroll-view>
-
-		<!-- 筛选弹窗 -->
-		<view class="filter-modal" v-if="showFilterModal" @tap="handleCloseFilter">
-			<view class="filter-modal-content" @tap.stop>
-				<!-- 弹窗头部分类 -->
-				<view class="modal-header">
-					<view class="modal-tabs">
-						<view
-							v-for="(category, index) in categories"
-							:key="index"
-							class="modal-tab-item"
-							:class="{ active: modalCategory === category.value }"
-							@tap="modalCategory = category.value"
-						>
-							<text class="modal-tab-text">{{ category.label }}</text>
-						</view>
-					</view>
-					<text class="modal-filter-label">筛选</text>
-				</view>
-
-				<!-- 筛选选项 -->
-				<view class="filter-options">
-					<!-- 脸型选项 -->
-					<view class="filter-row">
-						<text class="filter-label">脸型</text>
-						<view class="shape-options">
-							<view
-								v-for="(shape, index) in faceShapes"
-								:key="index"
-								class="shape-item"
-								:class="{ active: selectedFaceShape === shape.value }"
-								@tap="selectedFaceShape = shape.value"
-							>
-								<view class="shape-icon" :class="shape.type"></view>
-							</view>
-						</view>
-					</view>
-
-					<!-- 发量选项 -->
-					<view class="filter-row">
-						<text class="filter-label">发量</text>
-						<view class="option-buttons">
-							<view
-								v-for="(option, index) in hairAmountOptions"
-								:key="index"
-								class="option-btn"
-								:class="{ active: selectedHairAmount === option.value }"
-								@tap="selectedHairAmount = option.value"
-							>
-								<text class="option-text">{{ option.label }}</text>
-							</view>
-						</view>
-					</view>
-
-					<!-- 发质选项 -->
-					<view class="filter-row">
-						<text class="filter-label">发质</text>
-						<view class="option-buttons">
-							<view
-								v-for="(option, index) in hairQualityOptions"
-								:key="index"
-								class="option-btn"
-								:class="{ active: selectedHairQuality === option.value }"
-								@tap="selectedHairQuality = option.value"
-							>
-								<text class="option-text">{{ option.label }}</text>
-							</view>
-						</view>
-					</view>
-				</view>
-
-				<!-- 底部按钮 -->
-				<view class="modal-footer">
-					<view class="reset-btn" @tap="handleReset">
-						<text class="reset-text">重置</text>
-					</view>
-					<view class="confirm-btn" @tap="handleConfirmFilter">
-						<text class="confirm-text">确定</text>
-					</view>
-				</view>
+			<!-- 加载状态 -->
+			<view class="load-more" v-if="displayList.length > 0">
+				<text class="load-more-text">{{ loadMoreText }}</text>
 			</view>
-		</view>
+		</scroll-view>
 	</view>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 
-const searchKeyword = ref('')
+const statusBarHeight = ref(44)
 const activeCategory = ref('women')
-const showFilterModal = ref(false)
-const modalCategory = ref('women')
-const selectedFaceShape = ref('')
-const selectedHairAmount = ref('less')
-const selectedHairQuality = ref('soft')
+const showFilterDrawer = ref(false)
+const showFilterTags = ref(false)
+const activeTagDropdown = ref('')
+const selectedFace = ref('oval')
+const hairVolume = ref('normal')
+const hairQuality = ref('normal')
+const hairThickness = ref('normal')
+
+// 分页相关
+const pageSize = 6
+const currentPage = ref(1)
+const isLoading = ref(false)
+const hasMore = ref(true)
+
+// 页面加载时获取参数和状态栏高度
+onMounted(() => {
+	// 获取状态栏高度
+	const systemInfo = uni.getSystemInfoSync()
+	statusBarHeight.value = systemInfo.statusBarHeight || 44
+
+	const pages = getCurrentPages()
+	const currentPage = pages[pages.length - 1]
+	const options = currentPage.options || {}
+	if (options.category) {
+		activeCategory.value = options.category
+	}
+})
 
 const categories = [
 	{ label: '女士', value: 'women' },
@@ -190,13 +285,14 @@ const categories = [
 	{ label: '儿童', value: 'children' }
 ]
 
-const faceShapes = [
-	{ type: 'circle-filled', value: 'round' },
-	{ type: 'circle', value: 'oval' },
-	{ type: 'square', value: 'square' },
-	{ type: 'diamond', value: 'diamond' },
-	{ type: 'triangle', value: 'triangle' },
-	{ type: 'rectangle', value: 'rectangle' }
+// 脸型选项
+const faceTypes = [
+	{ id: 'oval', icon: '/static/icon/face-oval.png', activeIcon: '/static/icon/face-oval-active.png' },
+	{ id: 'circle', icon: '/static/icon/face-circle.png', activeIcon: '/static/icon/face-circle-active.png' },
+	{ id: 'square', icon: '/static/icon/face-square.png', activeIcon: '/static/icon/face-square-active.png' },
+	{ id: 'diamond', icon: '/static/icon/face-diamond.png', activeIcon: '/static/icon/face-diamond-active.png' },
+	{ id: 'triangle', icon: '/static/icon/face-triangle.png', activeIcon: '/static/icon/face-triangle-active.png' },
+	{ id: 'rounded-rect', icon: '/static/icon/face-rounded-rect.png', activeIcon: '/static/icon/face-rounded-rect-active.png' }
 ]
 
 const hairAmountOptions = [
@@ -208,42 +304,190 @@ const hairAmountOptions = [
 const hairQualityOptions = [
 	{ label: '软', value: 'soft' },
 	{ label: '正常', value: 'normal' },
-	{ label: '粗', value: 'coarse' }
+	{ label: '硬', value: 'hard' }
 ]
 
-const galleryList = ref([
-	{ id: 1, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---176.svg' },
-	{ id: 2, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---177.svg' },
-	{ id: 3, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---178.svg' },
-	{ id: 4, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---179.svg' },
-	{ id: 5, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---180.svg' },
-	{ id: 6, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---181.svg' }
-])
+const hairThicknessOptions = [
+	{ label: '细', value: 'fine' },
+	{ label: '正常', value: 'normal' },
+	{ label: '粗', value: 'thick' }
+]
+
+// 筛选标签显示图标
+const selectedFaceIcon = computed(() => {
+	return `/static/icon/face-${selectedFace.value}-mini.png`
+})
+
+const selectedVolumeLabel = computed(() => {
+	const option = hairAmountOptions.find(o => o.value === hairVolume.value)
+	return option ? option.label : '正常'
+})
+
+const selectedQualityLabel = computed(() => {
+	const option = hairQualityOptions.find(o => o.value === hairQuality.value)
+	return option ? option.label : '正常'
+})
+
+// 按分类的图片数据
+const galleryByCategory = {
+	women: [
+		{ id: 1, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---176.svg', category: 'women' },
+		{ id: 2, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---177.svg', category: 'women' },
+		{ id: 3, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---178.svg', category: 'women' },
+		{ id: 4, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---179.svg', category: 'women' },
+		{ id: 5, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---180.svg', category: 'women' },
+		{ id: 6, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---181.svg', category: 'women' },
+		{ id: 7, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---176.svg', category: 'women' },
+		{ id: 8, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---177.svg', category: 'women' },
+		{ id: 9, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---178.svg', category: 'women' },
+		{ id: 10, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---179.svg', category: 'women' },
+		{ id: 11, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---180.svg', category: 'women' },
+		{ id: 12, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---181.svg', category: 'women' }
+	],
+	men: [
+		{ id: 13, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
+		{ id: 14, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
+		{ id: 15, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
+		{ id: 16, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
+		{ id: 17, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
+		{ id: 18, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
+		{ id: 19, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
+		{ id: 20, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
+		{ id: 21, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
+		{ id: 22, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
+		{ id: 23, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
+		{ id: 24, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' }
+	],
+	children: [
+		{ id: 25, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---176.svg', category: 'children' },
+		{ id: 26, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---177.svg', category: 'children' },
+		{ id: 27, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---178.svg', category: 'children' },
+		{ id: 28, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---179.svg', category: 'children' },
+		{ id: 29, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---180.svg', category: 'children' },
+		{ id: 30, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---181.svg', category: 'children' },
+		{ id: 31, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---176.svg', category: 'children' },
+		{ id: 32, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---177.svg', category: 'children' },
+		{ id: 33, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---178.svg', category: 'children' },
+		{ id: 34, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---179.svg', category: 'children' },
+		{ id: 35, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---180.svg', category: 'children' },
+		{ id: 36, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---181.svg', category: 'children' }
+	]
+}
+
+// 计算当前分类的图片列表
+const galleryList = computed(() => {
+	return galleryByCategory[activeCategory.value] || galleryByCategory.women
+})
+
+// 分页显示列表
+const displayList = computed(() => {
+	const list = galleryList.value
+	return list.slice(0, currentPage.value * pageSize)
+})
+
+// 加载更多文案
+const loadMoreText = computed(() => {
+	if (isLoading.value) return '加载中...'
+	if (!hasMore.value) return '没有更多了'
+	return '上拉加载更多'
+})
+
+// 监听分类变化，重置分页
+watch(activeCategory, () => {
+	currentPage.value = 1
+	hasMore.value = true
+})
 
 const handleBack = () => {
 	uni.navigateBack()
+}
+
+const handleSearchClick = () => {
+	uni.navigateTo({
+		url: '/pages/main/search'
+	})
+}
+
+// 加载更多
+const handleLoadMore = () => {
+	if (isLoading.value || !hasMore.value) return
+
+	const totalItems = galleryList.value.length
+	const loadedItems = currentPage.value * pageSize
+
+	if (loadedItems >= totalItems) {
+		hasMore.value = false
+		return
+	}
+
+	isLoading.value = true
+	// 模拟加载延迟
+	setTimeout(() => {
+		currentPage.value++
+		isLoading.value = false
+
+		// 检查是否还有更多
+		if (currentPage.value * pageSize >= totalItems) {
+			hasMore.value = false
+		}
+	}, 500)
 }
 
 const handleCategoryChange = (value) => {
 	activeCategory.value = value
 }
 
-const handleOpenFilter = () => {
-	showFilterModal.value = true
+const handleToggleFilter = () => {
+	showFilterDrawer.value = !showFilterDrawer.value
 }
 
 const handleCloseFilter = () => {
-	showFilterModal.value = false
+	showFilterDrawer.value = false
+}
+
+const handleCloseAllDropdown = () => {
+	showFilterDrawer.value = false
+	activeTagDropdown.value = ''
+}
+
+const handleTagClick = (tag) => {
+	if (activeTagDropdown.value === tag) {
+		activeTagDropdown.value = ''
+	} else {
+		activeTagDropdown.value = tag
+	}
+}
+
+const handleFaceChange = (value) => {
+	selectedFace.value = value
+}
+
+const handleFaceSelect = (value) => {
+	selectedFace.value = value
+	activeTagDropdown.value = ''
+}
+
+const handleVolumeSelect = (value) => {
+	hairVolume.value = value
+	activeTagDropdown.value = ''
+}
+
+const handleQualitySelect = (value) => {
+	hairQuality.value = value
+	activeTagDropdown.value = ''
 }
 
 const handleReset = () => {
-	selectedFaceShape.value = ''
-	selectedHairAmount.value = 'less'
-	selectedHairQuality.value = 'soft'
+	selectedFace.value = 'oval'
+	hairVolume.value = 'normal'
+	hairQuality.value = 'normal'
+	hairThickness.value = 'normal'
+	showFilterTags.value = false
 }
 
 const handleConfirmFilter = () => {
-	showFilterModal.value = false
+	showFilterDrawer.value = false
+	showFilterTags.value = true
 	// 根据筛选条件过滤列表
 }
 
@@ -257,22 +501,25 @@ const handleItemClick = (item) => {
 <style scoped lang="scss">
 .portfolio-page {
 	width: 100%;
-	min-height: 100vh;
+	height: 100vh;
 	background-color: #f2f2f2;
 	display: flex;
 	flex-direction: column;
-	overflow-x: hidden;
+	overflow: hidden;
 	box-sizing: border-box;
 }
 
 .status-bar-space {
-	height: var(--status-bar-height, 44px);
 	background-color: #ffffff;
+	position: relative;
+	z-index: 200;
 }
 
 .navbar {
 	width: 100%;
 	background-color: #ffffff;
+	position: relative;
+	z-index: 200;
 }
 
 .navbar-content {
@@ -308,81 +555,39 @@ const handleItemClick = (item) => {
 }
 
 .navbar-right {
-	display: flex;
-	align-items: center;
-	gap: 16rpx;
-}
-
-.nav-icon-btn {
 	width: 32rpx;
-	height: 32rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.nav-dots {
-	display: flex;
-	align-items: center;
-	gap: 4rpx;
-}
-
-.dot {
-	width: 6rpx;
-	height: 6rpx;
-	border-radius: 50%;
-	background-color: #000000;
-}
-
-.nav-circle {
-	width: 28rpx;
-	height: 28rpx;
-	border-radius: 50%;
-	border: 2rpx solid #000000;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.circle-dot {
-	width: 10rpx;
-	height: 10rpx;
-	border-radius: 50%;
-	background-color: #000000;
-}
-
-.filter-section {
-	background-color: #ffffff;
-	padding: 0 30rpx 0;
-	display: flex;
-	flex-direction: column;
-	gap: 20rpx;
 }
 
 .search-box {
 	display: flex;
 	align-items: center;
-	height: 60rpx;
+	height: 64rpx;
 	background-color: #f6f6f6;
-	border-radius: 99rpx;
-	padding: 0 20rpx;
+	border-radius: 32rpx;
+	padding: 0 24rpx;
+	gap: 12rpx;
 }
 
 .search-icon {
-	width: 36rpx;
-	height: 36rpx;
-	margin-right: 12rpx;
-}
-
-.search-input {
-	flex: 1;
-	font-family: 'PingFang SC';
-	font-size: 22rpx;
-	color: #333333;
+	width: 28rpx;
+	height: 28rpx;
+	opacity: 0.5;
 }
 
 .search-placeholder {
+	font-family: 'PingFang SC';
+	font-size: 24rpx;
 	color: #a6a6a6;
+}
+
+.filter-section {
+	background-color: #ffffff;
+	padding: 20rpx 30rpx 0;
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
+	position: relative;
+	z-index: 150;
 }
 
 .category-row {
@@ -439,222 +644,270 @@ const handleItemClick = (item) => {
 }
 
 .filter-arrow {
-	width: 32rpx;
-	height: 32rpx;
+	width: 24rpx;
+	height: 24rpx;
+	transition: transform 0.3s ease;
 }
 
-.gallery-scroll {
-	flex: 1;
-	padding: 12rpx;
-	box-sizing: border-box;
+.filter-arrow.rotate {
+	transform: rotate(180deg);
 }
 
-.gallery-grid {
+/* 筛选标签卡片 - 独立区块 */
+.filter-tags-card {
+	padding: 12rpx 12rpx 0 12rpx;
+	background-color: #f2f2f2;
+	position: relative;
+	z-index: 100;
+}
+
+.filter-tags-content {
 	display: flex;
-	flex-wrap: wrap;
-	gap: 12rpx;
-	width: 100%;
-	box-sizing: border-box;
+	align-items: flex-start;
+	gap: 16rpx;
 }
 
-.gallery-item {
-	width: calc(50% - 6rpx);
-	border-radius: 8rpx;
-	overflow: hidden;
-	box-sizing: border-box;
+.filter-tag-wrapper {
+	position: relative;
 }
 
-.gallery-image {
-	width: 100%;
-	height: 478rpx;
-}
-
-/* 筛选弹窗样式 */
-.filter-modal {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: rgba(0, 0, 0, 0.5);
-	z-index: 1000;
+.filter-tag-item {
 	display: flex;
-	align-items: flex-end;
-}
-
-.filter-modal-content {
-	width: 100%;
+	align-items: center;
+	gap: 6rpx;
+	padding: 0 16rpx;
+	height: 48rpx;
 	background-color: #ffffff;
-	border-radius: 32rpx 32rpx 0 0;
-	padding: 32rpx;
-	box-sizing: border-box;
+	border-radius: 6rpx;
 }
 
-.modal-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding-bottom: 24rpx;
-	border-bottom: 2rpx solid #f0f0f0;
-}
-
-.modal-tabs {
-	display: flex;
-	align-items: center;
-	gap: 48rpx;
-}
-
-.modal-tab-item {
-	padding: 8rpx 0;
-}
-
-.modal-tab-text {
+.tag-label {
 	font-family: 'PingFang SC';
-	font-size: 28rpx;
-	font-weight: 500;
+	font-size: 22rpx;
 	color: #a6a6a6;
 }
 
-.modal-tab-item.active .modal-tab-text {
-	color: #000000;
+.tag-face-icon {
+	width: 24rpx;
+	height: 24rpx;
 }
 
-.modal-filter-label {
+.tag-value {
 	font-family: 'PingFang SC';
-	font-size: 28rpx;
+	font-size: 22rpx;
+	color: #333333;
 	font-weight: 500;
-	color: #a6a6a6;
 }
 
-.filter-options {
-	padding: 32rpx 0;
-	display: flex;
-	flex-direction: column;
-	gap: 32rpx;
+.tag-arrow-icon {
+	width: 20rpx;
+	height: 20rpx;
+	opacity: 0.5;
+	transition: transform 0.3s ease;
 }
 
-.filter-row {
+.tag-arrow-icon.rotate {
+	transform: rotate(180deg);
+}
+
+/* 标签下拉选项 */
+.tag-dropdown {
+	position: absolute;
+	top: 56rpx;
+	left: 0;
+	padding: 16rpx;
+	background-color: #ffffff;
+	border-radius: 6rpx;
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+	z-index: 200;
+}
+
+.face-options {
 	display: flex;
 	align-items: center;
-	gap: 24rpx;
+	gap: 12rpx;
 }
 
-.filter-label {
-	font-family: 'PingFang SC';
-	font-size: 28rpx;
-	color: #666666;
-	min-width: 80rpx;
-}
-
-.shape-options {
-	display: flex;
-	align-items: center;
-	gap: 24rpx;
-	flex: 1;
-}
-
-.shape-item {
-	width: 80rpx;
-	height: 80rpx;
+.face-option-item {
+	width: 56rpx;
+	height: 56rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border: 2rpx solid #e5e5e5;
-	border-radius: 8rpx;
+	border-radius: 6rpx;
+	background-color: #f6f6f6;
 }
 
-.shape-item.active {
-	border-color: #000000;
+.face-option-item.active {
+	background-color: #333333;
 }
 
-.shape-icon {
-	width: 48rpx;
-	height: 48rpx;
+.face-option-icon {
+	width: 40rpx;
+	height: 40rpx;
 }
 
-.shape-icon.circle-filled {
-	background-color: #000000;
-	border-radius: 50%;
-}
-
-.shape-icon.circle {
-	border: 4rpx solid #000000;
-	border-radius: 50%;
-	background-color: transparent;
-}
-
-.shape-icon.square {
-	border: 4rpx solid #000000;
-	background-color: transparent;
-}
-
-.shape-icon.diamond {
-	border: 4rpx solid #000000;
-	transform: rotate(45deg);
-	width: 36rpx;
-	height: 36rpx;
-	background-color: transparent;
-}
-
-.shape-icon.triangle {
-	width: 0;
-	height: 0;
-	border-left: 24rpx solid transparent;
-	border-right: 24rpx solid transparent;
-	border-bottom: 40rpx solid #000000;
-	background-color: transparent;
-}
-
-.shape-icon.rectangle {
-	width: 56rpx;
-	height: 36rpx;
-	border: 4rpx solid #000000;
-	background-color: transparent;
-}
-
-.option-buttons {
+.text-options {
 	display: flex;
 	align-items: center;
-	gap: 24rpx;
-	flex: 1;
+	gap: 12rpx;
 }
 
-.option-btn {
-	padding: 16rpx 48rpx;
-	border-radius: 8rpx;
-	background-color: transparent;
+.text-option-item {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 20rpx;
+	height: 48rpx;
+	background-color: #f6f6f6;
+	border-radius: 6rpx;
 }
 
-.option-btn.active {
+.text-option-item.active {
 	background-color: #333333;
 }
 
 .option-text {
 	font-family: 'PingFang SC';
-	font-size: 28rpx;
+	font-size: 22rpx;
 	color: #666666;
+	white-space: nowrap;
 }
 
-.option-btn.active .option-text {
+.text-option-item.active .option-text {
 	color: #ffffff;
 }
 
-.modal-footer {
+/* 下拉筛选抽屉 */
+.filter-drawer {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.3s ease;
+	background-color: #ffffff;
+	z-index: 101;
+}
+
+.filter-drawer.show {
+	max-height: 800rpx;
+}
+
+.filter-card {
+	width: 100%;
+	background-color: #ffffff;
+	box-sizing: border-box;
+	padding: 20rpx 30rpx;
+}
+
+.filter-content {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 30rpx;
+	box-sizing: border-box;
+}
+
+.filter-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.filter-label {
+	width: fit-content;
+	font-family: 'PingFang SC';
+	font-weight: normal;
+	color: #a6a6a6;
+	font-size: 24rpx;
+	text-align: center;
+	flex-shrink: 0;
+	white-space: nowrap;
+}
+
+.face-type-group {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
+}
+
+.face-type-item {
+	width: 90rpx;
+	height: 90rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+.face-icon {
+	width: 100rpx;
+	height: 100rpx;
+}
+
+.toggle-group {
+	display: inline-flex;
+	align-items: center;
+	gap: 14rpx;
+	flex-shrink: 0;
+}
+
+.toggle-item {
+	display: flex;
+	width: 196rpx;
+	height: 60rpx;
+	align-items: center;
+	justify-content: center;
+	gap: 8rpx;
+	padding: 16rpx 40rpx;
+	background-color: #f6f6f6;
+	border-radius: 0;
+	border: 0;
+	cursor: pointer;
+	box-sizing: border-box;
+
+	&.active {
+		background-color: #333333;
+		border-radius: 4rpx;
+	}
+}
+
+.toggle-text {
+	width: fit-content;
+	margin-top: -3rpx;
+	font-family: 'PingFang SC';
+	font-weight: normal;
+	color: #666666;
+	font-size: 22rpx;
+	text-align: center;
+	white-space: nowrap;
+
+	&.active {
+		font-weight: 600;
+		color: #ffffff;
+	}
+}
+
+.filter-footer {
 	display: flex;
 	align-items: center;
 	gap: 24rpx;
-	padding-top: 24rpx;
-	border-top: 2rpx solid #f0f0f0;
+	margin-top: 30rpx;
+	padding-bottom: 20rpx;
 }
 
 .reset-btn,
 .confirm-btn {
 	flex: 1;
-	height: 88rpx;
+	height: 80rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border-radius: 44rpx;
+	border-radius: 40rpx;
 }
 
 .reset-btn {
@@ -678,5 +931,58 @@ const handleItemClick = (item) => {
 	font-size: 28rpx;
 	font-weight: 500;
 	color: #ffffff;
+}
+
+/* 遮罩层 */
+.filter-mask {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 99;
+	pointer-events: auto;
+}
+
+.gallery-scroll {
+	flex: 1;
+	padding: 12rpx;
+	box-sizing: border-box;
+	height: 0;
+}
+
+.gallery-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12rpx;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.gallery-item {
+	width: calc(50% - 6rpx);
+	border-radius: 8rpx;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+
+.gallery-image {
+	width: 100%;
+	height: 478rpx;
+}
+
+/* 加载更多 */
+.load-more {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 30rpx 0;
+}
+
+.load-more-text {
+	font-family: 'PingFang SC';
+	font-size: 24rpx;
+	color: #a6a6a6;
 }
 </style>
