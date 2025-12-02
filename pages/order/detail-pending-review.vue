@@ -1,8 +1,7 @@
 <template>
 	<view class="order-detail-page">
-		<view class="status-bar-space"></view>
 		<!-- 导航栏 -->
-		<view class="navbar">
+		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
 				<view class="back-btn" @tap="handleBack">
 					<image
@@ -12,20 +11,6 @@
 					></image>
 				</view>
 				<text class="navbar-title">订单详情</text>
-				<view class="navbar-right">
-					<view class="nav-icon-btn">
-						<view class="nav-dots">
-							<view class="dot"></view>
-							<view class="dot"></view>
-							<view class="dot"></view>
-						</view>
-					</view>
-					<view class="nav-icon-btn">
-						<view class="nav-circle">
-							<view class="circle-dot"></view>
-						</view>
-					</view>
-				</view>
 			</view>
 		</view>
 
@@ -134,6 +119,7 @@
 export default {
 	data() {
 		return {
+			statusBarHeight: 44,
 			orderId: '',
 			orderInfo: {
 				createTime: '2022-04-22 12:04:22',
@@ -144,6 +130,7 @@ export default {
 		}
 	},
 	onLoad(options) {
+		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 		// 可以从 options 中获取订单ID等信息
 		if (options.orderId) {
 			this.orderId = options.orderId

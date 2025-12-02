@@ -89,10 +89,15 @@ export default {
 			}
 		},
 		handleUnfavorite(item) {
-			uni.showToast({
-				title: `已取消 ${item.name}`,
-				icon: 'none'
-			})
+			// 删除对应的收藏数据
+			const index = this.favorites.findIndex(f => f.id === item.id)
+			if (index !== -1) {
+				this.favorites.splice(index, 1)
+				uni.showToast({
+					title: '已取消收藏',
+					icon: 'none'
+				})
+			}
 		}
 	}
 }
@@ -112,9 +117,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 }
-.favorite-card.favorite-card--favorite {
-	margin: 15rpx 0;
-}
+
 .navbar-content {
 	display: flex;
 	align-items: center;
@@ -152,6 +155,9 @@ export default {
 	width: 100%;
 	padding: 20rpx 24rpx 0;
 	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
 }
 
 .safe-area-spacer {

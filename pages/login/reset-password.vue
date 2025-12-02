@@ -1,30 +1,34 @@
 <template>
-	<view class="login-page">
+	<view class="register-page">
 		<!-- 背景图片 -->
 		<image class="bg-image" src="/static/background-image/register.png" mode="aspectFill"></image>
-		
+
 		<!-- 自定义导航栏 -->
 		<view class="custom-navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
 				<view class="nav-left" @tap="goBack">
 					<image class="nav-icon" src="https://c.animaapp.com/mi5ng54v4eM3X6/img/frame.svg" mode="aspectFit"></image>
 				</view>
+				<view class="nav-right">
+					<image class="nav-icon" src="/static/icon/more.svg" mode="aspectFit"></image>
+					<image class="nav-icon" src="/static/icon/scan.svg" mode="aspectFit"></image>
+				</view>
 			</view>
 		</view>
-		
+
 		<!-- 标题区域 -->
 		<view class="title-section">
-			<text class="page-title">帐号密码登录</text>
+			<text class="page-title">重置密码</text>
 			<text class="page-subtitle">欢迎来到WAW style</text>
 		</view>
-		
+
 		<!-- 表单区域 -->
 		<view class="form-section">
 			<view class="form-card">
 				<!-- 手机号输入 -->
 				<view class="input-group">
 					<text class="country-code">+86</text>
-					<input 
+					<input
 						class="input-field"
 						type="number"
 						v-model="phone"
@@ -33,31 +37,51 @@
 						maxlength="11"
 					/>
 				</view>
-				
-				<!-- 密码输入 -->
+
+				<!-- 验证码输入 -->
 				<view class="input-group">
-					<input 
+					<input
+						class="input-field"
+						type="number"
+						v-model="verifyCode"
+						placeholder="请输入验证码"
+						placeholder-class="placeholder-text"
+						maxlength="6"
+					/>
+					<text class="code-btn" :class="{ disabled: countdown > 0 }" @tap="getVerifyCode">
+						{{ countdown > 0 ? countdown + 's' : '获取验证码' }}
+					</text>
+				</view>
+
+				<!-- 设置新密码 -->
+				<view class="input-group">
+					<input
 						class="input-field full-width"
-						:type="showPassword ? 'text' : 'password'"
+						type="password"
 						v-model="password"
-						placeholder="请输入密码"
+						placeholder="请设置新密码"
 						placeholder-class="placeholder-text"
 					/>
 				</view>
-				
-				<!-- 链接区域 -->
-				<view class="link-row">
-					<text class="link-text primary" @tap="goToRegister">注册帐号</text>
-					<text class="link-text" @tap="handleForgetPassword">忘记密码</text>
+
+				<!-- 确认新密码 -->
+				<view class="input-group">
+					<input
+						class="input-field full-width"
+						type="password"
+						v-model="confirmPassword"
+						placeholder="请在此确认新密码"
+						placeholder-class="placeholder-text"
+					/>
 				</view>
-				
-				<!-- 登录按钮 -->
-				<view class="submit-btn" @tap="handleLogin">
-					<text class="submit-btn-text">登录</text>
+
+				<!-- 重置密码按钮 -->
+				<view class="submit-btn" @tap="handleResetPassword">
+					<text class="submit-btn-text">重置密码</text>
 				</view>
 			</view>
 		</view>
-		
+
 		<!-- 底部协议 -->
 		<view class="footer-agreement">
 			<view class="agreement-row">
@@ -106,10 +130,13 @@ export default {
 	data() {
 		return {
 			phone: '',
+			verifyCode: '',
 			password: '',
-			showPassword: false,
+			confirmPassword: '',
 			isAgreed: true,
 			statusBarHeight: 0,
+			countdown: 0,
+			timer: null,
 			showModal: false,
 			currentAgreement: {
 				title: '',
@@ -139,6 +166,9 @@ export default {
 		this.statusBarHeight = systemInfo.statusBarHeight || 44
 	},
 	onUnload() {
+		if (this.timer) {
+			clearInterval(this.timer)
+		}
 		if (this.modalTimer) {
 			clearInterval(this.modalTimer)
 		}
@@ -150,33 +180,49 @@ export default {
 		toggleAgreement() {
 			this.isAgreed = !this.isAgreed
 		},
-		handleLogin() {
-			if (!this.phone) {
-				uni.showToast({ title: '请输入手机号码', icon: 'none' })
+		getVerifyCode() {
+			if (this.countdown > 0) return
+			if (!this.phone || this.phone.length !== 11) {
+				uni.showToast({ title: '请输入正确的手机号码', icon: 'none' })
+				return
+			}
+			// 开始倒计时
+			this.countdown = 60
+			this.timer = setInterval(() => {
+				this.countdown--
+				if (this.countdown <= 0) {
+					clearInterval(this.timer)
+					this.timer = null
+				}
+			}, 1000)
+			uni.showToast({ title: '验证码已发送', icon: 'success' })
+		},
+		handleResetPassword() {
+			if (!this.phone || this.phone.length !== 11) {
+				uni.showToast({ title: '请输入正确的手机号码', icon: 'none' })
+				return
+			}
+			if (!this.verifyCode) {
+				uni.showToast({ title: '请输入验证码', icon: 'none' })
 				return
 			}
 			if (!this.password) {
-				uni.showToast({ title: '请输入密码', icon: 'none' })
+				uni.showToast({ title: '请设置新密码', icon: 'none' })
+				return
+			}
+			if (this.password !== this.confirmPassword) {
+				uni.showToast({ title: '两次密码输入不一致', icon: 'none' })
 				return
 			}
 			if (!this.isAgreed) {
 				uni.showToast({ title: '请先同意用户协议', icon: 'none' })
 				return
 			}
-			// 登录成功后跳转首页
-			uni.reLaunch({
-				url: '/pages/index/index'
-			})
-		},
-		goToRegister() {
-			uni.navigateTo({
-				url: '/pages/login/register'
-			})
-		},
-		handleForgetPassword() {
-			uni.navigateTo({
-				url: '/pages/login/reset-password'
-			})
+			// 重置密码成功后返回登录页
+			uni.showToast({ title: '密码重置成功', icon: 'success' })
+			setTimeout(() => {
+				uni.navigateBack()
+			}, 1500)
 		},
 		openUserAgreement() {
 			const agreement = getUserAgreement()
@@ -232,7 +278,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.login-page {
+.register-page {
 	width: 100%;
 	min-height: 100vh;
 	background-color: #ffffff;
@@ -261,6 +307,7 @@ export default {
 .navbar-content {
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
 	height: 88rpx;
 	padding: 0 30rpx;
 }
@@ -274,6 +321,12 @@ export default {
 .nav-icon {
 	width: 32rpx;
 	height: 32rpx;
+}
+
+.nav-right {
+	display: flex;
+	align-items: center;
+	gap: 24rpx;
 }
 
 .title-section {
@@ -347,19 +400,14 @@ export default {
 	color: #a6a6a6;
 }
 
-.link-row {
-	display: flex;
-	justify-content: space-between;
-	padding: 0 10rpx;
-}
-
-.link-text {
+.code-btn {
 	font-family: 'Inter', Helvetica;
 	font-size: 28rpx;
-	color: #a6a6a6;
-	
-	&.primary {
-		color: #6d58f1;
+	color: #6d58f1;
+	flex-shrink: 0;
+
+	&.disabled {
+		color: #a6a6a6;
 	}
 }
 
@@ -371,7 +419,7 @@ export default {
 	align-items: center;
 	justify-content: center;
 	margin-top: 10rpx;
-	
+
 	&:active {
 		background-color: #5d48e1;
 	}
@@ -410,7 +458,7 @@ export default {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	
+
 	&.checked {
 		background-color: #6d58f1;
 		border-color: #6d58f1;

@@ -222,10 +222,16 @@ export default {
 			// 实现删除逻辑
 		},
 		handleBookAgain() {
-			// 跳转到设计师详情页
-			uni.navigateTo({
-				url: '/pages/designer/info'
-			})
+			// 根据模式跳转到对应的详情页
+			if (this.isBrandMode) {
+				uni.navigateTo({
+					url: '/pages/brand/detail'
+				})
+			} else {
+				uni.navigateTo({
+					url: '/pages/designer/detail'
+				})
+			}
 		}
 	}
 }

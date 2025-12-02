@@ -255,7 +255,8 @@ export default {
 		},
 		handlePromotion(designer) {
 			if (designer.promotionStatus === 'apply') {
-				// 显示申请已发送弹窗
+				// 更新状态为申请中
+				designer.promotionStatus = 'pending'
 				uni.showToast({
 					title: '申请已发送',
 					icon: 'none'
@@ -274,6 +275,8 @@ export default {
 		},
 		handleStorePromotion(store) {
 			if (store.promotionStatus === 'apply') {
+				// 更新状态为申请中
+				store.promotionStatus = 'pending'
 				uni.showToast({
 					title: '申请已发送',
 					icon: 'none'
