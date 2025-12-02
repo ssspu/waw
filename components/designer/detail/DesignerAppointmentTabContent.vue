@@ -1,26 +1,6 @@
 <template>
 	<view class="appointment-tab-content">
-		<designer-booking-profile-section
-			@time-selected="handleTimeSelected"
-		></designer-booking-profile-section>
-
-		<!-- 未选服务提示弹窗 -->
-		<view class="service-prompt-modal" v-if="showServicePrompt" @tap="closePrompt">
-			<view class="modal-content" @tap.stop>
-				<view class="modal-body">
-					<text class="modal-title">温馨提示</text>
-					<text class="modal-desc">请先选择要进行的服务项目</text>
-				</view>
-				<view class="modal-footer">
-					<view class="modal-btn cancel-btn" @tap="closePrompt">
-						<text class="btn-text">我再看看</text>
-					</view>
-					<view class="modal-btn confirm-btn" @tap="goToService">
-						<text class="btn-text">立即选择</text>
-					</view>
-				</view>
-			</view>
-		</view>
+		<designer-booking-profile-section></designer-booking-profile-section>
 	</view>
 </template>
 
@@ -40,28 +20,6 @@ export default {
 		activeSubTab: {
 			type: String,
 			default: 'today'
-		},
-		selectedService: {
-			type: Object,
-			default: null
-		}
-	},
-	methods: {
-		handleTimeSelected(timeSlot) {
-			// 如果未选择服务，显示提示弹窗
-			if (!this.selectedService) {
-				this.showServicePrompt = true
-				return
-			}
-			this.$emit('time-selected', timeSlot)
-		},
-		closePrompt() {
-			this.showServicePrompt = false
-		},
-		goToService() {
-			this.showServicePrompt = false
-			// 触发事件通知父组件切换到服务tab
-			this.$emit('go-to-service')
 		}
 	}
 }
