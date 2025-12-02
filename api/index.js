@@ -44,6 +44,8 @@ import serviceApi from './modules/service.js'
 import messageApi from './modules/message.js'
 import territoryApi from './modules/territory.js'
 import settlementApi from './modules/settlement.js'
+import portfolioApi from './modules/portfolio.js'
+import chatApi from './modules/chat.js'
 
 // 统一 API 对象
 const api = {
@@ -57,7 +59,9 @@ const api = {
   service: serviceApi,
   message: messageApi,
   territory: territoryApi,
-  settlement: settlementApi
+  settlement: settlementApi,
+  portfolio: portfolioApi,
+  chat: chatApi
 }
 
 // 默认导出
@@ -75,7 +79,9 @@ export {
   serviceApi,
   messageApi,
   territoryApi,
-  settlementApi
+  settlementApi,
+  portfolioApi,
+  chatApi
 }
 
 // 具名导出 - 请求工具
