@@ -4,7 +4,7 @@
 		<!-- <view class="status-bar" style="height: 44rpx;"></view> -->
 		
 		<!-- 头部 -->
-		<brand-detail-header></brand-detail-header>
+		<brand-detail-header :cover-image="coverImage"></brand-detail-header>
 		
 		<!-- 主内容区域 -->
 		<view class="main-content" :class="{ 'reviews-fullwidth': activeTab === 'reviews', 'no-bottom-padding': activeTab === 'works' || activeTab === 'service' }">
@@ -139,6 +139,7 @@ export default {
 	data() {
 		return {
 			brandId: null,
+			coverImage: '',
 			activeTab: 'service',
 			showCouponPopup: false,
 			loading: false,
@@ -228,6 +229,9 @@ export default {
 				const res = await api.brand.getDetail(this.brandId)
 				if (res.code === 0) {
 					const data = res.data
+
+					// 设置封面图片
+					this.coverImage = data.coverImage || data.avatar || ''
 
 					// 计算经营年份
 					let yearsInBusiness = 0

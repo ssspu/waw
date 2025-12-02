@@ -4,13 +4,22 @@
 
 import { success, error, paginate } from '../utils.js'
 
+// 封面图片列表 - 用于设计师详情页背景
+const coverImages = [
+  'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png',
+  'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-186.png',
+  'https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png',
+  'https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png',
+  'https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png'
+]
+
 // 设计师列表
 const designers = [
   {
     id: '1',
     name: '李天天',
     avatar: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-11.png',
-    coverImage: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png',
+    coverImage: coverImages[0],
     role: '美发师',
     level: '高级',
     position: '店长',
@@ -42,7 +51,7 @@ const designers = [
     id: '2',
     name: '张小雨',
     avatar: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-7.png',
-    coverImage: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png',
+    coverImage: coverImages[1],
     role: '美发师',
     level: '高级',
     position: '总监',
@@ -74,7 +83,7 @@ const designers = [
     id: '3',
     name: '王大明',
     avatar: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-8.png',
-    coverImage: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png',
+    coverImage: coverImages[2],
     role: '美发师',
     level: '资深',
     position: '首席',
@@ -106,7 +115,7 @@ const designers = [
     id: '4',
     name: '刘美丽',
     avatar: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-9.png',
-    coverImage: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png',
+    coverImage: coverImages[3],
     role: '美发师',
     level: '高级',
     position: '设计师',
@@ -138,7 +147,7 @@ const designers = [
     id: '5',
     name: '陈晓峰',
     avatar: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-10.png',
-    coverImage: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png',
+    coverImage: coverImages[4],
     role: '美发师',
     level: '特级',
     position: '创意总监',
@@ -170,7 +179,7 @@ const designers = [
     id: '6',
     name: '林婉儿',
     avatar: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png',
-    coverImage: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png',
+    coverImage: coverImages[0],
     role: '美发师',
     level: '高级',
     position: '资深设计师',
@@ -202,7 +211,7 @@ const designers = [
     id: '7',
     name: '赵凯',
     avatar: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-11.png',
-    coverImage: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png',
+    coverImage: coverImages[1],
     role: '美发师',
     level: '资深',
     position: '技术主管',
@@ -234,7 +243,7 @@ const designers = [
     id: '8',
     name: '周雅琪',
     avatar: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-7.png',
-    coverImage: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png',
+    coverImage: coverImages[2],
     role: '美发师',
     level: '高级',
     position: '造型师',

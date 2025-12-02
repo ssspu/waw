@@ -1,6 +1,6 @@
 <template>
 	<view class="appointment-tab-content">
-		<designer-booking-profile-section></designer-booking-profile-section>
+		<designer-booking-profile-section :designer-id="designerId"></designer-booking-profile-section>
 	</view>
 </template>
 
@@ -17,6 +17,10 @@ export default {
 		}
 	},
 	props: {
+		designerId: {
+			type: [String, Number],
+			default: null
+		},
 		activeSubTab: {
 			type: String,
 			default: 'today'

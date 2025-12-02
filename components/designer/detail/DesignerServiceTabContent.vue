@@ -2,6 +2,7 @@
 	<view class="service-tab-content">
 		<!-- 服务列表 -->
 		<designer-profile-section
+			:designer-id="designerId"
 			:active-sub-tab="activeSubTab"
 			@book-service="handleBookService"
 		></designer-profile-section>
@@ -16,6 +17,10 @@ export default {
 		DesignerProfileSection
 	},
 	props: {
+		designerId: {
+			type: [String, Number],
+			default: null
+		},
 		activeSubTab: {
 			type: String,
 			default: 'hair'

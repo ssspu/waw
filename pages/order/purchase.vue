@@ -5,7 +5,7 @@
 			<view class="header-section">
 				<image
 					class="header-bg-image"
-					src="https://c.animaapp.com/mifnbli6udxphC/img/rectangle-186.png"
+					:src="serviceData.headerImage || 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-186.png'"
 					mode="aspectFill"
 				></image>
 
@@ -19,26 +19,35 @@
 								mode="aspectFit"
 							></image>
 						</view>
-						<text class="nav-title">洗剪吹</text>
+						<text class="nav-title">{{ serviceData.name || '服务详情' }}</text>
 					</view>
 				</view>
 
 				<!-- 右上角详情区域 -->
-				<ServicePurchaseDetailsSection />
+				<ServicePurchaseDetailsSection
+					:current-page="currentImagePage"
+					:total-pages="totalImagePages"
+				/>
 			</view>
-			
+
 			<!-- 主内容区域 -->
 			<view class="content-wrapper">
-				<ServicePurchaseProfileSection />
+				<ServicePurchaseProfileSection :service-data="serviceData" />
 			</view>
 		</scroll-view>
-		
+
 		<!-- 底部导航栏 -->
-		<ServicePurchaseFooter />
+		<ServicePurchaseFooter
+			:service-id="serviceId"
+			:designer-id="serviceData.designer ? serviceData.designer.id : ''"
+			:is-favorited="serviceData.isFavorited"
+			@favorite-change="handleFavoriteChange"
+		/>
 	</view>
 </template>
 
 <script>
+import { serviceApi } from '@/api'
 import ServicePurchaseDetailsSection from '../../components/order/purchase/ServicePurchaseDetailsSection.vue'
 import ServicePurchaseProfileSection from '../../components/order/purchase/ServicePurchaseProfileSection.vue'
 import ServicePurchaseFooter from '../../components/order/purchase/ServicePurchaseFooter.vue'
@@ -52,7 +61,16 @@ export default {
 	data() {
 		return {
 			statusBarHeight: 44,
-			serviceId: ''
+			serviceId: '',
+			serviceData: {},
+			currentImagePage: 1,
+			loading: false
+		}
+	},
+	computed: {
+		totalImagePages() {
+			const images = this.serviceData.detailImages || []
+			return images.length
 		}
 	},
 	onLoad(options) {
@@ -61,9 +79,25 @@ export default {
 
 		if (options.id) {
 			this.serviceId = options.id
+			this.loadServiceDetail()
 		}
 	},
 	methods: {
+		// 加载服务详情
+		async loadServiceDetail() {
+			if (!this.serviceId || this.loading) return
+			this.loading = true
+			try {
+				const res = await serviceApi.getDetail(this.serviceId)
+				if (res && res.data) {
+					this.serviceData = res.data
+				}
+			} catch (error) {
+				console.error('加载服务详情失败:', error)
+			} finally {
+				this.loading = false
+			}
+		},
 		handleBack() {
 			const pages = getCurrentPages && getCurrentPages()
 			if (pages && pages.length > 1) {
@@ -73,6 +107,9 @@ export default {
 					url: '/pages/main/index'
 				})
 			}
+		},
+		handleFavoriteChange(isFavorited) {
+			this.serviceData.isFavorited = isFavorited
 		}
 	}
 }

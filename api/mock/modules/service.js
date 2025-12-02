@@ -13,8 +13,8 @@ const services = [
     categoryName: '剪发',
     price: 99,
     originalPrice: 128,
-    image: 'https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220.png',
-    images: ['https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220.png'],
+    image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+    images: ['https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'],
     description: '专业剪发服务，根据您的脸型和气质，为您打造最适合的发型。',
     duration: 45,
     soldCount: 2356,
@@ -35,8 +35,8 @@ const services = [
     categoryName: '烫发',
     price: 399,
     originalPrice: 499,
-    image: 'https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-1.png',
-    images: ['https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-1.png'],
+    image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+    images: ['https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'],
     description: '采用进口烫发药水，打造自然卷度，持久定型。',
     duration: 120,
     soldCount: 1289,
@@ -57,8 +57,8 @@ const services = [
     categoryName: '染发',
     price: 299,
     originalPrice: 399,
-    image: 'https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-2.png',
-    images: ['https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-2.png'],
+    image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+    images: ['https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'],
     description: '使用植物染发剂，安全健康，色彩持久。',
     duration: 90,
     soldCount: 1567,
@@ -79,8 +79,8 @@ const services = [
     categoryName: '护理',
     price: 199,
     originalPrice: 258,
-    image: 'https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-3.png',
-    images: ['https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-3.png'],
+    image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+    images: ['https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'],
     description: '深层修复受损发质，让秀发重焕光泽。',
     duration: 60,
     soldCount: 876,
@@ -101,8 +101,8 @@ const services = [
     categoryName: '造型',
     price: 159,
     originalPrice: 199,
-    image: 'https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-4.png',
-    images: ['https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-4.png'],
+    image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+    images: ['https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'],
     description: '专业造型设计，适合各种场合。',
     duration: 40,
     soldCount: 654,
@@ -123,8 +123,8 @@ const services = [
     categoryName: '烫发',
     price: 459,
     originalPrice: 599,
-    image: 'https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-5.png',
-    images: ['https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-5.png'],
+    image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+    images: ['https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'],
     description: '韩式自然卷烫发，打造温柔氛围感。',
     duration: 150,
     soldCount: 987,
@@ -145,8 +145,8 @@ const services = [
     categoryName: '染发',
     price: 359,
     originalPrice: 459,
-    image: 'https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220.png',
-    images: ['https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220.png'],
+    image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+    images: ['https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'],
     description: '时尚挑染，个性十足，打造独特风格。',
     duration: 100,
     soldCount: 756,
@@ -167,8 +167,8 @@ const services = [
     categoryName: '护理',
     price: 258,
     originalPrice: 328,
-    image: 'https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-1.png',
-    images: ['https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-1.png'],
+    image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+    images: ['https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'],
     description: '深层清洁头皮，改善头皮环境，预防脱发。',
     duration: 50,
     soldCount: 543,
@@ -189,8 +189,8 @@ const services = [
     categoryName: '剪发',
     price: 79,
     originalPrice: 99,
-    image: 'https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-2.png',
-    images: ['https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-2.png'],
+    image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+    images: ['https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'],
     description: '专业男士剪发，干净利落，展现男性魅力。',
     duration: 30,
     soldCount: 1876,
@@ -211,8 +211,8 @@ const services = [
     categoryName: '造型',
     price: 599,
     originalPrice: 799,
-    image: 'https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-3.png',
-    images: ['https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-3.png'],
+    image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+    images: ['https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'],
     description: '专业新娘造型设计，让您在大日子里美丽动人。',
     duration: 120,
     soldCount: 234,
@@ -233,8 +233,8 @@ const services = [
     categoryName: '护理',
     price: 299,
     originalPrice: 399,
-    image: 'https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-4.png',
-    images: ['https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-4.png'],
+    image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+    images: ['https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'],
     description: '让毛躁头发变得柔顺亮泽，持久效果。',
     duration: 70,
     soldCount: 678,
@@ -255,8 +255,8 @@ const services = [
     categoryName: '染发',
     price: 459,
     originalPrice: 599,
-    image: 'https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-5.png',
-    images: ['https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-5.png'],
+    image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+    images: ['https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'],
     description: '自然渐变色彩，时尚又不失优雅。',
     duration: 120,
     soldCount: 543,
@@ -277,8 +277,8 @@ const services = [
     categoryName: '烫发',
     price: 520,
     originalPrice: 680,
-    image: 'https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220.png',
-    images: ['https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220.png'],
+    image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+    images: ['https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'],
     description: '日式慵懒卷发，打造氛围感满分的造型。',
     duration: 140,
     soldCount: 823,
@@ -299,8 +299,8 @@ const services = [
     categoryName: '剪发',
     price: 168,
     originalPrice: 218,
-    image: 'https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-1.png',
-    images: ['https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-1.png'],
+    image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+    images: ['https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'],
     description: '欧美风格剪发，打造立体层次感。',
     duration: 50,
     soldCount: 1234,
@@ -321,8 +321,8 @@ const services = [
     categoryName: '染发',
     price: 680,
     originalPrice: 880,
-    image: 'https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-2.png',
-    images: ['https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-2.png'],
+    image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+    images: ['https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'],
     description: '专业漂染服务，打造独特发色。',
     duration: 180,
     soldCount: 456,
@@ -343,8 +343,8 @@ const services = [
     categoryName: '护理',
     price: 388,
     originalPrice: 488,
-    image: 'https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-3.png',
-    images: ['https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-3.png'],
+    image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+    images: ['https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'],
     description: '专业防脱护理，强韧发根，预防脱发。',
     duration: 80,
     soldCount: 678,
@@ -586,13 +586,90 @@ export const routes = {
 
   // 获取服务详情
   'GET /api/service/detail/:serviceId': (params) => {
-    // 优先返回详情数据，如果没有则返回列表中的服务数据
+    // 优先返回详情数据
     const detail = serviceDetails[params.serviceId]
     if (detail) {
       return success(detail)
     }
+    // 如果没有详细数据，则基于services列表动态生成
     const service = services.find(s => s.id === params.serviceId)
-    return service ? success(service) : error('服务不存在')
+    if (!service) {
+      return error('服务不存在')
+    }
+    // 动态生成完整的服务详情
+    const generatedDetail = {
+      id: service.id,
+      name: service.name,
+      fullTitle: `${service.name} 专业服务+造型设计`,
+      description: service.description,
+      price: service.price,
+      originalPrice: service.originalPrice,
+      soldCount: service.soldCount,
+      headerImage: service.image,
+      isFavorited: service.isFavorited || false,
+      coupons: [
+        { id: '1', text: '满100-5' },
+        { id: '2', text: '满300-30' }
+      ],
+      designer: {
+        id: service.designerId || '1',
+        name: service.designerName,
+        avatar: service.designerAvatar,
+        badge: '高级',
+        role: '设计师｜从业8年',
+        rating: service.rating,
+        serviceCount: Math.floor(Math.random() * 200) + 100,
+        worksCount: Math.floor(Math.random() * 100) + 50
+      },
+      serviceItems: [
+        { name: '发型设计', quantity: '*1' },
+        { name: '头发清洁', quantity: '*1' },
+        { name: '专业服务', quantity: '*1' },
+        { name: '造型定型', quantity: '*1' }
+      ],
+      warmTips: [
+        '有效日期2025-01-01至2025-12-31',
+        '需您当日一次性体验完所有项目',
+        '不予其他优惠同享'
+      ],
+      detailImages: [
+        service.image,
+        'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
+        'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'
+      ],
+      reviewTags: [
+        { text: '技术很好', count: String(Math.floor(service.reviewCount * 0.4)), active: true },
+        { text: '效果满意', count: String(Math.floor(service.reviewCount * 0.35)), active: false },
+        { text: '服务态度', count: String(Math.floor(service.reviewCount * 0.25)), active: false }
+      ],
+      reviews: [
+        { id: 1, title: '服务很专业', rating: '5.0', content: '服务很专业，效果很满意，下次还会再来！', author: '满意客户', avatar: 'https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg', date: '2025-01-15', image: 'https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png' },
+        { id: 2, title: '环境很好', rating: '4.8', content: '环境舒适，服务态度好，值得推荐！', author: '回头客', avatar: 'https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg', date: '2025-01-14', image: 'https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png' },
+        { id: 3, title: '效果超出预期', rating: '4.9', content: '效果超出预期，非常满意，强烈推荐！', author: '时尚达人', avatar: 'https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg', date: '2025-01-13', image: 'https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png' }
+      ],
+      questions: [
+        '这个服务适合什么发质？',
+        '服务时长大概多久？'
+      ],
+      questionCount: Math.floor(Math.random() * 10) + 5,
+      recommendedServices: services
+        .filter(s => s.id !== service.id && s.categoryId === service.categoryId)
+        .slice(0, 2)
+        .map(s => ({
+          id: s.id,
+          image: s.image,
+          title: s.name,
+          description: s.description.substring(0, 20) + '...',
+          price: String(s.price),
+          stylistName: s.designerName,
+          stylistRole: '设计师',
+          rating: String(s.rating),
+          reviewCount: String(s.reviewCount),
+          distance: s.distance,
+          avatar: s.designerAvatar
+        }))
+    }
+    return success(generatedDetail)
   },
 
   // 获取服务分类

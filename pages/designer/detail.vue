@@ -5,7 +5,7 @@
 		<!-- <view class="status-bar" style="height: 44rpx;"></view> -->
 		
 		<!-- 头部 -->
-		<designer-detail-header></designer-detail-header>
+		<designer-detail-header :cover-image="coverImage"></designer-detail-header>
 		
 		<!-- 主内容区域 -->
 		<view class="main-content" :class="{ 'reviews-fullwidth': activeTab === 'reviews', 'no-bottom-padding': activeTab === 'works' || activeTab === 'service' }">
@@ -57,6 +57,7 @@
 				<!-- 服务tab内容 -->
 				<view v-if="activeTab === 'service'" class="tab-content" :key="'service'">
 					<designer-service-tab-content
+						:designer-id="designerId"
 						:active-sub-tab="activeSubTabs.service"
 						@book-service="handleBookService"
 					></designer-service-tab-content>
@@ -65,27 +66,28 @@
 				<!-- 预约tab内容 -->
 				<view v-if="activeTab === 'appointment'" class="tab-content" :key="'appointment'">
 					<designer-appointment-tab-content
+						:designer-id="designerId"
 						:active-sub-tab="activeSubTabs.appointment"
 						:selected-service="selectedBookingData"
 						@time-selected="handleTimeSelected"
 						@go-to-service="handleGoToService"
 					></designer-appointment-tab-content>
 				</view>
-				
+
 				<!-- 作品tab内容 -->
 				<view v-if="activeTab === 'works'" class="tab-content" :key="'works'">
-					<designer-works-tab-content :active-sub-tab="activeSubTabs.works"></designer-works-tab-content>
+					<designer-works-tab-content :designer-id="designerId" :active-sub-tab="activeSubTabs.works"></designer-works-tab-content>
 				</view>
-				
+
 				<!-- 点评tab内容 -->
 				<view v-if="activeTab === 'reviews'" class="tab-content" :key="'reviews'">
-					<designer-reviews-tab-content :active-sub-tab="activeSubTabs.reviews"></designer-reviews-tab-content>
+					<designer-reviews-tab-content :designer-id="designerId" :active-sub-tab="activeSubTabs.reviews"></designer-reviews-tab-content>
 				</view>
 			</view>
-			
+
 			<!-- 底部内容（只在服务tab显示） -->
 			<view v-if="activeTab === 'service'" class="bottom-content">
-				<designer-portfolio-section></designer-portfolio-section>
+				<designer-portfolio-section :designer-id="designerId"></designer-portfolio-section>
 			</view>
 			
 			<!-- 预约按钮（只在预约tab显示） -->
@@ -108,6 +110,7 @@
 </template>
 
 <script>
+import { designerApi } from '@/api'
 import DesignerDetailHeader from '../../components/designer/detail/DesignerDetailHeader.vue'
 import DesignerInfoCard from '../../components/designer/detail/DesignerInfoCard.vue'
 import DesignerTabSwitcher from '../../components/designer/detail/DesignerTabSwitcher.vue'
@@ -130,11 +133,13 @@ export default {
 		DesignerPortfolioSection,
 		CouponPopup
 	},
-	onLoad(options) {
-		// 可以从options中获取设计师ID等信息
-		if (options.id) {
-			console.log('Designer ID:', options.id)
-		}
+	async onLoad(options) {
+		// 获取设计师ID
+		this.designerId = options.id || '1'
+
+		// 加载设计师详情
+		await this.loadDesignerDetail()
+
 		// 支持从URL参数中指定初始tab
 		if (options.tab) {
 			this.activeTab = options.tab
@@ -153,6 +158,8 @@ export default {
 	},
 	data() {
 		return {
+			designerId: '1',
+			coverImage: '',
 			activeTab: 'service',
 			showCouponPopup: false,
 			selectedBookingData: null, // 用户选择的服务数据
@@ -196,38 +203,27 @@ export default {
 				]
 			},
 			designerInfo: {
-				avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-153.png",
-				name: "朱一龙",
+				avatar: "",
+				name: "",
 				verifyIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2110.svg",
-				role: "技术总监",
+				role: "",
 				certIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2.svg",
 				certText: "职业认证",
 				certDot: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg",
-				skills: "染发设计、短发造型、女士晚装:",
-				introduction: "从业19年，毕业沙宣美发学院，擅长各种造型设计师有丰富的设计经验擅长..."
+				skills: "",
+				introduction: ""
 			},
-			serviceBadges: [
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "安心服务" },
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "7天无忧" },
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "免费设计" },
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "小吃水果" },
-				{ icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg", label: "预约服务" }
-			],
-			statsData: [
-				{ value: "1244", label: "预约" },
-				{ value: "2000", label: "粉丝" },
-				{ value: "18", unit: "年", label: "从业" },
-				{ value: "4.8", unit: "分", label: "评分" }
-			],
+			serviceBadges: [],
+			statsData: [],
 			businessInfo: {
 				status: "营业中",
 				restDay: "周二休息",
 				hours: "10:00-21:00"
 			},
 			shopInfo: {
-				name: "NICE美发造型沙...",
-				address: "武侯区天府三家B7栋...",
-				distance: "距您2.7km"
+				name: "",
+				address: "",
+				distance: ""
 			},
 			promotions: [
 				{ text: "满100-5" },
@@ -235,9 +231,9 @@ export default {
 			],
 			rightStats: {
 				serviceIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1.svg",
-				serviceCount: "281",
+				serviceCount: "0",
 				workIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-4.svg",
-				workCount: "234",
+				workCount: "0",
 				dotIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg"
 			}
 		}
@@ -251,6 +247,64 @@ export default {
 		}
 	},
 	methods: {
+		// 加载设计师详情
+		async loadDesignerDetail() {
+			try {
+				const res = await designerApi.getDetail(this.designerId)
+				if (res && res.data) {
+					const data = res.data
+					// 更新封面图片
+					this.coverImage = data.coverImage || data.avatar || ''
+
+					// 更新设计师基本信息
+					this.designerInfo = {
+						avatar: data.avatar || data.coverImage,
+						name: data.name,
+						verifyIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2110.svg",
+						role: data.position || data.role,
+						certIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2.svg",
+						certText: "职业认证",
+						certDot: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg",
+						skills: data.specialties ? data.specialties.join('、') + ':' : '',
+						introduction: data.introduction || ''
+					}
+
+					// 更新服务标签
+					if (data.tags && data.tags.length) {
+						this.serviceBadges = data.tags.map(tag => ({
+							icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg",
+							label: tag
+						}))
+					}
+
+					// 更新统计数据
+					this.statsData = [
+						{ value: String(data.appointmentCount || data.statistics?.appointmentCount || 0), label: "预约" },
+						{ value: String(data.followerCount || data.statistics?.followerCount || 0), label: "粉丝" },
+						{ value: String(data.experience || data.statistics?.experience || 0), unit: "年", label: "从业" },
+						{ value: String(data.rating || data.statistics?.rating || 0), unit: "分", label: "评分" }
+					]
+
+					// 更新店铺信息
+					this.shopInfo = {
+						name: data.brandName || 'NICE美发造型沙龙',
+						address: "武侯区天府三家B7栋...",
+						distance: "距您2.7km"
+					}
+
+					// 更新右侧统计
+					this.rightStats = {
+						serviceIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1.svg",
+						serviceCount: String(data.serviceCount || 0),
+						workIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-4.svg",
+						workCount: String(data.worksCount || 0),
+						dotIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg"
+					}
+				}
+			} catch (error) {
+				console.error('加载设计师详情失败:', error)
+			}
+		},
 		handleTabChange(tabId) {
 			this.activeTab = tabId
 			const tabs = this.subTabs[tabId]
@@ -262,7 +316,7 @@ export default {
 			this.$set(this.activeSubTabs, this.activeTab, subTabId)
 		},
 		handleMoreInfo() {
-			uni.navigateTo({ url: '/pages/designer/info' })
+			uni.navigateTo({ url: `/pages/designer/info?id=${this.designerId}` })
 		},
 		handleFollow() {
 			console.log('Follow clicked')
