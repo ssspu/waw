@@ -36,6 +36,7 @@ export default {
 				{ id: "pending-confirm", label: "待确认" },
 				{ id: "pending-use", label: "待使用" },
 				{ id: "pending-review", label: "待评价" },
+				{ id: "after-sale", label: "售后" },
 			],
 		}
 	},
