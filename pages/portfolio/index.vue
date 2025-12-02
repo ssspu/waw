@@ -19,9 +19,24 @@
 		<!-- 搜索和筛选区域 -->
 		<view class="filter-section">
 			<!-- 搜索框 -->
-			<view class="search-box" @tap="handleSearchClick">
+			<view class="search-box">
 				<image class="search-icon" src="/static/icon/search.png" mode="aspectFit"></image>
-				<text class="search-placeholder">请输入关键词搜索</text>
+				<input
+					class="search-input"
+					type="text"
+					v-model="searchKeyword"
+					placeholder="请输入关键词搜索"
+					placeholder-class="search-placeholder"
+					confirm-type="search"
+					@confirm="handleSearch"
+				/>
+				<image
+					v-if="searchKeyword"
+					class="clear-icon"
+					src="/static/icon/close.png"
+					mode="aspectFit"
+					@tap="handleClearSearch"
+				></image>
 			</view>
 
 			<!-- 分类和筛选 -->
@@ -258,6 +273,7 @@ const selectedFace = ref('oval')
 const hairVolume = ref('normal')
 const hairQuality = ref('normal')
 const hairThickness = ref('normal')
+const searchKeyword = ref('')
 
 // 分页相关
 const pageSize = 6
@@ -402,10 +418,17 @@ const handleBack = () => {
 	uni.navigateBack()
 }
 
-const handleSearchClick = () => {
-	uni.navigateTo({
-		url: '/pages/main/search'
-	})
+const handleSearch = () => {
+	console.log('搜索关键词:', searchKeyword.value)
+	// 根据关键词过滤作品列表
+	currentPage.value = 1
+	hasMore.value = true
+}
+
+const handleClearSearch = () => {
+	searchKeyword.value = ''
+	currentPage.value = 1
+	hasMore.value = true
 }
 
 // 加载更多
@@ -572,12 +595,28 @@ const handleItemClick = (item) => {
 	width: 28rpx;
 	height: 28rpx;
 	opacity: 0.5;
+	flex-shrink: 0;
+}
+
+.search-input {
+	flex: 1;
+	height: 64rpx;
+	font-family: 'PingFang SC';
+	font-size: 24rpx;
+	color: #333333;
 }
 
 .search-placeholder {
 	font-family: 'PingFang SC';
 	font-size: 24rpx;
 	color: #a6a6a6;
+}
+
+.clear-icon {
+	width: 28rpx;
+	height: 28rpx;
+	opacity: 0.5;
+	flex-shrink: 0;
 }
 
 .filter-section {

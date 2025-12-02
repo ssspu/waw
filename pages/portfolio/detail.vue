@@ -85,8 +85,8 @@
 				></view>
 			</view>
 
-			<!-- 互动数据 -->
-			<view class="interaction-section">
+			<!-- 互动数据（测试阶段隐藏） -->
+			<!-- <view class="interaction-section">
 				<view class="interaction-left">
 					<view class="interaction-item" @tap="handleLike">
 						<image
@@ -122,13 +122,12 @@
 						></image>
 					</view>
 				</view>
-			</view>
+			</view> -->
 
-			<!-- 评论区 -->
-			<view class="comment-section">
+			<!-- 评论区（测试阶段隐藏） -->
+			<!-- <view class="comment-section">
 				<text class="comment-title">评论·{{ commentTotal }}</text>
 
-				<!-- 评论输入框 -->
 				<view class="comment-input-row">
 					<image class="current-avatar" :src="userAvatar" mode="aspectFill"></image>
 					<view class="comment-input-box" @tap="handleOpenComment">
@@ -136,7 +135,6 @@
 					</view>
 				</view>
 
-				<!-- 评论列表 -->
 				<view class="comment-list">
 					<view
 						v-for="(comment, index) in commentList"
@@ -157,18 +155,18 @@
 						</view>
 					</view>
 				</view>
-			</view>
+			</view> -->
 		</scroll-view>
 
-		<!-- 底部操作栏 -->
-		<view class="footer-bar">
+		<!-- 底部操作栏（测试阶段隐藏） -->
+		<!-- <view class="footer-bar">
 			<view class="input-wrapper" @tap="handleOpenComment">
 				<text class="input-placeholder">请说说你的看法吧……</text>
 			</view>
 			<view class="send-btn" @tap="handleSend">
 				<text class="send-text">发送</text>
 			</view>
-		</view>
+		</view> -->
 	</view>
 </template>
 
@@ -569,7 +567,7 @@ const handleSend = () => {
 /* 作品内容区域 */
 .content-scroll {
 	flex: 1;
-	padding-bottom: 120rpx;
+	padding-bottom: 40rpx;
 }
 
 .main-image-wrapper {
