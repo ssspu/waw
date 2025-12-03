@@ -305,7 +305,7 @@ export default {
 		handleBookAgain() {
 			// 跳转到品牌馆详情页
 			uni.navigateTo({
-				url: '/pages/brand/info'
+				url: '/packageBrand/brand/info'
 			})
 		},
 		handleMore() {

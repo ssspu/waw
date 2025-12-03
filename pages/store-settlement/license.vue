@@ -338,7 +338,7 @@ export default {
 			}
 			// 跳转到合作协议页
 			uni.navigateTo({
-				url: '/pages/store-settlement/agreement'
+				url: '/packageSettlement/store-settlement/agreement'
 			})
 		}
 	}

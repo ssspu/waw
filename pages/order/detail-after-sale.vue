@@ -16,8 +16,11 @@
 
 		<!-- 退款状态提示 -->
 		<view class="refund-status-section">
-			<text class="status-title">退款成功</text>
-			<text class="status-desc">商家同意退款，钱款原路退回</text>
+			<text
+				class="status-title"
+				:class="{ refunding: refundStatus === 'pending' }"
+			>{{ statusConfig.title }}</text>
+			<text class="status-desc">{{ statusConfig.desc }}</text>
 		</view>
 
 		<!-- 主内容 -->
@@ -116,8 +119,12 @@
 
 		<!-- 底部操作栏 -->
 		<view class="footer-actions">
-			<view class="action-btn delete-btn" @tap="handleDelete">
-				<text class="btn-text">删除订单</text>
+			<view
+				class="action-btn delete-btn"
+				:class="{ disabled: refundStatus === 'pending' }"
+				@tap="handleDelete"
+			>
+				<text class="btn-text">{{ refundStatus === 'pending' ? '退款中' : '删除订单' }}</text>
 			</view>
 			<view class="action-btn contact-btn" @tap="handleContact">
 				<text class="btn-text">联系商家</text>
@@ -127,9 +134,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const statusBarHeight = ref(44)
+
+// 退款状态: pending-退款中, success-退款成功
+const refundStatus = ref('pending')
 
 const orderData = ref({
 	seller: {
@@ -157,11 +167,35 @@ const afterSalesData = ref({
 	refundNumber: 'CD902847058048906'
 })
 
+// 根据退款状态显示不同的文案
+const statusConfig = computed(() => {
+	const configs = {
+		pending: {
+			title: '退款中',
+			desc: '商家确认中，请耐心等待'
+		},
+		success: {
+			title: '退款成功',
+			desc: '商家同意退款，钱款原路退回'
+		}
+	}
+	return configs[refundStatus.value] || configs.pending
+})
+
 // 生命周期
 const onLoad = (options) => {
 	statusBarHeight.value = uni.getStorageSync('statusBarHeight') || 44
 	if (options && options.orderId) {
 		// 根据订单ID加载订单详情
+		// 示例：调用接口获取退款状态
+		// uni.request({
+		//   url: '/api/order/refundDetail',
+		//   data: { orderId: options.orderId },
+		//   success: (res) => {
+		//     refundStatus.value = res.data.refundStatus // 'pending' 或 'success'
+		//     // 更新其他订单数据...
+		//   }
+		// })
 	}
 }
 
@@ -183,6 +217,11 @@ const handleCopy = () => {
 }
 
 const handleDelete = () => {
+	// 如果是退款中状态，不可点击
+	if (refundStatus.value === 'pending') {
+		return
+	}
+
 	uni.showModal({
 		title: '提示',
 		content: '确定要删除此订单吗？',
@@ -281,6 +320,10 @@ defineExpose({
 	font-weight: 400;
 	color: #000000;
 	text-align: center;
+
+	&.refunding {
+		color: #ff6b35;
+	}
 }
 
 .status-desc {
@@ -561,6 +604,16 @@ defineExpose({
 .delete-btn {
 	background-color: #ffffff;
 	border: 2rpx solid #e7e7e7;
+
+	&.disabled {
+		background-color: #f6f6f6;
+		border: 2rpx solid #f0f0f0;
+		opacity: 0.6;
+
+		.btn-text {
+			color: #cccccc;
+		}
+	}
 }
 
 .contact-btn {

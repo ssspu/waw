@@ -74,8 +74,10 @@ export default {
 	},
 	methods: {
 		handleCardClick(card) {
-			// 向上发送点击事件，让父组件处理分类切换
-			this.$emit('card-click', card)
+			// 跳转到搜索页面，执行所点击内容的搜索
+			uni.navigateTo({
+				url: `/pages/main/search?tab=service&keyword=${encodeURIComponent(card.title)}`
+			})
 		},
 		handleFilter() {
 			console.log('Filter clicked')

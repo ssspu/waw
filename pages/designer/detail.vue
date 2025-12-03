@@ -172,8 +172,8 @@ export default {
 			subTabs: {
 				service: [
 					{ id: 'hair-service', title: '美发服务' },
-					{ id: 'beauty-service', title: '美容服务' },
-					{ id: 'other-service', title: '其他服务' }
+					// { id: 'beauty-service', title: '美容服务' },
+					// { id: 'other-service', title: '其他服务' }
 				],
 				appointment: [
 					{ id: 'today', title: '今天', subtitle: '周一' },

@@ -134,7 +134,7 @@ export default {
 			}
 			// 跳转到结算信息页
 			uni.navigateTo({
-				url: '/pages/store-settlement/settlement'
+				url: '/packageSettlement/store-settlement/settlement'
 			})
 		}
 	}

@@ -98,7 +98,7 @@ export default {
 		},
 		handleApplyNow() {
 			uni.navigateTo({
-				url: '/pages/store-settlement/store'
+				url: '/packageSettlement/store-settlement/store'
 			})
 		}
 	}

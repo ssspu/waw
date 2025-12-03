@@ -98,7 +98,7 @@ export default {
 		},
 		handleApplyNow() {
 			uni.navigateTo({
-				url: '/pages/designer-settlement/identity'
+				url: '/packageSettlement/designer-settlement/identity'
 			})
 		}
 	}

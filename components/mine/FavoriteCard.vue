@@ -46,8 +46,8 @@
 			</view>
 		</view>
 
-		<!-- 设计师信息区域 - 仅 record 模式且有 stylist 数据时显示 -->
-		<template v-if="mode === 'record' && item.stylist">
+		<!-- 设计师信息区域 - 有 stylist 数据时显示 -->
+		<template v-if="item.stylist">
 			<view class="divider"></view>
 			<view class="stylist-section" @tap.stop>
 				<view class="stylist-left">
@@ -61,7 +61,9 @@
 						</view>
 						<view class="stylist-rating">
 							<text class="rating-score">{{ item.stylist.rating }}</text>
-							<image class="star-icon" src="https://c.animaapp.com/mi5kx1ohxTkA7e/img/star-1.svg" mode="aspectFit"></image>
+							<view class="star-wrapper">
+								<image class="star-icon" src="https://c.animaapp.com/mi5kx1ohxTkA7e/img/star-1.svg" mode="aspectFit"></image>
+							</view>
 							<text class="rating-count">({{ item.stylist.reviews }})</text>
 						</view>
 					</view>
@@ -315,9 +317,23 @@ export default {
 	color: #333333;
 }
 
+.star-wrapper {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 24rpx;
+	height: 24rpx;
+	padding: 2rpx;
+	background-color: #333333;
+	border-radius: 4rpx;
+	box-sizing: border-box;
+	flex-shrink: 0;
+}
+
 .star-icon {
-	width: 22rpx;
-	height: 22rpx;
+	width: 20rpx;
+	height: 20rpx;
+	filter: brightness(0) invert(1);
 }
 
 .rating-count {

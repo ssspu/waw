@@ -136,9 +136,9 @@
 				<view class="more-modal-body">
 					<view class="contact-option" @tap="handleContactOnline">
 						<view class="contact-icon online-icon">
-							<image 
-								class="icon-image" 
-								src="/static/icon/wodekefu.png" 
+							<image
+								class="icon-image"
+								src="/static/icon/wodekefu.png"
 								mode="aspectFit"
 							></image>
 						</view>
@@ -146,9 +146,9 @@
 					</view>
 					<view class="contact-option" @tap="handleContactPhone">
 						<view class="contact-icon phone-icon">
-							<image 
-								class="icon-image" 
-								src="/static/icon/dianhua.png" 
+							<image
+								class="icon-image"
+								src="/static/icon/dianhua.png"
 								mode="aspectFit"
 							></image>
 						</view>
@@ -868,15 +868,20 @@ export default {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	width: 20rpx;
-	height: 20rpx;
+	width: 24rpx;
+	height: 24rpx;
 	flex-shrink: 0;
+	padding: 2rpx;
+	background-color: #333333;
+	border-radius: 4rpx;
+	box-sizing: border-box;
 }
 
 .star-icon {
-	width: 100%;
-	height: 100%;
+	width: 20rpx;
+	height: 20rpx;
 	flex-shrink: 0;
+	filter: brightness(0) invert(1);
 }
 
 .rating-count {

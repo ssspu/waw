@@ -248,7 +248,7 @@ export default {
 				return
 			}
 			uni.navigateTo({
-				url: '/pages/designer-settlement/agreement'
+				url: '/packageSettlement/designer-settlement/agreement'
 			})
 		}
 	}

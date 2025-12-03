@@ -94,11 +94,11 @@
 						<view class="setting-item" @tap="handleItemClick(basicInfoItems[2])">
 							<text class="setting-label">职业</text>
 							<view class="setting-right">
-								<text class="right-text">{{ userInfo.profession }}</text>
+								<text class="right-text" :class="{ 'bio-placeholder': !userInfo.profession }">{{ userInfo.profession || '请选择职业' }}</text>
 								<view class="action-button">
-									<image 
-										class="button-icon" 
-										src="/static/icon/gengduo.png" 
+									<image
+										class="button-icon"
+										src="/static/icon/gengduo.png"
 										mode="aspectFit"
 									></image>
 								</view>
@@ -194,7 +194,7 @@ export default {
 				avatar: 'https://c.animaapp.com/mi5nkzbpeEnFKd/img/placeholder-avatar.png',
 				nickname: 'yangqixiaonv',
 				gender: '女',
-				profession: '美发师',
+				profession: '',
 				region: '四川-成都',
 				bio: '输入1-30字简介'
 			},
@@ -296,7 +296,7 @@ export default {
 		},
 		handleQRCodeClick() {
 			uni.navigateTo({
-				url: '/pages/mine/qr-code-card'
+				url: '/pages/mine/share-promotion'
 			})
 		},
 		handleBioClick() {

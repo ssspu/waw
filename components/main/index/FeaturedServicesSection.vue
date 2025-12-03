@@ -58,7 +58,10 @@ export default {
 	},
 	methods: {
 		handleServiceClick(service) {
-			this.$emit('service-click', service)
+			// 跳转到搜索页面，执行所点击内容的搜索
+			uni.navigateTo({
+				url: `/pages/main/search?tab=service&keyword=${encodeURIComponent(service.label)}`
+			})
 		}
 	}
 }

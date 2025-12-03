@@ -139,7 +139,7 @@ export default {
 				return
 			}
 			uni.navigateTo({
-				url: '/pages/designer-settlement/settlement'
+				url: '/packageSettlement/designer-settlement/settlement'
 			})
 		}
 	}

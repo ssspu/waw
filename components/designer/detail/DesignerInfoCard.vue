@@ -252,7 +252,7 @@ export default {
 .follow-btn {
 	position: absolute;
 	top: 108rpx;
-	right: 10rpx;
+	right: 0;
 	width: 200rpx;
 	height: 100rpx;
 	z-index: 2;
@@ -260,7 +260,7 @@ export default {
 	flex-direction: column;
 	align-items: flex-end;
 	gap: 6rpx;
-	padding: 10rpx 20rpx;
+	padding: 10rpx 26rpx 10rpx 20rpx;
 	border-radius: 32rpx;
 	background: linear-gradient(180deg, rgba(135, 134, 145, 1) 0%, rgba(59, 54, 83, 1) 100%);
 	cursor: pointer;
@@ -305,7 +305,7 @@ export default {
 	padding: 7rpx 30rpx 20rpx 30rpx;
 	box-sizing: border-box;
 	background-color: transparent;
-	overflow: hidden;
+	overflow: visible;
 }
 
 .designer-card::before {
@@ -325,8 +325,9 @@ export default {
 
 .designer-info {
 	display: flex;
-	align-items: flex-start;
+	align-items: flex-end;
 	gap: 16rpx;
+	margin-top: -18rpx;
 	margin-bottom: 20rpx;
 	position: relative;
 	z-index: 4;
@@ -363,11 +364,11 @@ export default {
 }
 
 .info-content {
-	margin-top: 55rpx;
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	gap: 4rpx;
+	gap: 2rpx;
+	margin-bottom: -8rpx;
 }
 
 .name-row {
@@ -589,7 +590,7 @@ export default {
 
 .stat-value {
 	font-family: 'PingFang_SC-Semibold', Helvetica;
-	font-weight: normal;
+	font-weight: bold;
 	color: #333333;
 	font-size: 30rpx;
 }
@@ -805,14 +806,14 @@ export default {
 	border-radius: 4rpx;
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
-	color: #a6a6a6;
+	color: #666666;
 	font-size: 22rpx;
 }
 
 .right-stats {
 	position: absolute;
 	top: 30rpx;
-	right: 10rpx;
+	right: 0;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;

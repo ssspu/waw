@@ -1,5 +1,8 @@
 <template>
 	<view class="screen">
+		<!-- 顶部白色背景 -->
+		<view class="top-white-bg" :style="{ height: (statusBarHeight + 88 + 374) + 'px' }"></view>
+
 		<!-- 自定义导航栏 -->
 		<view class="custom-navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 			<view class="navbar-content">
@@ -27,26 +30,26 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<!-- 主内容区域 -->
 		<view class="content-wrapper">
 			<!-- Profile Header Section -->
 			<view class="profile-header-section animate-fade-in" style="animation-delay: 800ms;">
 				<view class="profile-header-card">
-					<image 
-						class="profile-bg" 
-						src="https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-177.png" 
+					<image
+						class="profile-bg"
+						src="https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-177.png"
 						mode="aspectFill"
 					></image>
 					<text class="profile-title">WAW style</text>
 					<view class="profile-overlay"></view>
 				</view>
 			</view>
-			
+
 			<!-- Profile Section -->
 			<profile-section></profile-section>
 		</view>
-		
+
 		<!-- 底部导航 -->
 		<bottom-tab-bar active="service"></bottom-tab-bar>
 	</view>
@@ -87,6 +90,16 @@ export default {
 	background-color: #f2f2f2;
 	// position: relative;
 	padding-bottom: 192rpx; //底部tab空出
+	position: relative;
+}
+
+.top-white-bg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	background-color: #ffffff;
+	z-index: 0;
 }
 
 // 自定义导航栏
@@ -117,6 +130,7 @@ export default {
 	display: flex;
 	align-items: center;
 	box-sizing: border-box;
+	border: 1rpx solid #e5e5e5;
 }
 
 .badge-content {
