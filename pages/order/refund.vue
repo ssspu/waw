@@ -199,7 +199,7 @@ export default {
 				setTimeout(() => {
 					// 跳转到订单详情-售后页
 					uni.redirectTo({
-						url: '/packageOrder/order/detail-after-sale'
+						url: '/pages/order/detail-after-sale'
 					})
 				}, 1500)
 			}, 1000)

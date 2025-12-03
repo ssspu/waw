@@ -218,7 +218,7 @@ export default {
 			setTimeout(() => {
 				uni.hideLoading()
 				uni.redirectTo({
-					url: '/packageSettlement/settlement-success/index?type=store'
+					url: '/pages/settlement-success/index?type=store'
 				})
 			}, 1500)
 		}

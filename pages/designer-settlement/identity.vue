@@ -300,7 +300,7 @@ export default {
 				return
 			}
 			uni.navigateTo({
-				url: '/packageSettlement/designer-settlement/profession'
+				url: '/pages/designer-settlement/profession'
 			})
 		}
 	}

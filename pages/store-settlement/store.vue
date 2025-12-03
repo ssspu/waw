@@ -273,7 +273,7 @@ export default {
 			}
 			// 跳转到执照认证页
 			uni.navigateTo({
-				url: '/packageSettlement/store-settlement/license'
+				url: '/pages/store-settlement/license'
 			})
 		}
 	}

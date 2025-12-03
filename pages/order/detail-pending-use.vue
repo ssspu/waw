@@ -414,7 +414,7 @@ export default {
 		handleRefund() {
 			// 申请退款 - 跳转到退款页面
 			uni.navigateTo({
-				url: '/packageOrder/order/refund?orderId=' + this.orderInfo.orderNumber
+				url: '/pages/order/refund?orderId=' + this.orderInfo.orderNumber
 			})
 		},
 		handleComplete() {
