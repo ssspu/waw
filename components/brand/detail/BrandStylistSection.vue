@@ -145,7 +145,7 @@ export default {
 		handleBook(stylist) {
 			console.log('Book stylist:', stylist)
 			uni.navigateTo({
-				url: `/pages/designer/detail?id=${stylist.id}&tab=appointment`
+				url: `/pages/designer/detail?id=${stylist.id}&tab=service`
 			})
 		}
 	}
