@@ -708,7 +708,8 @@ export default {
 
 .card-title {
 	font-family: 'DIN_Black-Regular', Helvetica;
-	font-size: 28rpx;
+	font-size: 32rpx;
+	font-weight: 700;
 	color: #000000;
 }
 
@@ -790,9 +791,10 @@ export default {
 .tab-item {
 	height: auto;
 	padding: 0;
-	font-size: 26rpx;
-	color: #a6a6a6;
+	font-size: 28rpx;
 	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: 400;
+	color: #a6a6a6;
 }
 
 .tab-item.active {
@@ -1093,6 +1095,7 @@ export default {
 .services-title {
 	font-family: 'DIN_Black-Regular', Helvetica;
 	font-size: 32rpx;
+	font-weight: 700;
 	color: #000000;
 }
 
@@ -1154,9 +1157,9 @@ export default {
 }
 
 .service-tab-item.active {
-	color: #000000;
-	font-family: 'PingFang_SC-Regular', Helvetica;
-	font-weight: 400;
+	color: #333333;
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-weight: 600;
 }
 
 .tab-indicator {

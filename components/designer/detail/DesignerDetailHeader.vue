@@ -13,9 +13,10 @@
 				<view class="back-btn" @tap="goBack">
 					<image class="back-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1877.svg" mode="aspectFit"></image>
 				</view>
-				<view class="share-btn" @tap="handleShare">
+				<!-- 测试阶段隐藏分享按钮 -->
+				<!-- <view class="share-btn" @tap="handleShare">
 					<image class="share-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1879-1.svg" mode="aspectFit"></image>
-				</view>
+				</view> -->
 			</view>
 		</view>
 	</view>

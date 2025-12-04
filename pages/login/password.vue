@@ -174,7 +174,9 @@ export default {
 			})
 		},
 		handleForgetPassword() {
-			uni.showToast({ title: '忘记密码功能待开发', icon: 'none' })
+			uni.navigateTo({
+				url: '/pages/login/reset-password'
+			})
 		},
 		openUserAgreement() {
 			const agreement = getUserAgreement()

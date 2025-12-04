@@ -85,8 +85,12 @@
 					<view class="price-item coupon-row" @tap="handleOpenCoupon">
 						<text class="price-label">优惠金额</text>
 						<view class="coupon-value-row">
-							<text class="price-text">-¥{{ discountAmount }}</text>
+							<view v-if="!selectedCoupon" class="coupon-available-tag">
+								<text class="coupon-available-text">{{ availableCouponsCount }}张优惠券可用</text>
+							</view>
+							<text v-else class="price-text discount-price">-¥{{ discountAmount }}</text>
 							<image
+								v-if="selectedCoupon"
 								class="arrow-right-icon"
 								src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame-1.svg"
 								mode="aspectFit"
@@ -114,10 +118,12 @@
 						<text class="info-label">支付方式</text>
 						<text class="info-value">{{ orderInfo.paymentMethod }}</text>
 					</view>
+					<!-- 众美积分 - 测试阶段隐藏
 					<view class="info-item">
 						<text class="info-label">众美积分</text>
 						<text class="info-value">{{ orderInfo.points }}</text>
 					</view>
+					-->
 					<view class="info-item">
 						<text class="info-label">订单编号</text>
 						<view class="order-number-row">
@@ -277,6 +283,10 @@ export default {
 		finalPrice() {
 			const price = parseFloat(this.productInfo.price) || 0
 			return Math.max(0, price - this.discountAmount)
+		},
+		availableCouponsCount() {
+			const price = parseFloat(this.productInfo.price) || 0
+			return this.coupons.filter(coupon => price >= coupon.minAmount).length
 		}
 	},
 	onLoad(options) {
@@ -733,7 +743,26 @@ export default {
 .coupon-value-row {
 	display: flex;
 	align-items: center;
-	gap: 8rpx;
+	gap: 4rpx;
+}
+
+.coupon-available-tag {
+	background-color: #fff1f0;
+	border-radius: 4rpx;
+	padding: 3rpx 10rpx;
+	display: inline-flex;
+	align-items: center;
+}
+
+.coupon-available-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 23rpx;
+	font-weight: 400;
+	color: #FF8A4D;
+}
+
+.discount-price {
+	color: #FF8A4D !important;
 }
 
 .arrow-right-icon {

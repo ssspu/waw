@@ -6,10 +6,11 @@
 					<image class="back-icon" src="/static/mine/favorites/vector.svg" mode="aspectFit"></image>
 				</view>
 				<text class="navbar-title">浏览记录</text>
+				<view class="nav-placeholder"></view>
 			</view>
 			<view class="tabs">
-				<view 
-					v-for="tab in tabs" 
+				<view
+					v-for="tab in tabs"
 					:key="tab.value"
 					class="tab-item"
 					:class="{ active: activeTab === tab.value }"
@@ -27,6 +28,7 @@
 					:key="item.id"
 					:item="item"
 					mode="record"
+					@tap="handleServiceTap"
 					@action="handleCardAction"
 				/>
 			</view>
@@ -132,10 +134,16 @@ export default {
 		switchTab(value) {
 			this.activeTab = value
 		},
+		handleServiceTap(item) {
+			// 跳转到设计师详情页查看服务
+			uni.navigateTo({
+				url: `/pages/designer/detail?serviceId=${item.id}`
+			})
+		},
 		handleCardAction(item) {
-			uni.showToast({
-				title: `预约 ${item.name}`,
-				icon: 'none'
+			// 跳转到设计师详情页进行预约
+			uni.navigateTo({
+				url: `/pages/designer/detail?serviceId=${item.id}&designerId=${item.stylist?.id || ''}`
 			})
 		},
 		handleStoreSelect(store) {
@@ -194,6 +202,10 @@ export default {
 	position: absolute;
 	left: 50%;
 	transform: translateX(-50%);
+}
+
+.nav-placeholder {
+	width: 64rpx;
 }
 
 .toggle-btn {

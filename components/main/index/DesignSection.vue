@@ -335,23 +335,9 @@ export default {
 		},
 		handleCategoryClick(category) {
 			console.log('Category clicked:', category)
-			// 切换分类
-			this.activeCategory = category.title
-			// 滚动到附近推荐区域
-			this.$nextTick(() => {
-				const query = uni.createSelectorQuery().in(this)
-				query.select('#nearby-section').boundingClientRect()
-				query.selectViewport().scrollOffset()
-				query.exec((res) => {
-					if (res && res[0] && res[1]) {
-						const elementRect = res[0]
-						const scrollOffset = res[1]
-						uni.pageScrollTo({
-							scrollTop: scrollOffset.scrollTop + elementRect.top,
-							duration: 100
-						})
-					}
-				})
+			// 跳转到搜索页面，执行所点击内容的搜索
+			uni.navigateTo({
+				url: `/pages/main/search?tab=designer&keyword=${encodeURIComponent(category.title)}`
 			})
 		},
 		handleBookingClick(option) {

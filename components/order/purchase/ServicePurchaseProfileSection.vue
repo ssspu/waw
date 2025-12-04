@@ -32,6 +32,7 @@
 							src="https://c.animaapp.com/mifnbli6udxphC/img/frame-2142.svg"
 							mode="aspectFit"
 						></image>
+						<text class="favorite-text">收藏</text>
 					</view>
 				</view>
 			</view>
@@ -428,9 +429,11 @@ export default {
 	},
 	methods: {
 		handleFavorite() {
+			this.isFavorited = !this.isFavorited
+			this.$emit('favorite-change', this.isFavorited)
 			uni.showToast({
-				title: '已收藏',
-				icon: 'success'
+				title: this.isFavorited ? '收藏成功' : '取消收藏',
+				icon: 'none'
 			})
 		},
 		handleViewAppointment() {
@@ -640,17 +643,34 @@ export default {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-size: 22rpx;
 	font-weight: 500;
-	color: #a6a6a6;
+	color: #666666;
 }
 
 .favorite-btn {
-	width: 60rpx;
-	height: 60rpx;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	gap: 6rpx;
+	padding: 12rpx 16rpx;
+	background-color: #f6f6f6;
+	border-radius: 8rpx;
 }
 
 .favorite-icon {
-	width: 100%;
-	height: 100%;
+	width: 32rpx;
+	height: 32rpx;
+}
+
+.favorite-icon.is-favorited {
+	filter: invert(79%) sepia(65%) saturate(1000%) hue-rotate(359deg) brightness(103%) contrast(106%);
+}
+
+.favorite-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 20rpx;
+	font-weight: 400;
+	color: #666666;
 }
 
 // 预约优惠卡片
@@ -774,9 +794,13 @@ export default {
 }
 
 .designer-badge {
-	padding: 2rpx 8rpx;
+	padding: 0 8rpx;
 	background-color: #dacbb1;
 	border-radius: 4rpx;
+	height: 40rpx;
+	line-height: 40rpx;
+	display: inline-flex;
+	align-items: center;
 }
 
 .badge-text {
@@ -831,6 +855,7 @@ export default {
 .star-icon {
 	width: 20rpx;
 	height: 20rpx;
+	filter: brightness(0) invert(1);
 }
 
 .stats-row {

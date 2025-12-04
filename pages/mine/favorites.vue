@@ -107,9 +107,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 }
-.favorite-card.favorite-card--favorite {
-	margin: 15rpx 0;
-}
+
 .navbar-content {
 	display: flex;
 	align-items: center;
@@ -147,6 +145,9 @@ export default {
 	width: 100%;
 	padding: 20rpx 24rpx 0;
 	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
 }
 
 .safe-area-spacer {

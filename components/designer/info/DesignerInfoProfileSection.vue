@@ -2,23 +2,22 @@
 	<view class="profile-section">
 		<view class="tabs-container">
 			<view class="tabs-list">
-				<view 
-					v-for="(tab, index) in tabs" 
+				<view
+					v-for="(tab, index) in tabs"
 					:key="tab.id"
 					class="tab-trigger"
 					:class="{ active: activeTab === tab.id }"
-					@tap="handleTabClick(tab.id)"
 				>
-					<text 
+					<text
 						class="tab-label"
 						:class="{ active: activeTab === tab.id }"
 					>
 						{{ tab.label }}
 					</text>
-					<image 
+					<image
 						v-if="activeTab === tab.id"
-						class="tab-indicator" 
-						src="https://c.animaapp.com/mi5eklbiAEaKLJ/img/vector-15.svg" 
+						class="tab-indicator"
+						src="https://c.animaapp.com/mi5eklbiAEaKLJ/img/vector-15.svg"
 						mode="aspectFit"
 					></image>
 				</view>
@@ -43,14 +42,8 @@ export default {
 				{ id: 'environment', label: '环境设施' }
 			]
 		}
-	},
-	methods: {
-		handleTabClick(tabId) {
-			if (tabId !== this.activeTab) {
-				this.$emit('tab-change', tabId)
-			}
-		}
 	}
+	// tabs 现在只作为状态指示器，不支持点击切换
 }
 </script>
 

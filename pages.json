@@ -28,6 +28,15 @@
 			}
 		},
 		{
+			"path": "pages/login/reset-password",
+			"style": {
+				"navigationBarTitleText": "重置密码",
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "WAW style",
@@ -130,6 +139,15 @@
 		"path": "pages/mine/promotion",
 		"style": {
 			"navigationBarTitleText": "推广佣金",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/mine/share-promotion",
+		"style": {
+			"navigationBarTitleText": "分享推广",
 			"navigationStyle": "custom",
 			"navigationBarTextStyle": "black",
 			"navigationBarBackgroundColor": "#f2f2f2"
@@ -364,6 +382,24 @@
 		"path": "pages/order/service-review",
 		"style": {
 			"navigationBarTitleText": "服务点评",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/order/detail-after-sale",
+		"style": {
+			"navigationBarTitleText": "订单详情",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/order/refund",
+		"style": {
+			"navigationBarTitleText": "申请退款",
 			"navigationStyle": "custom",
 			"navigationBarTextStyle": "black",
 			"navigationBarBackgroundColor": "#f2f2f2"

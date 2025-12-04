@@ -88,6 +88,14 @@
 										<text class="btn-text primary">立即付款</text>
 									</view>
 								</template>
+								<template v-else-if="order.tab === 'after-sale'">
+									<view class="detail-btn" @tap.stop="handleContactMerchant(order)">
+										<text class="btn-text">联系商家</text>
+									</view>
+									<view class="primary-btn" @tap.stop="handleDetail(order)">
+										<text class="btn-text primary">查看详情</text>
+									</view>
+								</template>
 								<template v-else>
 									<image
 										v-if="order.hasIcon && order.tab === 'pending-use'"
@@ -128,9 +136,9 @@
 				<view class="more-modal-body">
 					<view class="contact-option" @tap="handleContactOnline">
 						<view class="contact-icon online-icon">
-							<image 
-								class="icon-image" 
-								src="/static/icon/wodekefu.png" 
+							<image
+								class="icon-image"
+								src="/static/icon/wodekefu.png"
 								mode="aspectFit"
 							></image>
 						</view>
@@ -138,9 +146,9 @@
 					</view>
 					<view class="contact-option" @tap="handleContactPhone">
 						<view class="contact-icon phone-icon">
-							<image 
-								class="icon-image" 
-								src="/static/icon/dianhua.png" 
+							<image
+								class="icon-image"
+								src="/static/icon/dianhua.png"
 								mode="aspectFit"
 							></image>
 						</view>
@@ -444,6 +452,11 @@ export default {
 				uni.navigateTo({
 					url: `/pages/order/detail-pending-review?orderId=${order.orderNumber}`
 				})
+			} else if (order.tab === 'after-sale') {
+				// 售后订单跳转到售后详情页
+				uni.navigateTo({
+					url: `/pages/order/detail-after-sale?orderId=${order.orderNumber}`
+				})
 			} else {
 				uni.navigateTo({
 					url: `/pages/order/detail-pending-use?orderId=${order.orderNumber}`
@@ -458,6 +471,11 @@ export default {
 			} else {
 				console.log('Primary action clicked:', order.primaryButton)
 			}
+		},
+		handleContactMerchant(order) {
+			// 联系商家
+			this.currentMoreOrder = order
+			this.showMoreModal = true
 		},
 		handleCancel(order) {
 			this.currentCancelOrder = order
@@ -736,15 +754,20 @@ export default {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	width: 20rpx;
-	height: 20rpx;
+	width: 24rpx;
+	height: 24rpx;
 	flex-shrink: 0;
+	padding: 2rpx;
+	background-color: #333333;
+	border-radius: 4rpx;
+	box-sizing: border-box;
 }
 
 .star-icon {
-	width: 100%;
-	height: 100%;
+	width: 20rpx;
+	height: 20rpx;
 	flex-shrink: 0;
+	filter: brightness(0) invert(1);
 }
 
 .rating-count {

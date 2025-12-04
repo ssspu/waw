@@ -187,6 +187,10 @@ export default {
 	height: 40rpx;
 }
 
+.nav-icon.is-favorited {
+	filter: invert(79%) sepia(65%) saturate(1000%) hue-rotate(359deg) brightness(103%) contrast(106%);
+}
+
 .nav-label {
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-size: 24rpx;

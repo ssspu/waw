@@ -159,7 +159,8 @@ export default {
 			subTabs: {
 				service: [
 					{ id: 'hair', title: '美发师' },
-					{ id: 'beauty', title: '美容师' }
+					// 测试阶段隐藏美容师
+					// { id: 'beauty', title: '美容师' }
 				],
 				appointment: [
 					{ id: 'hair-service', title: '美发服务' },

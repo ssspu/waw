@@ -57,22 +57,22 @@
 			<view class="card service-card">
 				<view class="card-content">
 					<text class="card-title">服务特色</text>
-					
+
 					<view class="badges-container">
-						<view 
-							v-for="(feature, index) in serviceFeatures" 
+						<view
+							v-for="(feature, index) in serviceFeatures"
 							:key="index"
 							class="feature-badge"
 						>
 							<text class="badge-text">{{ feature }}</text>
 						</view>
 					</view>
-					
+
 					<text class="section-label">其他</text>
-					
+
 					<view class="badges-container">
-						<view 
-							v-for="(feature, index) in otherFeatures" 
+						<view
+							v-for="(feature, index) in otherFeatures"
 							:key="index"
 							class="feature-badge"
 						>
@@ -88,24 +88,24 @@
 			<view class="card environment-card">
 				<view class="card-content">
 					<text class="card-title">环境设施</text>
-					
+
 					<text class="section-label">环境设施</text>
-					
+
 					<view class="badges-container">
-						<view 
-							v-for="(facility, index) in environmentFacilities" 
+						<view
+							v-for="(facility, index) in environmentFacilities"
 							:key="index"
 							class="feature-badge"
 						>
 							<text class="badge-text">{{ facility }}</text>
 						</view>
 					</view>
-					
+
 					<text class="section-label">通用设施</text>
-					
+
 					<view class="badges-container">
-						<view 
-							v-for="(facility, index) in generalFacilities" 
+						<view
+							v-for="(facility, index) in generalFacilities"
 							:key="index"
 							class="feature-badge"
 						>
@@ -114,8 +114,8 @@
 					</view>
 				</view>
 			</view>
-		</template>
-	</view>
+		</view>
+	</scroll-view>
 </template>
 
 <script>
@@ -225,7 +225,52 @@ export default {
 				'有停车位',
 				'空调',
 				'先进/刷卡支付'
-			]
+			],
+			sectionOffsets: {
+				designer: 0,
+				service: 0,
+				environment: 0
+			}
+		}
+	},
+	mounted() {
+		// 获取各个区域的位置
+		this.$nextTick(() => {
+			this.calculateSectionOffsets()
+		})
+	},
+	methods: {
+		calculateSectionOffsets() {
+			const query = uni.createSelectorQuery().in(this)
+
+			query.select('#designer-section').boundingClientRect()
+			query.select('#service-section').boundingClientRect()
+			query.select('#environment-section').boundingClientRect()
+
+			query.exec((res) => {
+				if (res && res.length === 3) {
+					this.sectionOffsets.designer = res[0] ? res[0].top : 0
+					this.sectionOffsets.service = res[1] ? res[1].top : 0
+					this.sectionOffsets.environment = res[2] ? res[2].top : 0
+				}
+			})
+		},
+		handleScroll(e) {
+			const scrollTop = e.detail.scrollTop
+
+			// 根据滚动位置判断当前处于哪个区域
+			let currentTab = 'designer'
+
+			if (scrollTop >= this.sectionOffsets.environment - 200) {
+				currentTab = 'environment'
+			} else if (scrollTop >= this.sectionOffsets.service - 200) {
+				currentTab = 'service'
+			}
+
+			// 如果当前tab发生变化，通知父组件
+			if (currentTab !== this.activeTab) {
+				this.$emit('tab-change', currentTab)
+			}
 		}
 	}
 }
@@ -247,14 +292,19 @@ export default {
 }
 
 .services-section {
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+}
+
+.section-block {
+	width: 100%;
+	padding: 0 20rpx 24rpx;
+	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
-	width: 100%;
 	align-items: center;
 	gap: 24rpx;
-	position: relative;
-	padding: 0 20rpx 48rpx;
-	box-sizing: border-box;
 }
 
 .profile-image {

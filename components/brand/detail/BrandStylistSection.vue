@@ -29,53 +29,56 @@
 					
 					<view class="stylist-info">
 						<view class="info-main">
-							<!-- 姓名和标签 -->
-							<view class="name-row">
-								<text class="stylist-name" @tap="handleStylistClick(stylist)">{{ stylist.name }}</text>
-								<view class="role-badge">{{ stylist.role }}</view>
-								<view class="level-badge">{{ stylist.level }}</view>
-							</view>
-							
-							<!-- 职位 -->
-							<text class="position">{{ stylist.position }}</text>
-							
-							<!-- 擅长 -->
-							<view class="specialties-row">
-								<text class="specialties-label">擅长:</text>
-								<view 
-									v-for="(specialty, index) in stylist.specialties" 
-									:key="index" 
-									class="specialty-tag"
-								>
-									{{ specialty }}
+							<!-- 限制高度容器：与头像高度一致 -->
+							<view class="info-height-limit">
+								<!-- 姓名和标签 -->
+								<view class="name-row">
+									<text class="stylist-name" @tap="handleStylistClick(stylist)">{{ stylist.name }}</text>
+									<view class="role-badge">{{ stylist.role }}</view>
+									<view class="level-badge">{{ stylist.level }}</view>
 								</view>
-							</view>
-							
-							<!-- 评分和统计 -->
-							<view class="stats-row">
-								<view class="rating">
-									<text class="rating-value">{{ stylist.rating }}</text>
-									<view class="star-badge">
-										<image class="star-icon" src="https://c.animaapp.com/mi5l377nJk1HHO/img/star-1.svg" mode="aspectFit"></image>
+
+								<!-- 职位 -->
+								<text class="position">{{ stylist.position }}</text>
+
+								<!-- 擅长 -->
+								<view class="specialties-row">
+									<text class="specialties-label">擅长:</text>
+									<view
+										v-for="(specialty, index) in stylist.specialties"
+										:key="index"
+										class="specialty-tag"
+									>
+										{{ specialty }}
 									</view>
 								</view>
-								<text class="stats-separator">｜</text>
-								<view class="stats-item">
-									<text class="stat-label">服务</text>
-									<text class="stat-value">{{ stylist.serviceCount }}</text>
-								</view>
-								<text class="stats-separator">｜</text>
-								<view class="stats-item">
-									<text class="stat-label">作品</text>
-									<text class="stat-value">{{ stylist.worksCount }}</text>
+
+								<!-- 评分和统计 -->
+								<view class="stats-row">
+									<view class="rating">
+										<text class="rating-value">{{ stylist.rating }}</text>
+										<view class="star-badge">
+											<image class="star-icon" src="https://c.animaapp.com/mi5l377nJk1HHO/img/star-1.svg" mode="aspectFit"></image>
+										</view>
+									</view>
+									<text class="stats-separator">｜</text>
+									<view class="stats-item">
+										<text class="stat-label">服务</text>
+										<text class="stat-value">{{ stylist.serviceCount }}</text>
+									</view>
+									<text class="stats-separator">｜</text>
+									<view class="stats-item">
+										<text class="stat-label">作品</text>
+										<text class="stat-value">{{ stylist.worksCount }}</text>
+									</view>
 								</view>
 							</view>
-							
+
 							<!-- 标签 -->
 							<view class="tags-row">
-								<view 
-									v-for="(tag, index) in stylist.tags" 
-									:key="index" 
+								<view
+									v-for="(tag, index) in stylist.tags"
+									:key="index"
 									class="tag-item"
 								>
 									{{ tag }}
@@ -142,7 +145,7 @@ export default {
 		handleBook(stylist) {
 			console.log('Book stylist:', stylist)
 			uni.navigateTo({
-				url: `/pages/designer/detail?id=${stylist.id}&tab=appointment`
+				url: `/pages/designer/detail?id=${stylist.id}&tab=service`
 			})
 		}
 	}
@@ -221,6 +224,15 @@ export default {
 	gap: 6rpx;
 	flex: 1;
 	min-width: 0;
+}
+
+// 限制高度容器：与头像高度一致
+.info-height-limit {
+	height: 160rpx;
+	display: flex;
+	flex-direction: column;
+	gap: 6rpx;
+	justify-content: space-between;
 }
 
 .name-row {
