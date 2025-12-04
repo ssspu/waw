@@ -227,10 +227,11 @@
 				</view>
 			</scroll-view>
 			<view class="services-grid">
-				<view 
-					v-for="(service, index) in filteredServices" 
-					:key="index" 
+				<view
+					v-for="(service, index) in filteredServices"
+					:key="index"
 					class="service-card"
+					@tap="handleServiceCardClick(service)"
 				>
 					<image class="service-img" :src="service.image" mode="aspectFill"></image>
 					<view class="service-info">
@@ -1028,6 +1029,7 @@ export default {
 			activeServiceTab: "全部",
 			allServices: [
 				{
+					id: 5,
 					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
 					title: "烫发",
 					category: "烫发",
@@ -1041,6 +1043,7 @@ export default {
 					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
 				},
 				{
+					id: 3,
 					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
 					title: "剪发",
 					category: "剪发",
@@ -1054,6 +1057,7 @@ export default {
 					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
 				},
 				{
+					id: 7,
 					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
 					title: "染发",
 					category: "染发",
@@ -1067,6 +1071,7 @@ export default {
 					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
 				},
 				{
+					id: 1,
 					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
 					title: "洗吹",
 					category: "洗吹",
@@ -1080,6 +1085,7 @@ export default {
 					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
 				},
 				{
+					id: 9,
 					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
 					title: "护发",
 					category: "护发",
@@ -1093,6 +1099,7 @@ export default {
 					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
 				},
 				{
+					id: 11,
 					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
 					title: "头皮",
 					category: "头皮",
@@ -1106,6 +1113,7 @@ export default {
 					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
 				},
 				{
+					id: 13,
 					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
 					title: "接发",
 					category: "接发",
@@ -1119,6 +1127,7 @@ export default {
 					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
 				},
 				{
+					id: 6,
 					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
 					title: "烫发",
 					category: "烫发",
@@ -1242,12 +1251,12 @@ export default {
 			// 处理底部按钮点击
 			if (action.title === '优惠券') {
 				uni.navigateTo({
-					url: '/pages/coupon/index'
+					url: '/packageOthers/pages/coupon/index'
 				})
 			} else if (action.title === '预约单') {
 				// 跳转到我的订单页面，激活待使用tab
 				uni.navigateTo({
-					url: '/pages/order/index?tab=pending-use'
+					url: '/packageOrder/pages/order/index?tab=pending-use'
 				})
 			} else if (action.title === '会员') {
 				// 测试阶段禁用跳转
@@ -1255,7 +1264,7 @@ export default {
 			} else if (action.title === '入驻中') {
 				// 跳转到申请入驻页面
 				uni.navigateTo({
-					url: '/pages/mine/apply-settlement'
+					url: '/packageMine/pages/mine/apply-settlement'
 				})
 			}
 		},
@@ -1274,7 +1283,7 @@ export default {
 		handlePortfolioHeaderClick() {
 			// 点击作品集标题箭头，跳转到作品集首页
 			uni.navigateTo({
-				url: '/pages/portfolio/index'
+				url: '/packageOthers/pages/portfolio/index'
 			})
 		},
 		handlePortfolioItemClick(item, index) {
@@ -1282,7 +1291,13 @@ export default {
 			// index 0 是女士，index 1 是男士
 			const category = index === 0 ? 'women' : 'men'
 			uni.navigateTo({
-				url: `/pages/portfolio/index?category=${category}`
+				url: `/packageOthers/pages/portfolio/index?category=${category}`
+			})
+		},
+		handleServiceCardClick(service) {
+			// 点击优服务卡片，跳转到服务订单购买页面
+			uni.navigateTo({
+				url: `/packageOrder/pages/order/purchase?id=${service.id}`
 			})
 		}
 	},

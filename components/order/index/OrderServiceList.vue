@@ -551,34 +551,34 @@ export default {
 			// 根据订单状态或tab跳转到对应详情页
 			if (order.status === '待付款' || order.tab === 'pending-payment') {
 				uni.navigateTo({
-					url: `/pages/order/detail?orderId=${order.orderNumber}`
+					url: `/packageOrder/pages/order/detail?orderId=${order.orderNumber}`
 				})
 			} else if (order.tab === 'pending-confirm') {
 				// 待确认订单跳转到待确认详情页
 				uni.navigateTo({
-					url: `/pages/order/detail-pending-confirm?orderId=${order.orderNumber}`
+					url: `/packageOrder/pages/order/detail-pending-confirm?orderId=${order.orderNumber}`
 				})
 			} else if (order.tab === 'pending-review') {
 				// 待评价订单跳转到待评价详情页
 				uni.navigateTo({
-					url: `/pages/order/detail-pending-review?orderId=${order.orderNumber}`
+					url: `/packageOrder/pages/order/detail-pending-review?orderId=${order.orderNumber}`
 				})
 			} else if (order.tab === 'after-sale') {
 				// 售后订单跳转到售后详情页
 				uni.navigateTo({
-					url: `/pages/order/detail-after-sale?orderId=${order.orderNumber}`
+					url: `/packageOrder/pages/order/detail-after-sale?orderId=${order.orderNumber}`
 				})
 			} else {
 				// 其他状态（待使用等）都跳转到待使用详情页
 				uni.navigateTo({
-					url: `/pages/order/detail-pending-use?orderId=${order.orderNumber}`
+					url: `/packageOrder/pages/order/detail-pending-use?orderId=${order.orderNumber}`
 				})
 			}
 		},
 		handlePrimaryAction(order) {
 			if (order.primaryButton === '立即评价') {
 				uni.navigateTo({
-					url: `/pages/order/service-review?orderId=${order.orderNumber}`
+					url: `/packageOrder/pages/order/service-review?orderId=${order.orderNumber}`
 				})
 			} else {
 				console.log('Primary action clicked:', order.primaryButton)
@@ -636,7 +636,7 @@ export default {
 		handlePay(order) {
 			// 跳转到待付款订单详情页
 			uni.navigateTo({
-				url: `/pages/order/detail?orderId=${order.orderNumber}`
+				url: `/packageOrder/pages/order/detail?orderId=${order.orderNumber}`
 			})
 		}
 	}

@@ -50,7 +50,7 @@ export default {
 	methods: {
 		handleOnlineService() {
 			console.log('Online service button clicked')
-			uni.navigateTo({ url: '/pages/mine/customer-service' })
+			uni.navigateTo({ url: '/packageMine/pages/mine/customer-service' })
 		},
 		handleNotice() {
 			console.log('Notice button clicked')

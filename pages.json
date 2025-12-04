@@ -1,5 +1,5 @@
 {
-	"pages": [ 
+	"pages": [
 		{
 			"path": "pages/login/index",
 			"style": {
@@ -99,384 +99,24 @@
 				"navigationBarBackgroundColor": "#f2f2f2"
 			}
 		},
-	{
-		"path": "pages/mine/index",
-		"style": {
-			"navigationBarTitleText": "我的",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/mine/customer-service",
-		"style": {
-			"navigationBarTitleText": "客服中心",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/mine/asset",
-		"style": {
-			"navigationBarTitleText": "资产收入",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/mine/asset-detail",
-		"style": {
-			"navigationBarTitleText": "我的资产",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/mine/promotion",
-		"style": {
-			"navigationBarTitleText": "推广佣金",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/mine/share-promotion",
-		"style": {
-			"navigationBarTitleText": "分享推广",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/mine/beans",
-		"style": {
-			"navigationBarTitleText": "美豆",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/mine/balance",
-		"style": {
-			"navigationBarTitleText": "余额",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/mine/platform-reward",
-		"style": {
-			"navigationBarTitleText": "平台奖励",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/mine/qr-code-card",
-		"style": {
-			"navigationBarTitleText": "二维码名片",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/mine/favorites",
-		"style": {
-			"navigationBarTitleText": "我的收藏",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/mine/browse-records",
-		"style": {
-			"navigationBarTitleText": "浏览记录",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/mine/follow-list",
-		"style": {
-			"navigationBarTitleText": "我的关注",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/mine/apply-settlement",
-		"style": {
-			"navigationBarTitleText": "我要合作",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/mine/designer-settlement",
-		"style": {
-			"navigationBarTitleText": "入驻申请",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/designer-settlement/identity",
-		"style": {
-			"navigationBarTitleText": "设计师入驻",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#ffffff"
-		}
-	},
-	{
-		"path": "pages/designer-settlement/profession",
-		"style": {
-			"navigationBarTitleText": "设计师入驻",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#ffffff"
-		}
-	},
-	{
-		"path": "pages/designer-settlement/agreement",
-		"style": {
-			"navigationBarTitleText": "设计师入驻",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#ffffff"
-		}
-	},
-	{
-		"path": "pages/designer-settlement/settlement",
-		"style": {
-			"navigationBarTitleText": "设计师入驻",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#ffffff"
-		}
-	},
-	{
-		"path": "pages/mine/store-settlement",
-		"style": {
-			"navigationBarTitleText": "入驻申请",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/store-settlement/store",
-		"style": {
-			"navigationBarTitleText": "实体门店入驻",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#ffffff"
-		}
-	},
-	{
-		"path": "pages/store-settlement/license",
-		"style": {
-			"navigationBarTitleText": "实体门店入驻",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#ffffff"
-		}
-	},
-	{
-		"path": "pages/store-settlement/agreement",
-		"style": {
-			"navigationBarTitleText": "实体门店入驻",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#ffffff"
-		}
-	},
-	{
-		"path": "pages/store-settlement/settlement",
-		"style": {
-			"navigationBarTitleText": "实体门店入驻",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#ffffff"
-		}
-	},
-	{
-		"path": "pages/settlement-success/index",
-		"style": {
-			"navigationBarTitleText": "提交成功",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#ffffff"
-		}
-	},
-	{
-		"path": "pages/mine/vip",
-		"style": {
-			"navigationBarTitleText": "加入会员",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/order/index",
-		"style": {
-			"navigationBarTitleText": "服务订单",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/order/detail",
-		"style": {
-			"navigationBarTitleText": "订单详情",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/order/detail-pending-use",
-		"style": {
-			"navigationBarTitleText": "订单详情",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/order/detail-pending-confirm",
-		"style": {
-			"navigationBarTitleText": "订单详情",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/order/detail-pending-review",
-		"style": {
-			"navigationBarTitleText": "订单详情",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/order/service-review",
-		"style": {
-			"navigationBarTitleText": "服务点评",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/order/detail-after-sale",
-		"style": {
-			"navigationBarTitleText": "订单详情",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/order/refund",
-		"style": {
-			"navigationBarTitleText": "申请退款",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/order/purchase",
-		"style": {
-			"navigationBarTitleText": "服务购买",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
 		{
-			"path": "pages/coupon/index",
+			"path": "pages/mine/index",
 			"style": {
-				"navigationBarTitleText": "优惠券",
+				"navigationBarTitleText": "我的",
 				"navigationStyle": "custom",
 				"navigationBarTextStyle": "black",
 				"navigationBarBackgroundColor": "#f2f2f2"
 			}
 		},
-	{
-		"path": "pages/portfolio/index",
-		"style": {
-			"navigationBarTitleText": "作品集",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/portfolio/detail",
-		"style": {
-			"navigationBarTitleText": "作品详情",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/territory/index",
-		"style": {
-			"navigationBarTitleText": "私人领地",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/territory/brand-store",
-		"style": {
-			"navigationBarTitleText": "品牌馆",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/setting/index",
+		{
+			"path": "pages/brand/detail",
 			"style": {
-				"navigationBarTitleText": "设置",
+				"navigationBarTitleText": "品牌详情",
 				"navigationStyle": "custom",
 				"navigationBarTextStyle": "black",
 				"navigationBarBackgroundColor": "#f2f2f2"
 			}
 		},
-	{
-		"path": "pages/brand/detail",
-		"style": {
-			"navigationBarTitleText": "品牌详情",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
 		{
 			"path": "pages/brand/info",
 			"style": {
@@ -485,134 +125,526 @@
 				"navigationBarTextStyle": "black",
 				"navigationBarBackgroundColor": "#f2f2f2"
 			}
+		}
+	],
+	"subPackages": [
+		{
+			"root": "packageOrder",
+			"name": "order",
+			"pages": [
+				{
+					"path": "pages/order/index",
+					"style": {
+						"navigationBarTitleText": "服务订单",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/order/detail",
+					"style": {
+						"navigationBarTitleText": "订单详情",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/order/detail-pending-use",
+					"style": {
+						"navigationBarTitleText": "订单详情",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/order/detail-pending-confirm",
+					"style": {
+						"navigationBarTitleText": "订单详情",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/order/detail-pending-review",
+					"style": {
+						"navigationBarTitleText": "订单详情",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/order/service-review",
+					"style": {
+						"navigationBarTitleText": "服务点评",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/order/detail-after-sale",
+					"style": {
+						"navigationBarTitleText": "订单详情",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/order/refund",
+					"style": {
+						"navigationBarTitleText": "申请退款",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/order/purchase",
+					"style": {
+						"navigationBarTitleText": "服务购买",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				}
+			]
 		},
-	{
-		"path": "pages/setting/personal-info",
-		"style": {
-			"navigationBarTitleText": "个人信息",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
+		{
+			"root": "packageMine",
+			"name": "mine",
+			"pages": [
+				{
+					"path": "pages/mine/customer-service",
+					"style": {
+						"navigationBarTitleText": "客服中心",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/mine/asset",
+					"style": {
+						"navigationBarTitleText": "资产收入",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/mine/asset-detail",
+					"style": {
+						"navigationBarTitleText": "我的资产",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/mine/promotion",
+					"style": {
+						"navigationBarTitleText": "推广佣金",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/mine/share-promotion",
+					"style": {
+						"navigationBarTitleText": "分享推广",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/mine/beans",
+					"style": {
+						"navigationBarTitleText": "美豆",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/mine/balance",
+					"style": {
+						"navigationBarTitleText": "余额",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/mine/platform-reward",
+					"style": {
+						"navigationBarTitleText": "平台奖励",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/mine/qr-code-card",
+					"style": {
+						"navigationBarTitleText": "二维码名片",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/mine/favorites",
+					"style": {
+						"navigationBarTitleText": "我的收藏",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/mine/browse-records",
+					"style": {
+						"navigationBarTitleText": "浏览记录",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/mine/follow-list",
+					"style": {
+						"navigationBarTitleText": "我的关注",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/mine/apply-settlement",
+					"style": {
+						"navigationBarTitleText": "我要合作",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/mine/designer-settlement",
+					"style": {
+						"navigationBarTitleText": "入驻申请",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/mine/store-settlement",
+					"style": {
+						"navigationBarTitleText": "入驻申请",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/mine/vip",
+					"style": {
+						"navigationBarTitleText": "加入会员",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				}
+			]
+		},
+		{
+			"root": "packageSetting",
+			"name": "setting",
+			"pages": [
+				{
+					"path": "pages/setting/index",
+					"style": {
+						"navigationBarTitleText": "设置",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/setting/personal-info",
+					"style": {
+						"navigationBarTitleText": "个人信息",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/setting/account-security",
+					"style": {
+						"navigationBarTitleText": "账号安全",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/setting/edit-phone",
+					"style": {
+						"navigationBarTitleText": "添加手机号",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/setting/edit-password",
+					"style": {
+						"navigationBarTitleText": "修改登录密码",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/setting/apply-certification",
+					"style": {
+						"navigationBarTitleText": "申请认证",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/setting/address-management",
+					"style": {
+						"navigationBarTitleText": "收货地址",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/setting/edit-address",
+					"style": {
+						"navigationBarTitleText": "编辑收货地址",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/setting/payment-settings",
+					"style": {
+						"navigationBarTitleText": "支付设置",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/setting/privacy-settings",
+					"style": {
+						"navigationBarTitleText": "隐私设置",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/setting/feedback",
+					"style": {
+						"navigationBarTitleText": "反馈意见",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/setting/about",
+					"style": {
+						"navigationBarTitleText": "关于众美",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/setting/agreement",
+					"style": {
+						"navigationBarTitleText": "协议与条款",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/setting/bank-cards",
+					"style": {
+						"navigationBarTitleText": "银行卡",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/setting/add-bank-card",
+					"style": {
+						"navigationBarTitleText": "添加银行卡",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				}
+			]
+		},
+		{
+			"root": "packageSettlement",
+			"name": "settlement",
+			"pages": [
+				{
+					"path": "pages/designer-settlement/identity",
+					"style": {
+						"navigationBarTitleText": "设计师入驻",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#ffffff"
+					}
+				},
+				{
+					"path": "pages/designer-settlement/profession",
+					"style": {
+						"navigationBarTitleText": "设计师入驻",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#ffffff"
+					}
+				},
+				{
+					"path": "pages/designer-settlement/agreement",
+					"style": {
+						"navigationBarTitleText": "设计师入驻",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#ffffff"
+					}
+				},
+				{
+					"path": "pages/designer-settlement/settlement",
+					"style": {
+						"navigationBarTitleText": "设计师入驻",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#ffffff"
+					}
+				},
+				{
+					"path": "pages/store-settlement/store",
+					"style": {
+						"navigationBarTitleText": "实体门店入驻",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#ffffff"
+					}
+				},
+				{
+					"path": "pages/store-settlement/license",
+					"style": {
+						"navigationBarTitleText": "实体门店入驻",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#ffffff"
+					}
+				},
+				{
+					"path": "pages/store-settlement/agreement",
+					"style": {
+						"navigationBarTitleText": "实体门店入驻",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#ffffff"
+					}
+				},
+				{
+					"path": "pages/store-settlement/settlement",
+					"style": {
+						"navigationBarTitleText": "实体门店入驻",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#ffffff"
+					}
+				},
+				{
+					"path": "pages/settlement-success/index",
+					"style": {
+						"navigationBarTitleText": "提交成功",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#ffffff"
+					}
+				}
+			]
+		},
+		{
+			"root": "packageOthers",
+			"name": "others",
+			"pages": [
+				{
+					"path": "pages/coupon/index",
+					"style": {
+						"navigationBarTitleText": "优惠券",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/portfolio/index",
+					"style": {
+						"navigationBarTitleText": "作品集",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/portfolio/detail",
+					"style": {
+						"navigationBarTitleText": "作品详情",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/territory/index",
+					"style": {
+						"navigationBarTitleText": "私人领地",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				},
+				{
+					"path": "pages/territory/brand-store",
+					"style": {
+						"navigationBarTitleText": "品牌馆",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f2f2f2"
+					}
+				}
+			]
 		}
-	},
-	{
-		"path": "pages/setting/account-security",
-		"style": {
-			"navigationBarTitleText": "账号安全",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/setting/edit-phone",
-		"style": {
-			"navigationBarTitleText": "添加手机号",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/setting/edit-password",
-		"style": {
-			"navigationBarTitleText": "修改登录密码",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/setting/apply-certification",
-		"style": {
-			"navigationBarTitleText": "申请认证",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/setting/address-management",
-		"style": {
-			"navigationBarTitleText": "收货地址",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/setting/edit-address",
-		"style": {
-			"navigationBarTitleText": "编辑收货地址",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/setting/payment-settings",
-		"style": {
-			"navigationBarTitleText": "支付设置",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/setting/privacy-settings",
-		"style": {
-			"navigationBarTitleText": "隐私设置",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/setting/feedback",
-		"style": {
-			"navigationBarTitleText": "反馈意见",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/setting/about",
-		"style": {
-			"navigationBarTitleText": "关于众美",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/setting/agreement",
-		"style": {
-			"navigationBarTitleText": "协议与条款",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/setting/bank-cards",
-		"style": {
-			"navigationBarTitleText": "银行卡",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	},
-	{
-		"path": "pages/setting/add-bank-card",
-		"style": {
-			"navigationBarTitleText": "添加银行卡",
-			"navigationStyle": "custom",
-			"navigationBarTextStyle": "black",
-			"navigationBarBackgroundColor": "#f2f2f2"
-		}
-	}
-],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",

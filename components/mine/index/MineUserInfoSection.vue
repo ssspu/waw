@@ -93,25 +93,25 @@ export default {
 	methods: {
 		handleStatClick(stat) {
 			if (stat.label === '关注') {
-				uni.navigateTo({ url: '/pages/mine/follow-list' })
+				uni.navigateTo({ url: '/packageMine/pages/mine/follow-list' })
 			} else if (stat.label === '浏览') {
-				uni.navigateTo({ url: '/pages/mine/browse-records' })
+				uni.navigateTo({ url: '/packageMine/pages/mine/browse-records' })
 			} else if (stat.label === '收藏') {
-				uni.navigateTo({ url: '/pages/mine/favorites' })
+				uni.navigateTo({ url: '/packageMine/pages/mine/favorites' })
 			}
 		},
 		handleTerritoryClick() {
-			uni.navigateTo({ url: '/pages/territory/index' })
+			uni.navigateTo({ url: '/packageOthers/pages/territory/index' })
 		},
 		handleQrClick() {
 			console.log('QR code clicked')
 			uni.navigateTo({
-				url: '/pages/mine/qr-code-card'
+				url: '/packageMine/pages/mine/qr-code-card'
 			})
 		},
 		handleVipClick() {
 			uni.navigateTo({
-				url: '/pages/mine/vip'
+				url: '/packageMine/pages/mine/vip'
 			})
 		}
 	}

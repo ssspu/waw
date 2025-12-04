@@ -323,7 +323,7 @@ export default {
 			}
 			// 跳转到订单详情页
 			uni.navigateTo({
-				url: '/pages/order/detail?data=' + encodeURIComponent(JSON.stringify(orderData))
+				url: '/packageOrder/pages/order/detail?data=' + encodeURIComponent(JSON.stringify(orderData))
 			})
 		},
 		handleClaimCoupon(coupon) {
