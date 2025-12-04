@@ -21,7 +21,7 @@
 				<view class="card-header">
 					<text class="asset-label">美豆余额</text>
 				</view>
-				<text class="asset-amount">1000</text>
+				<text class="asset-amount">{{ beansInfo.beans }}</text>
 			</view>
 
 			<!-- 时间筛选和记录列表 -->
@@ -35,13 +35,16 @@
 					></image>
 				</view>
 
-				<view class="records-list">
+				<view class="records-list" v-if="beansRecords.length > 0">
 					<asset-record-item
 						v-for="(record, index) in beansRecords"
 						:key="index"
 						:record="record"
 						:is-last="index === beansRecords.length - 1"
 					></asset-record-item>
+				</view>
+				<view class="empty-list" v-else>
+					<text class="empty-text">暂无记录</text>
 				</view>
 			</view>
 		</view>
@@ -50,6 +53,7 @@
 
 <script>
 import AssetRecordItem from '../../components/mine/AssetRecordItem.vue'
+import { userApi } from '@/api'
 
 export default {
 	components: {
@@ -58,40 +62,59 @@ export default {
 	data() {
 		return {
 			statusBarHeight: 44,
-			beansRecords: [
-				{
-					title: '成都美发沙龙',
-					desc: '消费返豆',
-					time: '今天 10:50',
-					amount: '+100'
-				},
-				{
-					title: '成都美发沙龙',
-					desc: '签到奖励',
-					time: '今天 08:00',
-					amount: '+10'
-				},
-				{
-					title: '成都美发沙龙',
-					desc: '消费抵扣',
-					time: '昨天 14:30',
-					amount: '-50'
-				},
-				{
-					title: '成都美发沙龙',
-					desc: '消费返豆',
-					time: '昨天 14:30',
-					amount: '+80'
-				}
-			]
+			beansInfo: {
+				beans: 0,
+				todayEarned: 0,
+				totalEarned: 0,
+				totalSpent: 0
+			},
+			beansRecords: [],
+			page: 1,
+			pageSize: 10,
+			loading: false
 		}
 	},
 	onLoad() {
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+		this.fetchBeansInfo()
+		this.fetchBeansRecords()
 	},
 	methods: {
 		handleBack() {
 			uni.navigateBack()
+		},
+		async fetchBeansInfo() {
+			try {
+				const res = await userApi.getBeans()
+				if (res.code === 0) {
+					this.beansInfo = res.data
+				}
+			} catch (e) {
+				console.error('获取美豆信息失败', e)
+			}
+		},
+		async fetchBeansRecords() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await userApi.getBeansRecords({
+					page: this.page,
+					pageSize: this.pageSize
+				})
+				if (res.code === 0) {
+					const records = res.data.list || res.data.records || []
+					this.beansRecords = records.map(item => ({
+						title: item.title,
+						desc: item.remark,
+						time: item.time,
+						amount: item.amount > 0 ? `+${item.amount}` : `${item.amount}`
+					}))
+				}
+			} catch (e) {
+				console.error('获取美豆记录失败', e)
+			} finally {
+				this.loading = false
+			}
 		}
 	}
 }
@@ -211,5 +234,19 @@ export default {
 	padding: 30rpx 20rpx;
 	display: flex;
 	flex-direction: column;
+}
+
+.empty-list {
+	background-color: #ffffff;
+	border-radius: 12rpx;
+	padding: 60rpx 20rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.empty-text {
+	font-size: 28rpx;
+	color: #999999;
 }
 </style>

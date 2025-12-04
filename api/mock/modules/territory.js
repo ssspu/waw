@@ -4,8 +4,9 @@
 
 import { success, error, paginate } from '../utils.js'
 
-// 我的设计师列表（私人领地）
+// 我的设计师列表（私人领地）- 包含所有分类
 const myDesigners = [
+  // ========== 美发师 hairstylist ==========
   {
     id: '1',
     designerId: '1',
@@ -18,7 +19,10 @@ const myDesigners = [
     rating: 4.8,
     category: 'hairstylist',
     lastServiceTime: '2025-11-22 14:30',
+    lastServiceName: '精致剪发',
+    lastProductName: '欧莱雅护发素',
     serviceCount: 5,
+    worksCount: 123,
     totalSpent: 1580
   },
   {
@@ -27,13 +31,16 @@ const myDesigners = [
     name: '张小雨',
     avatar: '/static/avatar/avatar.png',
     role: '美发师',
-    level: '高级',
+    level: '资深',
     position: '总监｜从业10年',
     specialties: ['烫发设计', '护发养护'],
     rating: 4.9,
     category: 'hairstylist',
     lastServiceTime: '2025-11-15 16:00',
+    lastServiceName: '时尚烫发',
+    lastProductName: '施华蔻烫发药水',
     serviceCount: 3,
+    worksCount: 89,
     totalSpent: 1197
   },
   {
@@ -42,19 +49,171 @@ const myDesigners = [
     name: '王大明',
     avatar: '/static/avatar/avatar.png',
     role: '美发师',
-    level: '资深',
+    level: '高级',
     position: '首席｜从业8年',
     specialties: ['男士造型', '渐变染发'],
     rating: 4.7,
     category: 'hairstylist',
     lastServiceTime: '2025-10-28 10:00',
+    lastServiceName: '男士理发',
+    lastProductName: '发蜡造型',
     serviceCount: 2,
+    worksCount: 56,
     totalSpent: 598
+  },
+  // ========== 美容师 beautician ==========
+  {
+    id: '4',
+    designerId: '4',
+    name: '刘美美',
+    avatar: '/static/avatar/avatar.png',
+    role: '美容师',
+    level: '高级',
+    position: '主管｜从业9年',
+    specialties: ['面部护理', '深层清洁', '抗衰老'],
+    rating: 4.9,
+    category: 'beautician',
+    lastServiceTime: '2025-11-20 10:00',
+    lastServiceName: '深层补水护理',
+    lastProductName: 'SK-II精华液',
+    serviceCount: 8,
+    worksCount: 156,
+    totalSpent: 3200
+  },
+  {
+    id: '5',
+    designerId: '5',
+    name: '陈晓晓',
+    avatar: '/static/avatar/avatar.png',
+    role: '美容师',
+    level: '资深',
+    position: '技术总监｜从业15年',
+    specialties: ['问题肌肤', '祛斑祛痘', '美白'],
+    rating: 4.8,
+    category: 'beautician',
+    lastServiceTime: '2025-11-18 14:00',
+    lastServiceName: '祛痘护理',
+    lastProductName: '理肤泉祛痘精华',
+    serviceCount: 6,
+    worksCount: 203,
+    totalSpent: 2580
+  },
+  // ========== 化妆师 makeup ==========
+  {
+    id: '6',
+    designerId: '6',
+    name: '赵艺琳',
+    avatar: '/static/avatar/avatar.png',
+    role: '化妆师',
+    level: '资深',
+    position: '首席化妆师｜从业11年',
+    specialties: ['新娘妆', '晚宴妆', '日常妆'],
+    rating: 4.9,
+    category: 'makeup',
+    lastServiceTime: '2025-11-25 08:00',
+    lastServiceName: '新娘跟妆',
+    lastProductName: 'MAC口红',
+    serviceCount: 12,
+    worksCount: 328,
+    totalSpent: 5800
+  },
+  {
+    id: '7',
+    designerId: '7',
+    name: '孙梦瑶',
+    avatar: '/static/avatar/avatar.png',
+    role: '化妆师',
+    level: '高级',
+    position: '化妆师｜从业6年',
+    specialties: ['时尚妆容', '舞台妆', '特效妆'],
+    rating: 4.7,
+    category: 'makeup',
+    lastServiceTime: '2025-11-10 15:00',
+    lastServiceName: '舞台妆',
+    lastProductName: 'NARS腮红',
+    serviceCount: 4,
+    worksCount: 87,
+    totalSpent: 1200
+  },
+  // ========== 美甲师 nail ==========
+  {
+    id: '8',
+    designerId: '8',
+    name: '周小琴',
+    avatar: '/static/avatar/avatar.png',
+    role: '美甲师',
+    level: '高级',
+    position: '美甲主管｜从业7年',
+    specialties: ['法式美甲', '彩绘', '延长甲'],
+    rating: 4.8,
+    category: 'nail',
+    lastServiceTime: '2025-11-23 11:00',
+    lastServiceName: '法式美甲',
+    lastProductName: 'OPI甲油',
+    serviceCount: 15,
+    worksCount: 256,
+    totalSpent: 1890
+  },
+  {
+    id: '9',
+    designerId: '9',
+    name: '吴婷婷',
+    avatar: '/static/avatar/avatar.png',
+    role: '美甲师',
+    level: '资深',
+    position: '首席美甲师｜从业10年',
+    specialties: ['日式美甲', '3D立体', '水晶甲'],
+    rating: 4.9,
+    category: 'nail',
+    lastServiceTime: '2025-11-21 14:30',
+    lastServiceName: '日式美甲',
+    lastProductName: 'PREGEL甲胶',
+    serviceCount: 20,
+    worksCount: 412,
+    totalSpent: 3200
+  },
+  // ========== 美体师 body ==========
+  {
+    id: '10',
+    designerId: '10',
+    name: '郑丽娜',
+    avatar: '/static/avatar/avatar.png',
+    role: '美体师',
+    level: '高级',
+    position: '美体主管｜从业8年',
+    specialties: ['身体塑形', '淋巴排毒', '精油SPA'],
+    rating: 4.8,
+    category: 'body',
+    lastServiceTime: '2025-11-19 16:00',
+    lastServiceName: '全身精油SPA',
+    lastProductName: '薰衣草精油',
+    serviceCount: 10,
+    worksCount: 89,
+    totalSpent: 4500
+  },
+  {
+    id: '11',
+    designerId: '11',
+    name: '冯雅雅',
+    avatar: '/static/avatar/avatar.png',
+    role: '美体师',
+    level: '资深',
+    position: '技术总监｜从业12年',
+    specialties: ['产后修复', '纤体瘦身', '肩颈理疗'],
+    rating: 4.9,
+    category: 'body',
+    lastServiceTime: '2025-11-17 10:00',
+    lastServiceName: '产后修复',
+    lastProductName: '紧致精华',
+    serviceCount: 8,
+    worksCount: 145,
+    totalSpent: 6800
   }
 ]
 
-// 我的品牌馆列表（私人领地）
+// 我的品牌馆列表（私人领地）- 包含所有分类
 const myBrands = [
+  // ========== 美发 hair ==========
   {
     id: '1',
     brandId: '1',
@@ -62,13 +221,20 @@ const myBrands = [
     avatar: '/static/avatar/avatar.png',
     type: '品牌',
     level: '舒适',
-    role: '专业店｜2012年开业',
+    shopType: '专业店',
+    openYear: '2012',
     specialties: ['女士造型', '烫发设计', '短发造型'],
     rating: 4.8,
     category: 'hair',
     designerCount: 8,
     serviceCount: 1236,
     lastServiceTime: '2025-11-22 14:30',
+    lastService: {
+      date: '2025-11-22',
+      serviceName: '精致剪发',
+      productName: '欧莱雅护发素',
+      price: 299
+    },
     visitCount: 8,
     totalSpent: 2775
   },
@@ -79,15 +245,218 @@ const myBrands = [
     avatar: '/static/avatar/avatar.png',
     type: '品牌',
     level: '精品',
-    role: '连锁店｜2015年开业',
+    shopType: '连锁店',
+    openYear: '2015',
     specialties: ['时尚染发', '护理', '造型'],
     rating: 4.9,
     category: 'hair',
     designerCount: 12,
     serviceCount: 2156,
     lastServiceTime: '2025-10-15 11:00',
+    lastService: {
+      date: '2025-10-15',
+      serviceName: '时尚烫染',
+      productName: '施华蔻染膏',
+      price: 599
+    },
     visitCount: 3,
     totalSpent: 899
+  },
+  // ========== 美容 beauty ==========
+  {
+    id: '3',
+    brandId: '3',
+    name: '悦颜美容会所',
+    avatar: '/static/avatar/avatar.png',
+    type: '品牌',
+    level: '高端',
+    shopType: '旗舰店',
+    openYear: '2010',
+    specialties: ['面部护理', '抗衰老', '美白淡斑'],
+    rating: 4.9,
+    category: 'beauty',
+    designerCount: 15,
+    serviceCount: 3200,
+    lastServiceTime: '2025-11-20 10:00',
+    lastService: {
+      date: '2025-11-20',
+      serviceName: '深层补水',
+      productName: 'SK-II精华液',
+      price: 680
+    },
+    visitCount: 12,
+    totalSpent: 8500
+  },
+  {
+    id: '4',
+    brandId: '4',
+    name: '美丽人生SPA馆',
+    avatar: '/static/avatar/avatar.png',
+    type: '品牌',
+    level: '精品',
+    shopType: '精品店',
+    openYear: '2018',
+    specialties: ['问题肌肤', '祛痘祛斑', '敏感护理'],
+    rating: 4.7,
+    category: 'beauty',
+    designerCount: 8,
+    serviceCount: 1560,
+    lastServiceTime: '2025-11-18 14:00',
+    lastService: {
+      date: '2025-11-18',
+      serviceName: '祛痘护理',
+      productName: '理肤泉精华',
+      price: 380
+    },
+    visitCount: 5,
+    totalSpent: 2200
+  },
+  // ========== 化妆 makeup ==========
+  {
+    id: '5',
+    brandId: '5',
+    name: '艺琳造型工作室',
+    avatar: '/static/avatar/avatar.png',
+    type: '品牌',
+    level: '高端',
+    shopType: '工作室',
+    openYear: '2016',
+    specialties: ['新娘跟妆', '晚宴妆', '商业拍摄'],
+    rating: 4.9,
+    category: 'makeup',
+    designerCount: 6,
+    serviceCount: 2800,
+    lastServiceTime: '2025-11-25 08:00',
+    lastService: {
+      date: '2025-11-25',
+      serviceName: '新娘跟妆',
+      productName: 'MAC彩妆',
+      price: 1280
+    },
+    visitCount: 3,
+    totalSpent: 3800
+  },
+  {
+    id: '6',
+    brandId: '6',
+    name: '潮流彩妆馆',
+    avatar: '/static/avatar/avatar.png',
+    type: '品牌',
+    level: '舒适',
+    shopType: '专业店',
+    openYear: '2019',
+    specialties: ['日常妆容', '约会妆', '证件照妆'],
+    rating: 4.6,
+    category: 'makeup',
+    designerCount: 4,
+    serviceCount: 980,
+    lastServiceTime: '2025-11-10 15:00',
+    lastService: {
+      date: '2025-11-10',
+      serviceName: '日常妆容',
+      productName: 'NARS彩妆',
+      price: 198
+    },
+    visitCount: 2,
+    totalSpent: 580
+  },
+  // ========== 美甲 nail ==========
+  {
+    id: '7',
+    brandId: '7',
+    name: '指尖艺术美甲店',
+    avatar: '/static/avatar/avatar.png',
+    type: '品牌',
+    level: '精品',
+    shopType: '精品店',
+    openYear: '2017',
+    specialties: ['日式美甲', '法式美甲', '彩绘'],
+    rating: 4.8,
+    category: 'nail',
+    designerCount: 5,
+    serviceCount: 1680,
+    lastServiceTime: '2025-11-23 11:00',
+    lastService: {
+      date: '2025-11-23',
+      serviceName: '日式美甲',
+      productName: 'OPI甲油',
+      price: 268
+    },
+    visitCount: 10,
+    totalSpent: 2680
+  },
+  {
+    id: '8',
+    brandId: '8',
+    name: '美甲小屋',
+    avatar: '/static/avatar/avatar.png',
+    type: '品牌',
+    level: '舒适',
+    shopType: '社区店',
+    openYear: '2020',
+    specialties: ['基础美甲', '美甲护理', '卸甲'],
+    rating: 4.5,
+    category: 'nail',
+    designerCount: 3,
+    serviceCount: 560,
+    lastServiceTime: '2025-11-21 14:30',
+    lastService: {
+      date: '2025-11-21',
+      serviceName: '基础美甲',
+      productName: '甲油胶',
+      price: 128
+    },
+    visitCount: 6,
+    totalSpent: 768
+  },
+  // ========== 美体 body ==========
+  {
+    id: '9',
+    brandId: '9',
+    name: '御尚SPA养生会所',
+    avatar: '/static/avatar/avatar.png',
+    type: '品牌',
+    level: '高端',
+    shopType: '旗舰店',
+    openYear: '2014',
+    specialties: ['精油SPA', '淋巴排毒', '身体塑形'],
+    rating: 4.9,
+    category: 'body',
+    designerCount: 10,
+    serviceCount: 2800,
+    lastServiceTime: '2025-11-19 16:00',
+    lastService: {
+      date: '2025-11-19',
+      serviceName: '全身SPA',
+      productName: '薰衣草精油',
+      price: 580
+    },
+    visitCount: 8,
+    totalSpent: 6500
+  },
+  {
+    id: '10',
+    brandId: '10',
+    name: '轻盈纤体中心',
+    avatar: '/static/avatar/avatar.png',
+    type: '品牌',
+    level: '精品',
+    shopType: '专业店',
+    openYear: '2018',
+    specialties: ['纤体瘦身', '产后修复', '肩颈理疗'],
+    rating: 4.7,
+    category: 'body',
+    designerCount: 6,
+    serviceCount: 1200,
+    lastServiceTime: '2025-11-17 10:00',
+    lastService: {
+      date: '2025-11-17',
+      serviceName: '纤体疗程',
+      productName: '紧致精华',
+      price: 480
+    },
+    visitCount: 4,
+    totalSpent: 3200
   }
 ]
 
@@ -139,10 +508,10 @@ const serviceRecords = [
 
 // 统计数据
 const statistics = {
-  designerCount: 3,
-  brandCount: 2,
-  serviceCount: 10,
-  totalSpent: 3674
+  designerCount: 11,
+  brandCount: 10,
+  serviceCount: 103,
+  totalSpent: 35623
 }
 
 // Mock 数据

@@ -24,39 +24,39 @@
 						<text class="asset-desc">资金帐户可用总额</text>
 					</view>
 					<view class="header-right">
-						<image 
-							class="arrow-right-icon-white" 
-							src="/static/icon/vector-4.svg" 
+						<image
+							class="arrow-right-icon-white"
+							src="/static/icon/vector-4.svg"
 							mode="aspectFit"
 						></image>
 					</view>
 				</view>
-				<text class="asset-amount">6666.66</text>
+				<text class="asset-amount">{{ assetInfo.totalAsset.toFixed(2) }}</text>
 			</view>
-			
+
 			<!-- 资产详情卡片 -->
 			<view class="asset-detail-card">
 				<view class="balance-section" @tap="handleBalanceClick">
 					<text class="section-label">余额(元)</text>
-					<text class="section-value">1200.00</text>
+					<text class="section-value">{{ assetInfo.balance.toFixed(2) }}</text>
 				</view>
 
 				<view class="asset-list">
 					<view class="asset-item" @tap="handlePlatformRewardClick">
 						<text class="item-label">平台奖励</text>
-						<text class="item-value">2806.00</text>
+						<text class="item-value">{{ assetInfo.platformReward.toFixed(2) }}</text>
 					</view>
 					<view class="asset-item" @tap="handlePromotionClick">
 						<text class="item-label">推广佣金</text>
-						<text class="item-value">1200.00</text>
+						<text class="item-value">{{ assetInfo.promotion.toFixed(2) }}</text>
 					</view>
 					<view class="asset-item" @tap="handleBeansClick">
 						<text class="item-label">美豆</text>
-						<text class="item-value">1000.00</text>
+						<text class="item-value">{{ assetInfo.beans.toFixed(2) }}</text>
 					</view>
 				</view>
 			</view>
-			
+
 			<!-- 结算信息卡片 -->
 			<view class="settlement-card">
 				<text class="card-title">结算信息</text>
@@ -64,19 +64,19 @@
 					<view class="bank-card-item" @tap="handleBankCard">
 						<view class="bank-card-left">
 							<view class="bank-icon-wrapper">
-								<image 
-									class="bank-icon" 
-									src="/static/icon/vector-2.svg" 
+								<image
+									class="bank-icon"
+									src="/static/icon/vector-2.svg"
 									mode="aspectFit"
 								></image>
 							</view>
 							<text class="bank-label">银行卡</text>
 						</view>
 						<view class="bank-card-right">
-							<text class="bank-status">已绑定</text>
-							<image 
-								class="arrow-right-icon" 
-								src="/static/icon/vector-4.svg" 
+							<text class="bank-status">{{ bankCardStatus }}</text>
+							<image
+								class="arrow-right-icon"
+								src="/static/icon/vector-4.svg"
 								mode="aspectFit"
 							></image>
 						</view>
@@ -88,16 +88,71 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
 	data() {
 		return {
-			statusBarHeight: 44
+			statusBarHeight: 44,
+			loading: false,
+			assetInfo: {
+				totalAsset: 0,
+				balance: 0,
+				platformReward: 0,
+				promotion: 0,
+				beans: 0
+			},
+			bankCardStatus: '未绑定'
 		}
 	},
 	onLoad() {
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+		this.fetchAssetData()
+	},
+	onShow() {
+		// 每次显示页面时刷新数据
+		this.fetchAssetData()
 	},
 	methods: {
+		async fetchAssetData() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				// 并行请求多个接口
+				const [balanceRes, beansRes, promotionRes, rewardRes, bankRes] = await Promise.all([
+					api.user.getBalance(),
+					api.user.getBeans(),
+					api.user.getPromotion(),
+					api.user.getPlatformReward(),
+					api.user.getBankCards()
+				])
+
+				if (balanceRes.code === 0) {
+					this.assetInfo.balance = balanceRes.data.balance || 0
+				}
+				if (beansRes.code === 0) {
+					this.assetInfo.beans = beansRes.data.beans || 0
+				}
+				if (promotionRes.code === 0) {
+					this.assetInfo.promotion = promotionRes.data.availableCommission || 0
+				}
+				if (rewardRes.code === 0) {
+					this.assetInfo.platformReward = rewardRes.data.availableReward || 0
+				}
+				if (bankRes.code === 0) {
+					const cards = bankRes.data || []
+					this.bankCardStatus = cards.length > 0 ? '已绑定' : '未绑定'
+				}
+
+				// 计算总资产
+				this.assetInfo.totalAsset = this.assetInfo.balance + this.assetInfo.platformReward + this.assetInfo.promotion + this.assetInfo.beans
+			} catch (err) {
+				console.error('获取资产数据失败:', err)
+				uni.showToast({ title: '获取数据失败', icon: 'none' })
+			} finally {
+				this.loading = false
+			}
+		},
 		handleBack() {
 			uni.navigateBack()
 		},

@@ -28,6 +28,7 @@
 
 <script>
 import FavoriteCard from '../../components/mine/FavoriteCard.vue'
+import api from '@/api'
 
 export default {
 	name: 'MineFavoritesPage',
@@ -37,50 +38,39 @@ export default {
 	data() {
 		return {
 			statusBarHeight: 44,
-			favorites: [
-				{
-					id: 1,
-					name: '洗吹',
-					description: '水洗+按摩+造型',
-					duration: '1小时',
-					distance: '距离1.2km',
-					price: 799,
-					cover: '/static/mine/favorites/rectangle-169.png'
-				},
-				{
-					id: 2,
-					name: '洗吹',
-					description: '水洗+按摩+造型',
-					duration: '1小时',
-					distance: '距离1.2km',
-					price: 799,
-					cover: '/static/mine/favorites/rectangle-169.png'
-				},
-				{
-					id: 3,
-					name: '洗吹',
-					description: '水洗+按摩+造型',
-					duration: '1小时',
-					distance: '距离1.2km',
-					price: 799,
-					cover: '/static/mine/favorites/rectangle-169.png'
-				},
-				{
-					id: 4,
-					name: '洗吹',
-					description: '水洗+按摩+造型',
-					duration: '1小时',
-					distance: '距离1.2km',
-					price: 799,
-					cover: '/static/mine/favorites/rectangle-169.png'
-				}
-			]
+			favorites: [],
+			loading: false
 		}
 	},
 	onLoad() {
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+		this.fetchFavorites()
 	},
 	methods: {
+		async fetchFavorites() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await api.user.getFavorites({ page: 1, pageSize: 20 })
+				if (res.code === 0) {
+					const list = res.data.list || res.data.records || []
+					this.favorites = list.map(item => ({
+						id: item.id,
+						name: item.name,
+						description: item.description,
+						duration: item.duration,
+						distance: item.distance,
+						price: item.price,
+						cover: item.cover
+					}))
+				}
+			} catch (err) {
+				console.error('获取收藏列表失败:', err)
+				uni.showToast({ title: '获取收藏列表失败', icon: 'none' })
+			} finally {
+				this.loading = false
+			}
+		},
 		handleBack() {
 			if (getCurrentPages().length > 1) {
 				uni.navigateBack()
@@ -88,11 +78,16 @@ export default {
 				uni.switchTab({ url: '/pages/mine/index' })
 			}
 		},
-		handleUnfavorite(item) {
-			uni.showToast({
-				title: `已取消 ${item.name}`,
-				icon: 'none'
-			})
+		async handleUnfavorite(item) {
+			try {
+				const res = await api.user.batchUnfavorite({ ids: [item.id], type: 'service' })
+				if (res.code === 0) {
+					this.favorites = this.favorites.filter(f => f.id !== item.id)
+					uni.showToast({ title: '已取消收藏', icon: 'success' })
+				}
+			} catch (err) {
+				uni.showToast({ title: '操作失败', icon: 'none' })
+			}
 		}
 	}
 }

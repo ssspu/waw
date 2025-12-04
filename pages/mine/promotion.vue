@@ -21,7 +21,7 @@
 				<view class="card-header">
 					<text class="asset-label">推广佣金(元)</text>
 				</view>
-				<text class="asset-amount">1200.00</text>
+				<text class="asset-amount">{{ promotionInfo.availableCommission.toFixed(2) }}</text>
 			</view>
 
 			<!-- 时间筛选和记录列表 -->
@@ -35,13 +35,16 @@
 					></image>
 				</view>
 
-				<view class="records-list">
+				<view class="records-list" v-if="promotionRecords.length > 0">
 					<asset-record-item
 						v-for="(record, index) in promotionRecords"
 						:key="index"
 						:record="record"
 						:is-last="index === promotionRecords.length - 1"
 					></asset-record-item>
+				</view>
+				<view class="empty-list" v-else>
+					<text class="empty-text">暂无记录</text>
 				</view>
 			</view>
 		</view>
@@ -50,6 +53,7 @@
 
 <script>
 import AssetRecordItem from '../../components/mine/AssetRecordItem.vue'
+import { userApi } from '@/api'
 
 export default {
 	components: {
@@ -58,40 +62,59 @@ export default {
 	data() {
 		return {
 			statusBarHeight: 44,
-			promotionRecords: [
-				{
-					title: '成都美发沙龙',
-					desc: '推广新用户奖励',
-					time: '今天 10:50',
-					amount: '+50'
-				},
-				{
-					title: '成都美发沙龙',
-					desc: '推广订单佣金',
-					time: '今天 09:30',
-					amount: '+30'
-				},
-				{
-					title: '成都美发沙龙',
-					desc: '推广订单佣金',
-					time: '昨天 15:20',
-					amount: '+80'
-				},
-				{
-					title: '成都美发沙龙',
-					desc: '推广新用户奖励',
-					time: '昨天 11:00',
-					amount: '+40'
-				}
-			]
+			promotionInfo: {
+				totalCommission: 0,
+				availableCommission: 0,
+				frozenCommission: 0,
+				withdrawnCommission: 0
+			},
+			promotionRecords: [],
+			page: 1,
+			pageSize: 10,
+			loading: false
 		}
 	},
 	onLoad() {
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+		this.fetchPromotionInfo()
+		this.fetchPromotionRecords()
 	},
 	methods: {
 		handleBack() {
 			uni.navigateBack()
+		},
+		async fetchPromotionInfo() {
+			try {
+				const res = await userApi.getPromotion()
+				if (res.code === 0) {
+					this.promotionInfo = res.data
+				}
+			} catch (e) {
+				console.error('获取推广佣金信息失败', e)
+			}
+		},
+		async fetchPromotionRecords() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await userApi.getPromotionRecords({
+					page: this.page,
+					pageSize: this.pageSize
+				})
+				if (res.code === 0) {
+					const records = res.data.list || res.data.records || []
+					this.promotionRecords = records.map(item => ({
+						title: item.title,
+						desc: item.remark,
+						time: item.time,
+						amount: item.amount > 0 ? `+${item.amount}` : `${item.amount}`
+					}))
+				}
+			} catch (e) {
+				console.error('获取推广佣金记录失败', e)
+			} finally {
+				this.loading = false
+			}
 		}
 	}
 }
@@ -211,5 +234,19 @@ export default {
 	padding: 30rpx 20rpx;
 	display: flex;
 	flex-direction: column;
+}
+
+.empty-list {
+	background-color: #ffffff;
+	border-radius: 12rpx;
+	padding: 60rpx 20rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.empty-text {
+	font-size: 28rpx;
+	color: #999999;
 }
 </style>

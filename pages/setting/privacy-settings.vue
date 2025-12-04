@@ -34,6 +34,7 @@
 
 <script>
 import SettingDetailHeader from '@/components/setting/SettingDetailHeader.vue'
+import api from '@/api'
 
 export default {
 	components: {
@@ -41,23 +42,28 @@ export default {
 	},
 	data() {
 		return {
+			loading: false,
 			privacyItems: [
 				{
+					key: 'showOnlineStatus',
 					label: '开启地理位置',
 					desc: '开启后，其他用户可通过位置搜索到您',
-					checked: true
+					checked: false
 				},
 				{
+					key: 'showBrowseHistory',
 					label: '允许访问相册',
 					desc: '开启后，可以访问您的相册信息',
 					checked: false
 				},
 				{
+					key: 'allowRecommend',
 					label: '允许访问相机',
 					desc: '开启后，可以访问您的相机',
 					checked: false
 				},
 				{
+					key: 'allowMicrophone',
 					label: '允许访问麦克风',
 					desc: '开启后，可以访问您的麦克风',
 					checked: false
@@ -65,11 +71,49 @@ export default {
 			]
 		}
 	},
+	onLoad() {
+		this.fetchPrivacySettings()
+	},
 	methods: {
-		handleToggleChange(item, event) {
+		async fetchPrivacySettings() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await api.user.getPrivacySettings()
+				if (res.code === 0) {
+					const settings = res.data || {}
+					// 更新每个隐私项的状态
+					this.privacyItems.forEach(item => {
+						if (settings[item.key] !== undefined) {
+							item.checked = settings[item.key]
+						}
+					})
+				}
+			} catch (err) {
+				console.error('获取隐私设置失败:', err)
+			} finally {
+				this.loading = false
+			}
+		},
+		async handleToggleChange(item, event) {
 			const checked = event.detail.value || event.target.checked
+			const oldValue = item.checked
 			item.checked = checked
-			console.log('Toggle changed:', item.label, checked)
+
+			try {
+				const updateData = { [item.key]: checked }
+				const res = await api.user.updatePrivacySettings(updateData)
+				if (res.code !== 0) {
+					// 恢复原状态
+					item.checked = oldValue
+					uni.showToast({ title: '设置失败', icon: 'none' })
+				}
+			} catch (err) {
+				// 恢复原状态
+				item.checked = oldValue
+				console.error('更新隐私设置失败:', err)
+				uni.showToast({ title: '设置失败', icon: 'none' })
+			}
 		}
 	}
 }

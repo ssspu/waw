@@ -56,27 +56,28 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
 	data() {
 		return {
 			statusBarHeight: 44,
 			messageDetail: {
-				id: 1,
-				title: '系统通知',
-				time: '2025-11-27 20:00',
-				content: '您有一个待确认订单，请及时处理。',
-				orderNo: '2837283723',
-				customer: '马菲菲',
-				amount: '288',
-				points: '288',
-				remark: '这里是通知消息文案，内容区域。'
+				id: '',
+				title: '',
+				time: '',
+				content: '',
+				orderNo: '',
+				customer: '',
+				amount: '',
+				points: '',
+				remark: ''
 			}
 		}
 	},
 	onLoad(options) {
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 		if (options.id) {
-			// 根据 id 获取消息详情
 			this.loadMessageDetail(options.id)
 		}
 	},
@@ -84,10 +85,26 @@ export default {
 		handleBack() {
 			uni.navigateBack()
 		},
-		loadMessageDetail(id) {
-			// 模拟获取消息详情数据
-			// 实际项目中应该从接口获取
-			console.log('加载消息详情, id:', id)
+		async loadMessageDetail(id) {
+			try {
+				const res = await api.message.getDetail(id)
+				if (res.code === 0 && res.data) {
+					this.messageDetail = {
+						id: res.data.id,
+						title: res.data.title || '系统通知',
+						time: res.data.time || res.data.createdAt,
+						content: res.data.content,
+						orderNo: res.data.orderNo || res.data.extra?.orderNo,
+						customer: res.data.customer || res.data.extra?.customer,
+						amount: res.data.amount || res.data.extra?.amount,
+						points: res.data.points || res.data.extra?.points,
+						remark: res.data.remark || res.data.extra?.remark
+					}
+				}
+			} catch (e) {
+				console.error('获取消息详情失败', e)
+				uni.showToast({ title: '获取消息详情失败', icon: 'none' })
+			}
 		}
 	}
 }

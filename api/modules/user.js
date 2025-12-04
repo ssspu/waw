@@ -512,5 +512,37 @@ export default {
    */
   getDeactivationStatus() {
     return get(`${USER_PREFIX}/deactivation/status`)
+  },
+
+  // ============ 设置相关 ============
+
+  /**
+   * 获取用户设置
+   * 返回 { notificationEnabled, cacheSize }
+   */
+  getSettings() {
+    return get(`${USER_PREFIX}/settings`)
+  },
+
+  /**
+   * 更新消息通知设置
+   * @param {Object} data - { notificationEnabled: boolean }
+   */
+  updateNotificationSetting(data) {
+    return put(`${USER_PREFIX}/settings/notification`, data)
+  },
+
+  /**
+   * 获取缓存大小
+   */
+  getCacheSize() {
+    return get(`${USER_PREFIX}/cache-size`)
+  },
+
+  /**
+   * 清除缓存
+   */
+  clearCache() {
+    return post(`${USER_PREFIX}/cache/clear`)
   }
 }

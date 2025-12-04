@@ -14,6 +14,8 @@ import serviceMock from './modules/service.js'
 import messageMock from './modules/message.js'
 import territoryMock from './modules/territory.js'
 import settlementMock from './modules/settlement.js'
+import chatMock from './modules/chat.js'
+import portfolioMock from './modules/portfolio.js'
 
 // 合并所有 mock 数据
 const mockData = {
@@ -27,7 +29,9 @@ const mockData = {
   service: serviceMock,
   message: messageMock,
   territory: territoryMock,
-  settlement: settlementMock
+  settlement: settlementMock,
+  chat: chatMock,
+  portfolio: portfolioMock
 }
 
 // 合并所有路由处理
@@ -42,7 +46,9 @@ const mockRoutes = {
   ...serviceMock.routes,
   ...messageMock.routes,
   ...territoryMock.routes,
-  ...settlementMock.routes
+  ...settlementMock.routes,
+  ...chatMock.routes,
+  ...portfolioMock.routes
 }
 
 /**

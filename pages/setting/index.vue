@@ -87,10 +87,13 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
 	data() {
 		return {
 			statusBarHeight: 44,
+			loading: false,
 			settingsGroups: [
 				{
 					items: [
@@ -107,9 +110,9 @@ export default {
 				},
 				{
 					items: [
-						{ label: "消息通知", hasToggle: true, checked: true },
+						{ label: "消息通知", hasToggle: true, checked: true, key: 'notificationEnabled' },
 						{ label: "隐私设置" },
-						{ label: "清除缓存", rightText: "365M" },
+						{ label: "清除缓存", rightText: "", key: 'cacheSize' },
 					],
 				},
 				{
@@ -124,10 +127,47 @@ export default {
 	},
 	onLoad() {
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+		this.fetchSettings()
 	},
 	methods: {
 		goBack() {
 			uni.navigateBack()
+		},
+		async fetchSettings() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await api.user.getSettings()
+				if (res.code === 0) {
+					const settings = res.data || {}
+					// 更新消息通知状态
+					this.updateSettingItem('notificationEnabled', 'checked', settings.notificationEnabled)
+					// 更新缓存大小
+					this.updateSettingItem('cacheSize', 'rightText', settings.cacheSize || '0M')
+				}
+			} catch (err) {
+				console.error('获取设置失败:', err)
+			} finally {
+				this.loading = false
+			}
+		},
+		// 更新指定设置项的属性
+		updateSettingItem(key, prop, value) {
+			for (const group of this.settingsGroups) {
+				const item = group.items.find(i => i.key === key)
+				if (item) {
+					item[prop] = value
+					break
+				}
+			}
+		},
+		// 获取指定设置项
+		getSettingItem(key) {
+			for (const group of this.settingsGroups) {
+				const item = group.items.find(i => i.key === key)
+				if (item) return item
+			}
+			return null
 		},
 		handleMore() {
 			console.log('More clicked')
@@ -174,19 +214,50 @@ export default {
 				uni.navigateTo({ url })
 			}
 		},
-		handleToggleChange(item, event) {
+		async handleToggleChange(item, event) {
 			const checked = event.detail.value || event.target.checked
+			const oldValue = item.checked
 			item.checked = checked
-			console.log('Toggle changed:', item.label, checked)
+
+			// 如果是消息通知，调用 API 更新
+			if (item.key === 'notificationEnabled') {
+				try {
+					const res = await api.user.updateNotificationSetting({ notificationEnabled: checked })
+					if (res.code !== 0) {
+						// 恢复原状态
+						item.checked = oldValue
+						uni.showToast({ title: '设置失败', icon: 'none' })
+					}
+				} catch (err) {
+					// 恢复原状态
+					item.checked = oldValue
+					console.error('更新消息通知设置失败:', err)
+					uni.showToast({ title: '设置失败', icon: 'none' })
+				}
+			}
 		},
 		handleClearCache() {
+			const cacheItem = this.getSettingItem('cacheSize')
+			const currentCache = cacheItem ? cacheItem.rightText : '0M'
+
 			uni.showModal({
 				title: '清除缓存',
-				content: '确定要清除缓存吗？',
-				success: (res) => {
+				content: `当前缓存 ${currentCache}，确定要清除吗？`,
+				success: async (res) => {
 					if (res.confirm) {
-						console.log('Clear cache')
-						// 这里可以添加清除缓存的逻辑
+						try {
+							const result = await api.user.clearCache()
+							if (result.code === 0) {
+								// 更新缓存大小显示
+								this.updateSettingItem('cacheSize', 'rightText', result.data.cacheSize || '0M')
+								uni.showToast({ title: '缓存已清除', icon: 'success' })
+							} else {
+								uni.showToast({ title: '清除失败', icon: 'none' })
+							}
+						} catch (err) {
+							console.error('清除缓存失败:', err)
+							uni.showToast({ title: '清除失败', icon: 'none' })
+						}
 					}
 				}
 			})

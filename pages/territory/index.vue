@@ -76,13 +76,16 @@
 	<view class="main-content">
 		<!-- 设计师页面 -->
 		<view v-if="activeTopTab === 'designer'" class="tab-content">
-			<territory-service-list-section></territory-service-list-section>
-			
-			<territory-service-list-section></territory-service-list-section>
-			
-			<territory-service-list-section></territory-service-list-section>
-			
-			<territory-service-list-section></territory-service-list-section>
+			<territory-service-list-section
+				v-for="item in designerList"
+				:key="item.id"
+				:designer="item"
+				@delete="handleDeleteDesigner"
+				@share="handleShare"
+			></territory-service-list-section>
+			<view v-if="designerList.length === 0" class="empty-tip">
+				<text>暂无私人设计师</text>
+			</view>
 		</view>
 		
 		<!-- 品牌馆页面 -->
@@ -226,9 +229,6 @@ export default {
 			pageSize: 10
 		}
 	},
-	onLoad() {
-		this.fetchDesigners()
-	},
 	watch: {
 		activeTopTab: {
 			handler(newVal) {
@@ -259,6 +259,8 @@ export default {
 	},
 	onLoad() {
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+		// 初始加载设计师数据
+		this.fetchDesigners()
 	},
 	methods: {
 		goBack() {
@@ -308,15 +310,20 @@ export default {
 		transformDesigner(item) {
 			return {
 				id: item.id,
+				designerId: item.designerId,
 				avatar: item.avatar || '/static/avatar/avatar.png',
 				name: item.name,
-				role: item.role || item.title,
-				level: item.level,
+				role: item.role || '美发师',
+				level: item.level || '高级',
+				position: item.position || item.title || '',
 				specialties: item.specialties || item.skills || [],
 				rating: item.rating || 0,
-				services: item.serviceCount || 0,
-				lastServiceDate: item.lastServiceTime,
-				lastServiceName: item.lastServiceName
+				serviceCount: item.serviceCount || 0,
+				worksCount: item.worksCount || 0,
+				lastServiceDate: item.lastServiceTime ? item.lastServiceTime.split(' ')[0] : '',
+				lastServiceName: item.lastServiceName || '',
+				lastProductName: item.lastProductName || '',
+				lastServicePrice: item.lastServicePrice || item.totalSpent || 0
 			}
 		},
 		// 转换品牌馆数据格式
@@ -389,6 +396,29 @@ export default {
 		},
 		handleMore() {
 			console.log('More clicked')
+		},
+		// 删除私人领地设计师
+		async handleDeleteDesigner(designer) {
+			try {
+				const res = await api.territory.removeDesigner(designer.designerId || designer.id)
+				if (res.code === 0) {
+					this.designerList = this.designerList.filter(d => d.id !== designer.id)
+					uni.showToast({ title: '已移除', icon: 'success' })
+				}
+			} catch (err) {
+				console.error('移除设计师失败:', err)
+				uni.showToast({ title: '操作失败', icon: 'none' })
+			}
+		},
+		// 分享
+		handleShare({ type, designer }) {
+			console.log('Share via:', type, designer)
+			// 记录分享
+			api.territory.recordShare({
+				type: 'designer',
+				targetId: designer.designerId || designer.id,
+				channel: type
+			}).catch(err => console.error('记录分享失败:', err))
 		}
 	}
 }

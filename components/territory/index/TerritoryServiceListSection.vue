@@ -10,7 +10,7 @@
 						class="info-text"
 					>{{ item.text }}</text>
 				</view>
-				<text class="info-price">¥888.00</text>
+				<text class="info-price">¥{{ lastServicePrice.toFixed(2) }}</text>
 			</view>
 			
 			<!-- 分隔线 -->
@@ -22,9 +22,9 @@
 					<!-- 头像 -->
 					<view class="avatar-wrapper">
 						<view class="avatar-bg"></view>
-						<image 
-							class="avatar" 
-							:src="avatarSrc" 
+						<image
+							class="avatar"
+							:src="avatar"
 							mode="aspectFill"
 						></image>
 					</view>
@@ -32,16 +32,16 @@
 					<!-- 详情 -->
 					<view class="service-details">
 						<view class="service-header">
-							<text class="service-name">李天天</text>
+							<text class="service-name">{{ designerName }}</text>
 							<view class="role-badge" style="background-color: #f6f6f6; color: #666666;">
-								<text class="badge-text">美发师</text>
+								<text class="badge-text">{{ designerRole }}</text>
 							</view>
 							<view class="role-badge" style="background-color: #dacbb1; color: #645e57;">
-								<text class="badge-text">高级</text>
+								<text class="badge-text">{{ designerLevel }}</text>
 							</view>
 						</view>
-						
-						<text class="service-role">店长｜从业12年</text>
+
+						<text class="service-role">{{ designerPosition }}</text>
 						
 						<view class="service-skills">
 							<text class="skills-label">擅长:</text>
@@ -56,25 +56,25 @@
 						
 						<view class="service-stats">
 							<view class="rating-section">
-								<text class="rating-score">4.8</text>
+								<text class="rating-score">{{ rating }}</text>
 								<view class="star-wrapper">
-									<image 
-										class="star-icon" 
-										src="https://c.animaapp.com/mi5kx1ohxTkA7e/img/star-1.svg" 
+									<image
+										class="star-icon"
+										src="https://c.animaapp.com/mi5kx1ohxTkA7e/img/star-1.svg"
 										mode="aspectFit"
 									></image>
 								</view>
 							</view>
-							
+
 							<view class="stats-section">
 								<view class="stat-item">
 									<text class="stat-label">服务</text>
-									<text class="stat-value">287</text>
+									<text class="stat-value">{{ serviceCount }}</text>
 								</view>
 								<text class="stat-divider">｜</text>
 								<view class="stat-item">
 									<text class="stat-label">作品</text>
-									<text class="stat-value">123</text>
+									<text class="stat-value">{{ worksCount }}</text>
 								</view>
 							</view>
 						</view>
@@ -172,26 +172,77 @@ export default {
 		},
 		avatarSrc: {
 			type: String,
-			default: 'https://c.animaapp.com/mi5ng54v4eM3X6/img/rectangle-153-2.png'
+			default: '/static/avatar/avatar.png'
+		},
+		designer: {
+			type: Object,
+			default: () => ({})
 		}
 	},
 	data() {
 		return {
-			headerInfo: [
-				{ text: "2025-05-05" },
-				{ text: "｜" },
-				{ text: "洗剪吹" },
-				{ text: "｜" },
-				{ text: "欧莱雅生化烫" },
-			],
-			specialties: [
-				{ label: "女士造型" },
-				{ label: "烫发设计" },
-				{ label: "短发造型" },
-			],
 			showShareModal: false,
 			showMoreMenu: false,
 			showDeleteConfirm: false
+		}
+	},
+	computed: {
+		// 头部信息（最近服务记录）
+		headerInfo() {
+			const d = this.designer
+			if (d.lastServiceDate && d.lastServiceName) {
+				return [
+					{ text: d.lastServiceDate || '' },
+					{ text: "｜" },
+					{ text: d.lastServiceName || '' },
+					{ text: "｜" },
+					{ text: d.lastProductName || '造型服务' },
+				]
+			}
+			return [
+				{ text: "暂无服务记录" }
+			]
+		},
+		// 擅长技能
+		specialties() {
+			const skills = this.designer.specialties || []
+			return skills.map(s => ({ label: s }))
+		},
+		// 设计师姓名
+		designerName() {
+			return this.designer.name || '设计师'
+		},
+		// 设计师角色
+		designerRole() {
+			return this.designer.role || '美发师'
+		},
+		// 设计师等级
+		designerLevel() {
+			return this.designer.level || '高级'
+		},
+		// 设计师职位
+		designerPosition() {
+			return this.designer.position || ''
+		},
+		// 评分
+		rating() {
+			return this.designer.rating || 0
+		},
+		// 服务数
+		serviceCount() {
+			return this.designer.serviceCount || 0
+		},
+		// 作品数
+		worksCount() {
+			return this.designer.worksCount || 0
+		},
+		// 最近服务价格
+		lastServicePrice() {
+			return this.designer.lastServicePrice || 0
+		},
+		// 头像
+		avatar() {
+			return this.designer.avatar || this.avatarSrc
 		}
 	},
 	methods: {
@@ -200,14 +251,15 @@ export default {
 		},
 		handlePromote() {
 			this.showShareModal = true
+			this.$emit('promote', this.designer)
 		},
 		closeShareModal() {
 			this.showShareModal = false
 		},
 		handleShare(type) {
 			console.log('Share via:', type)
+			this.$emit('share', { type, designer: this.designer })
 			this.showShareModal = false
-			// 实现不同渠道的分享逻辑
 		},
 		handleDelete() {
 			this.showMoreMenu = false
@@ -217,15 +269,17 @@ export default {
 			this.showDeleteConfirm = false
 		},
 		confirmDelete() {
-			console.log('Delete confirmed')
+			this.$emit('delete', this.designer)
 			this.showDeleteConfirm = false
-			// 实现删除逻辑
 		},
 		handleBookAgain() {
 			// 跳转到设计师详情页
-			uni.navigateTo({
-				url: '/pages/designer/info'
-			})
+			const designerId = this.designer.id || this.designer.designerId
+			if (designerId) {
+				uni.navigateTo({
+					url: `/pages/designer/info?id=${designerId}`
+				})
+			}
 		}
 	}
 }

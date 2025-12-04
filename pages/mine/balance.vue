@@ -21,7 +21,7 @@
 				<view class="card-header">
 					<text class="asset-label">余额(元)</text>
 				</view>
-				<text class="asset-amount">1200.00</text>
+				<text class="asset-amount">{{ balanceInfo.balance.toFixed(2) }}</text>
 			</view>
 
 			<!-- 时间筛选和记录列表 -->
@@ -35,13 +35,16 @@
 					></image>
 				</view>
 
-				<view class="records-list">
+				<view class="records-list" v-if="balanceRecords.length > 0">
 					<asset-record-item
 						v-for="(record, index) in balanceRecords"
 						:key="index"
 						:record="record"
 						:is-last="index === balanceRecords.length - 1"
 					></asset-record-item>
+				</view>
+				<view class="empty-list" v-else>
+					<text class="empty-text">暂无记录</text>
 				</view>
 			</view>
 		</view>
@@ -50,6 +53,7 @@
 
 <script>
 import AssetRecordItem from '../../components/mine/AssetRecordItem.vue'
+import { userApi } from '@/api'
 
 export default {
 	components: {
@@ -58,40 +62,59 @@ export default {
 	data() {
 		return {
 			statusBarHeight: 44,
-			balanceRecords: [
-				{
-					title: '成都美发沙龙',
-					desc: '充值到账',
-					time: '今天 10:50',
-					amount: '+500'
-				},
-				{
-					title: '成都美发沙龙',
-					desc: '消费支出',
-					time: '今天 09:30',
-					amount: '-120'
-				},
-				{
-					title: '成都美发沙龙',
-					desc: '充值到账',
-					time: '昨天 15:20',
-					amount: '+200'
-				},
-				{
-					title: '成都美发沙龙',
-					desc: '消费支出',
-					time: '昨天 11:00',
-					amount: '-80'
-				}
-			]
+			balanceInfo: {
+				balance: 0,
+				frozenBalance: 0,
+				totalRecharge: 0,
+				totalConsume: 0
+			},
+			balanceRecords: [],
+			page: 1,
+			pageSize: 10,
+			loading: false
 		}
 	},
 	onLoad() {
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+		this.fetchBalanceInfo()
+		this.fetchBalanceRecords()
 	},
 	methods: {
 		handleBack() {
 			uni.navigateBack()
+		},
+		async fetchBalanceInfo() {
+			try {
+				const res = await userApi.getBalance()
+				if (res.code === 0) {
+					this.balanceInfo = res.data
+				}
+			} catch (e) {
+				console.error('获取余额信息失败', e)
+			}
+		},
+		async fetchBalanceRecords() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await userApi.getBalanceRecords({
+					page: this.page,
+					pageSize: this.pageSize
+				})
+				if (res.code === 0) {
+					const records = res.data.list || res.data.records || []
+					this.balanceRecords = records.map(item => ({
+						title: item.title,
+						desc: item.remark,
+						time: item.time,
+						amount: item.amount > 0 ? `+${item.amount}` : `${item.amount}`
+					}))
+				}
+			} catch (e) {
+				console.error('获取余额记录失败', e)
+			} finally {
+				this.loading = false
+			}
 		}
 	}
 }
@@ -211,5 +234,19 @@ export default {
 	padding: 30rpx 20rpx;
 	display: flex;
 	flex-direction: column;
+}
+
+.empty-list {
+	background-color: #ffffff;
+	border-radius: 12rpx;
+	padding: 60rpx 20rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.empty-text {
+	font-size: 28rpx;
+	color: #999999;
 }
 </style>
