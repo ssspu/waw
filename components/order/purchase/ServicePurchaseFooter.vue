@@ -69,7 +69,7 @@ export default {
 	methods: {
 		handleCustomerService() {
 			uni.navigateTo({
-				url: '/pages/mine/customer-service'
+				url: '/packageMine/pages/mine/customer-service'
 			})
 		},
 		handleShop() {

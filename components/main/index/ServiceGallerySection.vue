@@ -456,7 +456,7 @@ export default {
 		handleCardClick(card) {
 			// 跳转到服务订单购买页面，并传递服务卡片的 id
 			uni.navigateTo({
-				url: `/pages/order/purchase?id=${card.id}`
+				url: `/packageOrder/pages/order/purchase?id=${card.id}`
 			})
 		}
 	}

@@ -568,7 +568,7 @@ export default {
 		},
 		handleServiceClick(service) {
 			uni.navigateTo({
-				url: `/pages/order/purchase?id=${service.id || 1}`
+				url: `/packageOrder/pages/order/purchase?id=${service.id || 1}`
 			})
 		}
 	},
