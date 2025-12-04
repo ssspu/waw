@@ -45,7 +45,15 @@ export default {
 					duration: '1小时',
 					distance: '距离1.2km',
 					price: 799,
-					cover: '/static/mine/favorites/rectangle-169.png'
+					cover: '/static/mine/favorites/rectangle-169.png',
+					stylist: {
+						name: '李天天',
+						title: '资深设计师',
+						rating: '4.9',
+						reviews: '128',
+						location: '成都市锦江区新...',
+						distance: '2.5km'
+					}
 				},
 				{
 					id: 2,
@@ -54,7 +62,15 @@ export default {
 					duration: '1小时',
 					distance: '距离1.2km',
 					price: 799,
-					cover: '/static/mine/favorites/rectangle-169.png'
+					cover: '/static/mine/favorites/rectangle-169.png',
+					stylist: {
+						name: '李天天',
+						title: '资深设计师',
+						rating: '4.9',
+						reviews: '128',
+						location: '成都市锦江区新...',
+						distance: '2.5km'
+					}
 				},
 				{
 					id: 3,
@@ -63,7 +79,15 @@ export default {
 					duration: '1小时',
 					distance: '距离1.2km',
 					price: 799,
-					cover: '/static/mine/favorites/rectangle-169.png'
+					cover: '/static/mine/favorites/rectangle-169.png',
+					stylist: {
+						name: '李天天',
+						title: '资深设计师',
+						rating: '4.9',
+						reviews: '128',
+						location: '成都市锦江区新...',
+						distance: '2.5km'
+					}
 				},
 				{
 					id: 4,
@@ -72,7 +96,15 @@ export default {
 					duration: '1小时',
 					distance: '距离1.2km',
 					price: 799,
-					cover: '/static/mine/favorites/rectangle-169.png'
+					cover: '/static/mine/favorites/rectangle-169.png',
+					stylist: {
+						name: '李天天',
+						title: '资深设计师',
+						rating: '4.9',
+						reviews: '128',
+						location: '成都市锦江区新...',
+						distance: '2.5km'
+					}
 				}
 			]
 		}

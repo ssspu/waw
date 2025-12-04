@@ -26,15 +26,15 @@
 				<!-- 右上角详情区域 -->
 				<ServicePurchaseDetailsSection />
 			</view>
-			
+
 			<!-- 主内容区域 -->
 			<view class="content-wrapper">
-				<ServicePurchaseProfileSection />
+				<ServicePurchaseProfileSection ref="profileSection" @favorite-change="handleFavoriteChange" />
 			</view>
 		</scroll-view>
-		
+
 		<!-- 底部导航栏 -->
-		<ServicePurchaseFooter />
+		<ServicePurchaseFooter :is-favorited="isFavorited" @favorite-change="handleFooterFavoriteChange" />
 	</view>
 </template>
 
@@ -52,7 +52,8 @@ export default {
 	data() {
 		return {
 			statusBarHeight: 44,
-			serviceId: ''
+			serviceId: '',
+			isFavorited: false
 		}
 	},
 	onLoad(options) {
@@ -72,6 +73,15 @@ export default {
 				uni.switchTab({
 					url: '/pages/main/index'
 				})
+			}
+		},
+		handleFavoriteChange(isFavorited) {
+			this.isFavorited = isFavorited
+		},
+		handleFooterFavoriteChange(isFavorited) {
+			this.isFavorited = isFavorited
+			if (this.$refs.profileSection) {
+				this.$refs.profileSection.isFavorited = isFavorited
 			}
 		}
 	}

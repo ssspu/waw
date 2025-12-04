@@ -165,6 +165,10 @@ export default {
 			if (item.label === '我要入驻') {
 				uni.navigateTo({ url: '/pages/mine/apply-settlement' })
 			}
+			// 点击我要推广跳转到推广页面
+			if (item.label === '我要推广') {
+				uni.navigateTo({ url: '/pages/mine/share-promotion' })
+			}
 			// 点击个人设置跳转到设置页面
 			if (item.label === '个人设置') {
 				uni.navigateTo({ url: '/pages/setting/index' })

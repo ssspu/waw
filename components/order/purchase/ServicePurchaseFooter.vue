@@ -2,53 +2,54 @@
 	<view class="footer-section">
 		<view class="navigation-bar">
 			<!-- 客服按钮 -->
-			<view 
-				class="nav-item" 
+			<view
+				class="nav-item"
 				@tap="handleCustomerService"
 			>
-				<image 
-					class="nav-icon" 
-					src="https://c.animaapp.com/mifnbli6udxphC/img/frame-2.svg" 
+				<image
+					class="nav-icon"
+					src="https://c.animaapp.com/mifnbli6udxphC/img/frame-2.svg"
 					mode="aspectFit"
 				></image>
 				<text class="nav-label">客服</text>
 			</view>
-			
+
 			<!-- 店铺按钮 -->
-			<view 
-				class="nav-item" 
+			<view
+				class="nav-item"
 				@tap="handleShop"
 			>
-				<image 
-					class="nav-icon" 
-					src="https://c.animaapp.com/mifnbli6udxphC/img/frame-4.svg" 
+				<image
+					class="nav-icon"
+					src="https://c.animaapp.com/mifnbli6udxphC/img/frame-4.svg"
 					mode="aspectFit"
 				></image>
 				<text class="nav-label">店铺</text>
 			</view>
-			
+
 			<!-- 收藏按钮 -->
-			<view 
-				class="nav-item" 
+			<view
+				class="nav-item"
 				@tap="handleFavorite"
 			>
-				<image 
-					class="nav-icon" 
-					src="https://c.animaapp.com/mifnbli6udxphC/img/frame-6.svg" 
+				<image
+					class="nav-icon"
+					:class="{ 'is-favorited': isFavorited }"
+					src="https://c.animaapp.com/mifnbli6udxphC/img/frame-6.svg"
 					mode="aspectFit"
 				></image>
 				<text class="nav-label">收藏</text>
 			</view>
-			
+
 			<!-- 立即预定按钮 -->
-			<view 
-				class="booking-btn" 
+			<view
+				class="booking-btn"
 				@tap="handleBooking"
 			>
 				<text class="booking-text">立即预定</text>
 			</view>
 		</view>
-		
+
 		<!-- 底部指示器 -->
 		<view class="bottom-indicator">
 			<!-- <view class="indicator-bar"></view> -->
@@ -59,6 +60,12 @@
 <script>
 export default {
 	name: 'ServicePurchaseFooter',
+	props: {
+		isFavorited: {
+			type: Boolean,
+			default: false
+		}
+	},
 	methods: {
 		handleCustomerService() {
 			uni.navigateTo({
@@ -71,9 +78,11 @@ export default {
 			})
 		},
 		handleFavorite() {
+			const newState = !this.isFavorited
+			this.$emit('favorite-change', newState)
 			uni.showToast({
-				title: '已收藏',
-				icon: 'success'
+				title: newState ? '收藏成功' : '取消收藏',
+				icon: 'none'
 			})
 		},
 		handleBooking() {
@@ -131,6 +140,10 @@ export default {
 .nav-icon {
 	width: 40rpx;
 	height: 40rpx;
+}
+
+.nav-icon.is-favorited {
+	filter: invert(79%) sepia(65%) saturate(1000%) hue-rotate(359deg) brightness(103%) contrast(106%);
 }
 
 .nav-label {

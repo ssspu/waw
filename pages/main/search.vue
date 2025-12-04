@@ -282,8 +282,8 @@
 						<view v-else-if="modalSelectedCategoryIndex === 3" class="filter-content-section">
 							<view class="filter-section-title">门店</view>
 							<view class="filter-option-buttons">
-								<view 
-									v-for="(option, idx) in storeTypeOptions" 
+								<view
+									v-for="(option, idx) in storeTypeOptions"
 									:key="idx"
 									class="filter-option-btn"
 									:class="{ active: selectedStoreType === idx }"
@@ -308,17 +308,6 @@
 		<view class="search-content">
 			<!-- 设计师标签内容 -->
 			<view v-if="activeTab === 'designer'" class="tab-content">
-				<view class="service-sub-tabs">
-					<view
-						v-for="(tab, index) in designerSubTabs"
-						:key="`designer-${tab}`"
-						class="service-sub-tab"
-						:class="{ active: activeDesignerSubTab === index }"
-						@tap="selectDesignerSubTab(index)"
-					>
-						{{ tab }}
-					</view>
-				</view>
 				<!-- 附近推荐 -->
 				<view class="nearby-section">
 					<!-- 附近设计师列表 -->
@@ -387,33 +376,11 @@
 
 			<!-- 服务标签内容 -->
 			<view v-if="activeTab === 'service'" class="tab-content">
-				<view class="service-sub-tabs">
-					<view
-						v-for="(tab, index) in serviceSubTabs"
-						:key="tab"
-						class="service-sub-tab"
-						:class="{ active: activeServiceSubTab === index }"
-						@tap="selectServiceSubTab(index)"
-					>
-						{{ tab }}
-					</view>
-				</view>
-				<service-gallery-section :show-category-header="false"></service-gallery-section>
+				<service-gallery-section :show-category-header="false" :show-nearby-header="false"></service-gallery-section>
 			</view>
 
 			<!-- 品牌馆标签内容 -->
 			<view v-if="activeTab === 'brand'" class="tab-content">
-				<view class="service-sub-tabs">
-					<view
-						v-for="(tab, index) in brandSubTabs"
-						:key="`brand-${tab}`"
-						class="service-sub-tab"
-						:class="{ active: activeBrandSubTab === index }"
-						@tap="selectBrandSubTab(index)"
-					>
-						{{ tab }}
-					</view>
-				</view>
 				<view class="brand-list">
 					<nearby-store-item
 						v-for="store in brandRecords"
@@ -628,23 +595,26 @@ export default {
 				}
 			],
 			categories: [
-				{ name: '附近' },
+				// { name: '附近' },
 				{ name: '美发' },
-				{ name: '美容' },
-				{ name: '美妆' },
-				{ name: '美体' },
-				{ name: '美甲' },
-				{ name: '美睫' }
+				// { name: '美容' },
+				// { name: '美妆' },
+				// { name: '美体' },
+				// { name: '美甲' },
+				// { name: '美睫' }
 			],
 			serviceTypes: [
 				{ name: '全部', count: 2365 },
-				{ name: '洗护', count: 523 },
-				{ name: '造型', count: 2365 },
-				{ name: '剪发', count: 523 },
-				{ name: '洗剪吹', count: 2678 },
+				{ name: '造型', count: 523 },
+				{ name: '剪发', count: 456 },
 				{ name: '烫发', count: 856 },
 				{ name: '染发', count: 642 },
-				{ name: '护理', count: 421 }
+				{ name: '护发', count: 421 },
+				{ name: '头皮', count: 289 },
+				{ name: '接发', count: 156 },
+				{ name: '男士', count: 678 },
+				{ name: '套餐优选', count: 234 },
+				{ name: '防脱护理', count: 189 }
 			],
 			serviceSubTabs: ['洗剪吹', '烫发', '染发', '护发', '头皮', '接发'],
 			activeServiceSubTab: 0,
@@ -842,6 +812,11 @@ export default {
 				this.activeTab = options.tab
 			}
 		}
+
+		// 从URL参数获取keyword，设置到搜索框
+		if (options.keyword) {
+			this.searchKeyword = decodeURIComponent(options.keyword)
+		}
 	},
 	onReady() {
 		// 获取滑块轨道宽度
@@ -934,6 +909,10 @@ export default {
 		},
 		selectDropdownService(index) {
 			this.dropdownSelectedServiceIndex = index
+			// 选择"全部"时自动确认并关闭弹窗
+			if (index === 0) {
+				this.handleCategoryConfirm()
+			}
 		},
 		selectDropdownSort(index) {
 			this.dropdownSelectedSortIndex = index
@@ -945,7 +924,8 @@ export default {
 		handleCategoryConfirm() {
 			this.selectedCategoryIndex = this.dropdownSelectedCategoryIndex
 			this.selectedServiceIndex = this.dropdownSelectedServiceIndex
-			this.selectedCategory = this.categories[this.dropdownSelectedCategoryIndex].name
+			// 显示选择的服务类型（二级筛选内容）
+			this.selectedCategory = this.serviceTypes[this.dropdownSelectedServiceIndex].name
 			this.closeAllDropdowns()
 			// TODO: 根据选中的分类和服务类型筛选数据
 		},
@@ -1485,7 +1465,7 @@ export default {
 .search-content {
 	flex: 1;
 	width: 100%;
-	padding: 10rpx 12rpx 0;
+	padding: 12rpx 12rpx 0;
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;

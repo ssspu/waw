@@ -1,7 +1,7 @@
 <template>
 	<view id="service-gallery-section" class="service-gallery-section">
 		<!-- 附近推荐标题 -->
-		<view class="nearby-header">
+		<view v-if="showNearbyHeader" class="nearby-header">
 			<text class="nearby-title">附近推荐</text>
 		</view>
 
@@ -70,6 +70,10 @@
 export default {
 	props: {
 		showCategoryHeader: {
+			type: Boolean,
+			default: true
+		},
+		showNearbyHeader: {
 			type: Boolean,
 			default: true
 		},

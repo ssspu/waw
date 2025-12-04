@@ -145,6 +145,15 @@
 		}
 	},
 	{
+		"path": "pages/mine/share-promotion",
+		"style": {
+			"navigationBarTitleText": "分享推广",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
 		"path": "pages/mine/beans",
 		"style": {
 			"navigationBarTitleText": "美豆",
@@ -382,6 +391,15 @@
 		"path": "pages/order/detail-after-sale",
 		"style": {
 			"navigationBarTitleText": "订单详情",
+			"navigationStyle": "custom",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f2f2f2"
+		}
+	},
+	{
+		"path": "pages/order/refund",
+		"style": {
+			"navigationBarTitleText": "申请退款",
 			"navigationStyle": "custom",
 			"navigationBarTextStyle": "black",
 			"navigationBarBackgroundColor": "#f2f2f2"

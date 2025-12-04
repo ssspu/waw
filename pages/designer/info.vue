@@ -6,20 +6,15 @@
 				<view class="nav-left" @tap="goBack">
 					<image class="back-icon" src="https://c.animaapp.com/mi5eklbiAEaKLJ/img/frame-1.svg" mode="aspectFit"></image>
 				</view>
+				<text class="navbar-title">设计师介绍</text>
 			</view>
+		</view>
 
-			<designer-info-profile-section
-				class="navbar-tabs"
-				:active-tab="activeTab"
-				@tab-change="handleTabChange"
-			></designer-info-profile-section>
-		</view>
-		
 		<!-- 主内容 -->
-		<view class="main-content">
-			<designer-info-services-section :active-tab="activeTab"></designer-info-services-section>
+		<view class="main-content" :style="{ paddingTop: navbarHeight + 'px' }">
+			<designer-info-services-section></designer-info-services-section>
 		</view>
-		
+
 		<!-- 底部指示器 -->
 		<view class="footer-indicator">
 			<view class="indicator-dot"></view>
@@ -28,30 +23,36 @@
 </template>
 
 <script>
-import DesignerInfoProfileSection from '../../components/designer/info/DesignerInfoProfileSection.vue'
 import DesignerInfoServicesSection from '../../components/designer/info/DesignerInfoServicesSection.vue'
 
 export default {
 	components: {
-		DesignerInfoProfileSection,
 		DesignerInfoServicesSection
 	},
 	data() {
 		return {
 			statusBarHeight: 44,
-			activeTab: 'designer'
+			navbarHeight: 0
 		}
 	},
 	onLoad() {
 		// 从持久化存储获取状态栏高度
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
+	onReady() {
+		// 计算导航栏总高度
+		this.$nextTick(() => {
+			const query = uni.createSelectorQuery().in(this)
+			query.select('.custom-navbar').boundingClientRect((rect) => {
+				if (rect) {
+					this.navbarHeight = rect.height
+				}
+			}).exec()
+		})
+	},
 	methods: {
 		goBack() {
 			uni.navigateBack()
-		},
-		handleTabChange(tab) {
-			this.activeTab = tab
 		}
 	}
 }
@@ -69,15 +70,16 @@ export default {
 }
 
 .custom-navbar {
-	position: relative;
+	position: fixed;
+	top: 0;
+	left: 0;
 	width: 100%;
 	background-color: #ffffff;
-	z-index: 10;
+	z-index: 100;
 	flex-shrink: 0;
 	box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.04);
 	display: flex;
 	flex-direction: column;
-	border-bottom: 2rpx solid #f1f1f1;
 }
 
 .navbar-content {
@@ -122,27 +124,12 @@ export default {
 	flex-shrink: 0;
 }
 
-.nav-right {
-	display: flex;
-	align-items: center;
-	flex-shrink: 0;
-	cursor: pointer;
-	width: 60rpx;
-	height: 60rpx;
-	justify-content: center;
-	position: absolute;
-	right: 30rpx;
-	z-index: 20;
-}
-
-.navbar-tabs {
-	width: 100%;
-	margin-top: -40rpx;
-}
-
-.share-icon {
-	width: 100%;
-	height: 100%;
+.navbar-title {
+	margin-left: 94rpx;
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-weight: 600;
+	font-size: 32rpx;
+	color: #111111;
 }
 
 .main-content {
@@ -152,8 +139,9 @@ export default {
 	display: flex;
 	flex-direction: column;
 	min-width: 0;
-	padding-top: 12rpx;
 	box-sizing: border-box;
+	overflow: hidden;
+	background-color: #f2f2f2;
 }
 
 .footer-indicator {
