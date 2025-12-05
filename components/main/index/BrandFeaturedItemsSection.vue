@@ -196,10 +196,11 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
 	data() {
 		return {
-			activeCategory: '品牌馆',
 			categoryItems: [
 				{
 					icon: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-2006-1.svg",
@@ -541,250 +542,85 @@ export default {
 					],
 				],
 			},
-			// 按分类存储的附近店铺数据
-			categoryStores: {
-				'品牌馆': [
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-6.png",
-						name: "成都NICE造型沙龙",
-						type: "品牌馆｜2012年开业",
-						rating: "4.8",
-						designers: "8人",
-						services: "1236",
-						amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
-						distance: "7.5km",
-						tag: "舒适",
-					},
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-1.png",
-						name: "成都NICE造型沙龙",
-						type: "品牌馆｜2012年开业",
-						rating: "4.8",
-						designers: "8人",
-						services: "1236",
-						amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
-						distance: "7.5km",
-						tag: "舒适",
-					},
-				],
-				'专业店': [
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-2.png",
-						name: "丝域养发馆",
-						type: "专业店｜2015年开业",
-						rating: "4.9",
-						designers: "12人",
-						services: "2568",
-						amenities: ["头皮检测", "养发护理", "免费停车"],
-						distance: "3.2km",
-						tag: "专业",
-					},
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-3.png",
-						name: "发之源专业美发",
-						type: "专业店｜2018年开业",
-						rating: "4.7",
-						designers: "6人",
-						services: "890",
-						amenities: ["专业染发", "烫发造型", "预约服务"],
-						distance: "4.8km",
-						tag: "口碑好",
-					},
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-4.png",
-						name: "造型专家工坊",
-						type: "专业店｜2020年开业",
-						rating: "4.6",
-						designers: "5人",
-						services: "456",
-						amenities: ["新店优惠", "免费设计"],
-						distance: "2.1km",
-						tag: "新店",
-					},
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-5.png",
-						name: "匠心美发专业店",
-						type: "专业店｜2016年开业",
-						rating: "4.8",
-						designers: "8人",
-						services: "1560",
-						amenities: ["精细剪裁", "日式服务", "免费饮品"],
-						distance: "3.8km",
-						tag: "匠心",
-					},
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-6.png",
-						name: "青丝专业造型",
-						type: "专业店｜2017年开业",
-						rating: "4.7",
-						designers: "7人",
-						services: "1120",
-						amenities: ["烫染专家", "会员折扣", "预约优先"],
-						distance: "5.2km",
-						tag: "烫染",
-					},
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-1.png",
-						name: "发型研究所",
-						type: "专业店｜2019年开业",
-						rating: "4.9",
-						designers: "10人",
-						services: "780",
-						amenities: ["形象诊断", "一对一服务", "无推销"],
-						distance: "2.6km",
-						tag: "高评",
-					},
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-2.png",
-						name: "剪艺专业美发",
-						type: "专业店｜2014年开业",
-						rating: "4.6",
-						designers: "9人",
-						services: "2340",
-						amenities: ["十年老店", "技术过硬", "价格实惠"],
-						distance: "4.1km",
-						tag: "老店",
-					},
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-3.png",
-						name: "锋芒造型专业店",
-						type: "专业店｜2021年开业",
-						rating: "4.8",
-						designers: "6人",
-						services: "320",
-						amenities: ["潮流设计", "年轻团队", "新客特惠"],
-						distance: "1.8km",
-						tag: "潮流",
-					},
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-4.png",
-						name: "秀发专业护理中心",
-						type: "专业店｜2013年开业",
-						rating: "4.7",
-						designers: "11人",
-						services: "3560",
-						amenities: ["护发专家", "头皮养护", "深层修复"],
-						distance: "6.5km",
-						tag: "护发",
-					},
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-5.png",
-						name: "形象设计专业馆",
-						type: "专业店｜2018年开业",
-						rating: "4.9",
-						designers: "8人",
-						services: "980",
-						amenities: ["整体形象", "私人顾问", "VIP服务"],
-						distance: "3.5km",
-						tag: "形象",
-					},
-				],
-				'品牌店': [
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-5.png",
-						name: "东田造型",
-						type: "品牌店｜2008年开业",
-						rating: "4.9",
-						designers: "20人",
-						services: "5680",
-						amenities: ["明星同款", "VIP包间", "代客泊车"],
-						distance: "5.6km",
-						tag: "明星店",
-					},
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-6.png",
-						name: "沙宣美发连锁",
-						type: "品牌店｜2010年开业",
-						rating: "4.8",
-						designers: "15人",
-						services: "3890",
-						amenities: ["国际品牌", "专业培训", "品质保证"],
-						distance: "6.3km",
-						tag: "连锁",
-					},
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-1.png",
-						name: "文峰美发",
-						type: "品牌店｜2005年开业",
-						rating: "4.7",
-						designers: "18人",
-						services: "8900",
-						amenities: ["老牌连锁", "会员优惠", "免费茶点"],
-						distance: "4.2km",
-						tag: "老牌",
-					},
-				],
-				'工作室': [
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-2.png",
-						name: "小林私人订制",
-						type: "工作室｜2019年开业",
-						rating: "4.9",
-						designers: "3人",
-						services: "680",
-						amenities: ["私人定制", "预约制", "一对一服务"],
-						distance: "1.8km",
-						tag: "私密",
-					},
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-3.png",
-						name: "美研造型工作室",
-						type: "工作室｜2021年开业",
-						rating: "4.8",
-						designers: "2人",
-						services: "320",
-						amenities: ["独立设计师", "作品展示", "咖啡茶饮"],
-						distance: "2.5km",
-						tag: "设计感",
-					},
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-4.png",
-						name: "花间发艺工作室",
-						type: "工作室｜2020年开业",
-						rating: "4.7",
-						designers: "4人",
-						services: "520",
-						amenities: ["日系风格", "花艺装饰", "拍照打卡"],
-						distance: "3.6km",
-						tag: "网红",
-					},
-				],
-				'综合店': [
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-5.png",
-						name: "美丽人生综合店",
-						type: "综合店｜2016年开业",
-						rating: "4.6",
-						designers: "25人",
-						services: "4560",
-						amenities: ["美发美甲", "美容SPA", "纹绣"],
-						distance: "3.8km",
-						tag: "一站式",
-					},
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-6.png",
-						name: "悦美汇生活馆",
-						type: "综合店｜2018年开业",
-						rating: "4.7",
-						designers: "30人",
-						services: "6780",
-						amenities: ["美发", "美容", "养生", "美甲"],
-						distance: "5.2km",
-						tag: "综合",
-					},
-					{
-						image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-1.png",
-						name: "时尚芭莎会所",
-						type: "综合店｜2014年开业",
-						rating: "4.8",
-						designers: "22人",
-						services: "5230",
-						amenities: ["高端会所", "私人定制", "VIP服务"],
-						distance: "6.8km",
-						tag: "高端",
-					},
-				],
-			},
+			nearbyStores: [
+				{
+					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-6.png",
+					name: "成都NICE造型沙龙",
+					type: "专业店｜2012年开业",
+					rating: "4.8",
+					designers: "8人",
+					services: "1236",
+					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
+					distance: "7.5km",
+					tag: "舒适",
+				},
+				{
+					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-1.png",
+					name: "成都NICE造型沙龙",
+					type: "专业店｜2012年开业",
+					rating: "4.8",
+					designers: "8人",
+					services: "1236",
+					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
+					distance: "7.5km",
+					tag: "舒适",
+				},
+				{
+					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-2.png",
+					name: "成都NICE造型沙龙",
+					type: "专业店｜2012年开业",
+					rating: "4.8",
+					designers: "8人",
+					services: "1236",
+					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
+					distance: "7.5km",
+					tag: "舒适",
+				},
+				{
+					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-3.png",
+					name: "成都NICE造型沙龙",
+					type: "专业店｜2012年开业",
+					rating: "4.8",
+					designers: "8人",
+					services: "1236",
+					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
+					distance: "7.5km",
+					tag: "舒适",
+				},
+				{
+					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-4.png",
+					name: "成都NICE造型沙龙",
+					type: "专业店｜2012年开业",
+					rating: "4.8",
+					designers: "8人",
+					services: "1236",
+					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
+					distance: "7.5km",
+					tag: "舒适",
+				},
+				{
+					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-5.png",
+					name: "成都NICE造型沙龙",
+					type: "专业店｜2012年开业",
+					rating: "4.8",
+					designers: "8人",
+					services: "1236",
+					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
+					distance: "7.5km",
+					tag: "舒适",
+				},
+				{
+					image: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-6.png",
+					name: "成都NICE造型沙龙",
+					type: "专业店｜2012年开业",
+					rating: "4.8",
+					designers: "8人",
+					services: "1236",
+					amenities: ["代客泊车", "免费茶点", "共享工位", "7天无忧"],
+					distance: "7.5km",
+					tag: "舒适",
+				},
+			],
 		}
 	},
 	computed: {
@@ -804,7 +640,73 @@ export default {
 			return this.categoryStores[this.activeCategory] || []
 		}
 	},
+	mounted() {
+		this.fetchBrandList()
+	},
 	methods: {
+		// 获取品牌列表
+		async fetchBrandList() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await api.brand.getList({ page: 1, pageSize: 20 })
+				if (res.code === 0) {
+					const list = res.data.list || []
+					if (list.length > 0) {
+						// 更新附近店铺列表
+						this.nearbyStores = list.map(b => this.transformBrand(b))
+
+						// 更新精选店slides - 每3个为一组
+						const transformedList = list.map(b => this.transformBrandForSlide(b))
+						const slideGroups = []
+						for (let i = 0; i < transformedList.length; i += 3) {
+							slideGroups.push(transformedList.slice(i, i + 3))
+						}
+						if (slideGroups.length > 0) {
+							this.storeSlides.star = slideGroups
+							this.storeSlides.popular = slideGroups
+							this.storeSlides.men = slideGroups
+						}
+					}
+				}
+			} catch (err) {
+				console.error('获取品牌列表失败:', err)
+			} finally {
+				this.loading = false
+			}
+		},
+		// 转换品牌数据 - 用于附近店铺列表
+		transformBrand(b) {
+			// 计算经营年限
+			let yearsInBusiness = ''
+			if (b.establishDate) {
+				const establishYear = new Date(b.establishDate).getFullYear()
+				const years = new Date().getFullYear() - establishYear
+				yearsInBusiness = `${years}年开业`
+			}
+			return {
+				id: b.id,
+				image: b.avatar || b.coverImage, // mock: avatar或coverImage字段
+				name: b.name, // mock: name字段
+				type: `${b.nature || '专业店'}｜${yearsInBusiness || '2012年开业'}`, // mock: nature字段
+				rating: String(b.rating || 4.8), // mock: rating字段
+				designers: `${b.designerCount || 0}人`, // mock: designerCount字段
+				services: String(b.serviceCount || 0), // mock: serviceCount字段
+				amenities: b.tags || ['代客泊车', '免费茶点', '共享工位', '7天无忧'], // mock: tags字段
+				distance: b.distance || '7.5km', // mock: distance字段
+				tag: b.badge || '舒适', // mock: badge字段
+			}
+		},
+		// 转换品牌数据 - 用于精选店滑动列表
+		transformBrandForSlide(b) {
+			const baseData = this.transformBrand(b)
+			return {
+				...baseData,
+				image: b.coverImage || b.avatar || 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png',
+				overlay: 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221.svg',
+				amenities: (b.tags || ['代客泊车', '免费茶点']).slice(0, 2), // 精选店只显示2个标签
+			}
+		},
 		handleCategoryClick(item) {
 			// 跳转到搜索页面，执行所点击内容的搜索
 			uni.navigateTo({

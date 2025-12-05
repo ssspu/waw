@@ -78,144 +78,53 @@ export default {
 					icon: 'https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame-1.svg'
 				}
 			],
-			serviceRecords: [
-				{
-					id: 1,
-					name: '洗吹',
-					description: '水洗+按摩+造型',
-					duration: '1小时',
-					sold: 1234,
-					price: 799,
-					discount: '预约优惠10%',
-					ctaText: '快速预约',
-					cover: '/static/mine/favorites/rectangle-169.png',
-					stylist: {
-						id: 101,
-						name: '李天天',
-						title: '资深设计师',
-						rating: '4.9',
-						reviews: 128,
-						location: '成都市锦江区春熙路',
-						distance: '2.5km'
-					}
-				},
-				{
-					id: 2,
-					name: '质感染发',
-					description: '头皮护理+高级染发',
-					duration: '2小时',
-					sold: 856,
-					price: 1299,
-					discount: '预约优惠10%',
-					ctaText: '快速预约',
-					cover: '/static/mine/favorites/rectangle-169.png',
-					stylist: {
-						id: 102,
-						name: '王小美',
-						title: '首席设计师',
-						rating: '4.8',
-						reviews: 256,
-						location: '成都市武侯区天府三街',
-						distance: '3.2km'
-					}
-				},
-				{
-					id: 3,
-					name: '烫染一体',
-					description: '烫发+染发+造型设计',
-					duration: '3小时',
-					sold: 421,
-					price: 1699,
-					discount: '预约优惠10%',
-					ctaText: '快速预约',
-					cover: '/static/mine/favorites/rectangle-169.png',
-					stylist: {
-						id: 103,
-						name: '张大师',
-						title: '技术总监',
-						rating: '5.0',
-						reviews: 512,
-						location: '成都市高新区环球中心',
-						distance: '5.1km'
-					}
-				},
-				{
-					id: 4,
-					name: '头皮护理',
-					description: '深层清洁+舒缓按摩',
-					duration: '1.5小时',
-					sold: 642,
-					price: 599,
-					discount: '预约优惠10%',
-					ctaText: '快速预约',
-					cover: '/static/mine/favorites/rectangle-169.png',
-					stylist: {
-						id: 104,
-						name: '刘造型',
-						title: '高级设计师',
-						rating: '4.7',
-						reviews: 89,
-						location: '成都市青羊区太升南路',
-						distance: '1.8km'
-					}
-				}
-			],
-			brandRecords: [
-				{
-					id: 1,
-					name: '成都NICE造型沙龙',
-					tag: '舒适',
-					type: '专业店｜2012年开业',
-					rating: '4.8',
-					designers: '8人',
-					services: '1236',
-					distance: '7.5km',
-					amenities: ['代客泊车', '免费茶点', '共享工位', '7天无忧'],
-					image: 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-6.png'
-				},
-				{
-					id: 2,
-					name: '成都NICE造型沙龙',
-					tag: '舒适',
-					type: '专业店｜2012年开业',
-					rating: '4.8',
-					designers: '8人',
-					services: '1236',
-					distance: '7.5km',
-					amenities: ['代客泊车', '免费茶点', '共享工位', '7天无忧'],
-					image: 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-1.png'
-				},
-				{
-					id: 3,
-					name: '成都NICE造型沙龙',
-					tag: '舒适',
-					type: '专业店｜2012年开业',
-					rating: '4.8',
-					designers: '8人',
-					services: '1236',
-					distance: '7.5km',
-					amenities: ['代客泊车', '免费茶点', '共享工位', '7天无忧'],
-					image: 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-4.png'
-				},
-				{
-					id: 4,
-					name: '成都NICE造型沙龙',
-					tag: '舒适',
-					type: '专业店｜2012年开业',
-					rating: '4.8',
-					designers: '8人',
-					services: '1236',
-					distance: '7.5km',
-					amenities: ['代客泊车', '免费茶点', '共享工位', '7天无忧'],
-					image: 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-5.png'
-				}
-			]
+			serviceRecords: [],
+			brandRecords: [],
+			loading: false
 		}
 	},
 	onLoad() {
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+		this.fetchBrowseRecords()
 	},
 	methods: {
+		async fetchBrowseRecords() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await api.user.getBrowseRecords({ page: 1, pageSize: 20 })
+				if (res.code === 0) {
+					this.serviceRecords = (res.data.serviceRecords || []).map(item => ({
+						id: item.id,
+						name: item.name,
+						description: item.description,
+						duration: item.duration,
+						sold: item.sold || 0,
+						price: item.price,
+						discount: item.discount || '',
+						ctaText: item.ctaText || '快速预约',
+						cover: item.cover
+					}))
+					this.brandRecords = (res.data.brandRecords || []).map(item => ({
+						id: item.id,
+						name: item.name,
+						tag: item.tag,
+						type: item.type_desc || '',
+						rating: item.rating,
+						designers: item.designers,
+						services: item.services,
+						distance: item.distance,
+						amenities: item.amenities || [],
+						image: item.image
+					}))
+				}
+			} catch (err) {
+				console.error('获取浏览记录失败:', err)
+				uni.showToast({ title: '获取浏览记录失败', icon: 'none' })
+			} finally {
+				this.loading = false
+			}
+		},
 		handleBack() {
 			uni.navigateBack({
 				fail: () => uni.switchTab({ url: '/pages/mine/index' })

@@ -5,7 +5,7 @@
 			<view class="header-section">
 				<image
 					class="header-bg-image"
-					src="https://c.animaapp.com/mifnbli6udxphC/img/rectangle-186.png"
+					:src="serviceData.headerImage || 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-186.png'"
 					mode="aspectFill"
 				></image>
 
@@ -19,22 +19,30 @@
 								mode="aspectFit"
 							></image>
 						</view>
-						<text class="nav-title">洗剪吹</text>
+						<text class="nav-title">{{ serviceData.name || '服务详情' }}</text>
 					</view>
 				</view>
 
 				<!-- 右上角详情区域 -->
-				<ServicePurchaseDetailsSection />
+				<ServicePurchaseDetailsSection
+					:current-page="currentImagePage"
+					:total-pages="totalImagePages"
+				/>
 			</view>
 
 			<!-- 主内容区域 -->
 			<view class="content-wrapper">
-				<ServicePurchaseProfileSection ref="profileSection" @favorite-change="handleFavoriteChange" />
+				<ServicePurchaseProfileSection :service-data="serviceData" />
 			</view>
 		</scroll-view>
 
 		<!-- 底部导航栏 -->
-		<ServicePurchaseFooter :is-favorited="isFavorited" @favorite-change="handleFooterFavoriteChange" />
+		<ServicePurchaseFooter
+			:service-id="serviceId"
+			:designer-id="serviceData.designer ? serviceData.designer.id : ''"
+			:is-favorited="serviceData.isFavorited"
+			@favorite-change="handleFavoriteChange"
+		/>
 	</view>
 </template>
 
@@ -53,7 +61,15 @@ export default {
 		return {
 			statusBarHeight: 44,
 			serviceId: '',
-			isFavorited: false
+			serviceData: {},
+			currentImagePage: 1,
+			loading: false
+		}
+	},
+	computed: {
+		totalImagePages() {
+			const images = this.serviceData.detailImages || []
+			return images.length
 		}
 	},
 	onLoad(options) {
@@ -62,9 +78,25 @@ export default {
 
 		if (options.id) {
 			this.serviceId = options.id
+			this.loadServiceDetail()
 		}
 	},
 	methods: {
+		// 加载服务详情
+		async loadServiceDetail() {
+			if (!this.serviceId || this.loading) return
+			this.loading = true
+			try {
+				const res = await serviceApi.getDetail(this.serviceId)
+				if (res && res.data) {
+					this.serviceData = res.data
+				}
+			} catch (error) {
+				console.error('加载服务详情失败:', error)
+			} finally {
+				this.loading = false
+			}
+		},
 		handleBack() {
 			const pages = getCurrentPages && getCurrentPages()
 			if (pages && pages.length > 1) {
@@ -76,13 +108,7 @@ export default {
 			}
 		},
 		handleFavoriteChange(isFavorited) {
-			this.isFavorited = isFavorited
-		},
-		handleFooterFavoriteChange(isFavorited) {
-			this.isFavorited = isFavorited
-			if (this.$refs.profileSection) {
-				this.$refs.profileSection.isFavorited = isFavorited
-			}
+			this.serviceData.isFavorited = isFavorited
 		}
 	}
 }

@@ -154,6 +154,8 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
 	data() {
 		return {
@@ -175,8 +177,12 @@ export default {
 				verifyCode: ''
 			},
 			countdown: 0,
-			timer: null
+			timer: null,
+			loading: false
 		}
+	},
+	onLoad() {
+		this.checkProgress()
 	},
 	onUnload() {
 		if (this.timer) {
@@ -187,26 +193,72 @@ export default {
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
+		// 检查入驻进度
+		async checkProgress() {
+			try {
+				const res = await api.settlement.getDesignerProgress()
+				if (res.code === 0 && res.data) {
+					// 如果已有数据，填充表单
+					const data = res.data.identity || {}
+					if (data.realName) this.formData.name = data.realName
+					if (data.gender) this.formData.gender = data.gender
+					if (data.idCardNo) this.formData.idNumber = data.idCardNo
+					if (data.email) this.formData.email = data.email
+					if (data.phone) this.formData.phone = data.phone
+					if (data.idCardFront) this.formData.idFrontUrl = data.idCardFront
+					if (data.idCardBack) this.formData.idBackUrl = data.idCardBack
+				}
+			} catch (err) {
+				console.error('获取入驻进度失败:', err)
+			}
+		},
 		handleBack() {
 			uni.navigateBack()
 		},
-		uploadIdFront() {
-			uni.chooseImage({
-				count: 1,
-				success: (res) => {
-					this.formData.idFrontUrl = res.tempFilePaths[0]
+		// 上传身份证正面
+		async uploadIdFront() {
+			try {
+				const res = await new Promise((resolve, reject) => {
+					uni.chooseImage({
+						count: 1,
+						success: resolve,
+						fail: reject
+					})
+				})
+
+				const uploadRes = await api.settlement.uploadImage(res.tempFilePaths[0], { type: 'idCard' })
+				if (uploadRes.code === 0) {
+					this.formData.idFrontUrl = uploadRes.data.url
+				} else {
+					uni.showToast({ title: uploadRes.message || '上传失败', icon: 'none' })
 				}
-			})
+			} catch (err) {
+				console.error('上传失败:', err)
+			}
 		},
-		uploadIdBack() {
-			uni.chooseImage({
-				count: 1,
-				success: (res) => {
-					this.formData.idBackUrl = res.tempFilePaths[0]
+		// 上传身份证背面
+		async uploadIdBack() {
+			try {
+				const res = await new Promise((resolve, reject) => {
+					uni.chooseImage({
+						count: 1,
+						success: resolve,
+						fail: reject
+					})
+				})
+
+				const uploadRes = await api.settlement.uploadImage(res.tempFilePaths[0], { type: 'idCard' })
+				if (uploadRes.code === 0) {
+					this.formData.idBackUrl = uploadRes.data.url
+				} else {
+					uni.showToast({ title: uploadRes.message || '上传失败', icon: 'none' })
 				}
-			})
+			} catch (err) {
+				console.error('上传失败:', err)
+			}
 		},
-		getVerifyCode() {
+		// 获取验证码
+		async getVerifyCode() {
 			if (this.countdown > 0) return
 			if (!this.formData.phone) {
 				uni.showToast({ title: '请输入手机号', icon: 'none' })
@@ -216,15 +268,29 @@ export default {
 				uni.showToast({ title: '手机号格式不正确', icon: 'none' })
 				return
 			}
-			uni.showToast({ title: '验证码已发送', icon: 'success' })
-			this.countdown = 60
-			this.timer = setInterval(() => {
-				this.countdown--
-				if (this.countdown <= 0) {
-					clearInterval(this.timer)
-					this.timer = null
+
+			try {
+				const res = await api.auth.sendCode({
+					phone: this.formData.phone,
+					type: 'settlement'
+				})
+				if (res.code === 0) {
+					uni.showToast({ title: '验证码已发送', icon: 'success' })
+					this.countdown = 60
+					this.timer = setInterval(() => {
+						this.countdown--
+						if (this.countdown <= 0) {
+							clearInterval(this.timer)
+							this.timer = null
+						}
+					}, 1000)
+				} else {
+					uni.showToast({ title: res.message || '发送失败', icon: 'none' })
 				}
-			}, 1000)
+			} catch (err) {
+				console.error('发送验证码失败:', err)
+				uni.showToast({ title: '发送失败', icon: 'none' })
+			}
 		},
 		goFaceVerify() {
 			uni.showToast({ title: '人脸验证功能开发中', icon: 'none' })
@@ -244,7 +310,7 @@ export default {
 			const reg = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 			return reg.test(email)
 		},
-		handleNext() {
+		async handleNext() {
 			// 身份证照片验证
 			if (!this.formData.idFrontUrl) {
 				uni.showToast({ title: '请上传身份证人像页', icon: 'none' })

@@ -1,12 +1,12 @@
 <template>
 	<view class="profile-section">
 		<view class="nav-card">
-			
+
 			<!-- 分类标签 -->
 			<view class="category-nav">
-				<view 
-					v-for="category in categories" 
-					:key="category.id" 
+				<view
+					v-for="category in availableCategories"
+					:key="category.id"
 					class="category-btn"
 					:class="{ active: selectedCategory === category.id }"
 					@tap="selectCategory(category.id)"
@@ -15,9 +15,20 @@
 				</view>
 			</view>
 		</view>
-		
+
+		<!-- 空数据状态 -->
+		<view v-if="!loading && services.length === 0" class="empty-state">
+			<image class="empty-icon" src="/static/icon/empty-service.png" mode="aspectFit"></image>
+			<text class="empty-text">暂无服务内容</text>
+		</view>
+
+		<!-- 加载状态 -->
+		<view v-if="loading" class="loading-state">
+			<text class="loading-text">加载中...</text>
+		</view>
+
 		<!-- 服务列表 -->
-		<view class="services-list">
+		<view v-if="!loading && services.length > 0" class="services-list">
 			<view 
 				v-for="service in services" 
 				:key="service.id" 
@@ -114,9 +125,23 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
+	props: {
+		designerId: {
+			type: [String, Number],
+			default: null
+		},
+		activeSubTab: {
+			type: String,
+			default: 'hair-service'
+		}
+	},
 	data() {
 		return {
+			loading: false,
+			serviceType: 'hair-service', // 服务类型：hair-service, beauty-service, other-service
 			selectedSecondary: 'hairstylist',
 			secondaryTabs: [
 				{ id: 'hairstylist', label: '美发师' },
@@ -124,93 +149,92 @@ export default {
 			],
 			selectedCategory: "wash-cut-blow",
 			selectedHairLength: "short",
-			categories: [
-				{ id: "wash-cut-blow", label: "洗剪吹" },
-				{ id: "perm", label: "烫发" },
-				{ id: "dye", label: "染发" },
-				{ id: "care", label: "护发" },
-				{ id: "scalp", label: "头皮" },
-				{ id: "extension", label: "接发" },
-			],
-			services: [
-				{
-					id: 1,
-					title: "烫发",
-					description: "发型提案+染发+造型",
-					estimatedTime: "1小时",
-					salesCount: "1234",
-					price: "799",
-					discount: "预约优惠10%",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png",
-				},
-				{
-					id: 2,
-					title: "烫发",
-					description: "发型提案+染发+造型",
-					estimatedTime: "1小时",
-					salesCount: "1234",
-					price: "799",
-					discount: "预约优惠10%",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png",
-				},
-				{
-					id: 3,
-					title: "烫发",
-					description: "发型提案+染发+造型",
-					estimatedTime: "1小时",
-					salesCount: "1234",
-					price: "799",
-					discount: "预约优惠10%",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png",
-				},
-				{
-					id: 4,
-					title: "烫发",
-					description: "发型提案+染发+造型",
-					estimatedTime: "1小时",
-					salesCount: "1234",
-					price: "799",
-					discount: "预约优惠10%",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png",
-				},
-			],
-			expandedServices: [], // 展开的服务ID列表
-			selectedBrands: {}, // 每个服务选中的品牌 { serviceId: brandId }
-			selectedHairLengths: {}, // 每个服务选中的头发长度 { serviceId: lengthId }
-			hairLengthOptions: [
-				{ id: "short", label: "短发", active: true },
-				{ id: "medium", label: "中发", active: false },
-				{ id: "long", label: "长发", active: false },
-			],
-			brandOptions: [
-				{
-					id: 1,
-					name: "威娜",
-					price: "560",
-					icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891-7.svg",
-				},
-				{
-					id: 2,
-					name: "菲灵",
-					price: "660",
-					icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891-3.svg",
-				},
-				{
-					id: 3,
-					name: "欧莱雅",
-					price: "760",
-					icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891-3.svg",
-				},
-				{
-					id: 4,
-					name: "乔薇尔",
-					price: "860",
-					icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891-3.svg",
-				},
-			],
+			categories: [],
+			services: [],
+			expandedServices: [],
+			selectedBrands: {},
+			selectedHairLengths: {},
+			hairLengthOptions: [],
+			brandOptions: [],
+		}
+	},
+	computed: {
+		// 只显示有服务内容的分类
+		availableCategories() {
+			return this.categories.filter(cat => cat.count > 0)
+		}
+	},
+	watch: {
+		designerId: {
+			immediate: true,
+			handler(newVal) {
+				if (newVal) {
+					this.fetchServices()
+				}
+			}
+		},
+		activeSubTab: {
+			immediate: true,
+			handler(newVal) {
+				// 子tab切换时更新服务类型
+				this.serviceType = newVal
+				if (this.designerId) {
+					this.fetchServices()
+				}
+			}
+		},
+		selectedCategory() {
+			this.fetchServices()
 		}
 	},
 	methods: {
+		// 获取设计师服务列表
+		async fetchServices() {
+			if (!this.designerId || this.loading) return
+			this.loading = true
+			try {
+				const res = await api.designer.getServices(this.designerId, {
+					category: this.selectedCategory,
+					serviceType: this.serviceType, // 传递服务类型参数
+					page: 1,
+					pageSize: 20
+				})
+				if (res.code === 0) {
+					const data = res.data
+					// 转换服务数据格式
+					const list = data.list || data.records || []
+					this.services = list.map(s => ({
+						id: s.id,
+						title: s.name,
+						description: s.description,
+						estimatedTime: s.duration ? `${s.duration}分钟` : '1小时',
+						salesCount: String(s.soldCount || 0),
+						price: String(s.price),
+						discount: s.discount || '',
+						image: s.image
+					}))
+					// 更新分类和选项
+					if (data.categories) {
+						this.categories = data.categories
+						// 如果当前选中的分类没有服务，自动选择第一个有服务的分类
+						const available = data.categories.filter(cat => cat.count > 0)
+						if (available.length > 0 && !available.find(cat => cat.id === this.selectedCategory)) {
+							this.selectedCategory = available[0].id
+						}
+					}
+					if (data.hairLengthOptions) {
+						this.hairLengthOptions = data.hairLengthOptions
+					}
+					if (data.brandOptions) {
+						this.brandOptions = data.brandOptions
+					}
+				}
+			} catch (err) {
+				console.error('获取服务列表失败:', err)
+			} finally {
+				this.loading = false
+			}
+		},
 		selectSecondary(id) {
 			this.selectedSecondary = id
 		},
@@ -706,6 +730,46 @@ export default {
 	font-weight: normal;
 	color: #ffa77b;
 	font-size: 26rpx;
+}
+
+/* 空数据和加载状态 */
+.empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 80rpx 40rpx;
+	width: 100%;
+	background-color: #ffffff;
+	border-radius: 12rpx;
+	box-sizing: border-box;
+}
+
+.empty-icon {
+	width: 160rpx;
+	height: 160rpx;
+	margin-bottom: 24rpx;
+	opacity: 0.6;
+}
+
+.empty-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 28rpx;
+	color: #a6a6a6;
+}
+
+.loading-state {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 60rpx 0;
+	width: 100%;
+}
+
+.loading-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 26rpx;
+	color: #a6a6a6;
 }
 
 /* 动画 */

@@ -41,6 +41,11 @@ import userApi from './modules/user.js'
 import couponApi from './modules/coupon.js'
 import commonApi from './modules/common.js'
 import serviceApi from './modules/service.js'
+import messageApi from './modules/message.js'
+import territoryApi from './modules/territory.js'
+import settlementApi from './modules/settlement.js'
+import portfolioApi from './modules/portfolio.js'
+import chatApi from './modules/chat.js'
 
 // 统一 API 对象
 const api = {
@@ -51,7 +56,12 @@ const api = {
   user: userApi,
   coupon: couponApi,
   common: commonApi,
-  service: serviceApi
+  service: serviceApi,
+  message: messageApi,
+  territory: territoryApi,
+  settlement: settlementApi,
+  portfolio: portfolioApi,
+  chat: chatApi
 }
 
 // 默认导出
@@ -66,7 +76,12 @@ export {
   userApi,
   couponApi,
   commonApi,
-  serviceApi
+  serviceApi,
+  messageApi,
+  territoryApi,
+  settlementApi,
+  portfolioApi,
+  chatApi
 }
 
 // 具名导出 - 请求工具

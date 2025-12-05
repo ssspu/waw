@@ -1,6 +1,6 @@
 <template>
 	<view class="works-tab-content">
-		<designer-works-gallery-section></designer-works-gallery-section>
+		<designer-works-gallery-section :designer-id="designerId" :active-sub-tab="activeSubTab"></designer-works-gallery-section>
 	</view>
 </template>
 
@@ -15,6 +15,10 @@ export default {
 		activeSubTab: {
 			type: String,
 			default: 'female'
+		},
+		designerId: {
+			type: [String, Number],
+			default: null
 		}
 	}
 }

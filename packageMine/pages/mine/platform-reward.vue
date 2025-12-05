@@ -21,7 +21,7 @@
 				<view class="card-header">
 					<text class="asset-label">平台奖励(元)</text>
 				</view>
-				<text class="asset-amount">2806.00</text>
+				<text class="asset-amount">{{ rewardInfo.totalReward.toFixed(2) }}</text>
 			</view>
 
 			<!-- 时间筛选和记录列表 -->
@@ -35,13 +35,16 @@
 					></image>
 				</view>
 
-				<view class="records-list">
+				<view class="records-list" v-if="rewardRecords.length > 0">
 					<asset-record-item
 						v-for="(record, index) in rewardRecords"
 						:key="index"
 						:record="record"
 						:is-last="index === rewardRecords.length - 1"
 					></asset-record-item>
+				</view>
+				<view class="empty-list" v-else>
+					<text class="empty-text">暂无记录</text>
 				</view>
 			</view>
 		</view>
@@ -58,40 +61,59 @@ export default {
 	data() {
 		return {
 			statusBarHeight: 44,
-			rewardRecords: [
-				{
-					title: '成都美发沙龙',
-					desc: '新用户注册奖励',
-					time: '今天 10:50',
-					amount: '+100'
-				},
-				{
-					title: '成都美发沙龙',
-					desc: '活动奖励',
-					time: '今天 09:30',
-					amount: '+200'
-				},
-				{
-					title: '成都美发沙龙',
-					desc: '消费返现',
-					time: '昨天 15:20',
-					amount: '+50'
-				},
-				{
-					title: '成都美发沙龙',
-					desc: '邀请好友奖励',
-					time: '昨天 11:00',
-					amount: '+80'
-				}
-			]
+			rewardInfo: {
+				totalReward: 0,
+				availableReward: 0,
+				claimedReward: 0,
+				pendingReward: 0
+			},
+			rewardRecords: [],
+			page: 1,
+			pageSize: 10,
+			loading: false
 		}
 	},
 	onLoad() {
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+		this.fetchRewardInfo()
+		this.fetchRewardRecords()
 	},
 	methods: {
 		handleBack() {
 			uni.navigateBack()
+		},
+		async fetchRewardInfo() {
+			try {
+				const res = await userApi.getPlatformReward()
+				if (res.code === 0) {
+					this.rewardInfo = res.data
+				}
+			} catch (e) {
+				console.error('获取平台奖励信息失败', e)
+			}
+		},
+		async fetchRewardRecords() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await userApi.getPlatformRewardRecords({
+					page: this.page,
+					pageSize: this.pageSize
+				})
+				if (res.code === 0) {
+					const records = res.data.list || res.data.records || []
+					this.rewardRecords = records.map(item => ({
+						title: item.title,
+						desc: item.type === 'activity' ? '活动奖励' : item.type === 'task' ? '任务奖励' : '平台补偿',
+						time: item.time,
+						amount: item.amount > 0 ? `+${item.amount}` : `${item.amount}`
+					}))
+				}
+			} catch (e) {
+				console.error('获取平台奖励记录失败', e)
+			} finally {
+				this.loading = false
+			}
 		}
 	}
 }
@@ -211,5 +233,19 @@ export default {
 	padding: 30rpx 20rpx;
 	display: flex;
 	flex-direction: column;
+}
+
+.empty-list {
+	background-color: #ffffff;
+	border-radius: 12rpx;
+	padding: 60rpx 20rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.empty-text {
+	font-size: 28rpx;
+	color: #999999;
 }
 </style>

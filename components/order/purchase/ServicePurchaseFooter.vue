@@ -34,11 +34,10 @@
 			>
 				<image
 					class="nav-icon"
-					:class="{ 'is-favorited': isFavorited }"
-					src="https://c.animaapp.com/mifnbli6udxphC/img/frame-6.svg"
+					:src="localFavorited ? '/static/icon/favorite-active.png' : 'https://c.animaapp.com/mifnbli6udxphC/img/frame-6.svg'"
 					mode="aspectFit"
 				></image>
-				<text class="nav-label">收藏</text>
+				<text class="nav-label">{{ localFavorited ? '已收藏' : '收藏' }}</text>
 			</view>
 
 			<!-- 立即预定按钮 -->
@@ -58,12 +57,35 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
 	name: 'ServicePurchaseFooter',
 	props: {
+		serviceId: {
+			type: [String, Number],
+			default: ''
+		},
+		designerId: {
+			type: [String, Number],
+			default: ''
+		},
 		isFavorited: {
 			type: Boolean,
 			default: false
+		}
+	},
+	data() {
+		return {
+			localFavorited: false
+		}
+	},
+	watch: {
+		isFavorited: {
+			immediate: true,
+			handler(val) {
+				this.localFavorited = val
+			}
 		}
 	},
 	methods: {
@@ -73,22 +95,45 @@ export default {
 			})
 		},
 		handleShop() {
-			uni.navigateTo({
-				url: '/pages/designer/detail'
-			})
+			if (this.designerId) {
+				uni.navigateTo({
+					url: `/pages/designer/detail?id=${this.designerId}`
+				})
+			}
 		},
-		handleFavorite() {
-			const newState = !this.isFavorited
-			this.$emit('favorite-change', newState)
-			uni.showToast({
-				title: newState ? '收藏成功' : '取消收藏',
-				icon: 'none'
-			})
+		async handleFavorite() {
+			if (!this.serviceId) return
+			try {
+				if (this.localFavorited) {
+					await api.service.unfavorite(this.serviceId)
+					this.localFavorited = false
+					uni.showToast({
+						title: '已取消收藏',
+						icon: 'success'
+					})
+				} else {
+					await api.service.favorite(this.serviceId)
+					this.localFavorited = true
+					uni.showToast({
+						title: '已收藏',
+						icon: 'success'
+					})
+				}
+				this.$emit('favorite-change', this.localFavorited)
+			} catch (err) {
+				console.error('收藏操作失败:', err)
+			}
 		},
 		handleBooking() {
-			uni.navigateTo({
-				url: '/pages/designer/booking'
-			})
+			if (this.designerId) {
+				uni.navigateTo({
+					url: `/pages/designer/booking?id=${this.designerId}`
+				})
+			} else {
+				uni.navigateTo({
+					url: '/pages/designer/booking'
+				})
+			}
 		}
 	}
 }

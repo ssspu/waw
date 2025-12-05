@@ -76,13 +76,16 @@
 	<view class="main-content">
 		<!-- 设计师页面 -->
 		<view v-if="activeTopTab === 'designer'" class="tab-content">
-			<territory-service-list-section></territory-service-list-section>
-			
-			<territory-service-list-section></territory-service-list-section>
-			
-			<territory-service-list-section></territory-service-list-section>
-			
-			<territory-service-list-section></territory-service-list-section>
+			<territory-service-list-section
+				v-for="item in designerList"
+				:key="item.id"
+				:designer="item"
+				@delete="handleDeleteDesigner"
+				@share="handleShare"
+			></territory-service-list-section>
+			<view v-if="designerList.length === 0" class="empty-tip">
+				<text>暂无私人设计师</text>
+			</view>
 		</view>
 		
 		<!-- 品牌馆页面 -->
@@ -245,6 +248,7 @@ export default {
 			activeSubTab: 'hairstylist',
 			activeBrandTab: 'hair',
 			avatarImage: '/static/avatar/avatar.png',
+			loading: false,
 			designerSubTabs: [
 				{ id: 'hairstylist', label: '美发师' },
 				{ id: 'beautician', label: '美容师' },
@@ -312,16 +316,117 @@ export default {
 					designers: 8,
 					services: 1236
 				}
-			],
-			showShareModal: false
+			}
+		},
+		activeSubTab: {
+			handler() {
+				if (this.activeTopTab === 'designer') {
+					this.page = 1
+					this.fetchDesigners()
+				}
+			}
+		},
+		activeBrandTab: {
+			handler() {
+				if (this.activeTopTab === 'brand') {
+					this.page = 1
+					this.fetchBrands()
+				}
+			}
 		}
 	},
 	onLoad() {
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+		// 初始加载设计师数据
+		this.fetchDesigners()
 	},
 	methods: {
 		goBack() {
 			uni.navigateBack()
+		},
+		// 获取私人设计师列表
+		async fetchDesigners() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await api.territory.getMyDesigners({
+					category: this.activeSubTab,
+					page: this.page,
+					pageSize: this.pageSize
+				})
+				if (res.code === 0) {
+					this.designerList = (res.data.list || []).map(item => this.transformDesigner(item))
+				}
+			} catch (err) {
+				console.error('获取设计师列表失败:', err)
+				uni.showToast({ title: '获取数据失败', icon: 'none' })
+			} finally {
+				this.loading = false
+			}
+		},
+		// 获取私人品牌馆列表
+		async fetchBrands() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await api.territory.getMyBrands({
+					category: this.activeBrandTab,
+					page: this.page,
+					pageSize: this.pageSize
+				})
+				if (res.code === 0) {
+					this.brandCards = (res.data.list || []).map(item => this.transformBrand(item))
+				}
+			} catch (err) {
+				console.error('获取品牌馆列表失败:', err)
+				uni.showToast({ title: '获取数据失败', icon: 'none' })
+			} finally {
+				this.loading = false
+			}
+		},
+		// 转换设计师数据格式
+		transformDesigner(item) {
+			return {
+				id: item.id,
+				designerId: item.designerId,
+				avatar: item.avatar || '/static/avatar/avatar.png',
+				name: item.name,
+				role: item.role || '美发师',
+				level: item.level || '高级',
+				position: item.position || item.title || '',
+				specialties: item.specialties || item.skills || [],
+				rating: item.rating || 0,
+				serviceCount: item.serviceCount || 0,
+				worksCount: item.worksCount || 0,
+				lastServiceDate: item.lastServiceTime ? item.lastServiceTime.split(' ')[0] : '',
+				lastServiceName: item.lastServiceName || '',
+				lastProductName: item.lastProductName || '',
+				lastServicePrice: item.lastServicePrice || item.totalSpent || 0
+			}
+		},
+		// 转换品牌馆数据格式
+		transformBrand(item) {
+			const lastService = item.lastService || {}
+			return {
+				id: item.id,
+				headerInfo: [
+					lastService.date || '',
+					'｜',
+					lastService.serviceName || '',
+					'｜',
+					lastService.productName || ''
+				],
+				price: lastService.price || 0,
+				name: item.name,
+				avatar: item.avatar || item.logo,
+				type: item.type || '品牌',
+				level: item.level || '舒适',
+				role: `${item.shopType || '专业店'}｜${item.openYear || ''}年开业`,
+				specialties: item.specialties || item.tags || [],
+				rating: item.rating || 0,
+				designers: item.designerCount || 0,
+				services: item.serviceCount || 0
+			}
 		},
 		handleMore() {
 			console.log('More clicked')
@@ -338,14 +443,30 @@ export default {
 		handleBrandTabChange(tabId) {
 			this.activeBrandTab = tabId
 		},
-		handlePromote() {
-			this.showShareModal = true
+		// 推广功能
+		async handlePromote(card) {
+			try {
+				const shareInfo = await api.territory.getBrandShareInfo(card.id)
+				if (shareInfo.code === 0) {
+					this.showShareModal = true
+				}
+			} catch (err) {
+				console.error('获取分享信息失败:', err)
+			}
 		},
 		closeShareModal() {
 			this.showShareModal = false
 		},
-		handleShare(type) {
-			console.log('Share via:', type)
+		async handleShare(type, card) {
+			try {
+				await api.territory.recordShare({
+					type: this.activeTopTab,
+					targetId: card.id,
+					channel: type
+				})
+			} catch (err) {
+				console.error('记录分享失败:', err)
+			}
 			this.showShareModal = false
 		},
 		handleBookAgain() {
@@ -362,6 +483,29 @@ export default {
 		},
 		handleMore() {
 			console.log('More clicked')
+		},
+		// 删除私人领地设计师
+		async handleDeleteDesigner(designer) {
+			try {
+				const res = await api.territory.removeDesigner(designer.designerId || designer.id)
+				if (res.code === 0) {
+					this.designerList = this.designerList.filter(d => d.id !== designer.id)
+					uni.showToast({ title: '已移除', icon: 'success' })
+				}
+			} catch (err) {
+				console.error('移除设计师失败:', err)
+				uni.showToast({ title: '操作失败', icon: 'none' })
+			}
+		},
+		// 分享
+		handleShare({ type, designer }) {
+			console.log('Share via:', type, designer)
+			// 记录分享
+			api.territory.recordShare({
+				type: 'designer',
+				targetId: designer.designerId || designer.id,
+				channel: type
+			}).catch(err => console.error('记录分享失败:', err))
 		}
 	}
 }
