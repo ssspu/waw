@@ -1,15 +1,15 @@
 <template>
-	<view class="services-section">
-		<!-- 加载状态 -->
-		<view v-if="loading" class="loading-state">
-			<text class="loading-text">加载中...</text>
-		</view>
-
-		<!-- 设计师介绍标签页内容 -->
-		<template v-else-if="activeTab === 'designer'">
+	<scroll-view
+		scroll-y
+		class="services-section"
+		@scroll="handleScroll"
+		:scroll-with-animation="true"
+	>
+		<!-- 设计师介绍区域 -->
+		<view id="designer-section" class="section-block">
 			<image
 				class="profile-image"
-				:src="designer && designer.coverImage ? designer.coverImage : '/static/background-image/designer-cover.png'"
+				src="https://c.animaapp.com/mi5eklbiAEaKLJ/img/rectangle-191.svg"
 				mode="aspectFill"
 			></image>
 
@@ -44,16 +44,23 @@
 						<view class="overview-item personal-intro">
 							<text class="overview-label">个人介绍</text>
 							<text class="personal-intro-text">
-								{{ designer && designer.introduction ? designer.introduction : '暂无介绍' }}
+								开始觉得得到
+								cheer但是吃多了U额低大叔的康师傅挥洒;都付款了;哦身份费十年九旱;说啥呢;到底是但是你垫付
+								开始烦恼;空间的少女;都;看到你;dksnfo
+								weioewpsafw等级警笛声金额费哦额我听为恶趣味
+								还打我的外福利健康;饿了辅导费看见的费费身份卡三色黑色;村往往i日破天婆温柔哦他说，费激发了哈的疯狂好的风景看d
+								dlkdfa耳机;费经典风范费i地方艾美奖s从大煞风景可费if金额阿迪说法垫付我的俄炮击说的话i城市的烦恼化成水淀粉收到的机会啊!
+								<br />
+								胡椒粉还说风凉话的灵魂力度老好人收到v的撒娇。
 							</text>
 						</view>
 					</view>
 				</view>
 			</view>
-		</template>
-		
-		<!-- 服务特色标签页内容 -->
-		<template v-else-if="activeTab === 'service'">
+		</view>
+
+		<!-- 服务特色区域 -->
+		<view id="service-section" class="section-block">
 			<view class="card service-card">
 				<view class="card-content">
 					<text class="card-title">服务特色</text>
@@ -81,10 +88,10 @@
 					</view>
 				</view>
 			</view>
-		</template>
+		</view>
 
-		<!-- 环境设施标签页内容 -->
-		<template v-else-if="activeTab === 'environment'">
+		<!-- 环境设施区域 -->
+		<view id="environment-section" class="section-block">
 			<view class="card environment-card">
 				<view class="card-content">
 					<text class="card-title">环境设施</text>
@@ -114,8 +121,8 @@
 					</view>
 				</view>
 			</view>
-		</template>
-	</view>
+		</view>
+	</scroll-view>
 </template>
 
 <script>
@@ -126,126 +133,101 @@ export default {
 		activeTab: {
 			type: String,
 			default: 'designer'
-		},
-		designerId: {
-			type: [String, Number],
-			default: '1'
 		}
 	},
 	data() {
 		return {
-			loading: false,
-			designer: null,
-			overviewItems: [],
-			serviceFeatures: [],
-			otherFeatures: [],
-			environmentFacilities: [],
-			generalFacilities: []
-		}
-	},
-	watch: {
-		designerId: {
-			handler(newVal) {
-				if (newVal) {
-					this.fetchDesignerInfo()
-				}
-			},
-			immediate: true
-		}
-	},
-	methods: {
-		async fetchDesignerInfo() {
-			if (!this.designerId) return
-
-			this.loading = true
-			try {
-				const res = await api.designer.getDetail(this.designerId)
-				if (res.code === 0 && res.data) {
-					this.designer = res.data
-					this.buildOverviewItems()
-					this.buildFeatures()
-				}
-			} catch (e) {
-				console.error('获取设计师信息失败:', e)
-			} finally {
-				this.loading = false
-			}
-		},
-		buildOverviewItems() {
-			if (!this.designer) return
-			const d = this.designer
-			this.overviewItems = [
-				{ label: '职位', value: d.position || '设计师' },
-				{ label: '职称', value: d.level ? `国家${d.level}${d.role}` : '美发师' },
-				{ label: '擅长', value: d.specialties ? d.specialties.join('、') : '造型设计' },
+			overviewItems: [
+				{ label: '职位', value: '店长' },
+				{ label: '职称', value: '国家高级美发师' },
+				{ label: '擅长', value: '男士油头造型、细软烫发' },
 				{ label: '工作时间', value: '周二 - 周日', extra: '10:00-21:00' },
-				{ label: '从业时间', value: d.experience ? `${d.experience}年` : '未知' },
+				{ label: '从业时间', value: '12年' },
 				{ label: '预约时间', value: '提前3小时' },
 				{ label: '联系电话', value: '+86 1891808747', hasPhone: true }
-			]
-		},
-		buildFeatures() {
-			// 根据设计师标签生成服务特色
-			if (this.designer && this.designer.tags) {
-				this.serviceFeatures = [
-					'全预约制',
-					'免费茶点',
-					'头皮检测',
-					'免费停车',
-					'烫染专业店',
-					'免费修眉',
-					'一对一服务',
-					'免费按摩',
-					'没有隐形消费',
-					'可上门服务'
-				]
-			} else {
-				this.serviceFeatures = [
-					'全预约制',
-					'免费茶点',
-					'头皮检测',
-					'免费停车'
-				]
-			}
-			this.otherFeatures = [
+			],
+			serviceFeatures: [
+				'全预约制',
+				'免费茶点',
+				'头皮检测',
+				'免费停车',
+				'烫染专业店',
+				'免费修眉',
+				'一对一服务',
+				'免费按摩',
+				'没有隐形消费',
+				'可上门服务'
+			],
+			otherFeatures: [
 				'不可携带宠物',
 				'服务区不可吸烟'
-			]
-			this.environmentFacilities = [
+			],
+			environmentFacilities: [
 				'储物柜',
 				'免费Wifi',
 				'充电宝',
 				'可看电视',
 				'VIP专区',
 				'沙发座'
-			]
-			this.generalFacilities = [
+			],
+			generalFacilities: [
 				'特定吸烟区',
 				'电梯',
 				'有停车位',
 				'空调',
 				'先进/刷卡支付'
-			]
+			],
+			sectionOffsets: {
+				designer: 0,
+				service: 0,
+				environment: 0
+			}
+		}
+	},
+	mounted() {
+		// 获取各个区域的位置
+		this.$nextTick(() => {
+			this.calculateSectionOffsets()
+		})
+	},
+	methods: {
+		calculateSectionOffsets() {
+			const query = uni.createSelectorQuery().in(this)
+
+			query.select('#designer-section').boundingClientRect()
+			query.select('#service-section').boundingClientRect()
+			query.select('#environment-section').boundingClientRect()
+
+			query.exec((res) => {
+				if (res && res.length === 3) {
+					this.sectionOffsets.designer = res[0] ? res[0].top : 0
+					this.sectionOffsets.service = res[1] ? res[1].top : 0
+					this.sectionOffsets.environment = res[2] ? res[2].top : 0
+				}
+			})
+		},
+		handleScroll(e) {
+			const scrollTop = e.detail.scrollTop
+
+			// 根据滚动位置判断当前处于哪个区域
+			let currentTab = 'designer'
+
+			if (scrollTop >= this.sectionOffsets.environment - 200) {
+				currentTab = 'environment'
+			} else if (scrollTop >= this.sectionOffsets.service - 200) {
+				currentTab = 'service'
+			}
+
+			// 如果当前tab发生变化，通知父组件
+			if (currentTab !== this.activeTab) {
+				this.$emit('tab-change', currentTab)
+			}
 		}
 	}
 }
 </script>
 
 <style scoped lang="scss">
-.loading-state {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	padding: 100rpx 0;
-	width: 100%;
-}
-
-.loading-text {
-	font-size: 28rpx;
-	color: #999999;
-}
-
 .services-section {
 	width: 100%;
 	height: 100%;
