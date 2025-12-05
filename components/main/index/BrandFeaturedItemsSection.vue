@@ -621,6 +621,14 @@ export default {
 					tag: "舒适",
 				},
 			],
+			activeCategory: '品牌馆',
+			categoryStores: {
+				'专业店': [],
+				'品牌店': [],
+				'工作室': [],
+				'综合店': []
+			},
+			loading: false
 		}
 	},
 	computed: {
@@ -631,13 +639,13 @@ export default {
 		currentNearbyStores() {
 			if (this.activeCategory === '品牌馆') {
 				// 品牌馆显示所有店铺
-				const allStores = []
-				Object.values(this.categoryStores).forEach(stores => {
-					allStores.push(...stores)
-				})
-				return allStores
+				return this.nearbyStores
 			}
-			return this.categoryStores[this.activeCategory] || []
+			// 按分类筛选店铺
+			return this.nearbyStores.filter(store => {
+				// 从 type 字段中提取店铺类型进行匹配
+				return store.type && store.type.includes(this.activeCategory)
+			})
 		}
 	},
 	mounted() {

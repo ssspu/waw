@@ -233,6 +233,7 @@
 </template>
 
 <script>
+import api from '@/api'
 import TerritoryHeaderSection from '../../../components/territory/index/TerritoryHeaderSection.vue'
 import TerritoryServiceListSection from '../../../components/territory/index/TerritoryServiceListSection.vue'
 
@@ -316,8 +317,14 @@ export default {
 					designers: 8,
 					services: 1236
 				}
-			}
-		},
+			],
+			designerList: [],
+			page: 1,
+			pageSize: 10,
+			showShareModal: false
+		}
+	},
+	watch: {
 		activeSubTab: {
 			handler() {
 				if (this.activeTopTab === 'designer') {

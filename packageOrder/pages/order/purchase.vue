@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import { serviceApi } from '@/api'
 import ServicePurchaseDetailsSection from '../../../components/order/purchase/ServicePurchaseDetailsSection.vue'
 import ServicePurchaseProfileSection from '../../../components/order/purchase/ServicePurchaseProfileSection.vue'
 import ServicePurchaseFooter from '../../../components/order/purchase/ServicePurchaseFooter.vue'

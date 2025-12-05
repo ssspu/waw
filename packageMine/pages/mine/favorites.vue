@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import api from '@/api'
 import FavoriteCard from '../../../components/mine/FavoriteCard.vue'
 
 export default {

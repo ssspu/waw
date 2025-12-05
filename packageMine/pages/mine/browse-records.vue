@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import api from '@/api'
 import FavoriteCard from '../../../components/mine/FavoriteCard.vue'
 import NearbyStoreItem from '../../../components/common/NearbyStoreItem.vue'
 

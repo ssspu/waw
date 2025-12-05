@@ -82,7 +82,7 @@
 				</view>
 			</view>
 		</template>
-		
+
 		<!-- 环境设施标签页内容 -->
 		<template v-else-if="activeTab === 'environment'">
 			<view class="card environment-card">
@@ -114,8 +114,8 @@
 					</view>
 				</view>
 			</view>
-		</view>
-	</scroll-view>
+		</template>
+	</view>
 </template>
 
 <script>
@@ -225,52 +225,7 @@ export default {
 				'有停车位',
 				'空调',
 				'先进/刷卡支付'
-			],
-			sectionOffsets: {
-				designer: 0,
-				service: 0,
-				environment: 0
-			}
-		}
-	},
-	mounted() {
-		// 获取各个区域的位置
-		this.$nextTick(() => {
-			this.calculateSectionOffsets()
-		})
-	},
-	methods: {
-		calculateSectionOffsets() {
-			const query = uni.createSelectorQuery().in(this)
-
-			query.select('#designer-section').boundingClientRect()
-			query.select('#service-section').boundingClientRect()
-			query.select('#environment-section').boundingClientRect()
-
-			query.exec((res) => {
-				if (res && res.length === 3) {
-					this.sectionOffsets.designer = res[0] ? res[0].top : 0
-					this.sectionOffsets.service = res[1] ? res[1].top : 0
-					this.sectionOffsets.environment = res[2] ? res[2].top : 0
-				}
-			})
-		},
-		handleScroll(e) {
-			const scrollTop = e.detail.scrollTop
-
-			// 根据滚动位置判断当前处于哪个区域
-			let currentTab = 'designer'
-
-			if (scrollTop >= this.sectionOffsets.environment - 200) {
-				currentTab = 'environment'
-			} else if (scrollTop >= this.sectionOffsets.service - 200) {
-				currentTab = 'service'
-			}
-
-			// 如果当前tab发生变化，通知父组件
-			if (currentTab !== this.activeTab) {
-				this.$emit('tab-change', currentTab)
-			}
+			]
 		}
 	}
 }

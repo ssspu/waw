@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import { userApi } from '@/api'
 import AssetRecordItem from '../../../components/mine/AssetRecordItem.vue'
 
 export default {
