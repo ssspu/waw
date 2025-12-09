@@ -6,34 +6,30 @@
 				<view class="price-info">
 					<view class="price-row">
 						<text class="currency-symbol">¥</text>
-						<text class="price-value">799</text>
+						<text class="price-value">{{ price }}</text>
 					</view>
-					<text class="sold-count">已售1234</text>
+					<text class="sold-count">已售{{ soldCount }}</text>
 				</view>
 				<view class="service-info-row">
 					<view class="service-text-info">
-						<text class="service-title">洗剪吹 发型提案+裁剪+造型</text>
-						<view class="coupon-row">
-							<image 
-								class="coupon-icon" 
-								src="https://c.animaapp.com/mifnbli6udxphC/img/frame-5.svg" 
+						<text class="service-title">{{ serviceTitle }}</text>
+						<view v-if="coupons.length > 0" class="coupon-row">
+							<image
+								class="coupon-icon"
+								src="https://c.animaapp.com/mifnbli6udxphC/img/frame-5.svg"
 								mode="aspectFit"
 							></image>
 							<view class="coupon-badges">
-								<view class="coupon-badge">
-									<text class="coupon-text">满100-5</text>
-								</view>
-								<view class="coupon-badge">
-									<text class="coupon-text">满500-50</text>
+								<view v-for="coupon in coupons" :key="coupon.id" class="coupon-badge">
+									<text class="coupon-text">{{ coupon.text }}</text>
 								</view>
 							</view>
 						</view>
 					</view>
-					<view class="favorite-btn" :class="{ 'is-favorited': isFavorited }" @tap="handleFavorite">
+					<view class="favorite-btn" @tap="handleFavorite">
 						<image
 							class="favorite-icon"
-							:class="{ 'is-favorited': isFavorited }"
-							src="https://c.animaapp.com/mifnbli6udxphC/img/frame-6.svg"
+							src="https://c.animaapp.com/mifnbli6udxphC/img/frame-2142.svg"
 							mode="aspectFit"
 						></image>
 						<text class="favorite-text">收藏</text>
@@ -60,31 +56,31 @@
 		</view>
 
 		<!-- 设计师信息卡片 -->
-		<view class="designer-card card-item full-width">
+		<view v-if="designer && designer.id" class="designer-card card-item full-width">
 			<view class="card-content designer-content">
 				<view class="designer-info-row">
-					<image 
-						class="designer-avatar" 
-						src="https://c.animaapp.com/mifnbli6udxphC/img/rectangle-153.png" 
+					<image
+						class="designer-avatar"
+						:src="designer.avatar"
 						mode="aspectFill"
 					></image>
 					<view class="designer-details">
 						<view class="designer-name-row">
-							<text class="designer-name">李天天</text>
-							<view class="designer-badge">
-								<text class="badge-text">高级</text>
+							<text class="designer-name">{{ designer.name }}</text>
+							<view v-if="designer.badge" class="designer-badge">
+								<text class="badge-text">{{ designer.badge }}</text>
 							</view>
 						</view>
 						<view class="designer-meta">
-							<text class="designer-role">店长｜从业12年</text>
+							<text class="designer-role">{{ designer.role }}</text>
 						</view>
 						<view class="designer-stats">
 							<view class="rating-info">
-								<text class="rating-value">4.8</text>
+								<text class="rating-value">{{ designer.rating }}</text>
 								<view class="star-badge">
-									<image 
-										class="star-icon" 
-										src="https://c.animaapp.com/mifnbli6udxphC/img/star-1.svg" 
+									<image
+										class="star-icon"
+										src="https://c.animaapp.com/mifnbli6udxphC/img/star-1.svg"
 										mode="aspectFit"
 									></image>
 								</view>
@@ -92,12 +88,12 @@
 							<view class="stats-row">
 								<view class="stat-item">
 									<text class="stat-label">服务</text>
-									<text class="stat-value">287</text>
+									<text class="stat-value">{{ designer.serviceCount }}</text>
 								</view>
 								<text class="stat-divider">｜</text>
 								<view class="stat-item">
 									<text class="stat-label">作品</text>
-									<text class="stat-value">123</text>
+									<text class="stat-value">{{ designer.worksCount }}</text>
 								</view>
 							</view>
 						</view>
@@ -110,13 +106,13 @@
 		</view>
 
 		<!-- 服务内容卡片 -->
-		<view class="service-content-card card-item">
+		<view v-if="serviceItems.length > 0" class="service-content-card card-item">
 			<view class="card-content">
 				<text class="section-title">服务内容</text>
 				<view class="service-list">
-					<view 
-						v-for="(item, index) in serviceItems" 
-						:key="index" 
+					<view
+						v-for="(item, index) in serviceItems"
+						:key="index"
 						class="service-item-wrapper"
 					>
 						<view class="service-item-row">
@@ -131,13 +127,13 @@
 
 
 		<!-- 温馨提示卡片 -->
-		<view class="tips-card card-item">
+		<view v-if="warmTips.length > 0" class="tips-card card-item">
 			<view class="card-content">
 				<text class="section-title">温馨提示</text>
 				<view class="tips-list">
-					<text 
-						v-for="(item, index) in warmTips" 
-						:key="index" 
+					<text
+						v-for="(item, index) in warmTips"
+						:key="index"
 						class="tips-text"
 					>{{ item }}</text>
 				</view>
@@ -145,24 +141,24 @@
 		</view>
 
 		<!-- 图文详情卡片 -->
-		<view class="detail-images-card card-item">
+		<view v-if="allImages.length > 0" class="detail-images-card card-item">
 			<view class="card-content detail-images-content">
 				<text class="section-title">图文详情</text>
 				<view class="images-container" :class="{ 'expanded': showMoreImages }">
-					<image 
-						v-for="(image, index) in displayImages" 
-						:key="index" 
-						class="detail-image" 
-						:src="image" 
+					<image
+						v-for="(image, index) in displayImages"
+						:key="index"
+						class="detail-image"
+						:src="image"
 						mode="aspectFill"
 					></image>
 				</view>
-				<view class="view-more-btn" @tap="handleViewMore">
+				<view v-if="allImages.length > 2" class="view-more-btn" @tap="handleViewMore">
 					<text class="view-more-text">{{ showMoreImages ? '收起' : '查看更多图文详情' }}</text>
-					<image 
-						class="chevron-icon" 
+					<image
+						class="chevron-icon"
 						:class="{ 'rotated': showMoreImages }"
-						src="/static/icon/down.png" 
+						src="/static/icon/down.png"
 						mode="aspectFit"
 					></image>
 				</view>
@@ -179,7 +175,7 @@
 						:key="index" 
 						class="notice-text"
 		<!-- 顾客点评卡片 -->
-		<view class="reviews-card card-item">
+		<view v-if="reviews.length > 0" class="reviews-card card-item">
 			<view class="card-header">
 				<text class="card-title">顾客点评</text>
 				<view class="more-btn" @tap="handleViewAllReviews">
@@ -252,18 +248,18 @@
 		</view>
 
 		<!-- 问TA卡片 -->
-		<view class="question-card card-item">
+		<view v-if="questions.length > 0" class="question-card card-item">
 			<view class="card-content">
 				<view class="question-header">
 					<text class="section-title">问TA</text>
 					<view class="answer-count-btn" @tap="handleViewAllQuestions">
-						<text class="answer-count">12条回答</text>
+						<text class="answer-count">{{ questionCount }}条回答</text>
 						<text class="chevron-icon-small">›</text>
 					</view>
 				</view>
-				<view 
-					v-for="(question, index) in questions" 
-					:key="index" 
+				<view
+					v-for="(question, index) in questions"
+					:key="index"
 					class="question-item"
 				>
 					<view class="question-badge">
@@ -275,12 +271,12 @@
 		</view>
 
 		<!-- 为您推荐标题 -->
-		<view class="recommend-header">
+		<view v-if="recommendedServices.length > 0" class="recommend-header">
 			<text class="recommend-title">为您推荐</text>
 		</view>
 
 		<!-- 推荐服务列表 -->
-		<view class="recommend-services">
+		<view v-if="recommendedServices.length > 0" class="recommend-services">
 			<view 
 				v-for="(service, index) in recommendedServices" 
 				:key="index" 
@@ -337,135 +333,15 @@
 <script>
 export default {
 	name: 'ServicePurchaseProfileSection',
+	props: {
+		serviceData: {
+			type: Object,
+			default: () => ({})
+		}
+	},
 	data() {
 		return {
-			isFavorited: false,
-			serviceItems: [
-				{ name: '发型提案', quantity: '*1' },
-				{ name: '头发清洁', quantity: '*1' },
-				{ name: '发型修剪', quantity: '*1' },
-				{ name: '吹风造型', quantity: '*1' }
-			],
-			warmTips: [
-				'有效日期2019-12-24至2019-12-30',
-				'需您当日一次性体验完所有项目',
-				'不予其他优惠同享'
-			],
 			showMoreImages: false,
-			allImages: [
-				'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
-				'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
-				'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
-				'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
-				'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png'
-			],
-			reviewTags: [
-				{ text: "技术很好", count: "232", active: true },
-				{ text: "效果满意", count: "321", active: false },
-				{ text: "服务态度", count: "321", active: false },
-			],
-			reviews: [
-				{
-					id: 1,
-					title: "环境特别好",
-					rating: "4.0",
-					content: "环境特别好环境特别好环境特别好环境特别好环境特别好环境特别好环境...",
-					author: "加菲猫",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-25",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-				{
-					id: 2,
-					title: "服务很专业",
-					rating: "3.1",
-					content: "服务很专业，发型设计很满意，下次还会再来...",
-					author: "小可爱",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-24",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-				{
-					id: 3,
-					title: "效果超出预期",
-					rating: "5.0",
-					content: "效果超出预期，非常满意，推荐给大家...",
-					author: "美少女",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-23",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-				{
-					id: 4,
-					title: "技术很棒",
-					rating: "4.9",
-					content: "技术很棒，服务态度也很好，值得推荐...",
-					author: "时尚达人",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-22",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-				{
-					id: 5,
-					title: "性价比很高",
-					rating: "4.7",
-					content: "性价比很高，服务周到，环境舒适...",
-					author: "追求者",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-21",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-				{
-					id: 6,
-					title: "非常满意",
-					rating: "5.0",
-					content: "非常满意，下次还会再来，强烈推荐...",
-					author: "忠实客户",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-20",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-				{
-					id: 7,
-					title: "环境优雅",
-					rating: "4.8",
-					content: "环境优雅，服务专业，体验很好...",
-					author: "品味生活",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-19",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-				{
-					id: 8,
-					title: "发型设计很赞",
-					rating: "4.9",
-					content: "发型设计很赞，技术精湛，推荐...",
-					author: "时尚先锋",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-18",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-				{
-					id: 9,
-					title: "服务态度很好",
-					rating: "5.0",
-					content: "服务态度很好，技术也很专业，满意...",
-					author: "满意客户",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-17",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-				{
-					id: 10,
-					title: "体验很棒",
-					rating: "4.8",
-					content: "体验很棒，整体服务很好，推荐...",
-					author: "回头客",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-16",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				}
-			],
 			reviewScrollLeft: 0,
 			lastReviewScrollLeft: 0,
 			showReviewLeftFade: false,
@@ -475,36 +351,80 @@ export default {
 			reviewFadeStartTimeout: null,
 			reviewScrollContainerWidth: 0,
 			reviewScrollContentWidth: 0,
-			questions: [
-				'只烫不染的短发多少钱？头发比较干，不知道能不能做？',
-				'刘海发际线太高怎么办？'
-			],
-			recommendedServices: [
-				{
-					image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
-					title: '烫发',
-					description: '发型提案+染发+造型',
-					price: '799',
-					stylistName: '李天天',
-					stylistRole: '美发师',
-					rating: '4.8',
-					reviewCount: '768',
-					distance: '6.7km',
-					avatar: 'https://c.animaapp.com/mifnbli6udxphC/img/ellipse-34-1.svg'
-				},
-				{
-					image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-169-2.png',
-					title: '烫发',
-					description: '发型提案+染发+造型',
-					price: '799',
-					stylistName: '李天天',
-					stylistRole: '美发师',
-					rating: '4.8',
-					reviewCount: '768',
-					distance: '6.7km',
-					avatar: 'https://c.animaapp.com/mifnbli6udxphC/img/ellipse-34-1.svg'
+			localReviewTags: []
+		}
+	},
+	watch: {
+		'serviceData.reviewTags': {
+			immediate: true,
+			handler(newTags) {
+				if (newTags && newTags.length > 0) {
+					this.localReviewTags = newTags.map(tag => ({ ...tag }))
 				}
-			]
+			}
+		}
+	},
+	computed: {
+		// 价格
+		price() {
+			return this.serviceData.price || 0
+		},
+		soldCount() {
+			return this.serviceData.soldCount || 0
+		},
+		serviceTitle() {
+			return this.serviceData.fullTitle || this.serviceData.name || ''
+		},
+		// 优惠券
+		coupons() {
+			return this.serviceData.coupons || []
+		},
+		// 设计师信息
+		designer() {
+			return this.serviceData.designer || {}
+		},
+		// 服务内容
+		serviceItems() {
+			return this.serviceData.serviceItems || []
+		},
+		// 温馨提示
+		warmTips() {
+			return this.serviceData.warmTips || []
+		},
+		// 图文详情
+		allImages() {
+			return this.serviceData.detailImages || []
+		},
+		// 评价标签
+		reviewTags() {
+			return this.localReviewTags.length > 0 ? this.localReviewTags : (this.serviceData.reviewTags || [])
+		},
+		// 评价列表
+		reviews() {
+			return this.serviceData.reviews || []
+		},
+		// 问答
+		questions() {
+			return this.serviceData.questions || []
+		},
+		questionCount() {
+			return this.serviceData.questionCount || 0
+		},
+		// 推荐服务
+		recommendedServices() {
+			return this.serviceData.recommendedServices || []
+		},
+		// 显示图片
+		displayImages() {
+			return this.showMoreImages ? this.allImages : this.allImages.slice(0, 2)
+		},
+		// 评价总数
+		totalReviewCount() {
+			return this.reviews.length || this.reviewTags.reduce((sum, tag) => sum + parseInt(tag.count || 0), 0)
+		},
+		// 显示的评价
+		displayedReviews() {
+			return this.reviews.slice(0, 10)
 		}
 	},
 	methods: {
@@ -522,9 +442,11 @@ export default {
 			})
 		},
 		handleEnterStore() {
-			uni.navigateTo({
-				url: '/pages/designer/detail'
-			})
+			if (this.designer && this.designer.id) {
+				uni.navigateTo({
+					url: `/pages/designer/detail?id=${this.designer.id}`
+				})
+			}
 		},
 		handleViewMore() {
 			this.showMoreImages = !this.showMoreImages
@@ -533,7 +455,7 @@ export default {
 			console.log('查看所有点评')
 		},
 		selectTag(index) {
-			this.reviewTags.forEach((tag, i) => {
+			this.localReviewTags.forEach((tag, i) => {
 				tag.active = i === index
 			})
 		},
@@ -581,17 +503,6 @@ export default {
 		}
 		if (this.reviewFadeStartTimeout) {
 			clearTimeout(this.reviewFadeStartTimeout)
-		}
-	},
-	computed: {
-		displayImages() {
-			return this.showMoreImages ? this.allImages : this.allImages.slice(0, 2)
-		},
-		totalReviewCount() {
-			return this.reviews.length || this.reviewTags.reduce((sum, tag) => sum + parseInt(tag.count || 0), 0)
-		},
-		displayedReviews() {
-			return this.reviews.slice(0, 10)
 		}
 	}
 }

@@ -1,6 +1,6 @@
 <template>
 	<view class="reviews-tab-content">
-		<designer-reviews-list-section></designer-reviews-list-section>
+		<designer-reviews-list-section :designer-id="designerId" :active-sub-tab="activeSubTab"></designer-reviews-list-section>
 	</view>
 </template>
 
@@ -15,6 +15,10 @@ export default {
 		activeSubTab: {
 			type: String,
 			default: 'all'
+		},
+		designerId: {
+			type: [String, Number],
+			default: null
 		}
 	}
 }

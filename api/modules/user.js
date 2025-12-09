@@ -299,5 +299,250 @@ export default {
    */
   submitFeedback(data) {
     return post(`${USER_PREFIX}/feedback`, data)
+  },
+
+  // ============ 余额相关 ============
+
+  /**
+   * 获取余额详情
+   */
+  getBalance() {
+    return get(`${USER_PREFIX}/balance`)
+  },
+
+  /**
+   * 获取余额变动记录
+   * @param {Object} params - { page, pageSize, type?: 类型(income/expense), month?: 月份筛选 }
+   */
+  getBalanceRecords(params = {}) {
+    return get(`${USER_PREFIX}/balance/records`, {
+      page: 1,
+      pageSize: 10,
+      ...params
+    })
+  },
+
+  /**
+   * 余额充值
+   * @param {Object} data - { amount, paymentMethod }
+   */
+  rechargeBalance(data) {
+    return post(`${USER_PREFIX}/balance/recharge`, data)
+  },
+
+  // ============ 美豆相关 ============
+
+  /**
+   * 获取美豆余额
+   */
+  getBeans() {
+    return get(`${USER_PREFIX}/beans`)
+  },
+
+  /**
+   * 获取美豆变动记录
+   * @param {Object} params - { page, pageSize, type?: 类型(earn/spend), month?: 月份筛选 }
+   */
+  getBeansRecords(params = {}) {
+    return get(`${USER_PREFIX}/beans/records`, {
+      page: 1,
+      pageSize: 10,
+      ...params
+    })
+  },
+
+  /**
+   * 美豆兑换
+   * @param {Object} data - { type: 兑换类型(coupon/service), targetId: 目标ID, amount: 美豆数量 }
+   */
+  exchangeBeans(data) {
+    return post(`${USER_PREFIX}/beans/exchange`, data)
+  },
+
+  /**
+   * 签到获取美豆
+   */
+  signIn() {
+    return post(`${USER_PREFIX}/beans/sign`)
+  },
+
+  /**
+   * 获取签到状态
+   */
+  getSignStatus() {
+    return get(`${USER_PREFIX}/beans/sign-status`)
+  },
+
+  /**
+   * 获取签到日历
+   * @param {Object} params - { year, month }
+   */
+  getSignCalendar(params = {}) {
+    return get(`${USER_PREFIX}/beans/sign-calendar`, params)
+  },
+
+  // ============ 推广佣金相关 ============
+
+  /**
+   * 获取推广佣金概览
+   */
+  getPromotion() {
+    return get(`${USER_PREFIX}/promotion`)
+  },
+
+  /**
+   * 获取推广佣金记录
+   * @param {Object} params - { page, pageSize, type?: 类型(invite/order), month?: 月份筛选 }
+   */
+  getPromotionRecords(params = {}) {
+    return get(`${USER_PREFIX}/promotion/records`, {
+      page: 1,
+      pageSize: 10,
+      ...params
+    })
+  },
+
+  /**
+   * 获取邀请码
+   */
+  getInviteCode() {
+    return get(`${USER_PREFIX}/promotion/invite-code`)
+  },
+
+  /**
+   * 获取邀请记录列表
+   * @param {Object} params - { page, pageSize }
+   */
+  getInviteList(params = {}) {
+    return get(`${USER_PREFIX}/promotion/invites`, {
+      page: 1,
+      pageSize: 10,
+      ...params
+    })
+  },
+
+  /**
+   * 推广佣金提现
+   * @param {Object} data - { amount, bankCardId }
+   */
+  withdrawPromotion(data) {
+    return post(`${USER_PREFIX}/promotion/withdraw`, data)
+  },
+
+  /**
+   * 获取推广规则
+   */
+  getPromotionRules() {
+    return get(`${USER_PREFIX}/promotion/rules`)
+  },
+
+  // ============ 平台奖励相关 ============
+
+  /**
+   * 获取平台奖励概览
+   */
+  getPlatformReward() {
+    return get(`${USER_PREFIX}/platform-reward`)
+  },
+
+  /**
+   * 获取平台奖励记录
+   * @param {Object} params - { page, pageSize, type?: 奖励类型, month?: 月份筛选 }
+   */
+  getPlatformRewardRecords(params = {}) {
+    return get(`${USER_PREFIX}/platform-reward/records`, {
+      page: 1,
+      pageSize: 10,
+      ...params
+    })
+  },
+
+  /**
+   * 领取平台奖励
+   * @param {string} rewardId - 奖励ID
+   */
+  claimPlatformReward(rewardId) {
+    return post(`${USER_PREFIX}/platform-reward/claim/${rewardId}`)
+  },
+
+  // ============ 二维码名片相关 ============
+
+  /**
+   * 获取用户二维码名片
+   */
+  getQrCode() {
+    return get(`${USER_PREFIX}/qr-code`)
+  },
+
+  /**
+   * 生成二维码
+   * @param {Object} data - { type?: 类型(personal/invite), style?: 样式 }
+   */
+  generateQrCode(data = {}) {
+    return post(`${USER_PREFIX}/qr-code/generate`, data)
+  },
+
+  /**
+   * 保存二维码名片
+   * @param {Object} data - { qrCodeUrl }
+   */
+  saveQrCode(data) {
+    return post(`${USER_PREFIX}/qr-code/save`, data)
+  },
+
+  // ============ 账号注销 ============
+
+  /**
+   * 申请注销账号
+   * @param {Object} data - { reason?, code: 验证码 }
+   */
+  applyDeactivation(data) {
+    return post(`${USER_PREFIX}/deactivation/apply`, data)
+  },
+
+  /**
+   * 取消注销申请
+   */
+  cancelDeactivation() {
+    return post(`${USER_PREFIX}/deactivation/cancel`)
+  },
+
+  /**
+   * 获取注销申请状态
+   */
+  getDeactivationStatus() {
+    return get(`${USER_PREFIX}/deactivation/status`)
+  },
+
+  // ============ 设置相关 ============
+
+  /**
+   * 获取用户设置
+   * 返回 { notificationEnabled, cacheSize }
+   */
+  getSettings() {
+    return get(`${USER_PREFIX}/settings`)
+  },
+
+  /**
+   * 更新消息通知设置
+   * @param {Object} data - { notificationEnabled: boolean }
+   */
+  updateNotificationSetting(data) {
+    return put(`${USER_PREFIX}/settings/notification`, data)
+  },
+
+  /**
+   * 获取缓存大小
+   */
+  getCacheSize() {
+    return get(`${USER_PREFIX}/cache-size`)
+  },
+
+  /**
+   * 清除缓存
+   */
+  clearCache() {
+    return post(`${USER_PREFIX}/cache/clear`)
   }
 }

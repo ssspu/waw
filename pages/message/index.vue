@@ -64,6 +64,7 @@
 
 <script>
 import BottomTabBar from '../../components/common/BottomTabBar.vue'
+import api from '@/api'
 
 export default {
 	components: {
@@ -74,111 +75,48 @@ export default {
 			startX: 0,
 			currentMessage: null,
 			deleteWidth: -140, // 删除按钮宽度
-			messageGroups: [
-				{
-					date: '今天',
-					messages: [
-						{
-							id: 1,
-							title: '系统通知',
-							content: '您有一个待确认订单，请及时处理。',
-							time: '2025-11-28 16:30',
-							unread: true
-						},
-						{
-							id: 2,
-							title: '系统通知',
-							content: '您有三名顾客发起了预约申请，请及时确认。',
-							time: '2025-11-28 10:15',
-							unread: true
-						}
-					]
-				},
-				{
-					date: '昨天',
-					messages: [
-						{
-							id: 3,
-							title: '系统通知',
-							content: '您的订单已完成，感谢您的使用。',
-							time: '2025-11-27 18:20',
-							unread: false
-						},
-						{
-							id: 4,
-							title: '活动通知',
-							content: '双十二活动即将开始，多重优惠等你来！',
-							time: '2025-11-27 09:00',
-							unread: false
-						}
-					]
-				},
-				{
-					date: '2025-11-25',
-					messages: [
-						{
-							id: 5,
-							title: '系统通知',
-							content: '您的账户已成功绑定银行卡。',
-							time: '2025-11-25 14:30',
-							unread: false
-						}
-					]
-				},
-				{
-					date: '2025-11-22',
-					messages: [
-						{
-							id: 6,
-							title: '预约提醒',
-							content: '您预约的服务将于明天下午2点开始，请准时到店。',
-							time: '2025-11-22 20:00',
-							unread: false
-						},
-						{
-							id: 7,
-							title: '系统通知',
-							content: '您有一笔退款已到账，请查收。',
-							time: '2025-11-22 11:45',
-							unread: false
-						}
-					]
-				},
-				{
-					date: '2025-11-18',
-					messages: [
-						{
-							id: 8,
-							title: '优惠通知',
-							content: '恭喜您获得50元优惠券，有效期7天。',
-							time: '2025-11-18 09:30',
-							unread: false
-						},
-						{
-							id: 9,
-							title: '系统通知',
-							content: '您的会员等级已升级为VIP2。',
-							time: '2025-11-18 08:00',
-							unread: false
-						}
-					]
-				},
-				{
-					date: '2025-11-10',
-					messages: [
-						{
-							id: 10,
-							title: '系统通知',
-							content: '欢迎注册众美平台，开启您的美丽之旅！',
-							time: '2025-11-10 15:20',
-							unread: false
-						}
-					]
-				}
-			]
+			messageGroups: [],
+			loading: false,
+			page: 1,
+			pageSize: 20,
+			hasMore: true
 		}
 	},
+	onLoad() {
+		this.fetchMessages()
+	},
 	methods: {
+		// 获取消息列表
+		async fetchMessages() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await api.message.getGroupedList({
+					page: this.page,
+					pageSize: this.pageSize
+				})
+				if (res.code === 0) {
+					const groups = res.data.groups || []
+					// 为每个消息添加offsetX属性用于滑动
+					groups.forEach(group => {
+						group.messages.forEach(msg => {
+							msg.offsetX = 0
+						})
+					})
+					if (this.page === 1) {
+						this.messageGroups = groups
+					} else {
+						this.messageGroups = [...this.messageGroups, ...groups]
+					}
+					this.hasMore = res.data.hasMore
+				}
+			} catch (err) {
+				console.error('获取消息列表失败:', err)
+				uni.showToast({ title: '获取消息失败', icon: 'none' })
+			} finally {
+				this.loading = false
+			}
+		},
 		// 触摸开始
 		onTouchStart(e, message) {
 			// 先关闭其他已打开的消息
@@ -226,26 +164,42 @@ export default {
 			uni.showModal({
 				title: '提示',
 				content: '确定删除该消息吗？',
-				success: (res) => {
+				success: async (res) => {
 					if (res.confirm) {
-						this.messageGroups[groupIndex].messages.splice(msgIndex, 1)
-						// 如果该分组没有消息了，删除分组
-						if (this.messageGroups[groupIndex].messages.length === 0) {
-							this.messageGroups.splice(groupIndex, 1)
+						try {
+							const result = await api.message.delete(message.id)
+							if (result.code === 0) {
+								this.messageGroups[groupIndex].messages.splice(msgIndex, 1)
+								// 如果该分组没有消息了，删除分组
+								if (this.messageGroups[groupIndex].messages.length === 0) {
+									this.messageGroups.splice(groupIndex, 1)
+								}
+								uni.showToast({ title: '已删除', icon: 'success' })
+							}
+						} catch (err) {
+							console.error('删除消息失败:', err)
+							uni.showToast({ title: '删除失败', icon: 'none' })
 						}
-						uni.showToast({ title: '已删除', icon: 'success' })
 					}
 				}
 			})
 		},
-		handleMessageClick(message) {
+		// 点击消息
+		async handleMessageClick(message) {
 			// 如果正在滑动状态，不触发点击
 			if (message.offsetX && message.offsetX < 0) {
 				message.offsetX = 0
 				return
 			}
-			// 标记为已读，红点消失
-			message.unread = false
+			// 调用API标记为已读
+			if (message.unread) {
+				try {
+					await api.message.markAsRead(message.id)
+					message.unread = false
+				} catch (err) {
+					console.error('标记已读失败:', err)
+				}
+			}
 			// 跳转到消息详情页
 			uni.navigateTo({
 				url: `/pages/message/detail?id=${message.id}`

@@ -2,7 +2,7 @@
 	<view class="header">
 		<image
 			class="header-bg"
-			src="https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-186.png"
+			:src="coverImage || 'https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-186.png'"
 			mode="aspectFill"
 		></image>
 		<view class="header-overlay"></view>
@@ -24,6 +24,12 @@
 
 <script>
 export default {
+	props: {
+		coverImage: {
+			type: String,
+			default: ''
+		}
+	},
 	data() {
 		return {
 			statusBarHeight: 44

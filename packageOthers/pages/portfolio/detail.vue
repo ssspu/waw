@@ -172,66 +172,89 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { portfolioApi } from '@/api'
 
 const statusBarHeight = ref(44)
-const isFollowed = ref(true)
+const isFollowed = ref(false)
 const isLiked = ref(false)
 const isFavorited = ref(false)
 const currentImageIndex = ref(0)
-const commentTotal = ref(268)
-const userAvatar = ref('https://c.animaapp.com/mimycn40ClpGDL/img/---192.png')
+const commentTotal = ref(0)
+const userAvatar = ref('/static/avatar/avatar.png')
+const workId = ref('')
 
 const designerInfo = ref({
-	id: 1,
-	avatar: 'https://c.animaapp.com/mimycn40ClpGDL/img/---192.png',
-	name: '造型师魏莹玲',
-	title: '技术总监',
-	verified: true
+	id: '',
+	avatar: '',
+	name: '',
+	title: '',
+	verified: false
 })
 
 const workDetail = ref({
-	id: 1,
-	images: [
-		'https://c.animaapp.com/mimycn40ClpGDL/img/---182.svg',
-		'https://c.animaapp.com/mimycn40ClpGDL/img/---182.svg',
-		'https://c.animaapp.com/mimycn40ClpGDL/img/---182.svg'
-	],
-	likes: 188,
-	comments: 188,
-	favorites: 188,
-	shares: 188
+	id: '',
+	images: [],
+	likes: 0,
+	comments: 0,
+	favorites: 0,
+	shares: 0
 })
 
-const commentList = ref([
-	{
-		id: 1,
-		avatar: 'https://c.animaapp.com/mimycn40ClpGDL/img/---192-1.png',
-		username: '李佳佳',
-		time: '10分钟前',
-		content: '这个设计师的审美很在线呢'
-	},
-	{
-		id: 2,
-		avatar: 'https://c.animaapp.com/mimycn40ClpGDL/img/---192-2.png',
-		username: '韩善宇',
-		time: '8小时前',
-		content: '😍😍😍 好喜欢！'
-	},
-	{
-		id: 3,
-		avatar: 'https://c.animaapp.com/mimycn40ClpGDL/img/---192-3.png',
-		username: '马菲菲',
-		time: '2025-12-01 12:20:55',
-		content: '这个发型我真的太喜欢了！很有高级感。'
-	},
-	{
-		id: 4,
-		avatar: 'https://c.animaapp.com/mimycn40ClpGDL/img/---192-4.png',
-		username: '小仙女',
-		time: '2025-12-01 12:20:55',
-		content: '这个发型我真的太喜欢了！很有高级感。'
+const commentList = ref([])
+
+// 获取作品详情
+const fetchWorkDetail = async (id) => {
+	try {
+		const res = await portfolioApi.getDetail(id)
+		if (res.code === 0 && res.data) {
+			const data = res.data
+			workDetail.value = {
+				id: data.id,
+				images: data.images || [data.coverImage],
+				likes: data.likes || 0,
+				comments: data.comments || 0,
+				favorites: data.favorites || 0,
+				shares: data.shares || 0
+			}
+			isLiked.value = data.isLiked || false
+			isFavorited.value = data.isFavorited || false
+			commentTotal.value = data.comments || 0
+
+			// 设置设计师信息
+			designerInfo.value = {
+				id: data.designerId,
+				avatar: data.designerAvatar,
+				name: data.designerName,
+				title: data.brandName || '设计师',
+				verified: true
+			}
+
+			// 获取评论列表
+			fetchComments(id)
+		}
+	} catch (e) {
+		console.error('获取作品详情失败', e)
 	}
-])
+}
+
+// 获取评论列表
+const fetchComments = async (id) => {
+	try {
+		const res = await portfolioApi.getComments(id, { page: 1, pageSize: 10 })
+		if (res.code === 0) {
+			const comments = res.data.list || res.data.records || []
+			commentList.value = comments.map(item => ({
+				id: item.id,
+				avatar: item.userAvatar,
+				username: item.userName,
+				time: item.createdAt,
+				content: item.content
+			}))
+		}
+	} catch (e) {
+		console.error('获取评论列表失败', e)
+	}
+}
 
 onMounted(() => {
 	// 获取状态栏高度
@@ -242,13 +265,10 @@ onMounted(() => {
 	const currentPage = pages[pages.length - 1]
 	const options = currentPage.options || {}
 	if (options.id) {
-		loadWorkDetail(options.id)
+		workId.value = options.id
+		fetchWorkDetail(options.id)
 	}
 })
-
-const loadWorkDetail = (id) => {
-	console.log('加载作品详情:', id)
-}
 
 const handleBack = () => {
 	uni.navigateBack()
@@ -274,7 +294,7 @@ const handleMessage = () => {
 	})
 }
 
-const handleFollow = () => {
+const handleFollow = async () => {
 	isFollowed.value = !isFollowed.value
 	uni.showToast({
 		title: isFollowed.value ? '关注成功' : '已取消关注',
@@ -300,28 +320,65 @@ const handleOpenComment = () => {
 	})
 }
 
-const handleLike = () => {
-	isLiked.value = !isLiked.value
-	if (isLiked.value) {
-		workDetail.value.likes++
-	} else {
-		workDetail.value.likes--
+const handleLike = async () => {
+	try {
+		if (isLiked.value) {
+			const res = await portfolioApi.unlike(workId.value)
+			if (res.code === 0) {
+				isLiked.value = false
+				workDetail.value.likes = res.data.likes
+			}
+		} else {
+			const res = await portfolioApi.like(workId.value)
+			if (res.code === 0) {
+				isLiked.value = true
+				workDetail.value.likes = res.data.likes
+			}
+		}
+	} catch (e) {
+		console.error('点赞操作失败', e)
 	}
 }
 
-const handleShare = () => {
-	uni.showToast({
-		title: '分享功能开发中',
-		icon: 'none'
-	})
+const handleShare = async () => {
+	try {
+		await portfolioApi.share(workId.value, { channel: 'wechat' })
+		uni.showToast({
+			title: '分享成功',
+			icon: 'none'
+		})
+	} catch (e) {
+		uni.showToast({
+			title: '分享功能开发中',
+			icon: 'none'
+		})
+	}
 }
 
-const handleFavorite = () => {
-	isFavorited.value = !isFavorited.value
-	uni.showToast({
-		title: isFavorited.value ? '收藏成功' : '已取消收藏',
-		icon: 'none'
-	})
+const handleFavorite = async () => {
+	try {
+		if (isFavorited.value) {
+			const res = await portfolioApi.unfavorite(workId.value)
+			if (res.code === 0) {
+				isFavorited.value = false
+				uni.showToast({
+					title: '已取消收藏',
+					icon: 'none'
+				})
+			}
+		} else {
+			const res = await portfolioApi.favorite(workId.value)
+			if (res.code === 0) {
+				isFavorited.value = true
+				uni.showToast({
+					title: '收藏成功',
+					icon: 'none'
+				})
+			}
+		}
+	} catch (e) {
+		console.error('收藏操作失败', e)
+	}
 }
 
 const handleSend = () => {

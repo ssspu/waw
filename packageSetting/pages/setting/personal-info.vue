@@ -177,6 +177,7 @@
 
 <script>
 import SettingDetailHeader from '@/components/setting/SettingDetailHeader.vue'
+import api from '@/api'
 
 export default {
 	components: {
@@ -191,18 +192,60 @@ export default {
 				{ label: '地区', key: 'region' }
 			],
 			userInfo: {
-				avatar: 'https://c.animaapp.com/mi5nkzbpeEnFKd/img/placeholder-avatar.png',
-				nickname: 'yangqixiaonv',
-				gender: '女',
+				avatar: '/static/avatar/avatar.png',
+				nickname: '',
+				gender: '',
 				profession: '',
-				region: '四川-成都',
-				bio: '输入1-30字简介'
+				region: '',
+				bio: ''
 			},
+			loading: false,
 			showBioModal: false,
 			tempBio: ''
 		}
 	},
+	onLoad() {
+		this.fetchUserInfo()
+	},
 	methods: {
+		async fetchUserInfo() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await api.user.getInfo()
+				if (res.code === 0) {
+					const data = res.data || {}
+					this.userInfo = {
+						avatar: data.avatar || '/static/avatar/avatar.png',
+						nickname: data.nickname || '',
+						gender: data.gender || '保密',
+						profession: data.profession || '',
+						region: data.region || '',
+						bio: data.signature || data.bio || ''
+					}
+				}
+			} catch (err) {
+				console.error('获取用户信息失败:', err)
+			} finally {
+				this.loading = false
+			}
+		},
+		async updateUserInfo(key, value) {
+			try {
+				const res = await api.user.updateInfo({ [key]: value })
+				if (res.code === 0) {
+					uni.showToast({ title: '已更新', icon: 'success' })
+					return true
+				} else {
+					uni.showToast({ title: '更新失败', icon: 'none' })
+					return false
+				}
+			} catch (err) {
+				console.error('更新用户信息失败:', err)
+				uni.showToast({ title: '更新失败', icon: 'none' })
+				return false
+			}
+		},
 		handleAvatarClick() {
 			uni.showActionSheet({
 				itemList: ['拍照', '从相册选择'],
@@ -212,9 +255,25 @@ export default {
 						uni.chooseImage({
 							count: 1,
 							sourceType: ['camera'],
-							success: (result) => {
-								this.userInfo.avatar = result.tempFilePaths[0]
-								uni.showToast({ title: '头像已更新', icon: 'success' })
+							success: async (result) => {
+								const tempPath = result.tempFilePaths[0]
+								// 先显示临时图片
+								const oldAvatar = this.userInfo.avatar
+								this.userInfo.avatar = tempPath
+								// 上传头像
+								try {
+									const uploadRes = await api.user.uploadAvatar(tempPath)
+									if (uploadRes.code === 0) {
+										this.userInfo.avatar = uploadRes.data.url || tempPath
+										uni.showToast({ title: '头像已更新', icon: 'success' })
+									} else {
+										this.userInfo.avatar = oldAvatar
+										uni.showToast({ title: '上传失败', icon: 'none' })
+									}
+								} catch (err) {
+									this.userInfo.avatar = oldAvatar
+									uni.showToast({ title: '上传失败', icon: 'none' })
+								}
 							}
 						})
 					} else if (res.tapIndex === 1) {
@@ -222,9 +281,23 @@ export default {
 						uni.chooseImage({
 							count: 1,
 							sourceType: ['album'],
-							success: (result) => {
-								this.userInfo.avatar = result.tempFilePaths[0]
-								uni.showToast({ title: '头像已更新', icon: 'success' })
+							success: async (result) => {
+								const tempPath = result.tempFilePaths[0]
+								const oldAvatar = this.userInfo.avatar
+								this.userInfo.avatar = tempPath
+								try {
+									const uploadRes = await api.user.uploadAvatar(tempPath)
+									if (uploadRes.code === 0) {
+										this.userInfo.avatar = uploadRes.data.url || tempPath
+										uni.showToast({ title: '头像已更新', icon: 'success' })
+									} else {
+										this.userInfo.avatar = oldAvatar
+										uni.showToast({ title: '上传失败', icon: 'none' })
+									}
+								} catch (err) {
+									this.userInfo.avatar = oldAvatar
+									uni.showToast({ title: '上传失败', icon: 'none' })
+								}
 							}
 						})
 					}
@@ -248,10 +321,14 @@ export default {
 				editable: true,
 				placeholderText: '请输入昵称',
 				content: this.userInfo.nickname,
-				success: (res) => {
+				success: async (res) => {
 					if (res.confirm && res.content) {
+						const oldValue = this.userInfo.nickname
 						this.userInfo.nickname = res.content
-						uni.showToast({ title: '昵称已更新', icon: 'success' })
+						const success = await this.updateUserInfo('nickname', res.content)
+						if (!success) {
+							this.userInfo.nickname = oldValue
+						}
 					}
 				}
 			})
@@ -259,10 +336,14 @@ export default {
 		editGender() {
 			uni.showActionSheet({
 				itemList: ['男', '女', '保密'],
-				success: (res) => {
+				success: async (res) => {
 					const genders = ['男', '女', '保密']
+					const oldValue = this.userInfo.gender
 					this.userInfo.gender = genders[res.tapIndex]
-					uni.showToast({ title: '性别已更新', icon: 'success' })
+					const success = await this.updateUserInfo('gender', genders[res.tapIndex])
+					if (!success) {
+						this.userInfo.gender = oldValue
+					}
 				}
 			})
 		},
@@ -272,10 +353,14 @@ export default {
 				editable: true,
 				placeholderText: '请输入职业',
 				content: this.userInfo.profession,
-				success: (res) => {
+				success: async (res) => {
 					if (res.confirm && res.content) {
+						const oldValue = this.userInfo.profession
 						this.userInfo.profession = res.content
-						uni.showToast({ title: '职业已更新', icon: 'success' })
+						const success = await this.updateUserInfo('profession', res.content)
+						if (!success) {
+							this.userInfo.profession = oldValue
+						}
 					}
 				}
 			})
@@ -286,10 +371,14 @@ export default {
 				editable: true,
 				placeholderText: '请输入地区，如：四川-成都',
 				content: this.userInfo.region,
-				success: (res) => {
+				success: async (res) => {
 					if (res.confirm && res.content) {
+						const oldValue = this.userInfo.region
 						this.userInfo.region = res.content
-						uni.showToast({ title: '地区已更新', icon: 'success' })
+						const success = await this.updateUserInfo('region', res.content)
+						if (!success) {
+							this.userInfo.region = oldValue
+						}
 					}
 				}
 			})
@@ -300,16 +389,20 @@ export default {
 			})
 		},
 		handleBioClick() {
-			this.tempBio = this.userInfo.bio === '输入1-30字简介' ? '' : this.userInfo.bio
+			this.tempBio = this.userInfo.bio || ''
 			this.showBioModal = true
 		},
 		closeBioModal() {
 			this.showBioModal = false
 		},
-		confirmBio() {
+		async confirmBio() {
 			if (this.tempBio.trim()) {
+				const oldValue = this.userInfo.bio
 				this.userInfo.bio = this.tempBio
-				uni.showToast({ title: '简介已更新', icon: 'success' })
+				const success = await this.updateUserInfo('signature', this.tempBio)
+				if (!success) {
+					this.userInfo.bio = oldValue
+				}
 			}
 			this.showBioModal = false
 		}

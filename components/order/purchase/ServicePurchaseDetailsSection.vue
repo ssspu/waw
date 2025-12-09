@@ -1,10 +1,10 @@
 <template>
 	<view class="details-section">
 		<!-- 分页指示器 -->
-		<view class="pagination-indicator">
+		<view v-if="totalPages > 0" class="pagination-indicator">
 			<view class="pagination-badge">
-				<text class="current-page">2</text>
-				<text class="total-pages">/6</text>
+				<text class="current-page">{{ currentPage }}</text>
+				<text class="total-pages">/{{ totalPages }}</text>
 			</view>
 		</view>
 	</view>
@@ -12,7 +12,17 @@
 
 <script>
 export default {
-	name: 'ServicePurchaseDetailsSection'
+	name: 'ServicePurchaseDetailsSection',
+	props: {
+		currentPage: {
+			type: Number,
+			default: 1
+		},
+		totalPages: {
+			type: Number,
+			default: 0
+		}
+	}
 }
 </script>
 

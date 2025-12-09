@@ -147,103 +147,105 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
 	data() {
 		return {
 			statusBarHeight: 44,
 			activeTab: 'designer',
 			tabs: [
-				{ label: '设计师', value: 'designer', count: 3 },
-				{ label: '商家', value: 'store', count: 2 }
+				{ label: '设计师', value: 'designer', count: 0 },
+				{ label: '商家', value: 'store', count: 0 }
 			],
-			designerList: [
-				{
-					name: '李天天',
-					level: '高级',
-					role: '店长｜从业12年',
-					avatar: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png',
-					specialties: ['女士造型', '烫发设计', '短发造型'],
-					rating: '4.8',
-					services: 287,
-					works: 123,
-					tags: ['气质提升', '高端染发'],
-					distance: '1.2km',
-					promotionStatus: 'apply'
-				},
-				{
-					name: '李天天',
-					level: '高级',
-					role: '店长｜从业12年',
-					avatar: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png',
-					specialties: ['女士造型', '烫发设计', '短发造型'],
-					rating: '4.8',
-					services: 287,
-					works: 123,
-					tags: ['氛围感剪裁', '质感烫发'],
-					distance: '2.5km',
-					promotionStatus: 'pending'
-				},
-				{
-					name: '李天天',
-					level: '高级',
-					role: '店长｜从业12年',
-					avatar: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png',
-					specialties: ['女士造型', '烫发设计', '短发造型'],
-					rating: '4.8',
-					services: 287,
-					works: 123,
-					tags: ['短发定制', '烫染一体'],
-					distance: '3.1km',
-					promotionStatus: 'active'
-				}
-			],
-			storeList: [
-				{
-					name: '成都NICE造型沙龙',
-					tag: '舒适',
-					type: '专业店｜2012年开业',
-					rating: '4.8',
-					designers: '8人',
-					services: '1236',
-					distance: '7.5km',
-					image: 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png',
-					promotionStatus: 'apply'
-				},
-				{
-					name: '成都NICE造型沙龙',
-					tag: '舒适',
-					type: '专业店｜2012年开业',
-					rating: '4.8',
-					designers: '8人',
-					services: '1236',
-					distance: '7.5km',
-					image: 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-1.png',
-					promotionStatus: 'pending'
-				}
-			]
+			designerList: [],
+			storeList: [],
+			loading: false,
+			page: 1,
+			pageSize: 20
 		}
 	},
 	onLoad() {
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+		this.fetchFollowList()
 	},
 	methods: {
+		async fetchFollowList() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await api.user.getFollowList({
+					page: this.page,
+					pageSize: this.pageSize
+				})
+				if (res.code === 0) {
+					// 更新tab计数
+					this.tabs[0].count = res.data.designerCount || 0
+					this.tabs[1].count = res.data.brandCount || 0
+
+					// 分离设计师和商家数据
+					const list = res.data.list || res.data.records || []
+					this.designerList = list.filter(item => item.type === 'designer').map(item => ({
+						id: item.id,
+						name: item.name,
+						level: item.level || '高级',
+						role: item.role || '',
+						avatar: item.avatar,
+						specialties: item.specialties || [],
+						rating: item.rating || '4.8',
+						services: item.services || 0,
+						works: item.works || 0,
+						promotionStatus: item.promotionStatus || 'apply'
+					}))
+					this.storeList = list.filter(item => item.type === 'brand').map(item => ({
+						id: item.id,
+						name: item.name,
+						tag: item.tag || '舒适',
+						type: item.type_desc || '',
+						rating: item.rating || '4.8',
+						designers: item.designers || '0人',
+						services: item.services || '0',
+						distance: item.distance || '',
+						image: item.image,
+						promotionStatus: item.promotionStatus || 'apply'
+					}))
+				}
+			} catch (err) {
+				console.error('获取关注列表失败:', err)
+				uni.showToast({ title: '获取关注列表失败', icon: 'none' })
+			} finally {
+				this.loading = false
+			}
+		},
 		handleBack() {
 			uni.navigateBack()
 		},
 		handleTabChange(tabValue) {
 			this.activeTab = tabValue
 		},
-		handleUnfollow(designer) {
-			uni.showToast({
-				title: `取消关注 ${designer.name}`,
-				icon: 'none'
-			})
+		async handleUnfollow(designer) {
+			try {
+				const res = await api.user.batchUnfollow({ ids: [designer.id], type: 'designer' })
+				if (res.code === 0) {
+					this.designerList = this.designerList.filter(d => d.id !== designer.id)
+					this.tabs[0].count = this.designerList.length
+					uni.showToast({ title: '已取消关注', icon: 'success' })
+				}
+			} catch (err) {
+				uni.showToast({ title: '操作失败', icon: 'none' })
+			}
 		},
-		handleUnfollowStore(store) {
-			uni.showToast({
-				title: `取消关注 ${store.name}`,
-				icon: 'none'
-			})
+		async handleUnfollowStore(store) {
+			try {
+				const res = await api.user.batchUnfollow({ ids: [store.id], type: 'brand' })
+				if (res.code === 0) {
+					this.storeList = this.storeList.filter(s => s.id !== store.id)
+					this.tabs[1].count = this.storeList.length
+					uni.showToast({ title: '已取消关注', icon: 'success' })
+				}
+			} catch (err) {
+				uni.showToast({ title: '操作失败', icon: 'none' })
+			}
 		},
 		getPromotionText(status) {
 			const textMap = {
@@ -255,8 +257,6 @@ export default {
 		},
 		handlePromotion(designer) {
 			if (designer.promotionStatus === 'apply') {
-				// 更新状态为申请中
-				designer.promotionStatus = 'pending'
 				uni.showToast({
 					title: '申请已发送',
 					icon: 'none'

@@ -178,166 +178,25 @@
 </template>
 
 <script>
+import { designerApi } from '@/api'
+
 export default {
+	props: {
+		designerId: {
+			type: [String, Number],
+			default: null
+		}
+	},
 	data() {
 		return {
 			activeNavTab: 0,
 			navTabs: ["服务须知", "服务特色", "环境设施"],
-			serviceInfoData: [
-				{ label: "职位", value: "店长" },
-				{ label: "职称", value: "国家高级美发师" },
-				{ label: "擅长", value: "男士油头造型、细软烫发" },
-				{ label: "工作时间", value: "周二 - 周日", extra: "10:00-21:00" },
-				{ label: "从业时间", value: "12年" },
-				{ label: "预约时间", value: "提前3小时" },
-			],
-			serviceFeaturesData: [
-				{
-					title: "",
-					tags: [
-						"全预约制", "免费茶点",
-						"头皮检测", "免费停车",
-						"烫染专业店", "免费修眉",
-						"一对一服务", "免费按摩",
-						"没有隐形消费", "可上门服务"
-					]
-				},
-				{
-					title: "其他",
-					tags: [
-						"不可携带宠物", "服务区不可吸烟"
-					]
-				}
-			],
-			environmentData: [
-				{
-					title: "",
-					tags: [
-						"储物柜", "免费Wifi",
-						"充电宝", "可看电视",
-						"VIP专区", "沙发座"
-					]
-				},
-				{
-					title: "通用设施",
-					tags: [
-						"特定吸烟区", "电梯",
-						"有停车位", "空调",
-						"先进/刷卡支付"
-					]
-				}
-			],
-			reviewTags: [
-				{ text: "技术很好", count: "232", active: true },
-				{ text: "效果满意", count: "321", active: false },
-				{ text: "服务态度", count: "321", active: false },
-			],
-			reviews: [
-				{
-					id: 1,
-					title: "环境特别好",
-					rating: "5.0",
-					content: "环境特别好环境特别好环境特别好环境特别好环境特别好环境特别好环境...",
-					author: "加菲猫",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-25",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-				{
-					id: 2,
-					title: "服务很专业",
-					rating: "4.8",
-					content: "服务很专业，发型设计很满意，下次还会再来...",
-					author: "小可爱",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-24",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-				{
-					id: 3,
-					title: "效果超出预期",
-					rating: "5.0",
-					content: "效果超出预期，非常满意，推荐给大家...",
-					author: "美少女",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-23",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-				{
-					id: 4,
-					title: "技术很棒",
-					rating: "4.9",
-					content: "技术很棒，服务态度也很好，值得推荐...",
-					author: "时尚达人",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-22",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-				{
-					id: 5,
-					title: "性价比很高",
-					rating: "4.7",
-					content: "性价比很高，服务周到，环境舒适...",
-					author: "追求者",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-21",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-				{
-					id: 6,
-					title: "非常满意",
-					rating: "5.0",
-					content: "非常满意，下次还会再来，强烈推荐...",
-					author: "忠实客户",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-20",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-				{
-					id: 7,
-					title: "环境优雅",
-					rating: "4.8",
-					content: "环境优雅，服务专业，体验很好...",
-					author: "品味生活",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-19",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-				{
-					id: 8,
-					title: "发型设计很赞",
-					rating: "4.9",
-					content: "发型设计很赞，技术精湛，推荐...",
-					author: "时尚先锋",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-18",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-				{
-					id: 9,
-					title: "服务态度很好",
-					rating: "5.0",
-					content: "服务态度很好，技术也很专业，满意...",
-					author: "满意客户",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-17",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-				{
-					id: 10,
-					title: "体验很棒",
-					rating: "4.8",
-					content: "体验很棒，下次还会再来，推荐给大家...",
-					author: "体验者",
-					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
-					date: "2019-12-16",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
-				},
-			],
-			questions: [
-				"只烫不染的短发多少钱？头发比较干，不知道能不能做？",
-				"刘海发际线太高怎么办？",
-			],
+			serviceInfoData: [],
+			serviceFeaturesData: [],
+			environmentData: [],
+			reviewTags: [],
+			reviews: [],
+			questions: [],
 			// 滚动虚化效果相关
 			reviewScrollLeft: 0,
 			lastReviewScrollLeft: 0,
@@ -350,26 +209,106 @@ export default {
 			reviewScrollContentWidth: 0,
 		}
 	},
-	computed: {
-		currentInfoData() {
-			if (this.activeNavTab === 0) {
-				return this.serviceInfoData
-			} else if (this.activeNavTab === 1) {
-				return this.serviceFeaturesData
-			} else {
-				return this.environmentData
+	watch: {
+		designerId: {
+			immediate: true,
+			handler(newVal) {
+				if (newVal) {
+					this.loadDesignerInfo()
+					this.loadReviews()
+				}
 			}
 		},
-		totalReviewCount() {
-			// 计算总评价数量（可以从所有标签的count中计算，或者使用reviews数组长度）
-			return this.reviews.length || this.reviewTags.reduce((sum, tag) => sum + parseInt(tag.count || 0), 0)
-		},
 		displayedReviews() {
-			// 最多显示10条评价
-			return this.reviews.slice(0, 10)
+			this.measureReviewScroll()
+		}
+	},
+	async created() {
+		if (this.designerId) {
+			await Promise.all([
+				this.loadDesignerInfo(),
+				this.loadReviews()
+			])
 		}
 	},
 	methods: {
+		async loadDesignerInfo() {
+			try {
+				const res = await designerApi.getInfo(this.designerId)
+				if (res && res.data) {
+					const data = res.data
+					// 服务须知数据
+					this.serviceInfoData = [
+						{ label: "职位", value: data.position || "店长" },
+						{ label: "职称", value: data.title || "国家高级美发师" },
+						{ label: "擅长", value: data.specialties ? data.specialties.join('、') : "男士油头造型、细软烫发" },
+						{ label: "工作时间", value: data.workDays || "周二 - 周日", extra: data.workHours || "10:00-21:00" },
+						{ label: "从业时间", value: `${data.experience || 12}年` },
+						{ label: "预约时间", value: data.appointmentAdvance || "提前3小时" },
+					]
+
+					// 服务特色数据
+					this.serviceFeaturesData = data.serviceFeatures || [
+						{
+							title: "",
+							tags: ["全预约制", "免费茶点", "头皮检测", "免费停车", "烫染专业店", "免费修眉", "一对一服务", "免费按摩", "没有隐形消费", "可上门服务"]
+						},
+						{
+							title: "其他",
+							tags: ["不可携带宠物", "服务区不可吸烟"]
+						}
+					]
+
+					// 环境设施数据
+					this.environmentData = data.environmentFacilities || [
+						{
+							title: "",
+							tags: ["储物柜", "免费Wifi", "充电宝", "可看电视", "VIP专区", "沙发座"]
+						},
+						{
+							title: "通用设施",
+							tags: ["特定吸烟区", "电梯", "有停车位", "空调", "先进/刷卡支付"]
+						}
+					]
+				}
+			} catch (error) {
+				console.error('加载设计师信息失败:', error)
+			}
+		},
+		async loadReviews() {
+			try {
+				const res = await designerApi.getReviews(this.designerId, { page: 1, pageSize: 10 })
+				if (res && res.data) {
+					const data = res.data
+					const list = data.list || data.records || []
+					// 转换点评数据格式
+					this.reviews = list.map(r => ({
+						id: r.id,
+						title: r.title || "服务很好",
+						rating: String(r.rating || 5.0),
+						content: r.content,
+						author: r.userName || r.author,
+						avatar: r.userAvatar || "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
+						date: r.createTime || r.date || r.time,
+						image: r.images && r.images.length > 0 ? r.images[0] : "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
+					}))
+
+					// 点评标签
+					const ratingStats = data.ratingStats
+					this.reviewTags = ratingStats?.filterTags?.map((tag, index) => ({
+						text: tag.label,
+						count: String(tag.count || ''),
+						active: index === 0
+					})) || [
+						{ text: "技术很好", count: String(data.total || this.reviews.length), active: true },
+						{ text: "效果满意", count: String(Math.floor((data.total || this.reviews.length) * 0.8)), active: false },
+						{ text: "服务态度", count: String(Math.floor((data.total || this.reviews.length) * 0.7)), active: false },
+					]
+				}
+			} catch (error) {
+				console.error('加载点评失败:', error)
+			}
+		},
 		switchNav(index) {
 			this.activeNavTab = index
 		},
@@ -468,9 +407,21 @@ export default {
 			})
 		}
 	},
-	watch: {
+	computed: {
+		currentInfoData() {
+			if (this.activeNavTab === 0) {
+				return this.serviceInfoData
+			} else if (this.activeNavTab === 1) {
+				return this.serviceFeaturesData
+			} else {
+				return this.environmentData
+			}
+		},
+		totalReviewCount() {
+			return this.reviews.length || this.reviewTags.reduce((sum, tag) => sum + parseInt(tag.count || 0), 0)
+		},
 		displayedReviews() {
-			this.measureReviewScroll()
+			return this.reviews.slice(0, 10)
 		}
 	},
 	mounted() {

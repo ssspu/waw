@@ -64,6 +64,8 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
 	props: {
 		activeTab: {
@@ -73,153 +75,122 @@ export default {
 	},
 	data() {
 		return {
-			couponsData: [
-				{
-					id: 1,
-					amount: "30",
-					requirement: "满300元使用",
-					title: "护理优惠券",
-					description: "服务类产品均可使用",
-					startDate: "2020.05.05",
-					endDate: "2020.11.05",
-					location: "限成都武侯沙龙美容美发店",
-					type: "service"
-				},
-				{
-					id: 2,
-					amount: "30",
-					requirement: "满300元使用",
-					title: "护理优惠券",
-					description: "服务类产品均可使用",
-					startDate: "2020.05.05",
-					endDate: "2020.11.05",
-					location: "限成都武侯沙龙美容美发店",
-					type: "service"
-				},
-				{
-					id: 3,
-					amount: "30",
-					requirement: "满300元使用",
-					title: "护理优惠券",
-					description: "服务类产品均可使用",
-					startDate: "2020.05.05",
-					endDate: "2020.11.05",
-					location: "限成都武侯沙龙美容美发店",
-					type: "product"
-				},
-				{
-					id: 4,
-					amount: "30",
-					requirement: "满300元使用",
-					title: "护理优惠券",
-					description: "服务类产品均可使用",
-					startDate: "2020.05.05",
-					endDate: "2020.11.05",
-					location: "限成都武侯沙龙美容美发店",
-					type: "service"
-				},
-				{
-					id: 5,
-					amount: "30",
-					requirement: "满300元使用",
-					title: "护理优惠券",
-					description: "服务类产品均可使用",
-					startDate: "2020.05.05",
-					endDate: "2020.11.05",
-					location: "限成都武侯沙龙美容美发店",
-					type: "product"
-				},
-				{
-					id: 6,
-					amount: "30",
-					requirement: "满300元使用",
-					title: "护理优惠券",
-					description: "服务类产品均可使用",
-					startDate: "2020.05.05",
-					endDate: "2020.11.05",
-					location: "限成都武侯沙龙美容美发店",
-					status: "已过期",
-					type: "ended"
-				},
-				{
-					id: 7,
-					amount: "30",
-					requirement: "满300元使用",
-					title: "护理优惠券",
-					description: "服务类产品均可使用",
-					startDate: "2020.05.05",
-					endDate: "2020.11.05",
-					location: "限成都武侯沙龙美容美发店",
-					status: "已使用",
-					type: "ended"
-				},
-				{
-					id: 8,
-					amount: "30",
-					requirement: "满300元使用",
-					title: "护理优惠券",
-					description: "服务类产品均可使用",
-					startDate: "2020.05.05",
-					endDate: "2020.11.05",
-					location: "限成都武侯沙龙美容美发店",
-					status: "已使用",
-					type: "ended"
-				},
-				{
-					id: 9,
-					amount: "30",
-					requirement: "满300元使用",
-					title: "护理优惠券",
-					description: "服务类产品均可使用",
-					startDate: "2020.05.05",
-					endDate: "2020.11.05",
-					location: "限成都武侯沙龙美容美发店",
-					status: "已使用",
-					type: "ended"
-				},
-				{
-					id: 10,
-					amount: "30",
-					requirement: "满300元使用",
-					title: "护理优惠券",
-					description: "服务类产品均可使用",
-					startDate: "2020.05.05",
-					endDate: "2020.11.05",
-					location: "限成都武侯沙龙美容美发店",
-					status: "已使用",
-					type: "ended"
-				},
-				{
-					id: 11,
-					amount: "30",
-					requirement: "满300元使用",
-					title: "护理优惠券",
-					description: "服务类产品均可使用",
-					startDate: "2020.05.05",
-					endDate: "2020.11.05",
-					location: "限成都武侯沙龙美容美发店",
-					status: "已使用",
-					type: "ended"
-				},
-			],
+			couponsData: [],
+			loading: false,
+			page: 1,
+			pageSize: 20
 		}
 	},
 	computed: {
 		filteredCoupons() {
-			if (this.activeTab === 'service') {
-				return this.couponsData.filter(coupon => coupon.type === 'service')
-			} else if (this.activeTab === 'product') {
-				return this.couponsData.filter(coupon => coupon.type === 'product')
-			} else if (this.activeTab === 'ended') {
-				return this.couponsData.filter(coupon => coupon.type === 'ended')
-			}
 			return this.couponsData
 		}
 	},
+	watch: {
+		activeTab: {
+			handler() {
+				this.page = 1
+				this.couponsData = []
+				this.fetchCoupons()
+			},
+			immediate: true
+		}
+	},
 	methods: {
+		// 获取优惠券列表
+		async fetchCoupons() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				// 根据tab获取不同状态的优惠券
+				const statusMap = {
+					'service': 'available',
+					'product': 'available',
+					'ended': 'used' // 包含已使用和已过期
+				}
+				const status = statusMap[this.activeTab] || 'available'
+
+				const res = await api.coupon.getList({
+					status,
+					page: this.page,
+					pageSize: this.pageSize
+				})
+
+				if (res.code === 0) {
+					const list = (res.data.list || []).map(coupon => this.transformCoupon(coupon))
+					// 根据activeTab过滤
+					let filtered = list
+					if (this.activeTab === 'service') {
+						filtered = list.filter(c => c.useScope === 'all' || c.useScope === 'service')
+					} else if (this.activeTab === 'product') {
+						filtered = list.filter(c => c.useScope === 'brand' || c.useScope === 'designer')
+					}
+					this.couponsData = filtered
+				}
+			} catch (err) {
+				console.error('获取优惠券列表失败:', err)
+				uni.showToast({ title: '获取优惠券失败', icon: 'none' })
+			} finally {
+				this.loading = false
+			}
+		},
+		// 转换优惠券数据格式
+		transformCoupon(coupon) {
+			// 计算显示金额和要求
+			let amount = ''
+			let requirement = ''
+			if (coupon.type === 'cash' || coupon.type === 'full_reduction') {
+				amount = String(coupon.value)
+				requirement = coupon.minAmount > 0 ? `满${coupon.minAmount}元使用` : '无门槛'
+			} else if (coupon.type === 'discount') {
+				amount = String(Math.round((100 - coupon.value) / 10))
+				requirement = coupon.maxDiscount ? `最高减${coupon.maxDiscount}元` : '无上限'
+			}
+
+			// 状态映射
+			let status = null
+			let type = 'service'
+			if (coupon.status === 'used') {
+				status = '已使用'
+				type = 'ended'
+			} else if (coupon.status === 'expired') {
+				status = '已过期'
+				type = 'ended'
+			}
+
+			return {
+				id: coupon.id,
+				amount,
+				requirement,
+				title: coupon.name,
+				description: coupon.description,
+				startDate: coupon.startTime ? coupon.startTime.replace(/-/g, '.') : '',
+				endDate: coupon.endTime ? coupon.endTime.replace(/-/g, '.') : '',
+				location: this.getScopeText(coupon),
+				status,
+				type,
+				useScope: coupon.useScope,
+				rawCoupon: coupon
+			}
+		},
+		// 获取使用范围文本
+		getScopeText(coupon) {
+			if (coupon.useScope === 'all') {
+				return '全场通用'
+			} else if (coupon.useScope === 'brand') {
+				return '指定品牌馆可用'
+			} else if (coupon.useScope === 'designer') {
+				return '指定设计师可用'
+			} else if (coupon.useScope === 'service') {
+				return '指定服务可用'
+			}
+			return ''
+		},
 		handleUse(coupon) {
-			console.log('Use coupon:', coupon)
-			// 可以跳转到使用优惠券的页面
+			// 跳转到首页或服务列表使用优惠券
+			uni.switchTab({
+				url: '/pages/index/index'
+			})
 		}
 	}
 }

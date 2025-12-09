@@ -1,9 +1,20 @@
 <template>
 	<view class="profile-section">
-		<view class="card">
+		<!-- 空数据状态 -->
+		<view v-if="!loading && morningSlots.length === 0 && afternoonSlots.length === 0" class="empty-state">
+			<image class="empty-icon" src="/static/icon/empty-time.png" mode="aspectFit"></image>
+			<text class="empty-text">暂无可预约时间</text>
+		</view>
+
+		<!-- 加载状态 -->
+		<view v-if="loading" class="loading-state">
+			<text class="loading-text">加载中...</text>
+		</view>
+
+		<view v-if="!loading && (morningSlots.length > 0 || afternoonSlots.length > 0)" class="card">
 			<view class="card-content">
 				<!-- 上午时间段 -->
-				<view class="time-section">
+				<view v-if="morningSlots.length > 0" class="time-section">
 					<text class="section-title">上午</text>
 					
 					<view class="time-slots-grid">
@@ -33,7 +44,7 @@
 				</view>
 				
 				<!-- 下午时间段 -->
-				<view class="time-section">
+				<view v-if="afternoonSlots.length > 0" class="time-section">
 					<text class="section-title">下午</text>
 					
 					<view class="time-slots-grid">
@@ -60,32 +71,81 @@
 				</view>
 				
 				<!-- 提示信息 -->
-				<text class="notice-text">预约当天服务需要提前60分钟</text>
+				<text class="notice-text">{{ noticeText }}</text>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
+	props: {
+		designerId: {
+			type: [String, Number],
+			default: null
+		},
+		activeSubTab: {
+			type: String,
+			default: 'today'
+		}
+	},
 	data() {
 		return {
-			morningSlots: [
-				{ time: "10:00", status: "booked", label: "已预约" },
-				{ time: "11:00", status: "booked", label: "已预约" },
-				{ time: "12:00", status: "selected", label: null },
-			],
-			afternoonSlots: [
-				{ time: "13:00", status: "available" },
-				{ time: "14:00", status: "available" },
-				{ time: "15:00", status: "available" },
-				{ time: "16:00", status: "available" },
-				{ time: "17:00", status: "available" },
-				{ time: "18:00", status: "available" },
-			],
+			loading: false,
+			morningSlots: [],
+			afternoonSlots: [],
+			noticeText: '预约当天服务需要提前60分钟'
+		}
+	},
+	watch: {
+		designerId: {
+			immediate: true,
+			handler(newVal) {
+				if (newVal) {
+					this.fetchAvailableTime()
+				}
+			}
+		},
+		activeSubTab() {
+			this.fetchAvailableTime()
 		}
 	},
 	methods: {
+		// 获取可预约时间
+		async fetchAvailableTime() {
+			if (!this.designerId || this.loading) return
+			this.loading = true
+			try {
+				const res = await api.designer.getAvailableTime(this.designerId, {
+					date: this.activeSubTab
+				})
+				if (res.code === 0) {
+					const data = res.data
+					// 转换上午时间段数据
+					this.morningSlots = (data.morningSlots || []).map(slot => ({
+						time: slot.time,
+						status: slot.status || 'available',
+						label: slot.label || null
+					}))
+					// 转换下午时间段数据
+					this.afternoonSlots = (data.afternoonSlots || []).map(slot => ({
+						time: slot.time,
+						status: slot.status || 'available',
+						label: slot.label || null
+					}))
+					// 更新提示文案
+					if (data.notice) {
+						this.noticeText = data.notice
+					}
+				}
+			} catch (err) {
+				console.error('获取可预约时间失败:', err)
+			} finally {
+				this.loading = false
+			}
+		},
 		handleSlotClick(period, index) {
 			let selectedSlot = null
 			if (period === 'morning') {
@@ -94,7 +154,7 @@ export default {
 					return // 已预约的不能选择
 				}
 				// 重置所有上午时间段的选择状态
-				this.morningSlots.forEach((s, i) => {
+				this.morningSlots.forEach((s) => {
 					if (s.status === 'selected') {
 						s.status = 'available'
 						s.label = null
@@ -122,7 +182,7 @@ export default {
 					}
 				})
 				// 重置所有下午时间段的选择状态
-				this.afternoonSlots.forEach((s, i) => {
+				this.afternoonSlots.forEach((s) => {
 					if (s.status === 'selected') {
 						s.status = 'available'
 					}
@@ -254,6 +314,46 @@ export default {
 	font-size: 22rpx;
 	line-height: normal;
 	letter-spacing: 0;
+}
+
+/* 空数据和加载状态 */
+.empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 80rpx 40rpx;
+	width: 100%;
+	background-color: #ffffff;
+	border-radius: 12rpx;
+	box-sizing: border-box;
+}
+
+.empty-icon {
+	width: 160rpx;
+	height: 160rpx;
+	margin-bottom: 24rpx;
+	opacity: 0.6;
+}
+
+.empty-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 28rpx;
+	color: #a6a6a6;
+}
+
+.loading-state {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 60rpx 0;
+	width: 100%;
+}
+
+.loading-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 26rpx;
+	color: #a6a6a6;
 }
 </style>
 

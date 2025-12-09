@@ -1,9 +1,11 @@
 /**
  * 请求中间层
  * 统一处理所有 HTTP 请求，包含拦截器、错误处理、token 管理等
+ * 支持 Mock 模式，在开发环境下使用本地模拟数据
  */
 
 import { config, HTTP_STATUS, BUSINESS_CODE, WHITE_LIST, HEADERS } from './config.js'
+import { mockRequest } from './mock/index.js'
 
 // Token 存储 key
 const TOKEN_KEY = 'waw_token'
@@ -265,6 +267,71 @@ const request = (options) => {
   // 应用请求拦截器
   options = requestInterceptor(options)
 
+  // Mock 模式处理
+  if (config.useMock) {
+    return handleMockRequest(options)
+  }
+
+  return handleRealRequest(options)
+}
+
+/**
+ * Mock 请求处理
+ * @param {Object} options - 请求配置
+ * @returns {Promise} - 模拟响应
+ */
+const handleMockRequest = async (options) => {
+  // 显示 loading (可选)
+  if (options.showLoading !== false) {
+    uni.showLoading({
+      title: options.loadingText || '加载中...',
+      mask: true
+    })
+  }
+
+  try {
+    const result = await mockRequest(options)
+
+    if (config.debug) {
+      console.log('🎭 Mock Response:', {
+        url: options.url,
+        method: options.method,
+        result
+      })
+    }
+
+    // 模拟响应拦截器处理
+    if (result.code === 0) {
+      return Promise.resolve(result)
+    }
+
+    return Promise.reject({
+      code: result.code,
+      message: result.message || '请求失败',
+      data: result.data
+    })
+  } catch (error) {
+    if (config.debug) {
+      console.error('🎭 Mock Error:', error)
+    }
+    return Promise.reject({
+      code: -1,
+      message: error.message || 'Mock 请求失败',
+      data: null
+    })
+  } finally {
+    if (options.showLoading !== false) {
+      uni.hideLoading()
+    }
+  }
+}
+
+/**
+ * 真实请求处理
+ * @param {Object} options - 请求配置
+ * @returns {Promise} - 请求结果
+ */
+const handleRealRequest = (options) => {
   return new Promise((resolve, reject) => {
     // 显示 loading (可选)
     if (options.showLoading !== false) {

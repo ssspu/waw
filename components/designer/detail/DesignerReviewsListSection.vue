@@ -6,22 +6,22 @@
 				<view class="rating-main">
 					<view class="rating-score-section">
 						<view class="score-row">
-							<text class="score-value">4.8</text>
+							<text class="score-value">{{ overallRating }}</text>
 							<view class="score-level-wrapper">
-								<text class="score-level">很棒</text>
+								<text class="score-level">{{ ratingLevel }}</text>
 							</view>
 						</view>
 						<view class="star-section">
 							<view class="stars">
-								<image 
-									v-for="(star, index) in 5" 
+								<image
+									v-for="(star, index) in 5"
 									:key="index"
-									class="star-icon" 
-									src="https://c.animaapp.com/mi5kx1ohxTkA7e/img/star-1.svg" 
+									class="star-icon"
+									src="https://c.animaapp.com/mi5kx1ohxTkA7e/img/star-1.svg"
 									mode="aspectFit"
 								></image>
 							</view>
-							<text class="review-count">2345条评价</text>
+							<text class="review-count">{{ totalReviewCount }}条评价</text>
 						</view>
 					</view>
 					
@@ -63,19 +63,30 @@
 					</view>
 				</view>
 				
+				<!-- 空数据状态 -->
+				<view v-if="!loading && filteredReviews.length === 0" class="empty-state">
+					<image class="empty-icon" src="/static/icon/empty-review.png" mode="aspectFit"></image>
+					<text class="empty-text">暂无点评内容</text>
+				</view>
+
+				<!-- 加载状态 -->
+				<view v-if="loading" class="loading-state">
+					<text class="loading-text">加载中...</text>
+				</view>
+
 				<!-- 点评列表 -->
-				<view class="reviews-list">
-					<view 
-						v-for="review in filteredReviews" 
-						:key="review.id" 
+				<view v-if="!loading && filteredReviews.length > 0" class="reviews-list">
+					<view
+						v-for="review in filteredReviews"
+						:key="review.id"
 						class="review-item"
 					>
 						<view class="review-header">
 							<view class="user-info">
 								<view class="user-avatar">
-									<image 
-										class="avatar-img" 
-										src="https://c.animaapp.com/mi5kx1ohxTkA7e/img/ellipse-34.svg" 
+									<image
+										class="avatar-img"
+										:src="review.userAvatar || 'https://c.animaapp.com/mi5kx1ohxTkA7e/img/ellipse-34.svg'"
 										mode="aspectFill"
 									></image>
 								</view>
@@ -101,14 +112,13 @@
 						<text class="review-content">{{ review.content }}</text>
 						
 						<view class="review-images">
-							<image 
-								v-for="(image, index) in review.images" 
-								:key="index"
-								class="review-image" 
-								:class="{ 'tall': review.id === 3 && index === 2 }"
-								:src="image" 
+							<image
+								v-for="(image, imgIndex) in review.images"
+								:key="imgIndex"
+								class="review-image"
+								:src="image"
 								mode="aspectFill"
-								@tap="handleImageClick(image, index)"
+								@tap="handleImageClick(review.images, image)"
 							></image>
 						</view>
 						
@@ -124,102 +134,128 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
+	props: {
+		designerId: {
+			type: [String, Number],
+			default: null
+		},
+		activeSubTab: {
+			type: String,
+			default: 'all'
+		}
+	},
 	data() {
 		return {
+			loading: false,
+			reviewType: 'all', // 评价类型：all, with-image, bad
 			activeFilterIndex: 0,
-			ratingCategories: [
-				{ label: "专业", value: 4.6, width: 91 },
-				{ label: "服务", value: 4.9, width: 97 },
-				{ label: "效果", value: 4.8, width: 94 },
-				{ label: "环境", value: 4.8, width: 94 }
-			],
-			filterTags: [
-				{ label: "全部", count: null, filter: 'all' },
-				{ label: "技术很好", count: 232, filter: 'skill' },
-				{ label: "效果满意", count: 321, filter: 'effect' },
-				{ label: "服务态度", count: 321, filter: 'service' }
-			],
-			reviews: [
-				{
-					id: 1,
-					userName: "加菲猫",
-					rating: 5.0,
-					date: "2019-12-25",
-					content: "技术很好！发型师很专业，剪出来的效果超出预期",
-					images: [
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png"
-					],
-					reply: null,
-					tags: ['skill']
-				},
-				{
-					id: 2,
-					userName: "小美",
-					rating: 5.0,
-					date: "2019-12-25",
-					content: "效果满意！染的颜色很好看，跟我想要的一模一样",
-					images: [
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png"
-					],
-					reply: "感谢您的认可，欢迎下次光临！",
-					tags: ['effect']
-				},
-				{
-					id: 3,
-					userName: "阿杰",
-					rating: 5.0,
-					date: "2019-12-25",
-					content: "服务态度超好！店员很热情，还提供免费茶水",
-					images: [
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png"
-					],
-					reply: null,
-					tags: ['service']
-				},
-				{
-					id: 4,
-					userName: "丽丽",
-					rating: 4.8,
-					date: "2019-12-20",
-					content: "技术很好，效果也满意，下次还会来",
-					images: [
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png"
-					],
-					reply: null,
-					tags: ['skill', 'effect']
+			overallRating: 0,
+			ratingLevel: '',
+			totalReviewCount: 0,
+			ratingCategories: [],
+			filterTags: [],
+			reviews: []
+		}
+	},
+	watch: {
+		designerId: {
+			immediate: true,
+			handler(newVal) {
+				if (newVal) {
+					this.fetchReviews()
 				}
-			]
+			}
+		},
+		activeSubTab: {
+			immediate: true,
+			handler(newVal) {
+				// 子tab切换时根据类型筛选评价
+				this.reviewType = newVal
+				// 重置筛选索引
+				this.activeFilterIndex = 0
+				if (this.designerId) {
+					this.fetchReviews()
+				}
+			}
 		}
 	},
 	computed: {
+		currentFilter() {
+			// 计算当前选中的筛选类型
+			if (!this.filterTags || this.filterTags.length === 0) {
+				return 'all'
+			}
+			const tag = this.filterTags[this.activeFilterIndex]
+			return tag ? tag.filter : 'all'
+		},
 		filteredReviews() {
-			const currentFilter = this.filterTags[this.activeFilterIndex].filter
-			if (currentFilter === 'all') {
+			// 根据筛选类型过滤评价列表
+			if (this.currentFilter === 'all') {
 				return this.reviews
 			}
-			return this.reviews.filter(review => review.tags && review.tags.includes(currentFilter))
+			return this.reviews.filter(review => {
+				return review.tags && review.tags.includes(this.currentFilter)
+			})
 		}
 	},
 	methods: {
-		handleTagClick(index) {
-			this.activeFilterIndex = index
+		// 获取评价列表
+		async fetchReviews() {
+			if (!this.designerId || this.loading) return
+			this.loading = true
+			try {
+				const res = await api.designer.getReviews(this.designerId, {
+					reviewType: this.reviewType, // 传递评价类型参数（全部/有图/差评）
+					page: 1,
+					pageSize: 20
+				})
+				if (res.code === 0) {
+					const data = res.data
+					const list = data.list || data.records || []
+					// 转换评价数据格式
+					this.reviews = list.map(r => ({
+						id: r.id,
+						userName: r.userName,
+						userAvatar: r.userAvatar,
+						rating: r.rating,
+						date: r.time,
+						content: r.content,
+						images: r.images || [],
+						reply: r.reply,
+						tags: r.tags || []
+					}))
+					// 更新评分统计
+					if (data.ratingStats) {
+						const stats = data.ratingStats
+						this.overallRating = stats.overall
+						this.ratingLevel = stats.level
+						this.totalReviewCount = stats.totalCount
+						this.ratingCategories = stats.categories || []
+						this.filterTags = stats.filterTags || []
+					}
+				}
+			} catch (err) {
+				console.error('获取评价列表失败:', err)
+			} finally {
+				this.loading = false
+			}
 		},
-		handleImageClick(image, index) {
-			uni.previewImage({
-				urls: this.reviews[index].images,
-				current: image
-			})
+		handleTagClick(index) {
+			// 只更新筛选索引，通过计算属性 filteredReviews 进行前端筛选
+			if (index >= 0 && index < this.filterTags.length) {
+				this.activeFilterIndex = index
+			}
+		},
+		handleImageClick(images, currentImage) {
+			if (images && images.length > 0) {
+				uni.previewImage({
+					urls: images,
+					current: currentImage
+				})
+			}
 		}
 	}
 }
@@ -586,6 +622,46 @@ export default {
 	color: #666666;
 	font-size: 20rpx;
 	line-height: 32rpx;
+}
+
+/* 空数据和加载状态 */
+.empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 80rpx 40rpx;
+	width: 100%;
+	background-color: #ffffff;
+	border-radius: 12rpx;
+	box-sizing: border-box;
+}
+
+.empty-icon {
+	width: 160rpx;
+	height: 160rpx;
+	margin-bottom: 24rpx;
+	opacity: 0.6;
+}
+
+.empty-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 28rpx;
+	color: #a6a6a6;
+}
+
+.loading-state {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 60rpx 0;
+	width: 100%;
+}
+
+.loading-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 26rpx;
+	color: #a6a6a6;
 }
 </style>
 

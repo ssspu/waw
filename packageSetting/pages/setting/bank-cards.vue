@@ -50,6 +50,7 @@
 
 <script>
 import SettingDetailHeader from '@/components/setting/SettingDetailHeader.vue'
+import api from '@/api'
 
 export default {
 	components: {
@@ -57,27 +58,46 @@ export default {
 	},
 	data() {
 		return {
-			bankCards: [
-				// 示例数据，实际应该从接口获取
-				// {
-				// 	id: 1,
-				// 	cardholder: '周杰伦',
-				// 	cardNumber: '90290439859049099',
-				// 	maskedNumber: '9029043985904*9099',
-				// 	bankName: '工商银行',
-				// 	bankAddress: '成都市高新区中和'
-				// }
-			]
+			bankCards: [],
+			loading: false
 		}
 	},
 	onLoad() {
-		// 加载银行卡列表
+		this.loadBankCards()
+	},
+	onShow() {
+		// 每次显示页面时刷新数据（添加新卡后返回）
 		this.loadBankCards()
 	},
 	methods: {
-		loadBankCards() {
-			// 从接口获取银行卡列表
-			// 这里暂时使用空数组
+		async loadBankCards() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await api.user.getBankCards()
+				if (res.code === 0) {
+					this.bankCards = (res.data || []).map(card => ({
+						id: card.id,
+						cardholder: card.holderName || '持卡人',
+						cardNumber: card.cardNumber,
+						maskedNumber: this.maskCardNumber(card.cardNumber),
+						bankName: card.bankName || '银行',
+						bankAddress: card.branchName || card.bankAddress || '未设置'
+					}))
+				}
+			} catch (err) {
+				console.error('获取银行卡列表失败:', err)
+				uni.showToast({ title: '获取数据失败', icon: 'none' })
+			} finally {
+				this.loading = false
+			}
+		},
+		// 遮掩卡号中间部分
+		maskCardNumber(cardNumber) {
+			if (!cardNumber) return ''
+			const cleaned = cardNumber.replace(/\s/g, '')
+			if (cleaned.length <= 8) return cleaned
+			return cleaned.slice(0, 4) + ' **** **** ' + cleaned.slice(-4)
 		},
 		handleAddBankCard() {
 			uni.navigateTo({ url: '/packageSetting/pages/setting/add-bank-card' })

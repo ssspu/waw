@@ -263,6 +263,7 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
+import { portfolioApi } from '@/api'
 
 const statusBarHeight = ref(44)
 const activeCategory = ref('women')
@@ -281,6 +282,114 @@ const currentPage = ref(1)
 const isLoading = ref(false)
 const hasMore = ref(true)
 
+// 作品列表数据
+const portfolioList = ref([])
+
+// 分类和筛选选项（从API获取）
+const categories = ref([
+	{ label: '女士', value: 'women' },
+	{ label: '男士', value: 'men' },
+	{ label: '儿童', value: 'children' }
+])
+
+const faceTypes = ref([
+	{ id: 'oval', icon: '/static/icon/face-oval.png', activeIcon: '/static/icon/face-oval-active.png' },
+	{ id: 'circle', icon: '/static/icon/face-circle.png', activeIcon: '/static/icon/face-circle-active.png' },
+	{ id: 'square', icon: '/static/icon/face-square.png', activeIcon: '/static/icon/face-square-active.png' },
+	{ id: 'diamond', icon: '/static/icon/face-diamond.png', activeIcon: '/static/icon/face-diamond-active.png' },
+	{ id: 'triangle', icon: '/static/icon/face-triangle.png', activeIcon: '/static/icon/face-triangle-active.png' },
+	{ id: 'rounded-rect', icon: '/static/icon/face-rounded-rect.png', activeIcon: '/static/icon/face-rounded-rect-active.png' }
+])
+
+const hairAmountOptions = ref([
+	{ label: '少', value: 'less' },
+	{ label: '正常', value: 'normal' },
+	{ label: '多', value: 'more' }
+])
+
+const hairQualityOptions = ref([
+	{ label: '软', value: 'soft' },
+	{ label: '正常', value: 'normal' },
+	{ label: '硬', value: 'hard' }
+])
+
+const hairThicknessOptions = ref([
+	{ label: '细', value: 'fine' },
+	{ label: '正常', value: 'normal' },
+	{ label: '粗', value: 'thick' }
+])
+
+// 获取作品列表
+const fetchPortfolioList = async (reset = false) => {
+	if (isLoading.value) return
+	isLoading.value = true
+
+	try {
+		if (reset) {
+			currentPage.value = 1
+			portfolioList.value = []
+		}
+
+		const res = await portfolioApi.getList({
+			page: currentPage.value,
+			pageSize: pageSize,
+			category: activeCategory.value,
+			faceType: showFilterTags.value ? selectedFace.value : undefined,
+			hairVolume: showFilterTags.value ? hairVolume.value : undefined,
+			hairQuality: showFilterTags.value ? hairQuality.value : undefined,
+			hairThickness: showFilterTags.value ? hairThickness.value : undefined,
+			keyword: searchKeyword.value || undefined
+		})
+
+		if (res.code === 0) {
+			const newList = (res.data.list || res.data.records || []).map(item => ({
+				id: item.id,
+				image: item.coverImage || item.images?.[0],
+				category: item.category
+			}))
+
+			if (reset) {
+				portfolioList.value = newList
+			} else {
+				portfolioList.value = [...portfolioList.value, ...newList]
+			}
+
+			hasMore.value = res.data.hasMore !== false && newList.length >= pageSize
+		}
+	} catch (e) {
+		console.error('获取作品列表失败', e)
+	} finally {
+		isLoading.value = false
+	}
+}
+
+// 获取分类列表
+const fetchCategories = async () => {
+	try {
+		const res = await portfolioApi.getCategories()
+		if (res.code === 0 && res.data) {
+			categories.value = res.data.map(item => ({
+				label: item.name,
+				value: item.id
+			}))
+		}
+	} catch (e) {
+		console.error('获取分类失败', e)
+	}
+}
+
+// 获取筛选条件
+const fetchFilters = async () => {
+	try {
+		const res = await portfolioApi.getFilters()
+		if (res.code === 0 && res.data) {
+			// 可以根据API返回更新筛选选项
+		}
+	} catch (e) {
+		console.error('获取筛选条件失败', e)
+	}
+}
+
 // 页面加载时获取参数和状态栏高度
 onMounted(() => {
 	// 获取状态栏高度
@@ -288,46 +397,17 @@ onMounted(() => {
 	statusBarHeight.value = systemInfo.statusBarHeight || 44
 
 	const pages = getCurrentPages()
-	const currentPage = pages[pages.length - 1]
-	const options = currentPage.options || {}
+	const currentPageInfo = pages[pages.length - 1]
+	const options = currentPageInfo.options || {}
 	if (options.category) {
 		activeCategory.value = options.category
 	}
+
+	// 获取数据
+	fetchCategories()
+	fetchFilters()
+	fetchPortfolioList(true)
 })
-
-const categories = [
-	{ label: '女士', value: 'women' },
-	{ label: '男士', value: 'men' },
-	{ label: '儿童', value: 'children' }
-]
-
-// 脸型选项
-const faceTypes = [
-	{ id: 'oval', icon: '/static/icon/face-oval.png', activeIcon: '/static/icon/face-oval-active.png' },
-	{ id: 'circle', icon: '/static/icon/face-circle.png', activeIcon: '/static/icon/face-circle-active.png' },
-	{ id: 'square', icon: '/static/icon/face-square.png', activeIcon: '/static/icon/face-square-active.png' },
-	{ id: 'diamond', icon: '/static/icon/face-diamond.png', activeIcon: '/static/icon/face-diamond-active.png' },
-	{ id: 'triangle', icon: '/static/icon/face-triangle.png', activeIcon: '/static/icon/face-triangle-active.png' },
-	{ id: 'rounded-rect', icon: '/static/icon/face-rounded-rect.png', activeIcon: '/static/icon/face-rounded-rect-active.png' }
-]
-
-const hairAmountOptions = [
-	{ label: '少', value: 'less' },
-	{ label: '正常', value: 'normal' },
-	{ label: '多', value: 'more' }
-]
-
-const hairQualityOptions = [
-	{ label: '软', value: 'soft' },
-	{ label: '正常', value: 'normal' },
-	{ label: '硬', value: 'hard' }
-]
-
-const hairThicknessOptions = [
-	{ label: '细', value: 'fine' },
-	{ label: '正常', value: 'normal' },
-	{ label: '粗', value: 'thick' }
-]
 
 // 筛选标签显示图标
 const selectedFaceIcon = computed(() => {
@@ -335,70 +415,18 @@ const selectedFaceIcon = computed(() => {
 })
 
 const selectedVolumeLabel = computed(() => {
-	const option = hairAmountOptions.find(o => o.value === hairVolume.value)
+	const option = hairAmountOptions.value.find(o => o.value === hairVolume.value)
 	return option ? option.label : '正常'
 })
 
 const selectedQualityLabel = computed(() => {
-	const option = hairQualityOptions.find(o => o.value === hairQuality.value)
+	const option = hairQualityOptions.value.find(o => o.value === hairQuality.value)
 	return option ? option.label : '正常'
 })
 
-// 按分类的图片数据
-const galleryByCategory = {
-	women: [
-		{ id: 1, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---176.svg', category: 'women' },
-		{ id: 2, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---177.svg', category: 'women' },
-		{ id: 3, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---178.svg', category: 'women' },
-		{ id: 4, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---179.svg', category: 'women' },
-		{ id: 5, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---180.svg', category: 'women' },
-		{ id: 6, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---181.svg', category: 'women' },
-		{ id: 7, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---176.svg', category: 'women' },
-		{ id: 8, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---177.svg', category: 'women' },
-		{ id: 9, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---178.svg', category: 'women' },
-		{ id: 10, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---179.svg', category: 'women' },
-		{ id: 11, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---180.svg', category: 'women' },
-		{ id: 12, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---181.svg', category: 'women' }
-	],
-	men: [
-		{ id: 13, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
-		{ id: 14, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
-		{ id: 15, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
-		{ id: 16, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
-		{ id: 17, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
-		{ id: 18, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
-		{ id: 19, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
-		{ id: 20, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
-		{ id: 21, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
-		{ id: 22, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
-		{ id: 23, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' },
-		{ id: 24, image: 'https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png', category: 'men' }
-	],
-	children: [
-		{ id: 25, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---176.svg', category: 'children' },
-		{ id: 26, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---177.svg', category: 'children' },
-		{ id: 27, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---178.svg', category: 'children' },
-		{ id: 28, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---179.svg', category: 'children' },
-		{ id: 29, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---180.svg', category: 'children' },
-		{ id: 30, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---181.svg', category: 'children' },
-		{ id: 31, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---176.svg', category: 'children' },
-		{ id: 32, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---177.svg', category: 'children' },
-		{ id: 33, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---178.svg', category: 'children' },
-		{ id: 34, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---179.svg', category: 'children' },
-		{ id: 35, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---180.svg', category: 'children' },
-		{ id: 36, image: 'https://c.animaapp.com/mimxn9o1hGbnXQ/img/---181.svg', category: 'children' }
-	]
-}
-
-// 计算当前分类的图片列表
-const galleryList = computed(() => {
-	return galleryByCategory[activeCategory.value] || galleryByCategory.women
-})
-
-// 分页显示列表
+// 显示列表直接使用API获取的数据
 const displayList = computed(() => {
-	const list = galleryList.value
-	return list.slice(0, currentPage.value * pageSize)
+	return portfolioList.value
 })
 
 // 加载更多文案
@@ -408,10 +436,9 @@ const loadMoreText = computed(() => {
 	return '上拉加载更多'
 })
 
-// 监听分类变化，重置分页
+// 监听分类变化，重新获取数据
 watch(activeCategory, () => {
-	currentPage.value = 1
-	hasMore.value = true
+	fetchPortfolioList(true)
 })
 
 const handleBack = () => {
@@ -420,40 +447,20 @@ const handleBack = () => {
 
 const handleSearch = () => {
 	console.log('搜索关键词:', searchKeyword.value)
-	// 根据关键词过滤作品列表
-	currentPage.value = 1
-	hasMore.value = true
+	fetchPortfolioList(true)
 }
 
 const handleClearSearch = () => {
 	searchKeyword.value = ''
-	currentPage.value = 1
-	hasMore.value = true
+	fetchPortfolioList(true)
 }
 
 // 加载更多
 const handleLoadMore = () => {
 	if (isLoading.value || !hasMore.value) return
 
-	const totalItems = galleryList.value.length
-	const loadedItems = currentPage.value * pageSize
-
-	if (loadedItems >= totalItems) {
-		hasMore.value = false
-		return
-	}
-
-	isLoading.value = true
-	// 模拟加载延迟
-	setTimeout(() => {
-		currentPage.value++
-		isLoading.value = false
-
-		// 检查是否还有更多
-		if (currentPage.value * pageSize >= totalItems) {
-			hasMore.value = false
-		}
-	}, 500)
+	currentPage.value++
+	fetchPortfolioList(false)
 }
 
 const handleCategoryChange = (value) => {
@@ -506,12 +513,13 @@ const handleReset = () => {
 	hairQuality.value = 'normal'
 	hairThickness.value = 'normal'
 	showFilterTags.value = false
+	fetchPortfolioList(true)
 }
 
 const handleConfirmFilter = () => {
 	showFilterDrawer.value = false
 	showFilterTags.value = true
-	// 根据筛选条件过滤列表
+	fetchPortfolioList(true)
 }
 
 const handleItemClick = (item) => {
