@@ -1,1 +1,0 @@
-export { ServiceDetailSection } from "./ServiceDetailSection";
