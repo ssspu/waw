@@ -4,7 +4,7 @@
 		<image class="bg-image" src="/static/background-image/register.png" mode="aspectFill"></image>
 		
 		<!-- 自定义导航栏 -->
-		<view class="custom-navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
+		<view class="custom-navbar" >
 			<view class="navbar-content">
 				<view class="nav-left" @tap="goBack">
 					<image class="nav-icon" src="https://c.animaapp.com/mi5ng54v4eM3X6/img/frame.svg" mode="aspectFit"></image>
@@ -109,8 +109,7 @@ export default {
 			password: '',
 			showPassword: false,
 			isAgreed: true,
-			statusBarHeight: 0,
-			showModal: false,
+						showModal: false,
 			currentAgreement: {
 				title: '',
 				content: ''
@@ -135,9 +134,7 @@ export default {
 		}
 	},
 	onLoad() {
-		const systemInfo = uni.getSystemInfoSync()
-		this.statusBarHeight = systemInfo.statusBarHeight || 44
-	},
+		},
 	onUnload() {
 		if (this.modalTimer) {
 			clearInterval(this.modalTimer)
@@ -261,14 +258,14 @@ export default {
 .navbar-content {
 	display: flex;
 	align-items: center;
-	height: 88rpx;
-	padding: 0 30rpx;
+	padding: 24rpx 32rpx;
+	box-sizing: border-box;
 }
 
 .nav-left {
-	width: 60rpx;
 	display: flex;
 	align-items: center;
+	justify-content: center;
 }
 
 .nav-icon {

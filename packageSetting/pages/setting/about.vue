@@ -1,7 +1,5 @@
 <template>
 	<view class="setting-detail-page">
-		<SettingDetailHeader title="关于众美" />
-		
 		<view class="main-content">
 			<!-- Logo 和版本信息 -->
 			<view class="about-card">
@@ -92,12 +90,7 @@
 </template>
 
 <script>
-import SettingDetailHeader from '@/components/setting/SettingDetailHeader.vue'
-
 export default {
-	components: {
-		SettingDetailHeader
-	},
 	data() {
 		return {
 			aboutItems: [

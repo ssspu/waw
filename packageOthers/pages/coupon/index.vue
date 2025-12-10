@@ -1,19 +1,5 @@
 <template>
 	<view class="coupon-page">
-		<!-- 导航栏 -->
-		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="back-btn" @tap="goBack">
-					<image
-						class="back-icon"
-						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg"
-						mode="aspectFit"
-					></image>
-				</view>
-				<text class="navbar-title">优惠券</text>
-			</view>
-		</view>
-		
 		<!-- Tab导航栏 -->
 		<coupon-list-section 
 			:active-tab="activeTab"
@@ -43,18 +29,13 @@ export default {
 	},
 	data() {
 		return {
-			statusBarHeight: 44,
-			activeTab: 'service'
+						activeTab: 'service'
 		}
 	},
 	onLoad() {
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
-	},
-	methods: {
-		goBack() {
-			uni.navigateBack()
 		},
-		handleMore() {
+	methods: {
+				handleMore() {
 			console.log('More clicked')
 		},
 		handleCircle() {
@@ -76,45 +57,6 @@ export default {
 	flex-direction: column;
 	overflow-x: hidden;
 	box-sizing: border-box;
-}
-
-.navbar {
-	position: relative;
-	width: 100%;
-	background-color: #ffffff;
-	z-index: 10;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 88rpx;
-	padding: 0 30rpx;
-	position: relative;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.navbar-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-size: 32rpx;
-	font-weight: 500;
-	color: #333333;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
 }
 
 .coupon-content {

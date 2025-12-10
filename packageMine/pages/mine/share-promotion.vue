@@ -3,24 +3,9 @@
 		<!-- 整体背景图片 -->
 		<image
 			class="page-bg"
-			src="/static/background-image/share-bg.png"
+			src="/packageMine/static/background-image/share-bg.png"
 			mode="aspectFill"
 		></image>
-
-		<!-- 导航栏 -->
-		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="back-btn" @tap="handleBack">
-					<image
-						class="back-icon"
-						src="https://c.animaapp.com/mipl5b3gx2BfHj/img/--.svg"
-						mode="aspectFit"
-					></image>
-				</view>
-				<text class="navbar-title">我要推广</text>
-				<view class="navbar-right"></view>
-			</view>
-		</view>
 
 		<!-- 主内容区 -->
 		<view class="main-content">
@@ -90,19 +75,10 @@
 <script>
 export default {
 	data() {
-		return {
-			statusBarHeight: 0
-		}
+		return {}
 	},
-	onLoad() {
-		// 获取系统信息中的状态栏高度
-		const systemInfo = uni.getSystemInfoSync()
-		this.statusBarHeight = systemInfo.statusBarHeight || 0
-	},
+	onLoad() {},
 	methods: {
-		handleBack() {
-			uni.navigateBack()
-		},
 		handleShare() {
 			// 分享功能
 			uni.showActionSheet({
@@ -151,41 +127,6 @@ export default {
 	width: 100%;
 	height: 100%;
 	z-index: 0;
-}
-
-.navbar {
-	position: relative;
-	width: 100%;
-	z-index: 10;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 108rpx;
-	padding: 0 24rpx;
-}
-
-.back-btn {
-	width: 174rpx;
-	height: 64rpx;
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
-}
-
-.back-icon {
-	width: 174rpx;
-	height: 64rpx;
-}
-
-.navbar-title {
-	font-family: 'Inter', 'PingFang SC', Helvetica, sans-serif;
-	font-size: 32rpx;
-	font-weight: 400;
-	color: #ffffff;
-	line-height: 102rpx;
 }
 
 .navbar-right {

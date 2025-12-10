@@ -1,19 +1,5 @@
 <template>
 	<view class="balance-page">
-		<!-- 导航栏 -->
-		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="back-btn" @tap="handleBack">
-					<image
-						class="back-icon"
-						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg"
-						mode="aspectFit"
-					></image>
-				</view>
-				<text class="navbar-title">余额</text>
-			</view>
-		</view>
-
 		<!-- 主内容 -->
 		<view class="main-content">
 			<!-- 总余额卡片 -->
@@ -21,7 +7,7 @@
 				<view class="card-header">
 					<text class="asset-label">余额(元)</text>
 				</view>
-				<text class="asset-amount">1200.00</text>
+				<text class="asset-amount">{{ balance.toFixed(2) }}</text>
 			</view>
 
 			<!-- 时间筛选和记录列表 -->
@@ -50,6 +36,7 @@
 
 <script>
 import AssetRecordItem from '../../../components/mine/AssetRecordItem.vue'
+import api from '@/api'
 
 export default {
 	components: {
@@ -57,39 +44,45 @@ export default {
 	},
 	data() {
 		return {
-			statusBarHeight: 44,
-			balanceRecords: [
-				{
-					title: '成都美发沙龙',
-					desc: '充值到账',
-					time: '今天 10:50',
-					amount: '+500'
-				},
-				{
-					title: '成都美发沙龙',
-					desc: '消费支出',
-					time: '今天 09:30',
-					amount: '-120'
-				},
-				{
-					title: '成都美发沙龙',
-					desc: '充值到账',
-					time: '昨天 15:20',
-					amount: '+200'
-				},
-				{
-					title: '成都美发沙龙',
-					desc: '消费支出',
-					time: '昨天 11:00',
-					amount: '-80'
-				}
-			]
+			balance: 0,
+			balanceRecords: [],
+			loading: false
 		}
 	},
 	onLoad() {
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+		this.fetchBalanceData()
 	},
 	methods: {
+		// 获取余额和记录
+		async fetchBalanceData() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				// 并行获取余额和记录
+				const [balanceRes, recordsRes] = await Promise.all([
+					api.user.getBalance(),
+					api.user.getBalanceRecords({ page: 1, pageSize: 20 })
+				])
+
+				if (balanceRes.code === 0) {
+					this.balance = balanceRes.data.balance || 0
+				}
+
+				if (recordsRes.code === 0 && recordsRes.data) {
+					const list = recordsRes.data.list || recordsRes.data.records || []
+					this.balanceRecords = list.map(item => ({
+						title: item.title || item.storeName || '余额变动',
+						desc: item.description || item.type,
+						time: item.createTime || item.time,
+						amount: item.amount > 0 ? `+${item.amount}` : String(item.amount)
+					}))
+				}
+			} catch (err) {
+				console.error('获取余额数据失败:', err)
+			} finally {
+				this.loading = false
+			}
+		},
 		handleBack() {
 			uni.navigateBack()
 		}
@@ -103,45 +96,6 @@ export default {
 	min-height: 100vh;
 	background-color: #f2f2f2;
 	position: relative;
-}
-
-.navbar {
-	position: relative;
-	width: 100%;
-	background-color: #ffffff;
-	z-index: 10;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 88rpx;
-	padding: 0 30rpx;
-	position: relative;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.navbar-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-size: 32rpx;
-	font-weight: 500;
-	color: #333333;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
 }
 
 .main-content {

@@ -1,7 +1,7 @@
 <template>
 	<view class="service-tab-content">
 		<!-- 服务列表 -->
-		<brand-profile-section :active-sub-tab="activeSubTab"></brand-profile-section>
+		<brand-profile-section :active-sub-tab="activeSubTab" :brand-id="brandId"></brand-profile-section>
 	</view>
 </template>
 
@@ -16,6 +16,10 @@ export default {
 		activeSubTab: {
 			type: String,
 			default: 'hair'
+		},
+		brandId: {
+			type: [String, Number],
+			default: null
 		}
 	}
 }

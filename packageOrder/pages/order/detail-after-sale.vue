@@ -1,19 +1,5 @@
 <template>
 	<view class="order-detail-page">
-		<!-- 导航栏 -->
-		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="back-btn" @tap="handleBack">
-					<image
-						class="back-icon"
-						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg"
-						mode="aspectFit"
-					></image>
-				</view>
-				<text class="navbar-title">订单详情</text>
-			</view>
-		</view>
-
 		<!-- 退款状态提示 -->
 		<view class="refund-status-section">
 			<text
@@ -136,8 +122,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 
-const statusBarHeight = ref(44)
-
 // 退款状态: pending-退款中, success-退款成功
 const refundStatus = ref('pending')
 
@@ -184,7 +168,6 @@ const statusConfig = computed(() => {
 
 // 生命周期
 const onLoad = (options) => {
-	statusBarHeight.value = uni.getStorageSync('statusBarHeight') || 44
 	if (options && options.orderId) {
 		// 根据订单ID加载订单详情
 		// 示例：调用接口获取退款状态
@@ -266,43 +249,6 @@ defineExpose({
 	flex-direction: column;
 	position: relative;
 	padding-bottom: 120rpx;
-}
-
-.navbar {
-	width: 100%;
-	background-color: #ffffff;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 88rpx;
-	padding: 0 30rpx;
-	position: relative;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.navbar-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-size: 30rpx;
-	font-weight: 500;
-	color: #666666;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
 }
 
 .refund-status-section {

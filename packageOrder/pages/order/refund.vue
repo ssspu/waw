@@ -1,20 +1,5 @@
 <template>
 	<view class="refund-page">
-		<!-- 导航栏 -->
-		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="back-btn" @tap="handleBack">
-					<image
-						class="back-icon"
-						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg"
-						mode="aspectFit"
-					></image>
-				</view>
-				<text class="navbar-title">申请退款</text>
-				<view class="navbar-right"></view>
-			</view>
-		</view>
-
 		<!-- 主内容 -->
 		<view class="main-content">
 			<!-- 商品信息卡片 -->
@@ -131,8 +116,7 @@
 export default {
 	data() {
 		return {
-			statusBarHeight: 44,
-			selectedReasonIndex: null,
+						selectedReasonIndex: null,
 			refundReasons: [
 				'店铺/商品信息问题',
 				'价格不划算',
@@ -158,18 +142,13 @@ export default {
 	},
 	onLoad(options) {
 		// 获取系统状态栏高度
-		const systemInfo = uni.getSystemInfoSync()
-		this.statusBarHeight = systemInfo.statusBarHeight || 44
 		// 可从 options 获取订单信息
 		if (options.orderId) {
 			// 根据订单ID加载订单详情
 		}
 	},
 	methods: {
-		handleBack() {
-			uni.navigateBack()
-		},
-		selectReason(index) {
+				selectReason(index) {
 			this.selectedReasonIndex = index
 		},
 		handleSubmit() {
@@ -217,43 +196,6 @@ export default {
 	flex-direction: column;
 	position: relative;
 	padding-bottom: 166rpx;
-}
-
-.navbar {
-	width: 100%;
-	background-color: #ffffff;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 88rpx;
-	padding: 0 30rpx;
-	position: relative;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.navbar-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-size: 30rpx;
-	font-weight: 500;
-	color: #666666;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
 }
 
 .navbar-right {

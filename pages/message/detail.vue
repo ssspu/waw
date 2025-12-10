@@ -1,17 +1,5 @@
 <template>
 	<view class="message-detail-page">
-		<!-- 导航栏 -->
-		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="nav-left">
-					<view class="back-btn" @tap="handleBack">
-						<image class="back-icon" src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" mode="aspectFit"></image>
-					</view>
-				</view>
-				<text class="nav-title">消息详情</text>
-			</view>
-		</view>
-		
 		<!-- 消息详情卡片 -->
 		<view class="detail-card">
 			<!-- 消息头部 -->
@@ -61,8 +49,7 @@ import api from '@/api'
 export default {
 	data() {
 		return {
-			statusBarHeight: 44,
-			messageDetail: {
+						messageDetail: {
 				id: '',
 				title: '',
 				time: '',
@@ -76,16 +63,12 @@ export default {
 		}
 	},
 	onLoad(options) {
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 		if (options.id) {
 			this.loadMessageDetail(options.id)
 		}
 	},
 	methods: {
-		handleBack() {
-			uni.navigateBack()
-		},
-		async loadMessageDetail(id) {
+				async loadMessageDetail(id) {
 			try {
 				const res = await api.message.getDetail(id)
 				if (res.code === 0 && res.data) {
@@ -118,47 +101,6 @@ export default {
 	display: flex;
 	flex-direction: column;
 }
-
-.navbar {
-	background-color: #ffffff;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	padding: 24rpx 32rpx;
-	box-sizing: border-box;
-	gap: 24rpx;
-}
-
-.nav-left {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.back-btn {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-	flex-shrink: 0;
-}
-
-.nav-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-size: 32rpx;
-	font-weight: 500;
-	color: #333333;
-}
-
 
 .detail-card {
 	margin: 24rpx;

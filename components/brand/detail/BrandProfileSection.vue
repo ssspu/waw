@@ -111,11 +111,20 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
+	props: {
+		brandId: {
+			type: [String, Number],
+			default: null
+		}
+	},
 	data() {
 		return {
 			selectedCategory: "wash-cut-blow",
 			selectedHairLength: "short",
+			loading: false,
 			categories: [
 				{ id: "wash-cut-blow", label: "洗剪吹", active: true },
 				{ id: "perm", label: "烫发", active: false },
@@ -124,48 +133,7 @@ export default {
 				{ id: "scalp", label: "头皮", active: false },
 				{ id: "extension", label: "接发", active: false },
 			],
-			services: [
-				{
-					id: 1,
-					title: "烫发",
-					description: "发型提案+染发+造型",
-					estimatedTime: "1小时",
-					salesCount: "1234",
-					price: "799",
-					discount: "预约优惠10%",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png",
-				},
-				{
-					id: 2,
-					title: "烫发",
-					description: "发型提案+染发+造型",
-					estimatedTime: "1小时",
-					salesCount: "1234",
-					price: "799",
-					discount: "预约优惠10%",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png",
-				},
-				{
-					id: 3,
-					title: "烫发",
-					description: "发型提案+染发+造型",
-					estimatedTime: "1小时",
-					salesCount: "1234",
-					price: "799",
-					discount: "预约优惠10%",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png",
-				},
-				{
-					id: 4,
-					title: "烫发",
-					description: "发型提案+染发+造型",
-					estimatedTime: "1小时",
-					salesCount: "1234",
-					price: "799",
-					discount: "预约优惠10%",
-					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-169-3.png",
-				},
-			],
+			services: [],
 			expandedServices: [], // 展开的服务ID列表
 			selectedBrands: {}, // 每个服务选中的品牌 { serviceId: brandId }
 			selectedHairLengths: {}, // 每个服务选中的头发长度 { serviceId: lengthId }
@@ -174,35 +142,50 @@ export default {
 				{ id: "medium", label: "中发", active: false },
 				{ id: "long", label: "长发", active: false },
 			],
-			brandOptions: [
-				{
-					id: 1,
-					name: "威娜",
-					price: "560",
-					icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891-7.svg",
-				},
-				{
-					id: 2,
-					name: "菲灵",
-					price: "660",
-					icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891-3.svg",
-				},
-				{
-					id: 3,
-					name: "欧莱雅",
-					price: "760",
-					icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891-3.svg",
-				},
-				{
-					id: 4,
-					name: "乔薇尔",
-					price: "860",
-					icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891-3.svg",
-				},
-			],
+			brandOptions: [],
 		}
 	},
+	mounted() {
+		this.fetchServices()
+	},
 	methods: {
+		// 获取品牌馆服务列表
+		async fetchServices() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await api.brand.getServices(this.brandId, { pageSize: 50 })
+				if (res.code === 0 && res.data) {
+					const list = res.data.list || res.data.records || []
+					// 转换API数据为组件需要的格式
+					this.services = list.map(service => ({
+						id: service.id,
+						title: service.name || service.title,
+						description: service.description || '',
+						estimatedTime: service.estimatedTime || service.duration || '1小时',
+						salesCount: String(service.salesCount || service.soldCount || 0),
+						price: String(service.price || 0),
+						discount: service.discount || '',
+						image: service.image || '',
+						categoryId: service.categoryId,
+						brandOptions: service.brandOptions || []
+					}))
+					// 如果服务有品牌选项，使用第一个服务的品牌选项
+					if (list.length > 0 && list[0].brandOptions) {
+						this.brandOptions = list[0].brandOptions.map(brand => ({
+							id: brand.id,
+							name: brand.name,
+							price: String(brand.price || 0),
+							icon: brand.icon || ''
+						}))
+					}
+				}
+			} catch (err) {
+				console.error('获取品牌馆服务失败:', err)
+			} finally {
+				this.loading = false
+			}
+		},
 		selectCategory(id) {
 			this.selectedCategory = id
 		},
@@ -243,6 +226,9 @@ export default {
 		},
 		handleBook(service) {
 			console.log('Book service:', service)
+			uni.navigateTo({
+				url: `/packageOrder/pages/order/purchase?id=${service.id}`
+			})
 		}
 	}
 }

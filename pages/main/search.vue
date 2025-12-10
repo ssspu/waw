@@ -1,35 +1,28 @@
 <template>
 	<view class="search-page">
-		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="back-btn" @tap="handleBack">
-					<image class="back-icon" src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" mode="aspectFit"></image>
-				</view>
-				<view class="search-input-wrapper">
-					<image class="search-icon" src="@/static/icon/search.png" mode="aspectFit"></image>
-					<input 
-						class="search-input" 
-						type="text" 
-						:placeholder="currentPlaceholder"
-						v-model="searchKeyword"
-						@confirm="handleSearch"
-						@input="handleInput"
-					/>
-				</view>
-			</view>
-			
-			<!-- 标签页 -->
-			<view class="tabs-bar">
-				<view 
-					v-for="(tab, index) in tabs" 
-					:key="index"
-					class="tab-item"
-					:class="{ active: activeTab === tab.value }"
-					@tap="switchTab(tab.value)"
-				>
-					<text class="tab-text" :class="{ active: activeTab === tab.value }">{{ tab.label }}</text>
-					<view v-if="activeTab === tab.value" class="tab-indicator"></view>
-				</view>
+		<view class="search-input-wrapper">
+			<image class="search-icon" src="@/static/icon/search.png" mode="aspectFit"></image>
+			<input
+				class="search-input"
+				type="text"
+				:placeholder="currentPlaceholder"
+				v-model="searchKeyword"
+				@confirm="handleSearch"
+				@input="handleInput"
+			/>
+		</view>
+
+		<!-- 标签页 -->
+		<view class="tabs-bar">
+			<view
+				v-for="(tab, index) in tabs"
+				:key="index"
+				class="tab-item"
+				:class="{ active: activeTab === tab.value }"
+				@tap="switchTab(tab.value)"
+			>
+				<text class="tab-text" :class="{ active: activeTab === tab.value }">{{ tab.label }}</text>
+				<view v-if="activeTab === tab.value" class="tab-indicator"></view>
 			</view>
 		</view>
 
@@ -409,8 +402,7 @@ export default {
 	},
 	data() {
 		return {
-			statusBarHeight: 44,
-			activeTab: 'designer', // 默认显示设计师标签
+						activeTab: 'designer', // 默认显示设计师标签
 			tabs: [
 				{ label: '服务', value: 'service' },
 				{ label: '设计师', value: 'designer' },
@@ -803,8 +795,6 @@ export default {
 	},
 	onLoad(options) {
 		// 从持久化存储获取状态栏高度
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
-
 		// 从URL参数获取tab，切换到对应标签
 		if (options.tab) {
 			const validTabs = ['designer', 'service', 'brand']
@@ -1121,14 +1111,6 @@ export default {
 }
 
 
-.navbar {
-	background-color: #ffffff;
-	display: flex;
-	flex-direction: column;
-	position: relative;
-	z-index: 101;
-}
-
 /* 标签页 */
 .tabs-bar {
 	display: flex;
@@ -1168,31 +1150,6 @@ export default {
 	height: 6rpx;
 	background-color: #000000;
 	border-radius: 3rpx;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	height: 88rpx;
-	padding: 0 30rpx;
-	position: relative;
-	gap: 20rpx;
-	box-sizing: border-box;
-	background-color: #ffffff;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-shrink: 0;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
 }
 
 .search-input-wrapper {

@@ -2,14 +2,11 @@
 	<view class="message-page">
 		<!-- 顶部背景图 -->
 		<view class="header-section">
-			<image 
-				class="header-bg" 
-				src="/static/background-image/message-center.png" 
+			<image
+				class="header-bg"
+				src="/static/background-image/message-center.png"
 				mode="aspectFill"
 			></image>
-			<!-- <view class="header-content">
-				<text class="header-title">消息中心</text>
-			</view> -->
 		</view>
 		
 		<!-- 消息列表 -->

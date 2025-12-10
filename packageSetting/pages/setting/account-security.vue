@@ -1,7 +1,5 @@
 <template>
 	<view class="setting-detail-page">
-		<SettingDetailHeader title="账号安全" />
-		
 		<view class="main-content">
 		<!-- 安全信息卡片 -->
 		<view class="settings-card">
@@ -33,12 +31,7 @@
 </template>
 
 <script>
-import SettingDetailHeader from '@/components/setting/SettingDetailHeader.vue'
-
 export default {
-	components: {
-		SettingDetailHeader
-	},
 	data() {
 		return {
 			securityItems: [

@@ -1,7 +1,7 @@
 <template>
 	<view class="screen">
 		<!-- 头部导航 -->
-		<view class="header" :style="{ paddingTop: statusBarHeight + 'px' }">
+		<view class="header" >
 			<view class="nav-bar">
 				<view class="nav-left">
 					<view class="back-btn" @tap="handleBack">
@@ -155,8 +155,7 @@
 export default {
 	data() {
 		return {
-			statusBarHeight: 44,
-			steps: [
+						steps: [
 				{ label: '身份认证', active: false },
 				{ label: '职业认证', active: true },
 				{ label: '合作协议', active: false },
@@ -183,16 +182,12 @@ export default {
 		}
 	},
 	onLoad() {
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
-	},
+		},
 	methods: {
 		onCertDateChange(e) {
 			this.formData.certDate = e.detail.value
 		},
-		handleBack() {
-			uni.navigateBack()
-		},
-		selectIndustry() {
+				selectIndustry() {
 			uni.showActionSheet({
 				itemList: ['美发', '美容', '美甲', '纹绣'],
 				success: (res) => {
@@ -275,29 +270,6 @@ export default {
 	justify-content: space-between;
 	padding: 0 32rpx;
 	height: 88rpx;
-}
-
-.nav-left {
-	display: flex;
-	align-items: center;
-	gap: 16rpx;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.nav-title {
-	font-family: 'PingFang SC';
-	font-weight: 500;
-	font-size: 30rpx;
-	color: #666666;
 }
 
 .nav-right {

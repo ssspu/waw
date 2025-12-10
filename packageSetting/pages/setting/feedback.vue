@@ -1,7 +1,5 @@
 <template>
 	<view class="setting-detail-page">
-		<SettingDetailHeader title="反馈与建议" />
-		
 		<view class="main-content">
 			<view class="feedback-section">
 				<text class="section-title">所属问题</text>
@@ -35,10 +33,7 @@
 </template>
 
 <script>
-import SettingDetailHeader from '@/components/setting/SettingDetailHeader.vue'
-
 export default {
-	components: { SettingDetailHeader },
 	data() {
 		return {
 			problemTypes: [

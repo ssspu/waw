@@ -1,7 +1,5 @@
 <template>
 	<view class="setting-detail-page">
-		<SettingDetailHeader title="添加手机号" />
-
 		<view class="main-content">
 			<view class="settings-card">
 				<view class="card-content">
@@ -44,10 +42,7 @@
 </template>
 
 <script>
-import SettingDetailHeader from '@/components/setting/SettingDetailHeader.vue'
-
 export default {
-	components: { SettingDetailHeader },
 	data() {
 		return {
 			phone: '',

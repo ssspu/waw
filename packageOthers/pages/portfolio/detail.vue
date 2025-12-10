@@ -1,20 +1,5 @@
 <template>
 	<view class="portfolio-detail-page">
-		<!-- 导航栏 -->
-		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="back-btn" @tap="handleBack">
-					<image
-						class="back-icon"
-						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg"
-						mode="aspectFit"
-					></image>
-				</view>
-				<text class="navbar-title">作品详情</text>
-				<view class="navbar-right"></view>
-			</view>
-		</view>
-
 		<!-- 设计师信息 -->
 		<view class="designer-section">
 			<view class="designer-info" @tap="handleDesignerClick">
@@ -174,7 +159,6 @@
 import { ref, onMounted } from 'vue'
 import { portfolioApi } from '@/api'
 
-const statusBarHeight = ref(44)
 const isFollowed = ref(false)
 const isLiked = ref(false)
 const isFavorited = ref(false)
@@ -258,9 +242,6 @@ const fetchComments = async (id) => {
 
 onMounted(() => {
 	// 获取状态栏高度
-	const systemInfo = uni.getSystemInfoSync()
-	statusBarHeight.value = systemInfo.statusBarHeight || 44
-
 	const pages = getCurrentPages()
 	const currentPage = pages[pages.length - 1]
 	const options = currentPage.options || {}
@@ -398,43 +379,6 @@ const handleSend = () => {
 	flex-direction: column;
 	overflow-x: hidden;
 	box-sizing: border-box;
-}
-
-.navbar {
-	width: 100%;
-	background-color: #ffffff;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 88rpx;
-	padding: 0 30rpx;
-	position: relative;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.navbar-title {
-	font-family: 'PingFang SC';
-	font-size: 32rpx;
-	font-weight: 500;
-	color: #333333;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
 }
 
 .navbar-right {

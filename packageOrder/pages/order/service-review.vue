@@ -1,19 +1,5 @@
 <template>
 	<view class="service-review-page">
-		<!-- 导航栏 -->
-		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="back-btn" @tap="handleBack">
-					<image 
-						class="back-icon" 
-						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" 
-						mode="aspectFit"
-					></image>
-				</view>
-				<text class="navbar-title">服务点评</text>
-			</view>
-		</view>
-		
 		<!-- 主内容 -->
 		<view class="main-content">
 			<!-- 服务信息卡片 -->
@@ -141,8 +127,7 @@
 export default {
 	data() {
 		return {
-			statusBarHeight: 44,
-			commentText: '',
+						commentText: '',
 			selectedTags: [0], // 默认选中第一个标签
 			feedbackTags: [
 				'服务热情',
@@ -163,8 +148,7 @@ export default {
 	},
 	onLoad() {
 		// 从持久化存储获取状态栏高度
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
-	},
+		},
 	computed: {
 		averageRating() {
 			if (!this.ratingCategories.length) return '0.0'
@@ -188,10 +172,7 @@ export default {
 			const newScore = starIndex + 1
 			this.ratingCategories[categoryIndex].score = Number(newScore.toFixed(1))
 		},
-		handleBack() {
-			uni.navigateBack()
-		},
-		handleToggleTag(index) {
+				handleToggleTag(index) {
 			const tagIndex = this.selectedTags.indexOf(index)
 			if (tagIndex > -1) {
 				this.selectedTags.splice(tagIndex, 1)
@@ -248,42 +229,6 @@ export default {
 	padding-bottom: 120rpx;
 }
 
-.navbar {
-	width: 100%;
-	background-color: #ffffff;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 88rpx;
-	padding: 0 30rpx;
-	position: relative;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.navbar-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-size: 30rpx;
-	font-weight: 500;
-	color: #666666;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
-}
 .nav-icon-btn {
 	width: 32rpx;
 	height: 32rpx;

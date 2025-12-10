@@ -1,29 +1,5 @@
 <template>
 	<view class="territory-page">
-		<!-- 自定义导航栏 -->
-		<view class="custom-header" :style="{ paddingTop: statusBarHeight + 'px' }">
-			
-			<!-- 导航栏内容 -->
-			<view class="navbar-content">
-				<view class="nav-left">
-					<view class="back-btn" @tap="goBack">
-						<image 
-							class="back-icon" 
-							src="https://c.animaapp.com/mi5ng54v4eM3X6/img/frame.svg" 
-							mode="aspectFit"
-						></image>
-					</view>
-				</view>
-				<text class="nav-title">私人领地</text>
-				<view class="nav-right">
-					<view class="action-btn" @tap="handleMore">
-					</view>
-					<view class="action-btn" @tap="handleRadio">
-					</view>
-				</view>
-			</view>
-		</view>
-		
 		<!-- 顶部导航栏 - 合并主tabs与子tabs -->
 		<view class="top-nav-fixed">
 			<!-- 主tabs行 -->
@@ -76,13 +52,12 @@
 	<view class="main-content">
 		<!-- 设计师页面 -->
 		<view v-if="activeTopTab === 'designer'" class="tab-content">
-			<territory-service-list-section></territory-service-list-section>
-			
-			<territory-service-list-section></territory-service-list-section>
-			
-			<territory-service-list-section></territory-service-list-section>
-			
-			<territory-service-list-section></territory-service-list-section>
+			<territory-service-list-section
+				v-for="designer in designerList"
+				:key="designer.id"
+				:designer="designer"
+				@delete="handleDeleteDesigner"
+			></territory-service-list-section>
 		</view>
 		
 		<!-- 品牌馆页面 -->
@@ -232,6 +207,7 @@
 <script>
 import TerritoryHeaderSection from '../../../components/territory/index/TerritoryHeaderSection.vue'
 import TerritoryServiceListSection from '../../../components/territory/index/TerritoryServiceListSection.vue'
+import api from '@/api'
 
 export default {
 	components: {
@@ -240,8 +216,7 @@ export default {
 	},
 	data() {
 		return {
-			statusBarHeight: 44,
-			activeTopTab: 'designer',
+						activeTopTab: 'designer',
 			activeSubTab: 'hairstylist',
 			activeBrandTab: 'hair',
 			avatarImage: '/static/avatar/avatar.png',
@@ -259,71 +234,93 @@ export default {
 				{ id: 'nail', label: '美甲' },
 				{ id: 'body', label: '美体' }
 			],
-			brandCards: [
-				{
-					id: 1,
-					headerInfo: ['2025-05-05', '｜', '洗剪吹', '｜', '欧莱雅生化烫'],
-					price: 888,
-					name: '成都NICE造型沙龙',
-					type: '品牌',
-					level: '舒适',
-					role: '专业店｜2012年开业',
-					specialties: ['女士造型', '烫发设计', '短发造型'],
-					rating: 4.8,
-					designers: 8,
-					services: 1236
-				},
-				{
-					id: 2,
-					headerInfo: ['2025-05-05', '｜', '洗剪吹', '｜', '欧莱雅生化烫'],
-					price: 888,
-					name: '成都NICE造型沙龙',
-					type: '品牌',
-					level: '舒适',
-					role: '专业店｜2012年开业',
-					specialties: ['女士造型', '烫发设计', '短发造型'],
-					rating: 4.8,
-					designers: 8,
-					services: 1236
-				},
-				{
-					id: 3,
-					headerInfo: ['2025-05-05', '｜', '洗剪吹', '｜', '欧莱雅生化烫'],
-					price: 888,
-					name: '成都NICE造型沙龙',
-					type: '品牌',
-					level: '舒适',
-					role: '专业店｜2012年开业',
-					specialties: ['女士造型', '烫发设计', '短发造型'],
-					rating: 4.8,
-					designers: 8,
-					services: 1236
-				},
-				{
-					id: 4,
-					headerInfo: ['2025-05-05', '｜', '洗剪吹', '｜', '欧莱雅生化烫'],
-					price: 888,
-					name: '成都NICE造型沙龙',
-					type: '品牌',
-					level: '舒适',
-					role: '专业店｜2012年开业',
-					specialties: ['女士造型', '烫发设计', '短发造型'],
-					rating: 4.8,
-					designers: 8,
-					services: 1236
-				}
-			],
-			showShareModal: false
+			brandCards: [],
+			designerList: [],
+			showShareModal: false,
+			loading: false
 		}
 	},
 	onLoad() {
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+		this.fetchTerritoryDesigners()
+		this.fetchTerritoryBrands()
 	},
 	methods: {
-		goBack() {
-			uni.navigateBack()
+		// 获取私人领地设计师数据
+		async fetchTerritoryDesigners() {
+			try {
+				const res = await api.territory.getMyDesigners({ page: 1, pageSize: 20 })
+				if (res.code === 0 && res.data) {
+					const list = res.data.list || res.data || []
+					this.designerList = list.map(item => ({
+						id: item.id,
+						name: item.name || '',
+						avatar: item.avatar || '/static/avatar/avatar.png',
+						role: item.role || '美发师',
+						level: item.level || '高级',
+						position: item.position || '',
+						specialties: item.specialties || ['造型', '美发'],
+						rating: item.rating || 4.8,
+						serviceCount: item.serviceCount || 0,
+						worksCount: item.worksCount || 0,
+						lastServiceDate: item.lastServiceDate || '',
+						lastServiceName: item.lastServiceName || '',
+						lastProductName: item.lastProductName || '',
+						lastServicePrice: item.lastServicePrice || 0
+					}))
+				}
+			} catch (err) {
+				console.error('获取私人领地设计师失败:', err)
+			}
 		},
-		handleMore() {
+		// 删除设计师
+		async handleDeleteDesigner(designer) {
+			try {
+				const res = await api.territory.removeDesigner(designer.id)
+				if (res.code === 0) {
+					this.designerList = this.designerList.filter(d => d.id !== designer.id)
+					uni.showToast({ title: '删除成功', icon: 'success' })
+				}
+			} catch (err) {
+				console.error('删除设计师失败:', err)
+				uni.showToast({ title: '删除失败', icon: 'none' })
+			}
+		},
+		// 获取私人领地品牌馆数据
+		async fetchTerritoryBrands() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await api.territory.getMyBrands({ page: 1, pageSize: 20 })
+				if (res.code === 0 && res.data) {
+					const list = res.data.list || res.data || []
+					this.brandCards = list.map(item => ({
+						id: item.id,
+						headerInfo: [
+							item.lastOrderDate || '2025-01-01',
+							'｜',
+							item.lastServiceName || '洗剪吹',
+							'｜',
+							item.lastServiceDetail || '服务'
+						],
+						price: item.lastOrderPrice || 0,
+						name: item.name || item.brandName || '',
+						type: '品牌',
+						level: item.level || '舒适',
+						role: item.typeDesc || '专业店',
+						specialties: item.specialties || ['造型', '美发'],
+						rating: item.rating || 4.8,
+						designers: item.designerCount || 0,
+						services: item.serviceCount || 0,
+						image: item.image || item.cover
+					}))
+				}
+			} catch (err) {
+				console.error('获取私人领地品牌馆失败:', err)
+			} finally {
+				this.loading = false
+			}
+		},
+				handleMore() {
 			console.log('More clicked')
 		},
 		handleRadio() {
@@ -378,14 +375,6 @@ export default {
 	box-sizing: border-box;
 }
 
-.custom-header {
-	position: relative;
-	width: 100%;
-	background-color: #ffffff;
-	flex-shrink: 0;
-}
-
-
 .time {
 	font-family: 'Inter', Helvetica;
 	font-size: 28rpx;
@@ -405,43 +394,10 @@ export default {
 	flex-shrink: 0;
 }
 
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 24rpx 32rpx;
-	box-sizing: border-box;
-}
-
-.nav-left {
-	width: 64rpx;
-}
-
-.nav-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 500;
-	font-size: 32rpx;
-	color: #333333;
-}
-
 .nav-right {
 	width: 64rpx;
 	display: flex;
 	justify-content: flex-end;
-}
-
-
-.back-btn {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-	flex-shrink: 0;
 }
 
 

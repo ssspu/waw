@@ -1,23 +1,15 @@
 <template>
 	<view class="follow-list-page">
-		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="back-btn" @tap="handleBack">
-					<image class="back-icon" src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" mode="aspectFit"></image>
-				</view>
-				<text class="navbar-title">我的关注</text>
-			</view>
-			<view class="tabs">
-				<view 
-					v-for="(tab, index) in tabs" 
-					:key="tab.label"
-					class="tab-item"
-					:class="{ active: activeTab === tab.value }"
-					@tap="handleTabChange(tab.value)"
-				>
-					<text class="tab-text">{{ tab.label }}</text>
-					<text class="tab-count">({{ tab.count }})</text>
-				</view>
+		<view class="tabs">
+			<view
+				v-for="(tab, index) in tabs"
+				:key="tab.label"
+				class="tab-item"
+				:class="{ active: activeTab === tab.value }"
+				@tap="handleTabChange(tab.value)"
+			>
+				<text class="tab-text">{{ tab.label }}</text>
+				<text class="tab-count">({{ tab.count }})</text>
 			</view>
 		</view>
 
@@ -152,8 +144,7 @@ import api from '@/api'
 export default {
 	data() {
 		return {
-			statusBarHeight: 44,
-			activeTab: 'designer',
+						activeTab: 'designer',
 			tabs: [
 				{ label: '设计师', value: 'designer', count: 0 },
 				{ label: '商家', value: 'store', count: 0 }
@@ -166,7 +157,6 @@ export default {
 		}
 	},
 	onLoad() {
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 		this.fetchFollowList()
 	},
 	methods: {
@@ -217,10 +207,7 @@ export default {
 				this.loading = false
 			}
 		},
-		handleBack() {
-			uni.navigateBack()
-		},
-		handleTabChange(tabValue) {
+				handleTabChange(tabValue) {
 			this.activeTab = tabValue
 		},
 		async handleUnfollow(designer) {
@@ -305,44 +292,6 @@ export default {
 	display: flex;
 	flex-direction: column;
 }
-.navbar {
-	background-color: #ffffff;
-	display: flex;
-	flex-direction: column;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 88rpx;
-	padding: 0 30rpx;
-	position: relative;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.navbar-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-size: 32rpx;
-	font-weight: 500;
-	color: #333333;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
-}
-
 .tabs {
 	display: flex;
 	align-items: center;

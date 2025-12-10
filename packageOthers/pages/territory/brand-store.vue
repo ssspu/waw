@@ -1,28 +1,5 @@
 <template>
 	<view class="brand-store-page">
-		<!-- 自定义导航栏 -->
-		<view class="custom-header">
-			<!-- 导航栏内容 -->
-			<view class="navbar-content">
-				<view class="nav-left">
-					<view class="back-btn" @tap="goBack">
-						<image 
-							class="back-icon" 
-							src="https://c.animaapp.com/mi5ng54v4eM3X6/img/frame.svg" 
-							mode="aspectFit"
-						></image>
-					</view>
-				</view>
-				<text class="nav-title">品牌馆</text>
-				<view class="nav-right">
-					<view class="action-btn" @tap="handleMore">
-					</view>
-					<view class="action-btn" @tap="handleRadio">
-					</view>
-				</view>
-			</view>
-		</view>
-		
 		<!-- 主内容区域 -->
 		<view class="main-content">
 			<!-- Tab导航 -->
@@ -303,10 +280,7 @@ export default {
 		}
 	},
 	methods: {
-		goBack() {
-			uni.navigateBack()
-		},
-		handleMore() {
+				handleMore() {
 			console.log('More clicked')
 		},
 		handleRadio() {
@@ -341,61 +315,6 @@ export default {
 	flex-direction: column;
 	overflow-x: hidden;
 	box-sizing: border-box;
-}
-
-.custom-header {
-	position: relative;
-	width: 100%;
-	background-color: #ffffff;
-	flex-shrink: 0;
-}
-
-.navbar-content {
-	position: relative;
-	width: 100%;
-	height: 96rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 0 32rpx;
-	box-sizing: border-box;
-}
-
-.nav-left {
-	position: absolute;
-	left: 32rpx;
-	top: 50%;
-	transform: translateY(-50%);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 32rpx;
-	height: 32rpx;
-	z-index: 2;
-}
-
-.back-btn {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-	flex-shrink: 0;
-}
-
-.nav-right {
-	position: absolute;
-	right: 32rpx;
-	top: 50%;
-	transform: translateY(-50%);
-	display: flex;
-	align-items: center;
-	gap: 16rpx;
-	z-index: 2;
 }
 
 .action-btn {

@@ -1,19 +1,5 @@
 <template>
 	<view class="platform-reward-page">
-		<!-- 导航栏 -->
-		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="back-btn" @tap="handleBack">
-					<image
-						class="back-icon"
-						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg"
-						mode="aspectFit"
-					></image>
-				</view>
-				<text class="navbar-title">平台奖励</text>
-			</view>
-		</view>
-
 		<!-- 主内容 -->
 		<view class="main-content">
 			<!-- 总奖励卡片 -->
@@ -57,8 +43,7 @@ export default {
 	},
 	data() {
 		return {
-			statusBarHeight: 44,
-			rewardRecords: [
+						rewardRecords: [
 				{
 					title: '成都美发沙龙',
 					desc: '新用户注册奖励',
@@ -87,13 +72,9 @@ export default {
 		}
 	},
 	onLoad() {
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
-	},
+		},
 	methods: {
-		handleBack() {
-			uni.navigateBack()
-		}
-	}
+			}
 }
 </script>
 
@@ -103,45 +84,6 @@ export default {
 	min-height: 100vh;
 	background-color: #f2f2f2;
 	position: relative;
-}
-
-.navbar {
-	position: relative;
-	width: 100%;
-	background-color: #ffffff;
-	z-index: 10;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 88rpx;
-	padding: 0 30rpx;
-	position: relative;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.navbar-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-size: 32rpx;
-	font-weight: 500;
-	color: #333333;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
 }
 
 .main-content {

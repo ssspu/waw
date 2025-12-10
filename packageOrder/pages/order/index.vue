@@ -1,22 +1,5 @@
 <template>
 	<view class="order-page">
-		<!-- 自定义导航栏 -->
-		<view class="custom-header" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<!-- 导航栏内容 -->
-			<view class="navbar-content">
-				<view class="nav-left">
-					<view class="back-btn" @tap="goBack">
-						<image 
-							class="back-icon" 
-							src="https://c.animaapp.com/mi5lwlq8FxTpMa/img/frame.svg" 
-							mode="aspectFit"
-						></image>
-					</view>
-					<text class="nav-title">服务订单</text>
-				</view>
-			</view>
-		</view>
-		
 		<!-- Tab导航栏 -->
 		<order-navigation-bar 
 			:active-tab="activeTab"
@@ -46,28 +29,15 @@ export default {
 	},
 	data() {
 		return {
-			statusBarHeight: 44,
 			activeTab: 'all'
 		}
 	},
 	onLoad(options) {
-		// 从持久化存储获取状态栏高度
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
-
 		if (options.tab) {
 			this.activeTab = options.tab
 		}
 	},
 	methods: {
-		goBack() {
-			uni.navigateBack()
-		},
-		handleMore() {
-			console.log('More clicked')
-		},
-		handleCircle() {
-			console.log('Circle clicked')
-		},
 		handleTabChange(tabId) {
 			this.activeTab = tabId
 		}
@@ -84,40 +54,6 @@ export default {
 	flex-direction: column;
 	overflow-x: hidden;
 	box-sizing: border-box;
-}
-
-.custom-header {
-	position: relative;
-	width: 100%;
-	background-color: #ffffff;
-	flex-shrink: 0;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 24rpx 32rpx;
-	box-sizing: border-box;
-}
-
-.nav-left {
-	display: flex;
-	align-items: center;
-	gap: 48rpx;
-}
-
-.back-btn {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-	flex-shrink: 0;
 }
 
 .action-btn {

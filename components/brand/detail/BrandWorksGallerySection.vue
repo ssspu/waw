@@ -103,7 +103,15 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
+	props: {
+		brandId: {
+			type: [String, Number],
+			default: null
+		}
+	},
 	data() {
 		return {
 			scrollHeight: 0,
@@ -111,6 +119,7 @@ export default {
 			hairVolume: 'less',
 			hairQuality: 'soft',
 			hairThickness: 'fine',
+			loading: false,
 			// 脸型选项
 			faceTypes: [
 				{ id: 'oval', icon: '/static/icon/face-oval.png', activeIcon: '/static/icon/face-oval-active.png' },
@@ -146,35 +155,35 @@ export default {
 					]
 				}
 			],
-			galleryImages: [
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" },
-				{ src: "https://c.animaapp.com/mi5jretszAhz9Y/img/rectangle-173.png" }
-			]
+			galleryImages: []
 		}
 	},
 	mounted() {
 		const systemInfo = uni.getSystemInfoSync()
 		this.scrollHeight = systemInfo.windowHeight
+		this.fetchWorks()
 	},
 	methods: {
+		// 获取品牌馆作品列表
+		async fetchWorks() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await api.brand.getWorks(this.brandId, { pageSize: 50 })
+				if (res.code === 0 && res.data) {
+					const list = res.data.list || res.data.records || []
+					// 转换API数据为组件需要的格式
+					this.galleryImages = list.map(work => ({
+						id: work.id,
+						src: work.image || work.cover || ''
+					}))
+				}
+			} catch (err) {
+				console.error('获取品牌馆作品失败:', err)
+			} finally {
+				this.loading = false
+			}
+		},
 		handleFaceChange(value) {
 			this.selectedFace = value
 		},

@@ -1,7 +1,7 @@
 <template>
 	<view class="designer-tab-content">
 		<!-- 发型师列表 -->
-		<brand-stylist-section :active-sub-tab="activeSubTab"></brand-stylist-section>
+		<brand-stylist-section :active-sub-tab="activeSubTab" :brand-id="brandId"></brand-stylist-section>
 	</view>
 </template>
 
@@ -16,6 +16,10 @@ export default {
 		activeSubTab: {
 			type: String,
 			default: 'hair'
+		},
+		brandId: {
+			type: [String, Number],
+			default: null
 		}
 	}
 }

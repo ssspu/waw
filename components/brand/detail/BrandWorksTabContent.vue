@@ -1,6 +1,6 @@
 <template>
 	<view class="works-tab-content">
-		<brand-works-gallery-section></brand-works-gallery-section>
+		<brand-works-gallery-section :brand-id="brandId"></brand-works-gallery-section>
 	</view>
 </template>
 
@@ -15,6 +15,10 @@ export default {
 		activeSubTab: {
 			type: String,
 			default: 'female'
+		},
+		brandId: {
+			type: [String, Number],
+			default: null
 		}
 	}
 }

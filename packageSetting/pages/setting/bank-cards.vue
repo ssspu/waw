@@ -1,7 +1,5 @@
 <template>
 	<view class="setting-detail-page">
-		<SettingDetailHeader title="银行卡" />
-		
 		<view class="main-content">
 			<!-- 银行卡列表 -->
 			<view 
@@ -49,13 +47,9 @@
 </template>
 
 <script>
-import SettingDetailHeader from '@/components/setting/SettingDetailHeader.vue'
 import api from '@/api'
 
 export default {
-	components: {
-		SettingDetailHeader
-	},
 	data() {
 		return {
 			bankCards: [],

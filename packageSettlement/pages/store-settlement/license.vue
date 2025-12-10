@@ -1,7 +1,7 @@
 <template>
 	<view class="screen">
 		<!-- 头部导航 -->
-		<view class="header" :style="{ paddingTop: statusBarHeight + 'px' }">
+		<view class="header" >
 			<view class="nav-bar">
 				<view class="nav-left">
 					<view class="back-btn" @tap="handleBack">
@@ -189,8 +189,7 @@
 export default {
 	data() {
 		return {
-			statusBarHeight: 44,
-			formData: {
+						formData: {
 				licenseType: '个体',
 				licenseUrl: '',
 				otherUrl: '',
@@ -207,13 +206,9 @@ export default {
 		}
 	},
 	onLoad() {
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
-	},
-	methods: {
-		handleBack() {
-			uni.navigateBack()
 		},
-		selectLicenseType() {
+	methods: {
+				selectLicenseType() {
 			uni.showActionSheet({
 				itemList: ['个体', '企业'],
 				success: (res) => {
@@ -364,29 +359,6 @@ export default {
 	justify-content: space-between;
 	padding: 0 32rpx;
 	height: 88rpx;
-}
-
-.nav-left {
-	display: flex;
-	align-items: center;
-	gap: 16rpx;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.nav-title {
-	font-family: 'PingFang SC';
-	font-weight: 500;
-	font-size: 30rpx;
-	color: #666666;
 }
 
 .nav-right {

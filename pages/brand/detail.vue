@@ -55,22 +55,22 @@
 			<view class="tab-content-wrapper">
 				<!-- 设计师tab内容 -->
 				<view v-if="activeTab === 'service'" class="tab-content" :key="'service'">
-					<brand-designer-tab-content :active-sub-tab="activeSubTabs.service"></brand-designer-tab-content>
+					<brand-designer-tab-content :active-sub-tab="activeSubTabs.service" :brand-id="brandId"></brand-designer-tab-content>
 				</view>
-				
+
 				<!-- 服务tab内容 -->
 				<view v-if="activeTab === 'appointment'" class="tab-content" :key="'appointment'">
-					<brand-service-tab-content :active-sub-tab="activeSubTabs.appointment"></brand-service-tab-content>
+					<brand-service-tab-content :active-sub-tab="activeSubTabs.appointment" :brand-id="brandId"></brand-service-tab-content>
 				</view>
-				
+
 				<!-- 作品tab内容 -->
 				<view v-if="activeTab === 'works'" class="tab-content" :key="'works'">
-					<brand-works-tab-content :active-sub-tab="activeSubTabs.works"></brand-works-tab-content>
+					<brand-works-tab-content :active-sub-tab="activeSubTabs.works" :brand-id="brandId"></brand-works-tab-content>
 				</view>
-				
+
 				<!-- 点评tab内容 -->
 				<view v-if="activeTab === 'reviews'" class="tab-content" :key="'reviews'">
-					<brand-reviews-tab-content :active-sub-tab="activeSubTabs.reviews"></brand-reviews-tab-content>
+					<brand-reviews-tab-content :active-sub-tab="activeSubTabs.reviews" :brand-id="brandId"></brand-reviews-tab-content>
 				</view>
 			</view>
 			

@@ -1,20 +1,11 @@
 <template>
 	<view class="info-page">
-		<!-- 自定义导航栏 -->
-		<view class="custom-navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="nav-left" @tap="goBack">
-					<image class="back-icon" src="https://c.animaapp.com/mi5eklbiAEaKLJ/img/frame-1.svg" mode="aspectFit"></image>
-				</view>
-			</view>
+		<!-- Tab切换 -->
+		<brand-info-profile-section
+			:active-tab="activeTab"
+			@tab-change="handleTabChange"
+		></brand-info-profile-section>
 
-			<brand-info-profile-section
-				class="navbar-tabs"
-				:active-tab="activeTab"
-				@tab-change="handleTabChange"
-			></brand-info-profile-section>
-		</view>
-		
 		<!-- 主内容 -->
 		<view class="main-content">
 			<brand-info-services-section :active-tab="activeTab" :brand-id="brandId"></brand-info-services-section>
@@ -36,24 +27,18 @@ export default {
 		BrandInfoProfileSection,
 		BrandInfoServicesSection
 	},
+	data() {
+		return {
+			activeTab: 'designer',
+			brandId: ''
+		}
+	},
 	onLoad(options) {
 		if (options.id) {
 			this.brandId = options.id
 		}
 	},
-	data() {
-		return {
-			activeTab: 'designer'
-		}
-	},
-	onLoad() {
-		// 从持久化存储获取状态栏高度
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
-	},
 	methods: {
-		goBack() {
-			uni.navigateBack()
-		},
 		handleTabChange(tab) {
 			this.activeTab = tab
 		}
@@ -82,37 +67,6 @@ export default {
 	display: flex;
 	flex-direction: column;
 	border-bottom: 2rpx solid #f1f1f1;
-}
-
-.navbar-content {
-	width: 100%;
-	min-height: 120rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 0 30rpx;
-	box-sizing: border-box;
-	position: relative;
-}
-
-.nav-left {
-	display: flex;
-	align-items: center;
-	gap: 32rpx;
-	flex-shrink: 0;
-	width: 64rpx;
-	height: 64rpx;
-	cursor: pointer;
-	justify-content: center;
-	position: absolute;
-	left: 30rpx;
-	z-index: 20;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-	flex-shrink: 0;
 }
 
 .navbar-tabs {

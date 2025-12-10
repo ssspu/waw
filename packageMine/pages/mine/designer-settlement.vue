@@ -1,27 +1,11 @@
 <template>
 	<view class="designer-settlement-page">
-		<!-- 导航栏和标题部分 -->
-		<view class="navbar-wrapper" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar">
-				<view class="navbar-content">
-					<view class="back-btn" @tap="handleBack">
-						<image 
-							class="back-icon" 
-							src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" 
-							mode="aspectFit"
-						></image>
-					</view>
-					<text class="navbar-title">入驻申请</text>
-				</view>
-			</view>
-			
-			<!-- 标题部分 -->
-			<view class="header-section">
-				<text class="main-title">设计师,免费入驻</text>
-				<text class="subtitle">让每一个设计师都能成为一个品牌,我们期待您的加入</text>
-			</view>
+		<!-- 标题部分 -->
+		<view class="header-section">
+			<text class="main-title">设计师,免费入驻</text>
+			<text class="subtitle">让每一个设计师都能成为一个品牌,我们期待您的加入</text>
 		</view>
-		
+
 		<!-- 主内容 -->
 		<view class="main-content">
 			
@@ -81,17 +65,12 @@
 export default {
 	data() {
 		return {
-			statusBarHeight: 44
-		}
+					}
 	},
 	onLoad() {
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
-	},
-	methods: {
-		handleBack() {
-			uni.navigateBack()
 		},
-		handleEnterpriseLink() {
+	methods: {
+				handleEnterpriseLink() {
 			uni.navigateTo({
 				url: '/packageMine/pages/mine/store-settlement'
 			})
@@ -127,40 +106,6 @@ export default {
 	z-index: 10;
 }
 
-.navbar {
-	position: relative;
-	width: 100%;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
-	height: 88rpx;
-	padding: 0 30rpx;
-	position: relative;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.navbar-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-size: 32rpx;
-	font-weight: 500;
-	color: #333333;
-	margin-left: 20rpx;
-}
 .nav-icon-btn {
 	width: 32rpx;
 	height: 32rpx;
@@ -208,13 +153,6 @@ export default {
 	gap: 24rpx;
 	background-color: #f2f2f2;
 	padding-bottom: 120rpx;
-}
-
-.header-section {
-	display: flex;
-	flex-direction: column;
-	gap: 16rpx;
-	padding: 30rpx 24rpx;
 }
 
 .main-title {

@@ -1,29 +1,5 @@
 <template>
 	<view class="setting-page">
-		<!-- 自定义导航栏 -->
-		<view class="custom-header" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="nav-left">
-					<view class="back-btn" @tap="goBack">
-						<image 
-							class="back-icon" 
-							src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" 
-							mode="aspectFit"
-						></image>
-					</view>
-				</view>
-				<text class="nav-title">设置</text>
-				<!-- <view class="nav-right">
-					<view class="action-btn" @tap="handleMore">
-						<text class="action-text">⋮</text>
-					</view>
-					<view class="action-btn" @tap="handleScan">
-						<text class="action-text">▦</text>
-					</view>
-				</view> -->
-			</view>
-		</view>
-		
 		<!-- 主内容区域 -->
 		<view class="main-content">
 			<view 
@@ -92,8 +68,7 @@ import api from '@/api'
 export default {
 	data() {
 		return {
-			statusBarHeight: 44,
-			loading: false,
+						loading: false,
 			settingsGroups: [
 				{
 					items: [
@@ -126,14 +101,10 @@ export default {
 		}
 	},
 	onLoad() {
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 		this.fetchSettings()
 	},
 	methods: {
-		goBack() {
-			uni.navigateBack()
-		},
-		async fetchSettings() {
+				async fetchSettings() {
 			if (this.loading) return
 			this.loading = true
 			try {
@@ -290,13 +261,6 @@ export default {
 	box-sizing: border-box;
 }
 
-.custom-header {
-	position: relative;
-	width: 100%;
-	background-color: #ffffff;
-	flex-shrink: 0;
-}
-
 .status-bar {
 	width: 100%;
 	height: 88rpx;
@@ -325,45 +289,6 @@ export default {
 	height: 23rpx;
 	flex-shrink: 0;
 }
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	padding: 24rpx 32rpx;
-	box-sizing: border-box;
-	gap: 24rpx;
-}
-
-.nav-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-size: 32rpx;
-	font-weight: 500;
-	color: #333333;
-}
-
-.nav-left {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 32rpx;
-	height: 32rpx;
-	z-index: 2;
-}
-
-.back-btn {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-	flex-shrink: 0;
-}
-
-
 
 .nav-right {
 	display: flex;

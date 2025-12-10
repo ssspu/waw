@@ -1,19 +1,5 @@
 <template>
 	<view class="order-detail-page">
-		<!-- 导航栏 -->
-		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="back-btn" @tap="handleBack">
-					<image 
-						class="back-icon" 
-						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" 
-						mode="aspectFit"
-					></image>
-				</view>
-				<text class="navbar-title">订单详情</text>
-			</view>
-		</view>
-		
 		<!-- 订单状态提示 -->
 		<view class="order-status-section">
 			<view class="status-content">
@@ -201,6 +187,7 @@
 
 <script>
 import CouponPopup from '@/components/popup/CouponPopup.vue'
+import api from '@/api'
 
 export default {
 	components: {
@@ -208,48 +195,13 @@ export default {
 	},
 	data() {
 		return {
-			statusBarHeight: 44,
-			countdown: '00:30:00',
+						countdown: '00:30:00',
 			countdownTimer: null,
 			showCancelModal: false,
 			showCouponPopup: false,
 			selectedCoupon: null,
 			discountAmount: 0,
-			coupons: [
-				{
-					id: 1,
-					amount: '50',
-					discount: 50,
-					condition: '满200可用',
-					minAmount: 200,
-					tag: '商家券',
-					title: '新人专享优惠券',
-					description: '服务类产品均可使用',
-					validUntil: '2025.12.31 23:59'
-				},
-				{
-					id: 2,
-					amount: '100',
-					discount: 100,
-					condition: '满500可用',
-					minAmount: 500,
-					tag: '平台券',
-					title: '会员专属优惠券',
-					description: '服务类产品均可使用',
-					validUntil: '2025.12.31 23:59'
-				},
-				{
-					id: 3,
-					amount: '30',
-					discount: 30,
-					condition: '满100可用',
-					minAmount: 100,
-					tag: '商家券',
-					title: '节日特惠券',
-					description: '服务类产品均可使用',
-					validUntil: '2025.12.31 23:59'
-				}
-			],
+			coupons: [],
 			selectedReasonIndex: null,
 			cancelReasons: [
 				'价格有点贵',
@@ -291,7 +243,6 @@ export default {
 	},
 	onLoad(options) {
 		// 从持久化存储获取状态栏高度
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 		// 从预约页面传递的数据
 		if (options.data) {
 			try {
@@ -303,13 +254,15 @@ export default {
 		}
 		// 可以从 options 中获取订单ID等信息
 		if (options.orderId) {
-			// 根据订单ID加载订单详情
+			this.fetchOrderDetail(options.orderId)
 		}
 		this.startCountdown()
 		// 生成订单号
 		this.orderInfo.orderNumber = this.generateOrderNumber()
 		// 设置创建时间
 		this.orderInfo.createTime = this.formatDateTime(new Date())
+		// 获取可用优惠券
+		this.fetchAvailableCoupons()
 	},
 	onUnload() {
 		if (this.countdownTimer) {
@@ -317,10 +270,7 @@ export default {
 		}
 	},
 	methods: {
-		handleBack() {
-			uni.navigateBack()
-		},
-		startCountdown() {
+				startCountdown() {
 			// 解析倒计时时间
 			const timeParts = this.countdown.split(':')
 			let hours = parseInt(timeParts[0])
@@ -479,6 +429,77 @@ export default {
 			const timestamp = Date.now().toString().slice(-10)
 			const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0')
 			return `CD${timestamp}${random}`
+		},
+		// 获取可用优惠券
+		async fetchAvailableCoupons() {
+			try {
+				const price = parseFloat(this.productInfo.price) || 0
+				const res = await api.coupon.getAvailable({ amount: price })
+				if (res.code === 0 && res.data) {
+					const list = Array.isArray(res.data) ? res.data : (res.data.list || [])
+					this.coupons = list.map(coupon => {
+						// 根据type计算折扣金额
+						let discountValue = coupon.value || 0
+						let amountText = String(coupon.value || 0)
+						let conditionText = coupon.minAmount > 0 ? `满${coupon.minAmount}可用` : '无门槛'
+
+						if (coupon.type === 'discount') {
+							// 折扣券显示为折扣
+							amountText = `${10 - coupon.value / 10}折`
+							discountValue = coupon.maxDiscount || 50
+						}
+
+						return {
+							id: coupon.id,
+							amount: amountText,
+							discount: discountValue,
+							condition: conditionText,
+							minAmount: coupon.minAmount || 0,
+							tag: coupon.useScope === 'brand' ? '商家券' : '平台券',
+							title: coupon.name || '',
+							description: coupon.description || '服务类产品均可使用',
+							validUntil: coupon.endTime ? coupon.endTime.replace(/-/g, '.') + ' 23:59' : ''
+						}
+					})
+				}
+			} catch (err) {
+				console.error('获取可用优惠券失败:', err)
+			}
+		},
+		// 获取订单详情
+		async fetchOrderDetail(orderId) {
+			try {
+				const res = await api.order.getDetail(orderId)
+				if (res.code === 0 && res.data) {
+					const order = res.data
+					// 更新商品信息
+					this.productInfo = {
+						image: order.serviceImage || order.image || '/static/icon/rectangle-169.png',
+						name: order.serviceName || order.name || '',
+						category: order.category || '',
+						duration: order.duration || '1小时',
+						price: String(order.price || 0)
+					}
+					// 更新预约信息
+					if (order.designer) {
+						this.bookingInfo = {
+							designer: order.designer.name || '',
+							date: order.bookingDate || '',
+							time: order.bookingTime || '',
+							address: order.address || ''
+						}
+					}
+					// 更新订单信息
+					this.orderInfo = {
+						createTime: order.createTime || this.formatDateTime(new Date()),
+						paymentMethod: order.paymentMethod || '在线支付',
+						points: order.points || '',
+						orderNumber: order.orderNo || order.id || this.generateOrderNumber()
+					}
+				}
+			} catch (err) {
+				console.error('获取订单详情失败:', err)
+			}
 		}
 	}
 }
@@ -499,43 +520,6 @@ export default {
 	height: 44rpx;
 	width: 100%;
 	background-color: #ffffff;
-}
-
-.navbar {
-	width: 100%;
-	background-color: #ffffff;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 88rpx;
-	padding: 0 30rpx;
-	position: relative;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;  
-}
-
-.navbar-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-size: 30rpx;
-	font-weight: 500;
-	color: #666666;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
 }
 
 .nav-icon-btn {

@@ -1,19 +1,5 @@
 <template>
 	<view class="asset-page">
-		<!-- 导航栏 -->
-		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="back-btn" @tap="handleBack">
-					<image 
-						class="back-icon" 
-						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" 
-						mode="aspectFit"
-					></image>
-				</view>
-				<text class="navbar-title">资产收入</text>
-			</view>
-		</view>
-		
 		<!-- 主内容 -->
 		<view class="main-content">
 			<!-- 总资产卡片 -->
@@ -93,8 +79,7 @@ import api from '@/api'
 export default {
 	data() {
 		return {
-			statusBarHeight: 44,
-			loading: false,
+						loading: false,
 			assetInfo: {
 				totalAsset: 0,
 				balance: 0,
@@ -106,7 +91,6 @@ export default {
 		}
 	},
 	onLoad() {
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 		this.fetchAssetData()
 	},
 	onShow() {
@@ -153,10 +137,7 @@ export default {
 				this.loading = false
 			}
 		},
-		handleBack() {
-			uni.navigateBack()
-		},
-		handleBankCard() {
+				handleBankCard() {
 			uni.navigateTo({
 				url: '/packageSetting/pages/setting/bank-cards'
 			})
@@ -197,45 +178,6 @@ export default {
 	background-color: #f2f2f2;
 	position: relative;
 }
-
-.navbar {
-	position: relative;
-	width: 100%;
-	background-color: #ffffff;
-	z-index: 10;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 88rpx;
-	padding: 0 30rpx;
-	position: relative;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.navbar-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-size: 32rpx;
-	font-weight: 500;
-	color: #333333;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
-}	
 
 .nav-icon-btn {
 	width: 32rpx;

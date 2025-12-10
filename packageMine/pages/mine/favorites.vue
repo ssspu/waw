@@ -1,14 +1,5 @@
 <template>
 	<view class="favorites-page">
-		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="back-btn" @tap="handleBack">
-					<image class="back-icon" src="/static/mine/favorites/vector.svg" mode="aspectFit"></image>
-				</view>
-				<text class="navbar-title">我的收藏</text>
-			</view>
-		</view>
-
 		<view class="favorites-list">
 			<favorite-card
 				v-for="item in favorites"
@@ -28,6 +19,7 @@
 
 <script>
 import FavoriteCard from '../../../components/mine/FavoriteCard.vue'
+import api from '@/api'
 
 export default {
 	name: 'MineFavoritesPage',
@@ -36,97 +28,66 @@ export default {
 	},
 	data() {
 		return {
-			statusBarHeight: 44,
-			favorites: [
-				{
-					id: 1,
-					name: '洗吹',
-					description: '水洗+按摩+造型',
-					duration: '1小时',
-					distance: '距离1.2km',
-					price: 799,
-					cover: '/static/mine/favorites/rectangle-169.png',
-					stylist: {
-						name: '李天天',
-						title: '资深设计师',
-						rating: '4.9',
-						reviews: '128',
-						location: '成都市锦江区新...',
-						distance: '2.5km'
-					}
-				},
-				{
-					id: 2,
-					name: '洗吹',
-					description: '水洗+按摩+造型',
-					duration: '1小时',
-					distance: '距离1.2km',
-					price: 799,
-					cover: '/static/mine/favorites/rectangle-169.png',
-					stylist: {
-						name: '李天天',
-						title: '资深设计师',
-						rating: '4.9',
-						reviews: '128',
-						location: '成都市锦江区新...',
-						distance: '2.5km'
-					}
-				},
-				{
-					id: 3,
-					name: '洗吹',
-					description: '水洗+按摩+造型',
-					duration: '1小时',
-					distance: '距离1.2km',
-					price: 799,
-					cover: '/static/mine/favorites/rectangle-169.png',
-					stylist: {
-						name: '李天天',
-						title: '资深设计师',
-						rating: '4.9',
-						reviews: '128',
-						location: '成都市锦江区新...',
-						distance: '2.5km'
-					}
-				},
-				{
-					id: 4,
-					name: '洗吹',
-					description: '水洗+按摩+造型',
-					duration: '1小时',
-					distance: '距离1.2km',
-					price: 799,
-					cover: '/static/mine/favorites/rectangle-169.png',
-					stylist: {
-						name: '李天天',
-						title: '资深设计师',
-						rating: '4.9',
-						reviews: '128',
-						location: '成都市锦江区新...',
-						distance: '2.5km'
-					}
-				}
-			]
+			favorites: [],
+			loading: false
 		}
 	},
 	onLoad() {
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+		this.fetchFavorites()
 	},
 	methods: {
-		handleBack() {
-			if (getCurrentPages().length > 1) {
-				uni.navigateBack()
-			} else {
-				uni.switchTab({ url: '/pages/mine/index' })
+		// 获取收藏列表
+		async fetchFavorites() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await api.user.getFavorites({ page: 1, pageSize: 20 })
+				if (res.code === 0 && res.data) {
+					const list = res.data.list || res.data.records || []
+					// 转换数据格式
+					this.favorites = list.map(item => ({
+						id: item.id,
+						name: item.name || item.serviceName,
+						description: item.description,
+						duration: item.duration || '1小时',
+						distance: item.distance || '距离1.2km',
+						price: item.price,
+						cover: item.image || item.cover,
+						stylist: {
+							name: item.designerName,
+							title: item.designerLevel || '设计师',
+							rating: String(item.rating || 4.9),
+							reviews: String(item.reviewCount || 0),
+							location: item.address || '',
+							distance: item.designerDistance || ''
+						}
+					}))
+				}
+			} catch (err) {
+				console.error('获取收藏列表失败:', err)
+			} finally {
+				this.loading = false
 			}
 		},
-		handleUnfavorite(item) {
-			// 删除对应的收藏数据
-			const index = this.favorites.findIndex(f => f.id === item.id)
-			if (index !== -1) {
-				this.favorites.splice(index, 1)
+		async handleUnfavorite(item) {
+			try {
+				// 调用API取消收藏
+				const res = await api.user.batchUnfavorite({ ids: [item.id] })
+				if (res.code === 0) {
+					// 从本地列表中移除
+					const index = this.favorites.findIndex(f => f.id === item.id)
+					if (index !== -1) {
+						this.favorites.splice(index, 1)
+					}
+					uni.showToast({
+						title: '已取消收藏',
+						icon: 'none'
+					})
+				}
+			} catch (err) {
+				console.error('取消收藏失败:', err)
 				uni.showToast({
-					title: '已取消收藏',
+					title: '操作失败',
 					icon: 'none'
 				})
 			}
@@ -142,44 +103,6 @@ export default {
 	background-color: #f2f2f2;
 	display: flex;
 	flex-direction: column;
-}
-
-.navbar {
-	background-color: #ffffff;
-	display: flex;
-	flex-direction: column;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 88rpx;
-	padding: 0 30rpx;
-	position: relative;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.navbar-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-size: 32rpx;
-	font-weight: 500;
-	color: #333333;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
 }
 
 .favorites-list {

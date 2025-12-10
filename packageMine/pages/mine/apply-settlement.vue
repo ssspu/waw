@@ -1,27 +1,11 @@
 <template>
 	<view class="apply-settlement-page">
-		<!-- 导航栏和申请入驻部分 -->
-		<view class="navbar-wrapper" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar">
-				<view class="navbar-content">
-					<view class="back-btn" @tap="handleBack">
-						<image 
-							class="back-icon" 
-							src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" 
-							mode="aspectFit"
-						></image>
-					</view>
-					<text class="navbar-title">我要合作</text>
-				</view>
-			</view>
-			
-			<!-- 申请入驻部分 -->
-			<view class="apply-section">
-				<text class="apply-title">申请入驻</text>
-				<text class="apply-desc">更多优惠政策，我们期待您的加入</text>
-			</view>
+		<!-- 申请入驻部分 -->
+		<view class="apply-section">
+			<text class="apply-title">申请入驻</text>
+			<text class="apply-desc">更多优惠政策，我们期待您的加入</text>
 		</view>
-		
+
 		<!-- 主内容 -->
 		<view class="main-content">
 			<!-- 商户入驻部分 -->
@@ -117,17 +101,12 @@
 export default {
 	data() {
 		return {
-			statusBarHeight: 44
-		}
+					}
 	},
 	onLoad() {
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
-	},
-	methods: {
-		handleBack() {
-			uni.navigateBack()
 		},
-		handleDesignerSettlement() {
+	methods: {
+				handleDesignerSettlement() {
 			uni.navigateTo({
 				url: '/packageMine/pages/mine/designer-settlement'
 			})
@@ -175,40 +154,6 @@ export default {
 	z-index: 10;
 }
 
-.navbar {
-	position: relative;
-	width: 100%;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
-	height: 88rpx;
-	padding: 0 30rpx;
-	position: relative;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.navbar-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-size: 32rpx;
-	font-weight: 500;
-	color: #333333;
-	margin-left: 20rpx;
-}
 .nav-icon-btn {
 	width: 32rpx;
 	height: 32rpx;

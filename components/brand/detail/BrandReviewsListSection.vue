@@ -124,82 +124,34 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
+	props: {
+		brandId: {
+			type: [String, Number],
+			default: null
+		}
+	},
 	data() {
 		return {
 			activeFilterIndex: 0,
+			loading: false,
+			overallRating: 4.8,
+			reviewCount: 0,
 			ratingCategories: [
-				{ label: "专业", value: 4.6, width: 91 },
-				{ label: "服务", value: 4.9, width: 97 },
-				{ label: "效果", value: 4.8, width: 94 },
-				{ label: "环境", value: 4.8, width: 94 }
+				{ label: "专业", value: 0, width: 0 },
+				{ label: "服务", value: 0, width: 0 },
+				{ label: "效果", value: 0, width: 0 },
+				{ label: "环境", value: 0, width: 0 }
 			],
 			filterTags: [
 				{ label: "全部", count: null, filter: 'all' },
-				{ label: "技术很好", count: 232, filter: 'skill' },
-				{ label: "效果满意", count: 321, filter: 'effect' },
-				{ label: "服务态度", count: 321, filter: 'service' }
+				{ label: "技术很好", count: 0, filter: 'skill' },
+				{ label: "效果满意", count: 0, filter: 'effect' },
+				{ label: "服务态度", count: 0, filter: 'service' }
 			],
-			reviews: [
-				{
-					id: 1,
-					userName: "加菲猫",
-					rating: 5.0,
-					date: "2019-12-25",
-					content: "技术很好！发型师很专业，剪出来的效果超出预期",
-					images: [
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png"
-					],
-					reply: null,
-					tags: ['skill']
-				},
-				{
-					id: 2,
-					userName: "小美",
-					rating: 5.0,
-					date: "2019-12-25",
-					content: "效果满意！染的颜色很好看，跟我想要的一模一样",
-					images: [
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png"
-					],
-					reply: "感谢您的认可，欢迎下次光临！",
-					tags: ['effect']
-				},
-				{
-					id: 3,
-					userName: "阿杰",
-					rating: 5.0,
-					date: "2019-12-25",
-					content: "服务态度超好！店员很热情，还提供免费茶水",
-					images: [
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png"
-					],
-					reply: null,
-					tags: ['service']
-				},
-				{
-					id: 4,
-					userName: "丽丽",
-					rating: 4.8,
-					date: "2019-12-20",
-					content: "技术很好，效果也满意，下次还会来",
-					images: [
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png",
-						"https://c.animaapp.com/mi5kx1ohxTkA7e/img/rectangle-190-2.png"
-					],
-					reply: null,
-					tags: ['skill', 'effect']
-				}
-			]
+			reviews: []
 		}
 	},
 	computed: {
@@ -211,15 +163,75 @@ export default {
 			return this.reviews.filter(review => review.tags && review.tags.includes(currentFilter))
 		}
 	},
+	mounted() {
+		this.fetchReviews()
+	},
 	methods: {
+		// 获取品牌馆评价列表
+		async fetchReviews() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await api.brand.getReviews(this.brandId, { pageSize: 50 })
+				if (res.code === 0 && res.data) {
+					const data = res.data
+					// 更新整体评分
+					if (data.overallRating) {
+						this.overallRating = data.overallRating
+					}
+					if (data.total) {
+						this.reviewCount = data.total
+					}
+					// 更新分类评分
+					if (data.categoryRatings) {
+						this.ratingCategories = data.categoryRatings.map(cat => ({
+							label: cat.label,
+							value: cat.value,
+							width: Math.round((cat.value / 5) * 100)
+						}))
+					}
+					// 更新标签统计
+					if (data.tagCounts) {
+						this.filterTags = [
+							{ label: "全部", count: null, filter: 'all' },
+							...data.tagCounts.map(tag => ({
+								label: tag.label,
+								count: tag.count,
+								filter: tag.filter
+							}))
+						]
+					}
+					// 转换评价列表
+					const list = data.list || data.records || []
+					this.reviews = list.map(review => ({
+						id: review.id,
+						userName: review.userName || review.nickname,
+						userAvatar: review.userAvatar || review.avatar,
+						rating: review.rating || 5.0,
+						date: review.date || review.createTime,
+						content: review.content,
+						images: review.images || [],
+						reply: review.reply,
+						tags: review.tags || []
+					}))
+				}
+			} catch (err) {
+				console.error('获取品牌馆评价失败:', err)
+			} finally {
+				this.loading = false
+			}
+		},
 		handleTagClick(index) {
 			this.activeFilterIndex = index
 		},
 		handleImageClick(image, index) {
-			uni.previewImage({
-				urls: this.reviews[index].images,
-				current: image
-			})
+			const review = this.filteredReviews[index]
+			if (review && review.images) {
+				uni.previewImage({
+					urls: review.images,
+					current: image
+				})
+			}
 		}
 	}
 }

@@ -108,20 +108,31 @@
 </template>
 
 <script>
-import { categoryTabs, stylistData } from '../../../pages/brand/brand-data.js'
+import api from '@/api'
 
 export default {
 	props: {
 		activeSubTab: {
 			type: String,
 			default: 'hair'
+		},
+		brandId: {
+			type: [String, Number],
+			default: null
 		}
 	},
 	data() {
 		return {
 			selectedCategory: 'hairstylist',
-			categoryTabs,
-			stylistData
+			loading: false,
+			categoryTabs: [
+				{ id: 'hairstylist', label: '发型师' },
+				{ id: 'chief', label: '首席' },
+				{ id: 'senior', label: '资深' },
+				{ id: 'director', label: '总监' },
+				{ id: 'manager', label: '店长' }
+			],
+			stylistData: []
 		}
 	},
 	computed: {
@@ -132,7 +143,43 @@ export default {
 			return this.stylistData.filter(stylist => stylist.category === this.selectedCategory)
 		}
 	},
+	mounted() {
+		this.fetchDesigners()
+	},
 	methods: {
+		// 获取品牌馆设计师列表
+		async fetchDesigners() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const res = await api.brand.getDesigners(this.brandId, { pageSize: 50 })
+				if (res.code === 0 && res.data) {
+					const list = res.data.list || res.data.records || []
+					// 转换API数据为组件需要的格式
+					this.stylistData = list.map(designer => ({
+						id: designer.id,
+						name: designer.name,
+						image: designer.avatar || '',
+						role: designer.role || '美发师',
+						level: designer.level || '高级',
+						category: designer.category || 'hairstylist',
+						position: designer.position || `${designer.level}｜从业${designer.experience || 5}年`,
+						specialties: designer.specialties || [],
+						rating: designer.rating || 0,
+						serviceCount: designer.serviceCount || 0,
+						worksCount: designer.worksCount || 0,
+						tags: designer.tags || [],
+						price: designer.price || 0,
+						discount: designer.discount || '',
+						soldCount: designer.soldCount || 0
+					}))
+				}
+			} catch (err) {
+				console.error('获取品牌馆设计师失败:', err)
+			} finally {
+				this.loading = false
+			}
+		},
 		selectCategory(categoryId) {
 			this.selectedCategory = categoryId
 		},

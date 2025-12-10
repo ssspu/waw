@@ -1,21 +1,5 @@
 <template>
 	<view class="portfolio-page">
-		<view class="status-bar-space" :style="{ height: statusBarHeight + 'px' }"></view>
-		<!-- 导航栏 -->
-		<view class="navbar">
-			<view class="navbar-content">
-				<view class="back-btn" @tap="handleBack">
-					<image
-						class="back-icon"
-						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg"
-						mode="aspectFit"
-					></image>
-				</view>
-				<text class="navbar-title">作品集</text>
-				<view class="navbar-right"></view>
-			</view>
-		</view>
-
 		<!-- 搜索和筛选区域 -->
 		<view class="filter-section">
 			<!-- 搜索框 -->
@@ -265,7 +249,6 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { portfolioApi } from '@/api'
 
-const statusBarHeight = ref(44)
 const activeCategory = ref('women')
 const showFilterDrawer = ref(false)
 const showFilterTags = ref(false)
@@ -393,9 +376,6 @@ const fetchFilters = async () => {
 // 页面加载时获取参数和状态栏高度
 onMounted(() => {
 	// 获取状态栏高度
-	const systemInfo = uni.getSystemInfoSync()
-	statusBarHeight.value = systemInfo.statusBarHeight || 44
-
 	const pages = getCurrentPages()
 	const currentPageInfo = pages[pages.length - 1]
 	const options = currentPageInfo.options || {}
@@ -538,51 +518,6 @@ const handleItemClick = (item) => {
 	flex-direction: column;
 	overflow: hidden;
 	box-sizing: border-box;
-}
-
-.status-bar-space {
-	background-color: #ffffff;
-	position: relative;
-	z-index: 200;
-}
-
-.navbar {
-	width: 100%;
-	background-color: #ffffff;
-	position: relative;
-	z-index: 200;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 88rpx;
-	padding: 0 30rpx;
-	position: relative;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.navbar-title {
-	font-family: 'PingFang SC';
-	font-size: 32rpx;
-	font-weight: 500;
-	color: #333333;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
 }
 
 .navbar-right {

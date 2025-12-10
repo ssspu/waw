@@ -1,7 +1,5 @@
 <template>
 	<view class="setting-detail-page">
-		<SettingDetailHeader title="编辑收货地址" />
-
 		<view class="main-content">
 			<view class="settings-card">
 				<view class="card-content">
@@ -72,10 +70,7 @@
 </template>
 
 <script>
-import SettingDetailHeader from '@/components/setting/SettingDetailHeader.vue'
-
 export default {
-	components: { SettingDetailHeader },
 	data() {
 		return {
 			recipient: '小悦悦',

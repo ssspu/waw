@@ -4,7 +4,7 @@
 		<image class="bg-image" src="/static/background-image/register.png" mode="aspectFill"></image>
 
 		<!-- 自定义导航栏 -->
-		<view class="custom-navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
+		<view class="custom-navbar" >
 			<view class="navbar-content">
 				<view class="nav-left" @tap="goBack">
 					<image class="nav-icon" src="https://c.animaapp.com/mi5ng54v4eM3X6/img/frame.svg" mode="aspectFit"></image>
@@ -85,8 +85,7 @@ export default {
 	data() {
 		return {
 			isAgreed: true,
-			statusBarHeight: 0,
-			showModal: false,
+						showModal: false,
 			currentAgreement: {
 				title: '',
 				content: ''
@@ -112,8 +111,7 @@ export default {
 	},
 	onLoad() {
 		// 从持久化存储获取状态栏高度
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
-	},
+		},
 	onUnload() {
 		if (this.modalTimer) {
 			clearInterval(this.modalTimer)
@@ -229,33 +227,29 @@ export default {
 }
 
 .navbar-content {
-	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	height: 88rpx;
-	padding: 0 30rpx;
+	padding: 24rpx 32rpx;
+	box-sizing: border-box;
 }
 
 .nav-left {
-	width: 60rpx;
 	display: flex;
 	align-items: center;
+	justify-content: center;
+}
+
+.nav-title {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 32rpx;
+	font-weight: 500;
+	color: #333333;
 }
 
 .nav-icon {
 	width: 32rpx;
 	height: 32rpx;
-}
-
-.nav-title {
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 500;
-	color: #333333;
-	font-size: 32rpx;
 }
 
 .nav-right {

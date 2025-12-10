@@ -1,13 +1,5 @@
 <template>
 	<view class="setting-detail-page">
-		<!-- 悬浮标题栏 -->
-		<view class="fixed-header">
-			<SettingDetailHeader title="协议与条款" />
-		</view>
-
-		<!-- 占位区域 -->
-		<view class="header-placeholder"></view>
-
 		<scroll-view class="main-content" scroll-y>
 			<!-- 全部协议内容（可折叠） -->
 			<view class="agreement-list">
@@ -37,13 +29,9 @@
 </template>
 
 <script>
-import SettingDetailHeader from '@/components/setting/SettingDetailHeader.vue'
 import { agreementsData } from '@/data/agreements.js'
 
 export default {
-	components: {
-		SettingDetailHeader
-	},
 	data() {
 		return {
 			// 折叠状态列表，默认全部折叠

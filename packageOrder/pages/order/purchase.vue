@@ -10,7 +10,7 @@
 				></image>
 
 				<!-- 自定义导航栏 -->
-				<view class="custom-navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
+				<view class="custom-navbar" >
 					<view class="navbar-content">
 						<view class="back-btn" @click="handleBack">
 							<image
@@ -24,17 +24,22 @@
 				</view>
 
 				<!-- 右上角详情区域 -->
-				<ServicePurchaseDetailsSection />
+				<ServicePurchaseDetailsSection :current-page="currentPage" :total-pages="totalPages" />
 			</view>
 
 			<!-- 主内容区域 -->
 			<view class="content-wrapper">
-				<ServicePurchaseProfileSection ref="profileSection" @favorite-change="handleFavoriteChange" />
+				<ServicePurchaseProfileSection ref="profileSection" :service-data="serviceData" @favorite-change="handleFavoriteChange" />
 			</view>
 		</scroll-view>
 
 		<!-- 底部导航栏 -->
-		<ServicePurchaseFooter :is-favorited="isFavorited" @favorite-change="handleFooterFavoriteChange" />
+		<ServicePurchaseFooter
+			:service-id="serviceId"
+			:designer-id="serviceData.designer ? serviceData.designer.id : ''"
+			:is-favorited="isFavorited"
+			@favorite-change="handleFooterFavoriteChange"
+		/>
 	</view>
 </template>
 
@@ -42,6 +47,7 @@
 import ServicePurchaseDetailsSection from '../../../components/order/purchase/ServicePurchaseDetailsSection.vue'
 import ServicePurchaseProfileSection from '../../../components/order/purchase/ServicePurchaseProfileSection.vue'
 import ServicePurchaseFooter from '../../../components/order/purchase/ServicePurchaseFooter.vue'
+import api from '@/api'
 
 export default {
 	components: {
@@ -51,29 +57,32 @@ export default {
 	},
 	data() {
 		return {
-			statusBarHeight: 44,
-			serviceId: '',
-			isFavorited: false
+						serviceId: '',
+			isFavorited: false,
+			loading: true,
+			serviceData: {},
+			headerImages: [],
+			currentImageIndex: 0
+		}
+	},
+	computed: {
+		currentPage() {
+			return this.currentImageIndex + 1
+		},
+		totalPages() {
+			return this.headerImages.length
 		}
 	},
 	onLoad(options) {
 		// 从持久化存储获取状态栏高度
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
-
 		if (options.id) {
 			this.serviceId = options.id
+			this.fetchServiceDetail(options.id)
 		}
 	},
 	methods: {
 		handleBack() {
-			const pages = getCurrentPages && getCurrentPages()
-			if (pages && pages.length > 1) {
-				uni.navigateBack()
-			} else {
-				uni.switchTab({
-					url: '/pages/main/index'
-				})
-			}
+			uni.navigateBack()
 		},
 		handleFavoriteChange(isFavorited) {
 			this.isFavorited = isFavorited
@@ -82,6 +91,90 @@ export default {
 			this.isFavorited = isFavorited
 			if (this.$refs.profileSection) {
 				this.$refs.profileSection.isFavorited = isFavorited
+			}
+		},
+		// 获取服务详情
+		async fetchServiceDetail(serviceId) {
+			this.loading = true
+			try {
+				const res = await api.service.getDetail(serviceId)
+				if (res.code === 0 && res.data) {
+					const service = res.data
+					// 头部图片
+					this.headerImages = service.images || [service.cover || service.image]
+					// 服务数据传给子组件
+					this.serviceData = {
+						id: service.id,
+						name: service.name || service.title || '',
+						fullTitle: service.fullTitle || service.name || service.title || '',
+						price: service.price || 0,
+						soldCount: service.soldCount || service.sales || 0,
+						isFavorited: service.isFavorited || false,
+						// 优惠券信息
+						coupons: (service.coupons || []).map(c => ({
+							id: c.id,
+							text: c.text || c.title || ''
+						})),
+						// 设计师信息
+						designer: service.designer ? {
+							id: service.designer.id,
+							name: service.designer.name || '',
+							avatar: service.designer.avatar || '',
+							badge: service.designer.badge || service.designer.level || '',
+							role: service.designer.role || service.designer.title || '',
+							rating: service.designer.rating || 5.0,
+							serviceCount: service.designer.serviceCount || 0,
+							worksCount: service.designer.worksCount || 0
+						} : null,
+						// 服务内容
+						serviceItems: (service.items || service.serviceItems || []).map(item => ({
+							name: item.name || item.title || '',
+							quantity: item.quantity || item.value || ''
+						})),
+						// 温馨提示
+						warmTips: service.warmTips || service.tips || [],
+						// 图文详情
+						detailImages: service.detailImages || service.details || [],
+						// 评价标签
+						reviewTags: (service.reviewTags || []).map(tag => ({
+							text: tag.text || tag.name || '',
+							count: tag.count || 0,
+							active: tag.active || false
+						})),
+						// 评价列表
+						reviews: (service.reviews || []).map(review => ({
+							image: review.image || review.cover || '',
+							title: review.title || '',
+							rating: review.rating || 5.0,
+							content: review.content || review.text || '',
+							avatar: review.avatar || review.userAvatar || '',
+							author: review.author || review.userName || '',
+							date: review.date || review.createTime || ''
+						})),
+						// 问答
+						questions: service.questions || [],
+						questionCount: service.questionCount || (service.questions || []).length,
+						// 推荐服务
+						recommendedServices: (service.recommendedServices || []).map(s => ({
+							id: s.id,
+							image: s.image || s.cover || '',
+							title: s.title || s.name || '',
+							description: s.description || s.desc || '',
+							price: s.price || 0,
+							avatar: s.designer?.avatar || s.avatar || '',
+							stylistName: s.designer?.name || s.stylistName || '',
+							stylistRole: s.designer?.role || s.stylistRole || '',
+							rating: s.rating || 5.0,
+							reviewCount: s.reviewCount || 0,
+							distance: s.distance || ''
+						}))
+					}
+					this.isFavorited = service.isFavorited || false
+				}
+			} catch (err) {
+				console.error('获取服务详情失败:', err)
+			} finally {
+				this.loading = false
 			}
 		}
 	}
@@ -101,13 +194,6 @@ export default {
 .page-scroll {
 	flex: 1;
 	width: 100%;
-}
-
-.header-section {
-	position: relative;
-	width: 100%;
-	height: 600rpx;
-	flex-shrink: 0;
 }
 
 .header-bg-image {
@@ -130,26 +216,24 @@ export default {
 .navbar-content {
 	display: flex;
 	align-items: center;
-	padding: 20rpx 30rpx;
-	gap: 16rpx;
+	padding: 24rpx 32rpx;
+	box-sizing: border-box;
+	gap: 24rpx;
 }
 
 .back-btn {
-	width: 64rpx;
-	height: 64rpx;
-	border-radius: 32rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	cursor: pointer;
-	flex-shrink: 0;
+	width: 64rpx;
+	height: 64rpx;
+	background-color: rgba(0, 0, 0, 0.3);
+	border-radius: 50%;
 }
 
 .back-icon {
-	width: 60rpx;
-	height: 60rpx;
-	flex-shrink: 0;
-	filter: brightness(0) invert(1);
+	width: 32rpx;
+	height: 32rpx;
 }
 
 .nav-title {

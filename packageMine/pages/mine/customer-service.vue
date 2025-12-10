@@ -1,21 +1,5 @@
 <template>
 	<view class="customer-service-page">
-		<!-- 自定义头部 -->
-		<view class="custom-header" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="nav-left">
-					<view class="back-btn" @tap="goBack">
-						<image
-							class="back-icon"
-							src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg"
-							mode="aspectFit"
-						></image>
-					</view>
-				</view>
-				<text class="nav-title">客服中心</text>
-			</view>
-		</view>
-		
 		<view class="main-content">
 			<!-- 搜索栏 -->
 			<view class="search-bar">
@@ -80,8 +64,7 @@
 export default {
 	data() {
 		return {
-			statusBarHeight: 44,
-			searchKeyword: '',
+						searchKeyword: '',
 			activeMainTab: 0,
 			activeSubTab: 0,
 			mainTabs: ['购买问题', '出售问题'],
@@ -102,13 +85,9 @@ export default {
 		}
 	},
 	onLoad() {
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
-	},
-	methods: {
-		goBack() {
-			uni.navigateBack()
 		},
-		handleMainTabClick(index) {
+	methods: {
+				handleMainTabClick(index) {
 			this.activeMainTab = index
 			this.activeSubTab = 0
 			this.loadQuestions()
@@ -140,50 +119,6 @@ export default {
 	overflow-x: hidden;
 	box-sizing: border-box;
 }
-
-.custom-header {
-	position: relative;
-	width: 100%;
-	background-color: #ffffff;
-	flex-shrink: 0;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	padding: 24rpx 32rpx;
-	box-sizing: border-box;
-	gap: 24rpx;
-}
-
-.nav-left {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.nav-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-size: 32rpx;
-	font-weight: 500;
-	color: #333333;
-}
-
-.back-btn {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-	flex-shrink: 0;
-}
-
 
 .nav-right {
 	display: flex;

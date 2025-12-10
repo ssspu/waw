@@ -1,19 +1,5 @@
 <template>
 	<view class="order-detail-page">
-		<!-- 导航栏 -->
-		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="back-btn" @tap="handleBack">
-					<image
-						class="back-icon"
-						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg"
-						mode="aspectFit"
-					></image>
-				</view>
-				<text class="navbar-title">订单详情</text>
-			</view>
-		</view>
-		
 		<!-- 订单状态提示 -->
 		<view class="order-status-section">
 			<view class="status-content">
@@ -266,8 +252,7 @@
 export default {
 	data() {
 		return {
-			statusBarHeight: 44,
-			showQrcodeModal: false,
+						showQrcodeModal: false,
 			showModifyTimeModal: false,
 			selectedTimeSlot: null,
 			orderInfo: {
@@ -292,17 +277,13 @@ export default {
 		}
 	},
 	onLoad(options) {
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 		// 可以从 options 中获取订单ID等信息
 		if (options.orderId) {
 			// 根据订单ID加载订单详情
 		}
 	},
 	methods: {
-		handleBack() {
-			uni.navigateBack()
-		},
-		handleCopy() {
+				handleCopy() {
 			uni.setClipboardData({
 				data: this.orderInfo.orderNumber,
 				success: () => {
@@ -440,43 +421,6 @@ export default {
 	flex-direction: column;
 	position: relative;
 	padding-bottom: 120rpx;
-}
-
-.navbar {
-	width: 100%;
-	background-color: #ffffff;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 88rpx;
-	padding: 0 30rpx;
-	position: relative;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;  
-}
-
-.navbar-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-size: 30rpx;
-	font-weight: 500;
-	color: #666666;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
 }
 
 .navbar-right {

@@ -1,6 +1,6 @@
 <template>
 	<view class="reviews-tab-content">
-		<brand-reviews-list-section></brand-reviews-list-section>
+		<brand-reviews-list-section :brand-id="brandId"></brand-reviews-list-section>
 	</view>
 </template>
 
@@ -15,6 +15,10 @@ export default {
 		activeSubTab: {
 			type: String,
 			default: 'all'
+		},
+		brandId: {
+			type: [String, Number],
+			default: null
 		}
 	}
 }

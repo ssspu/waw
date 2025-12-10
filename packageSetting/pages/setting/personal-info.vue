@@ -1,7 +1,5 @@
 <template>
 	<view class="setting-detail-page">
-		<SettingDetailHeader title="个人信息" />
-		
 		<view class="main-content">
 			<!-- 所有项目卡片 -->
 			<view class="settings-card">
@@ -176,13 +174,9 @@
 </template>
 
 <script>
-import SettingDetailHeader from '@/components/setting/SettingDetailHeader.vue'
 import api from '@/api'
 
 export default {
-	components: {
-		SettingDetailHeader
-	},
 	data() {
 		return {
 			basicInfoItems: [

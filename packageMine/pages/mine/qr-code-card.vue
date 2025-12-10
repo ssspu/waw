@@ -1,19 +1,5 @@
 <template>
 	<view class="qr-code-page">
-		<!-- 导航栏 -->
-		<view class="navbar" :style="{ paddingTop: statusBarHeight + 'px' }">
-			<view class="navbar-content">
-				<view class="back-btn" @tap="handleBack">
-					<image 
-						class="back-icon" 
-						src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" 
-						mode="aspectFit"
-					></image>
-				</view>
-				<text class="navbar-title">二维码名片</text>
-			</view>
-		</view>
-		
 		<!-- 主内容 -->
 		<view class="main-content">
 			<!-- 白色卡片 -->
@@ -93,17 +79,12 @@
 export default {
 	data() {
 		return {
-			statusBarHeight: 44
-		}
+					}
 	},
 	onLoad() {
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
-	},
-	methods: {
-		handleBack() {
-			uni.navigateBack()
 		},
-		handleScan() {
+	methods: {
+				handleScan() {
 			uni.showToast({ title: '扫一扫', icon: 'none' })
 		},
 		handleSave() {
@@ -131,44 +112,6 @@ export default {
 	width: 100%;
 }
 
-.navbar {
-	position: relative;
-	width: 100%;
-	background-color: #ffffff;
-	z-index: 10;
-}
-
-.navbar-content {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 88rpx;
-	padding: 0 30rpx;
-	position: relative;
-}
-
-.back-btn {
-	width: 32rpx;
-	height: 32rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
-}
-
-.navbar-title {
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-size: 32rpx;
-	font-weight: 500;
-	color: #333333;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);	
-}	
 .nav-icon-btn {
 	width: 32rpx;
 	height: 32rpx;

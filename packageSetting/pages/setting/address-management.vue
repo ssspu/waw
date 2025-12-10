@@ -1,7 +1,5 @@
 <template>
 	<view class="setting-detail-page">
-		<SettingDetailHeader title="收货地址" />
-		
 		<view class="main-content">
 		<!-- 地址列表 -->
 		<view 
@@ -57,12 +55,7 @@
 </template>
 
 <script>
-import SettingDetailHeader from '@/components/setting/SettingDetailHeader.vue'
-
 export default {
-	components: {
-		SettingDetailHeader
-	},
 	data() {
 		return {
 			addresses: [

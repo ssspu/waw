@@ -1,7 +1,5 @@
 <template>
 	<view class="setting-detail-page">
-		<SettingDetailHeader title="隐私设置" />
-		
 		<view class="main-content">
 			<!-- 隐私设置卡片 -->
 			<view class="settings-card">
@@ -33,13 +31,9 @@
 </template>
 
 <script>
-import SettingDetailHeader from '@/components/setting/SettingDetailHeader.vue'
 import api from '@/api'
 
 export default {
-	components: {
-		SettingDetailHeader
-	},
 	data() {
 		return {
 			loading: false,

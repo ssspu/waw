@@ -1,6 +1,6 @@
 <template>
 	<view class="vip-page">
-		<view class="header" :style="{ paddingTop: statusBarHeight + 'px' }">
+		<view class="header" >
 			<view class="title-row">
 				<view class="back-btn" @tap="handleBack">
 					<image class="back-arrow-icon" src="https://c.animaapp.com/mi5nkzbpeEnFKd/img/frame.svg" mode="aspectFit" />
@@ -66,8 +66,7 @@
 export default {
 	data() {
 		return {
-			statusBarHeight: 44,
-			tags: ['安心服务', '免费设计', '预约服务'],
+						tags: ['安心服务', '免费设计', '预约服务'],
 			benefits: [
 				'赠送一份价值365元的精美产品大礼包',
 				'享有平台设计师和品牌馆项目服务的VIP价格',
@@ -79,8 +78,7 @@ export default {
 		}
 	},
 	onLoad() {
-		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
-	},
+		},
 	methods: {
 		handleBack() {
 			uni.navigateBack({
@@ -144,15 +142,6 @@ export default {
 	display: flex;
 	align-items: center;
 	gap: 20rpx;
-}
-
-.back-btn {
-	width: 64rpx;
-	height: 64rpx;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
 }
 
 .back-arrow-icon {
