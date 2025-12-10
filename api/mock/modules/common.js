@@ -42,7 +42,7 @@ const homeData = {
     { id: '4', name: '美体', icon: '/static/icon/body.png' },
     { id: '5', name: '化妆', icon: '/static/icon/makeup.png' }
   ],
-  // 设计师按分类 - 对应 designerTabs: ["首席创意", "总监店长", "网红名师", "国际导师"]
+  // 设计师按分类 - 对应 designerTabs: ["首席创意", "总监店长", "人气名师", "国际导师"]
   // 注意: ID 必须与 designer.js 中的 designers 数组中的 ID 对应 (1-8)
   designersByCategory: {
     '首席创意': [
@@ -53,7 +53,7 @@ const homeData = {
       { id: '2', image: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-7.png', name: '张小雨', role: '美发师', level: '高级', title: '总监｜从业十年', rating: '4.9', reviews: '356', distance: '5.2km' },
       { id: '1', image: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-11.png', name: '李天天', role: '美发师', level: '高级', title: '店长｜从业十二年', rating: '4.8', reviews: '287', distance: '2.7km' }
     ],
-    '网红名师': [
+    '人气名师': [
       { id: '3', image: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-8.png', name: '王大明', role: '美发师', level: '资深', title: '首席｜从业八年', rating: '4.7', reviews: '245', distance: '3.5km' },
       { id: '6', image: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png', name: '林婉儿', role: '美发师', level: '高级', title: '资深设计师｜从业七年', rating: '4.8', reviews: '267', distance: '2.7km' },
       { id: '8', image: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-7.png', name: '周雅琪', role: '美发师', level: '高级', title: '造型师｜从业五年', rating: '4.6', reviews: '156', distance: '2.7km' }

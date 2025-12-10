@@ -5,7 +5,7 @@
 			<view class="header-section">
 				<image
 					class="header-bg-image"
-					src="https://c.animaapp.com/mifnbli6udxphC/img/rectangle-186.png"
+					:src="headerImages[0] || 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-186.png'"
 					mode="aspectFill"
 				></image>
 
@@ -108,6 +108,7 @@ export default {
 						name: service.name || service.title || '',
 						fullTitle: service.fullTitle || service.name || service.title || '',
 						price: service.price || 0,
+						appointmentPrice: service.appointmentPrice || service.price || 0,
 						soldCount: service.soldCount || service.sales || 0,
 						isFavorited: service.isFavorited || false,
 						// 优惠券信息
@@ -196,6 +197,12 @@ export default {
 	width: 100%;
 }
 
+.header-section {
+	position: relative;
+	width: 100%;
+	height: 500rpx;
+}
+
 .header-bg-image {
 	position: absolute;
 	top: 0;
@@ -207,7 +214,7 @@ export default {
 // 自定义导航栏
 .custom-navbar {
 	position: absolute;
-	top: 0;
+	top: 88rpx;
 	left: 0;
 	right: 0;
 	z-index: 30;
@@ -229,11 +236,6 @@ export default {
 	height: 64rpx;
 	background-color: rgba(0, 0, 0, 0.3);
 	border-radius: 50%;
-}
-
-.back-icon {
-	width: 32rpx;
-	height: 32rpx;
 }
 
 .nav-title {

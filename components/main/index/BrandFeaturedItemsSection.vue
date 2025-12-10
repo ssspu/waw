@@ -65,7 +65,7 @@
 							@tap="handleStoreClick(store)"
 						>
 					<view class="store-bg"></view>
-					<image class="store-image" :src="store.image" :alt="store.name" mode="aspectFill"></image>
+					<image class="store-image" :src="store.image || 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png'" :alt="store.name" mode="aspectFill"></image>
 					<image class="store-overlay" :src="store.overlay" mode="aspectFill"></image>
 					
 					<!-- 评分和统计信息 -->
@@ -151,7 +151,7 @@
 				class="nearby-store-item"
 				@tap="handleStoreClick(store)"
 			>
-				<view class="store-avatar" :style="{ backgroundImage: `url(${store.image})` }"></view>
+				<view class="store-avatar" :style="{ backgroundImage: `url(${store.image || 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png'})` }"></view>
 				<view class="store-details">
 					<view class="store-header">
 						<text class="store-name">{{ store.name }}</text>

@@ -1157,11 +1157,12 @@ export default {
 	display: flex;
 	align-items: center;
 	gap: 12rpx;
-	background-color: #f5f5f5;
+	background-color: #ffffff;
 	border-radius: 52rpx;
 	height: 60rpx;
 	padding: 0 20rpx;
 	box-sizing: border-box;
+	border: 1rpx solid #e5e5e5;
 }
 
 .search-icon {

@@ -7,6 +7,7 @@
 					<view class="price-row">
 						<text class="currency-symbol">¥</text>
 						<text class="price-value">{{ price }}</text>
+						<text class="appointment-price-tag">预约价 ¥{{ appointmentPrice }}</text>
 					</view>
 					<text class="sold-count">已售{{ soldCount }}</text>
 				</view>
@@ -369,6 +370,9 @@ export default {
 		price() {
 			return this.serviceData.price || 0
 		},
+		appointmentPrice() {
+			return this.serviceData.appointmentPrice || this.serviceData.price || 0
+		},
 		soldCount() {
 			return this.serviceData.soldCount || 0
 		},
@@ -584,6 +588,16 @@ export default {
 	font-size: 52rpx;
 	font-weight: 800;
 	color: #333333;
+}
+
+.appointment-price-tag {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	background-color: #dacbb1;
+	font-size: 20rpx;
+	color: #645E57;
+	padding: 2rpx 8rpx;
+	border-radius: 4rpx;
+	margin-left: 12rpx;
 }
 
 .sold-count {

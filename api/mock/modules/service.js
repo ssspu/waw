@@ -377,9 +377,11 @@ const serviceDetails = {
     fullTitle: '洗剪吹 发型提案+裁剪+造型',
     description: '专业剪发服务，根据您的脸型和气质，为您打造最适合的发型。',
     price: 799,
+    appointmentPrice: 719,
     originalPrice: 999,
     soldCount: 1234,
-    headerImage: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-186.png',
+    image: 'https://c.animaapp.com/mifnbli6udxphC/img/rectangle-186.png',
+    images: ['https://c.animaapp.com/mifnbli6udxphC/img/rectangle-186.png'],
     isFavorited: false,
     // 优惠券
     coupons: [
@@ -456,9 +458,11 @@ const serviceDetails = {
     fullTitle: '时尚烫发 造型设计+烫发+护理',
     description: '采用进口烫发药水，打造自然卷度，持久定型。',
     price: 399,
+    appointmentPrice: 359,
     originalPrice: 499,
     soldCount: 1289,
-    headerImage: 'https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-1.png',
+    image: 'https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-1.png',
+    images: ['https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-220-1.png'],
     isFavorited: true,
     coupons: [
       { id: '1', text: '满200-20' },
@@ -603,9 +607,11 @@ export const routes = {
       fullTitle: `${service.name} 专业服务+造型设计`,
       description: service.description,
       price: service.price,
+      appointmentPrice: Math.round(service.price * 0.9),
       originalPrice: service.originalPrice,
       soldCount: service.soldCount,
-      headerImage: service.image,
+      image: service.image,
+      images: service.images || [service.image],
       isFavorited: service.isFavorited || false,
       coupons: [
         { id: '1', text: '满100-5' },

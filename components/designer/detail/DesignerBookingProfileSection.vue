@@ -252,7 +252,7 @@ export default {
 .time-slot {
 	display: flex;
 	flex-direction: column;
-	height: 80rpx;
+	height: 60rpx;
 	align-items: center;
 	justify-content: center;
 	padding: 10rpx 0;

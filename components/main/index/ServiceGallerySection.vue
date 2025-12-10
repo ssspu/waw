@@ -39,6 +39,7 @@
 						<view class="card-price">
 							<text class="price-symbol">¥</text>
 							<text class="price-value">{{ card.price }}</text>
+							<text class="appointment-price-tag">预约价 ¥{{ card.appointmentPrice || card.price }}</text>
 						</view>
 					</view>
 
@@ -312,6 +313,16 @@ export default {
 	color: #333333;
 	font-size: 28rpx;
 	white-space: nowrap;
+}
+
+.appointment-price-tag {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	background-color: #dacbb1;
+	font-size: 20rpx;
+	color: #645E57;
+	padding: 2rpx 8rpx;
+	border-radius: 4rpx;
+	margin-left: 12rpx;
 }
 
 .card-footer {

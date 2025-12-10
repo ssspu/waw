@@ -240,6 +240,7 @@
 						<view class="service-price">
 							<text class="price-symbol">¥</text>
 							<text class="price-value">{{ service.price }}</text>
+							<text class="appointment-price-tag">预约价 ¥{{ service.appointmentPrice || service.price }}</text>
 						</view>
 						<view class="service-footer">
 							<view class="service-designer">
@@ -328,7 +329,7 @@ export default {
 					align: "right",
 				},
 			],
-			designerTabs: ["首席创意", "总监店长", "网红名师", "国际导师"],
+			designerTabs: ["首席创意", "总监店长", "人气名师", "国际导师"],
 			activeDesignerTab: 0,
 			designerSwiperIndex: 0,
 			designersByTab: {
@@ -512,7 +513,7 @@ export default {
 						distance: "4.9km",
 					},
 				],
-				2: [ // 网红名师
+				2: [ // 人气名师
 					{
 						id: 21,
 						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
@@ -1998,6 +1999,17 @@ export default {
 	font-size: 28rpx;
 	color: #333333;
 	white-space: nowrap;
+}
+
+.appointment-price-tag {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 20rpx;
+	background-color: #dacbb1;
+	color: #645E57;
+	padding: 2rpx 8rpx;
+	border: 1rpx solid #dacbb1;
+	border-radius: 4rpx;
+	margin-left: 12rpx;
 }
 
 .service-footer {

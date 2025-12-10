@@ -80,7 +80,7 @@
 							class="ranking-item"
 							@tap="handleStylistClick(stylist)"
 						>
-							<view class="stylist-avatar" :style="{ backgroundImage: `url(${stylist.image})` }"></view>
+							<view class="stylist-avatar" :style="{ backgroundImage: `url(${stylist.image || 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-11.png'})` }"></view>
 							<view class="stylist-info">
 								<view class="stylist-header">
 									<text class="stylist-name">{{ stylist.name }}</text>
@@ -134,9 +134,9 @@
 					@tap="handleStylistClick(stylist)"
 				>
 					<!-- 背景图片 -->
-					<view class="nearby-cover" :style="{ backgroundImage: `url(${stylist.coverImage})` }"></view>
+					<view class="nearby-cover" :style="{ backgroundImage: `url(${stylist.coverImage || stylist.image || 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-11.png'})` }"></view>
 					<view class="nearby-item-wrapper">
-						<view class="nearby-avatar" :style="{ backgroundImage: `url(${stylist.image})` }"></view>
+						<view class="nearby-avatar" :style="{ backgroundImage: `url(${stylist.image || 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-11.png'})` }"></view>
 						<view class="nearby-info">
 							<view class="nearby-header-info">
 								<text class="nearby-name">{{ stylist.name }}</text>
@@ -211,7 +211,7 @@ export default {
 				},
 				{
 					icon: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-2005.svg",
-					title: "网红名师",
+					title: "人气名师",
 					subtitle: "人气霸榜标杆",
 				},
 				{
@@ -277,7 +277,7 @@ export default {
 				const categoryLevelMap = {
 					'首席创意': ['首席', '特级'],
 					'总监店长': ['总监'],
-					'网红名师': ['名师', '高级'],
+					'人气名师': ['名师', '高级'],
 					'国际导师': ['国际']
 				}
 				const levels = categoryLevelMap[this.activeCategory] || []
