@@ -207,7 +207,7 @@ export default {
 				},
 				{
 					icon: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-2005.svg",
-					title: "网红名师",
+					title: "人气名师",
 					subtitle: "人气霸榜标杆",
 				},
 				{
@@ -544,7 +544,7 @@ export default {
 						distance: "4.2km",
 					},
 				],
-				'网红名师': [
+				'人气名师': [
 					{
 						id: 301,
 						image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-7.png",

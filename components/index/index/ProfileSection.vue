@@ -328,7 +328,7 @@ export default {
 					align: "right",
 				},
 			],
-			designerTabs: ["首席创意", "总监店长", "网红名师", "国际导师"],
+			designerTabs: ["首席创意", "总监店长", "人气名师", "国际导师"],
 			activeDesignerTab: 0,
 			designerSwiperIndex: 0,
 			designersByTab: {
@@ -512,7 +512,7 @@ export default {
 						distance: "4.9km",
 					},
 				],
-				2: [ // 网红名师
+				2: [ // 人气名师
 					{
 						id: 21,
 						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
@@ -1857,6 +1857,7 @@ export default {
 }
 
 .services-header {
+	margin-top: 18rpx;
 	display: flex;
 	align-items: flex-end;
 	justify-content: space-between;
