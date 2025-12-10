@@ -291,6 +291,8 @@ export default {
 		},
 		// 转换品牌数据 - 用于附近店铺列表
 		transformBrand(b) {
+			// 默认图片
+			const defaultImage = 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png'
 			// 计算经营年限
 			let yearsInBusiness = ''
 			if (b.establishDate) {
@@ -300,7 +302,7 @@ export default {
 			}
 			return {
 				id: b.id,
-				image: b.avatar || b.coverImage, // mock: avatar或coverImage字段
+				image: b.avatar || b.coverImage || defaultImage, // mock: avatar或coverImage字段，无图片时使用默认图片
 				name: b.name, // mock: name字段
 				type: `${b.nature || '专业店'}｜${yearsInBusiness || '2012年开业'}`, // mock: nature字段
 				rating: String(b.rating || 4.8), // mock: rating字段

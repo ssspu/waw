@@ -248,7 +248,11 @@ export default {
 		// 获取私人领地设计师数据
 		async fetchTerritoryDesigners() {
 			try {
-				const res = await api.territory.getMyDesigners({ page: 1, pageSize: 20 })
+				const res = await api.territory.getMyDesigners({
+					page: 1,
+					pageSize: 20,
+					category: this.activeSubTab // 根据子tab筛选分类
+				})
 				if (res.code === 0 && res.data) {
 					const list = res.data.list || res.data || []
 					this.designerList = list.map(item => ({
@@ -290,7 +294,11 @@ export default {
 			if (this.loading) return
 			this.loading = true
 			try {
-				const res = await api.territory.getMyBrands({ page: 1, pageSize: 20 })
+				const res = await api.territory.getMyBrands({
+					page: 1,
+					pageSize: 20,
+					category: this.activeBrandTab // 根据子tab筛选分类
+				})
 				if (res.code === 0 && res.data) {
 					const list = res.data.list || res.data || []
 					this.brandCards = list.map(item => ({
@@ -331,9 +339,11 @@ export default {
 		},
 		handleSubTabChange(tabId) {
 			this.activeSubTab = tabId
+			this.fetchTerritoryDesigners() // 切换子tab时重新获取数据
 		},
 		handleBrandTabChange(tabId) {
 			this.activeBrandTab = tabId
+			this.fetchTerritoryBrands() // 切换子tab时重新获取数据
 		},
 		handlePromote() {
 			this.showShareModal = true

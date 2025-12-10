@@ -35,14 +35,15 @@
 				<text class="card-title">我的资产</text>
 				
 				<view class="asset-nav">
-					<view 
-						v-for="(item, index) in assetItems" 
-						:key="index" 
+					<view
+						v-for="(item, index) in assetItems"
+						:key="index"
 						class="asset-item"
+						:class="{ disabled: item.disabled }"
 						@tap="handleAssetItemClick(item)"
 					>
-						<image class="asset-icon" :src="item.icon" mode="aspectFit"></image>
-						<text class="asset-label">{{ item.label }}</text>
+						<image class="asset-icon" :class="{ disabled: item.disabled }" :src="item.icon" mode="aspectFit"></image>
+						<text class="asset-label" :class="{ disabled: item.disabled }">{{ item.label }}</text>
 					</view>
 				</view>
 			</view>
@@ -99,18 +100,22 @@ export default {
 				{
 					icon: "https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-6.svg",
 					label: "优惠券",
+					disabled: false,
 				},
 				{
 					icon: "https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-10.svg",
 					label: "资产",
+					disabled: false,
 				},
 				{
 					icon: "https://c.animaapp.com/mih16y3pFMmwpi/img/frame-4.svg",
 					label: "推广佣金",
+					disabled: false,
 				},
 				{
 					icon: "https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-9.svg",
 					label: "美豆",
+					disabled: true, // 正在开发中
 				},
 			],
 			settlementItems: [
@@ -142,6 +147,15 @@ export default {
 		},
 		handleAssetItemClick(item) {
 			console.log('Asset item clicked:', item)
+			// 如果是禁用状态，显示正在开发提示
+			if (item.disabled) {
+				uni.showToast({
+					title: '敬请期待',
+					icon: 'none',
+					duration: 1500
+				})
+				return
+			}
 			// 点击优惠券跳转到优惠券页面
 			if (item.label === '优惠券') {
 				uni.navigateTo({ url: '/packageOthers/pages/coupon/index' })
@@ -286,6 +300,21 @@ export default {
 	white-space: normal;
 	line-height: 1.2;
 	width: 100rpx;
+
+	&.disabled {
+		color: #cccccc;
+	}
+}
+
+// 禁用状态样式
+.asset-item.disabled {
+	opacity: 0.6;
+	pointer-events: auto; // 保持可点击以显示提示
+}
+
+.asset-icon.disabled {
+	filter: grayscale(100%);
+	opacity: 0.5;
 }
 </style>
 
