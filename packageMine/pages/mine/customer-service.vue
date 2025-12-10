@@ -151,7 +151,7 @@ export default {
 .search-input-wrapper {
 	display: flex;
 	align-items: center;
-	background-color: red;
+	background-color: #f5f5f5;
 	border-radius: 50rpx;
 	padding: 16rpx 20rpx;
 	gap: 12rpx;
