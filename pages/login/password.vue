@@ -258,7 +258,7 @@ export default {
 .navbar-content {
 	display: flex;
 	align-items: center;
-	padding: 24rpx 32rpx;
+	padding: 88rpx 32rpx 24rpx;
 	box-sizing: border-box;
 }
 

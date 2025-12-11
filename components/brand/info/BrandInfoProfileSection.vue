@@ -57,7 +57,6 @@ export default {
 <style scoped lang="scss">
 .profile-section {
 	width: 100%;
-	padding: 0 24rpx;
 }
 
 .tabs-container {
@@ -66,7 +65,7 @@ export default {
 
 .tabs-list {
 	width: 100%;
-	height: 98rpx;
+	height: 60rpx;
 	background-color: transparent;
 	padding: 0 0 6rpx;
 	display: flex;

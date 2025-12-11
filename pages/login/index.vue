@@ -227,10 +227,11 @@ export default {
 }
 
 .navbar-content {
+	width: 63%;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 24rpx 32rpx;
+	padding: 88rpx 32rpx 24rpx;
 	box-sizing: border-box;
 }
 

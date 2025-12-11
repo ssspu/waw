@@ -3,7 +3,7 @@
 		{
 			"path": "pages/login/index",
 			"style": {
-				"navigationBarTitleText": "账户登录",
+				"navigationStyle": "custom",
 				"navigationBarTextStyle": "black",
 				"navigationBarBackgroundColor": "#ffffff"
 			}
@@ -11,7 +11,7 @@
 		{
 			"path": "pages/login/password",
 			"style": {
-				"navigationBarTitleText": "帐号密码登录",
+				"navigationStyle": "custom",
 				"navigationBarTextStyle": "black",
 				"navigationBarBackgroundColor": "#ffffff"
 			}
@@ -19,7 +19,7 @@
 		{
 			"path": "pages/login/register",
 			"style": {
-				"navigationBarTitleText": "帐号注册",
+				"navigationStyle": "custom",
 				"navigationBarTextStyle": "black",
 				"navigationBarBackgroundColor": "#ffffff"
 			}
@@ -27,7 +27,7 @@
 		{
 			"path": "pages/login/reset-password",
 			"style": {
-				"navigationBarTitleText": "重置密码",
+				"navigationStyle": "custom",
 				"navigationBarTextStyle": "black",
 				"navigationBarBackgroundColor": "#ffffff"
 			}

@@ -1,17 +1,5 @@
 <template>
 	<view class="search-page">
-		<view class="search-input-wrapper">
-			<image class="search-icon" src="@/static/icon/search.png" mode="aspectFit"></image>
-			<input
-				class="search-input"
-				type="text"
-				:placeholder="currentPlaceholder"
-				v-model="searchKeyword"
-				@confirm="handleSearch"
-				@input="handleInput"
-			/>
-		</view>
-
 		<!-- 标签页 -->
 		<view class="tabs-bar">
 			<view
@@ -806,7 +794,26 @@ export default {
 		// 从URL参数获取keyword，设置到搜索框
 		if (options.keyword) {
 			this.searchKeyword = decodeURIComponent(options.keyword)
+			// 设置导航栏搜索框的值
+			const pages = getCurrentPages()
+			const page = pages[pages.length - 1]
+			const currentWebview = page.$getAppWebview?.()
+			if (currentWebview) {
+				currentWebview.setTitleNViewSearchInputText?.(this.searchKeyword)
+			}
 		}
+	},
+	// 监听导航栏搜索框输入
+	onNavigationBarSearchInputChanged(e) {
+		this.searchKeyword = e.text
+	},
+	// 监听导航栏搜索框确认
+	onNavigationBarSearchInputConfirmed() {
+		this.handleSearch()
+	},
+	// 监听导航栏搜索框聚焦
+	onNavigationBarSearchInputFocusChanged(e) {
+		// 可以在这里处理聚焦/失焦逻辑
 	},
 	onReady() {
 		// 获取滑块轨道宽度
@@ -1150,39 +1157,6 @@ export default {
 	height: 6rpx;
 	background-color: #000000;
 	border-radius: 3rpx;
-}
-
-.search-input-wrapper {
-	width: 400rpx;
-	display: flex;
-	align-items: center;
-	gap: 12rpx;
-	background-color: #ffffff;
-	border-radius: 52rpx;
-	height: 60rpx;
-	padding: 0 20rpx;
-	box-sizing: border-box;
-	border: 1rpx solid #e5e5e5;
-}
-
-.search-icon {
-	width: 32rpx;
-	height: 32rpx;
-	flex-shrink: 0;
-	opacity: 0.75;
-}
-
-.search-input {
-	flex: 1;
-	font-size: 28rpx;
-	color: #333;
-	font-family: 'PingFang_SC-Regular', Helvetica;
-	background: transparent;
-	border: none;
-}
-
-.search-input::placeholder {
-	color: #999;
 }
 
 /* 筛选和排序栏 */

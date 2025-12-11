@@ -236,8 +236,12 @@ export default {
 				popular: [],
 				men: [],
 			},
-			// 附近店铺列表 - 从API获取
-			nearbyStores: [],
+			// 附近店铺列表 - 按标签分类
+			nearbyStoresMap: {
+				star: [],
+				popular: [],
+				men: [],
+			},
 			// 当前选中的分类
 			activeCategory: '品牌馆',
 			// 加载状态
@@ -250,25 +254,32 @@ export default {
 			return slides || []
 		},
 		currentNearbyStores() {
-			// 返回从API获取的店铺列表
-			return this.nearbyStores
+			// 根据当前标签返回对应的店铺列表
+			return this.nearbyStoresMap[this.activeStoreTab] || []
 		}
 	},
 	mounted() {
-		this.fetchBrandList()
+		this.fetchAllTabsData()
 	},
 	methods: {
-		// 获取品牌列表
-		async fetchBrandList() {
-			if (this.loading) return
-			this.loading = true
+		// 获取所有标签的数据
+		async fetchAllTabsData() {
+			// 并行获取所有标签的数据
+			await Promise.all([
+				this.fetchBrandListByTab('star', { sortBy: 'rating' }),
+				this.fetchBrandListByTab('popular', { sortBy: 'serviceCount' }),
+				this.fetchBrandListByTab('men', { categoryId: 'men' })
+			])
+		},
+		// 根据标签获取品牌列表
+		async fetchBrandListByTab(tabValue, params = {}) {
 			try {
-				const res = await api.brand.getList({ page: 1, pageSize: 20 })
+				const res = await api.brand.getList({ page: 1, pageSize: 20, ...params })
 				if (res.code === 0) {
 					const list = res.data.list || []
 					if (list.length > 0) {
 						// 更新附近店铺列表
-						this.nearbyStores = list.map(b => this.transformBrand(b))
+						this.nearbyStoresMap[tabValue] = list.map(b => this.transformBrand(b))
 
 						// 更新精选店slides - 每3个为一组
 						const transformedList = list.map(b => this.transformBrandForSlide(b))
@@ -277,16 +288,12 @@ export default {
 							slideGroups.push(transformedList.slice(i, i + 3))
 						}
 						if (slideGroups.length > 0) {
-							this.storeSlides.star = slideGroups
-							this.storeSlides.popular = slideGroups
-							this.storeSlides.men = slideGroups
+							this.storeSlides[tabValue] = slideGroups
 						}
 					}
 				}
 			} catch (err) {
-				console.error('获取品牌列表失败:', err)
-			} finally {
-				this.loading = false
+				console.error(`获取${tabValue}品牌列表失败:`, err)
 			}
 		},
 		// 转换品牌数据 - 用于附近店铺列表
