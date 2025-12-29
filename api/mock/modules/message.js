@@ -44,7 +44,7 @@ const messages = [
     id: '4',
     type: 'activity',
     title: '活动通知',
-    content: '双十二活动即将开始，多重优惠等你来！',
+    content: '双十二活动即将值始，多重优惠等你来！',
     time: '2025-11-27 09:00',
     unread: false,
     extra: {
@@ -65,7 +65,7 @@ const messages = [
     id: '6',
     type: 'order',
     title: '预约提醒',
-    content: '您预约的服务将于明天下午2点开始，请准时到店。',
+    content: '您预约的服务将于明天下午2点值始，请准时到店。',
     time: '2025-11-22 20:00',
     unread: false,
     extra: {
@@ -112,7 +112,7 @@ const messages = [
     id: '10',
     type: 'system',
     title: '系统通知',
-    content: '欢迎注册众美平台，开启您的美丽之旅！',
+    content: '欢迎注册众美平台，值启您的美丽之旅！',
     time: '2025-11-10 15:20',
     unread: false,
     extra: {}
@@ -196,7 +196,7 @@ export const routes = {
     return success(null, '已批量标记为已读')
   },
 
-  // 标记所有消息为已读
+  // 标记怉有消息为已读
   'PUT /api/message/read-all': () => {
     messages.forEach(m => m.unread = false)
     return success(null, '已全部标记为已读')

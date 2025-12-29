@@ -1,6 +1,6 @@
 /**
  * 用户模块 API
- * 包含用户信息、资产、收藏、关注、地址等接口
+ * 包含用户信息、资产、收藏、关注、地倝等接口
  */
 
 import { post, get, put, del, upload } from '../request.js'
@@ -70,8 +70,8 @@ export default {
    */
   getAssetDetail(params = {}) {
     return get(`${USER_PREFIX}/asset/detail`, {
-      page: 1,
-      pageSize: 10,
+      page: Number(params.page) || 1,
+      pageSize: Number(params.pageSize) || 10,
       ...params
     })
   },
@@ -92,8 +92,8 @@ export default {
    */
   getFavorites(params = {}) {
     return get(`${USER_PREFIX}/favorites`, {
-      page: 1,
-      pageSize: 10,
+      page: Number(params.page) || 1,
+      pageSize: Number(params.pageSize) || 10,
       ...params
     })
   },
@@ -114,19 +114,14 @@ export default {
    */
   getFollowList(params = {}) {
     return get(`${USER_PREFIX}/follows`, {
-      page: 1,
-      pageSize: 10,
+      page: Number(params.page) || 1,
+      pageSize: Number(params.pageSize) || 10,
       ...params
     })
   },
 
-  /**
-   * 批量取消关注
-   * @param {Object} data - { ids: [], type }
-   */
-  batchUnfollow(data) {
-    return post(`${USER_PREFIX}/follows/batch-remove`, data)
-  },
+  // 注意: 后端暂无批量取消关注接口 /user/follows/batch-remove
+  // 请使用 designer/{id}/unfollow 或 brand/{id}/unfollow 单独取消
 
   // ============ 浏览记录 ============
 
@@ -136,8 +131,8 @@ export default {
    */
   getBrowseRecords(params = {}) {
     return get(`${USER_PREFIX}/browse-records`, {
-      page: 1,
-      pageSize: 10,
+      page: Number(params.page) || 1,
+      pageSize: Number(params.pageSize) || 10,
       ...params
     })
   },
@@ -149,25 +144,19 @@ export default {
     return del(`${USER_PREFIX}/browse-records`)
   },
 
-  // ============ 地址管理 ============
+  // ============ 地倝管理 ============
 
   /**
-   * 获取地址列表
+   * 获取地倝列表
    */
   getAddressList() {
     return get(`${USER_PREFIX}/address`)
   },
 
-  /**
-   * 获取地址详情
-   * @param {string} addressId - 地址ID
-   */
-  getAddressDetail(addressId) {
-    return get(`${USER_PREFIX}/address/${addressId}`)
-  },
+  // 注意: 后端暂无单独获取地倝详情接口，请从列表中筛选
 
   /**
-   * 新增地址
+   * 新增地倝
    * @param {Object} data - { name, phone, province, city, district, detail, isDefault? }
    */
   addAddress(data) {
@@ -175,29 +164,23 @@ export default {
   },
 
   /**
-   * 更新地址
-   * @param {string} addressId - 地址ID
-   * @param {Object} data - 地址数据
+   * 更新地倝
+   * @param {string} addressId - 地倝ID
+   * @param {Object} data - 地倝数据
    */
   updateAddress(addressId, data) {
     return put(`${USER_PREFIX}/address/${addressId}`, data)
   },
 
   /**
-   * 删除地址
-   * @param {string} addressId - 地址ID
+   * 删除地倝
+   * @param {string} addressId - 地倝ID
    */
   deleteAddress(addressId) {
     return del(`${USER_PREFIX}/address/${addressId}`)
   },
 
-  /**
-   * 设置默认地址
-   * @param {string} addressId - 地址ID
-   */
-  setDefaultAddress(addressId) {
-    return put(`${USER_PREFIX}/address/${addressId}/default`)
-  },
+  // 注意: 后端暂无设置默认地倝接口，请通过 updateAddress 设置 isDefault 字段
 
   // ============ 银行卡管理 ============
 
@@ -216,13 +199,7 @@ export default {
     return post(`${USER_PREFIX}/bank-cards`, data)
   },
 
-  /**
-   * 删除银行卡
-   * @param {string} cardId - 银行卡ID
-   */
-  deleteBankCard(cardId) {
-    return del(`${USER_PREFIX}/bank-cards/${cardId}`)
-  },
+  // 注意: 后端暂无删除银行卡接口
 
   // ============ 会员相关 ============
 
@@ -233,12 +210,7 @@ export default {
     return get(`${USER_PREFIX}/vip`)
   },
 
-  /**
-   * 获取会员等级列表
-   */
-  getVipLevels() {
-    return get(`${USER_PREFIX}/vip/levels`)
-  },
+  // 注意: 后端暂无会员等级列表接口
 
   /**
    * 开通/续费会员
@@ -248,48 +220,10 @@ export default {
     return post(`${USER_PREFIX}/vip/buy`, data)
   },
 
-  // ============ 入驻申请 ============
-
-  /**
-   * 提交设计师入驻申请
-   * @param {Object} data - 入驻信息
-   */
-  applyDesigner(data) {
-    return post(`${USER_PREFIX}/apply/designer`, data)
-  },
-
-  /**
-   * 提交店铺入驻申请
-   * @param {Object} data - 入驻信息
-   */
-  applyStore(data) {
-    return post(`${USER_PREFIX}/apply/store`, data)
-  },
-
-  /**
-   * 获取入驻申请状态
-   * @param {string} type - 类型(designer/store)
-   */
-  getApplyStatus(type) {
-    return get(`${USER_PREFIX}/apply/${type}/status`)
-  },
-
-  // ============ 隐私设置 ============
-
-  /**
-   * 获取隐私设置
-   */
-  getPrivacySettings() {
-    return get(`${USER_PREFIX}/privacy`)
-  },
-
-  /**
-   * 更新隐私设置
-   * @param {Object} data - { showOnlineStatus?, showBrowseHistory?, allowRecommend? }
-   */
-  updatePrivacySettings(data) {
-    return put(`${USER_PREFIX}/privacy`, data)
-  },
+  // ============ 入驻申请 (请使用 settlement 模块) ============
+  // 注意: 入驻申请相关接口已迁移到 /api/settlement 模块
+  // 设计师入驻: settlementApi.submitDesignerIdentity()
+  // 店铺入驻: settlementApi.submitStoreInfo()
 
   // ============ 反馈 ============
 
@@ -299,250 +233,15 @@ export default {
    */
   submitFeedback(data) {
     return post(`${USER_PREFIX}/feedback`, data)
-  },
-
-  // ============ 余额相关 ============
-
-  /**
-   * 获取余额详情
-   */
-  getBalance() {
-    return get(`${USER_PREFIX}/balance`)
-  },
-
-  /**
-   * 获取余额变动记录
-   * @param {Object} params - { page, pageSize, type?: 类型(income/expense), month?: 月份筛选 }
-   */
-  getBalanceRecords(params = {}) {
-    return get(`${USER_PREFIX}/balance/records`, {
-      page: 1,
-      pageSize: 10,
-      ...params
-    })
-  },
-
-  /**
-   * 余额充值
-   * @param {Object} data - { amount, paymentMethod }
-   */
-  rechargeBalance(data) {
-    return post(`${USER_PREFIX}/balance/recharge`, data)
-  },
-
-  // ============ 美豆相关 ============
-
-  /**
-   * 获取美豆余额
-   */
-  getBeans() {
-    return get(`${USER_PREFIX}/beans`)
-  },
-
-  /**
-   * 获取美豆变动记录
-   * @param {Object} params - { page, pageSize, type?: 类型(earn/spend), month?: 月份筛选 }
-   */
-  getBeansRecords(params = {}) {
-    return get(`${USER_PREFIX}/beans/records`, {
-      page: 1,
-      pageSize: 10,
-      ...params
-    })
-  },
-
-  /**
-   * 美豆兑换
-   * @param {Object} data - { type: 兑换类型(coupon/service), targetId: 目标ID, amount: 美豆数量 }
-   */
-  exchangeBeans(data) {
-    return post(`${USER_PREFIX}/beans/exchange`, data)
-  },
-
-  /**
-   * 签到获取美豆
-   */
-  signIn() {
-    return post(`${USER_PREFIX}/beans/sign`)
-  },
-
-  /**
-   * 获取签到状态
-   */
-  getSignStatus() {
-    return get(`${USER_PREFIX}/beans/sign-status`)
-  },
-
-  /**
-   * 获取签到日历
-   * @param {Object} params - { year, month }
-   */
-  getSignCalendar(params = {}) {
-    return get(`${USER_PREFIX}/beans/sign-calendar`, params)
-  },
-
-  // ============ 推广佣金相关 ============
-
-  /**
-   * 获取推广佣金概览
-   */
-  getPromotion() {
-    return get(`${USER_PREFIX}/promotion`)
-  },
-
-  /**
-   * 获取推广佣金记录
-   * @param {Object} params - { page, pageSize, type?: 类型(invite/order), month?: 月份筛选 }
-   */
-  getPromotionRecords(params = {}) {
-    return get(`${USER_PREFIX}/promotion/records`, {
-      page: 1,
-      pageSize: 10,
-      ...params
-    })
-  },
-
-  /**
-   * 获取邀请码
-   */
-  getInviteCode() {
-    return get(`${USER_PREFIX}/promotion/invite-code`)
-  },
-
-  /**
-   * 获取邀请记录列表
-   * @param {Object} params - { page, pageSize }
-   */
-  getInviteList(params = {}) {
-    return get(`${USER_PREFIX}/promotion/invites`, {
-      page: 1,
-      pageSize: 10,
-      ...params
-    })
-  },
-
-  /**
-   * 推广佣金提现
-   * @param {Object} data - { amount, bankCardId }
-   */
-  withdrawPromotion(data) {
-    return post(`${USER_PREFIX}/promotion/withdraw`, data)
-  },
-
-  /**
-   * 获取推广规则
-   */
-  getPromotionRules() {
-    return get(`${USER_PREFIX}/promotion/rules`)
-  },
-
-  // ============ 平台奖励相关 ============
-
-  /**
-   * 获取平台奖励概览
-   */
-  getPlatformReward() {
-    return get(`${USER_PREFIX}/platform-reward`)
-  },
-
-  /**
-   * 获取平台奖励记录
-   * @param {Object} params - { page, pageSize, type?: 奖励类型, month?: 月份筛选 }
-   */
-  getPlatformRewardRecords(params = {}) {
-    return get(`${USER_PREFIX}/platform-reward/records`, {
-      page: 1,
-      pageSize: 10,
-      ...params
-    })
-  },
-
-  /**
-   * 领取平台奖励
-   * @param {string} rewardId - 奖励ID
-   */
-  claimPlatformReward(rewardId) {
-    return post(`${USER_PREFIX}/platform-reward/claim/${rewardId}`)
-  },
-
-  // ============ 二维码名片相关 ============
-
-  /**
-   * 获取用户二维码名片
-   */
-  getQrCode() {
-    return get(`${USER_PREFIX}/qr-code`)
-  },
-
-  /**
-   * 生成二维码
-   * @param {Object} data - { type?: 类型(personal/invite), style?: 样式 }
-   */
-  generateQrCode(data = {}) {
-    return post(`${USER_PREFIX}/qr-code/generate`, data)
-  },
-
-  /**
-   * 保存二维码名片
-   * @param {Object} data - { qrCodeUrl }
-   */
-  saveQrCode(data) {
-    return post(`${USER_PREFIX}/qr-code/save`, data)
-  },
-
-  // ============ 账号注销 ============
-
-  /**
-   * 申请注销账号
-   * @param {Object} data - { reason?, code: 验证码 }
-   */
-  applyDeactivation(data) {
-    return post(`${USER_PREFIX}/deactivation/apply`, data)
-  },
-
-  /**
-   * 取消注销申请
-   */
-  cancelDeactivation() {
-    return post(`${USER_PREFIX}/deactivation/cancel`)
-  },
-
-  /**
-   * 获取注销申请状态
-   */
-  getDeactivationStatus() {
-    return get(`${USER_PREFIX}/deactivation/status`)
-  },
-
-  // ============ 设置相关 ============
-
-  /**
-   * 获取用户设置
-   * 返回 { notificationEnabled, cacheSize }
-   */
-  getSettings() {
-    return get(`${USER_PREFIX}/settings`)
-  },
-
-  /**
-   * 更新消息通知设置
-   * @param {Object} data - { notificationEnabled: boolean }
-   */
-  updateNotificationSetting(data) {
-    return put(`${USER_PREFIX}/settings/notification`, data)
-  },
-
-  /**
-   * 获取缓存大小
-   */
-  getCacheSize() {
-    return get(`${USER_PREFIX}/cache-size`)
-  },
-
-  /**
-   * 清除缓存
-   */
-  clearCache() {
-    return post(`${USER_PREFIX}/cache/clear`)
   }
+
+  // ============ 以下接口后端暂不支持 ============
+  // 余额相关: /user/balance/*
+  // 美豆相关: /user/beans/*
+  // 推广佣金: /user/promotion/*
+  // 平台奖励: /user/platform-reward/*
+  // 二维码名片: /user/qr-code/*
+  // 账号注途: /user/deactivation/*
+  // 设置相关: /user/settings/*
+  // 缓存相关: /user/cache/*
 }

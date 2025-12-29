@@ -1,6 +1,5 @@
 <template>
 	<view class="services-section">
-		<!-- 加载状态 -->
 		<view v-if="loading" class="loading-state">
 			<text class="loading-text">加载中...</text>
 		</view>
@@ -9,7 +8,7 @@
 		<template v-else-if="activeTab === 'designer'">
 			<image
 				class="profile-image"
-				:src="brand && brand.coverImage ? brand.coverImage : '/static/background-image/brand-cover.png'"
+				:src="brand && brand.coverImage ? brand.coverImage : 'https://bioflex.cn/static/background-image/brand-cover.png'"
 				mode="aspectFill"
 			></image>
 
@@ -160,7 +159,7 @@ export default {
 			this.loading = true
 			try {
 				const res = await api.brand.getDetail(this.brandId)
-				if (res.code === 0 && res.data) {
+				if (res.code === 200 && res.data) {
 					this.brand = res.data
 					this.buildOverviewItems()
 					this.buildFeatures()
@@ -177,14 +176,14 @@ export default {
 			this.overviewItems = [
 				{ label: '品牌类型', value: b.type || '专业美发店' },
 				{ label: '成立时间', value: b.establishedYear ? `${b.establishedYear}年` : '2018年' },
-				{ label: '主营项目', value: b.mainServices || '剪发、烫发、染发、护发' },
+				{ label: '主营项目', value: b.mainServices || '剪发烫发染发护发' },
 				{ label: '营业时间', value: b.businessDays || '周一 - 周日', extra: b.businessHours || '10:00-22:00' },
 				{ label: '设计师数量', value: b.designerCount ? `${b.designerCount}位` : '12位' },
 				{ label: '联系电话', value: b.phone || '+86 1891808747', hasPhone: true }
 			]
 		},
 		buildFeatures() {
-			// 根据品牌数据生成服务特色
+			
 			if (this.brand && this.brand.tags) {
 				this.serviceFeatures = this.brand.tags
 			} else {

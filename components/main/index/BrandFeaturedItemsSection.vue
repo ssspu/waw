@@ -3,10 +3,11 @@
 		<!-- 分类卡片 -->
 		<view class="category-card">
 			<view class="category-content">
-				<view 
-					v-for="(item, index) in categoryItems" 
-					:key="index" 
+				<view
+					v-for="(item, index) in categoryItems"
+					:key="index"
 					class="category-item"
+					:class="{ active: activeBrandType === item.brandType }"
 					@tap="handleCategoryClick(item)"
 				>
 					<image class="category-icon" :src="item.icon" :alt="item.title" mode="aspectFit"></image>
@@ -18,10 +19,12 @@
 			</view>
 		</view>
 		
-		<!-- 精选店卡片 -->
 		<view class="featured-stores-card">
 			<view class="card-header">
-				<text class="card-title">精选店</text>
+				<view class="title-wrapper">
+					<text class="card-title">精选店</text>
+					<view class="title-bar"></view>
+				</view>
 				<!-- 测试阶段不显示 -->
 				<!-- <image class="more-icon" src="https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-3.svg" mode="aspectFit"></image> -->
 			</view>
@@ -43,7 +46,6 @@
 				</view>
 			</view>
 			
-			<!-- 精选店列表 - Swiper -->
 			<swiper 
 				class="stores-swiper"
 				:current="storeSwiperIndex"
@@ -73,7 +75,7 @@
 						<view class="rating-group">
 							<text class="rating-score">{{ store.rating }}</text>
 							<view class="star-container">
-								<image class="star-icon" src="https://c.animaapp.com/mi5cgxi6ndVkfo/img/star-1.svg" mode="aspectFit"></image>
+								<image class="star-icon" src="/static/icon/star.png" mode="aspectFit"></image>
 							</view>
 						</view>
 						<view class="stats-group">
@@ -127,10 +129,12 @@
 		
 		<!-- 附近推荐标题 -->
 		<view id="brand-nearby-section" class="nearby-header">
-			<text class="nearby-title">附近推荐</text>
+			<view class="title-wrapper">
+				<text class="nearby-title">附近推荐</text>
+				<view class="title-bar"></view>
+			</view>
 			<!-- 测试阶段不显示 -->
 			<!-- <view class="filter-btn" @tap="handleFilter">
-				<text class="filter-text">筛选</text>
 				<image class="filter-icon" src="https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-2.svg" mode="aspectFit"></image>
 			</view> -->
 		</view>
@@ -162,7 +166,7 @@
 						<view class="stats-rating">
 							<text class="stats-rating-score">{{ store.rating }}</text>
 							<view class="star-container-small">
-								<image class="star-small" src="https://c.animaapp.com/mi5cgxi6ndVkfo/img/star-1.svg" mode="aspectFit"></image>
+								<image class="star-small" src="/static/icon/star.png" mode="aspectFit"></image>
 							</view>
 						</view>
 						<view class="stats-info">
@@ -203,24 +207,28 @@ export default {
 		return {
 			categoryItems: [
 				{
-					icon: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-2006-1.svg",
+					icon: "https://bioflex.cn/static/11.png",
 					title: "专业店",
 					subtitle: "专业服务店",
+					brandType: "专业店",
 				},
 				{
-					icon: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-2005.svg",
+					icon: "https://bioflex.cn/static/12.png",
 					title: "品牌店",
 					subtitle: "影响力名店",
+					brandType: "品牌店",
 				},
 				{
-					icon: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-2005-1.svg",
+					icon: "https://bioflex.cn/static/13.png",
 					title: "工作室",
 					subtitle: "独立设计师",
+					brandType: "工作室",
 				},
 				{
-					icon: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-2006.svg",
+					icon: "https://bioflex.cn/static/14.png",
 					title: "综合店",
 					subtitle: "多服务模式",
+					brandType: "综合店",
 				},
 			],
 			tabItems: [
@@ -230,21 +238,25 @@ export default {
 			],
 			activeStoreTab: "star",
 			storeSwiperIndex: 0,
-			// 精选店数据 - 从API获取后按标签分类
+			
 			storeSlides: {
 				star: [],
 				popular: [],
 				men: [],
 			},
-			// 附近店铺列表 - 按标签分类
+			
 			nearbyStoresMap: {
 				star: [],
 				popular: [],
 				men: [],
 			},
-			// 当前选中的分类
+			
 			activeCategory: '品牌馆',
-			// 加载状态
+			
+			activeBrandType: '',
+			
+			allBrands: [],
+			
 			loading: false,
 		}
 	},
@@ -254,7 +266,7 @@ export default {
 			return slides || []
 		},
 		currentNearbyStores() {
-			// 根据当前标签返回对应的店铺列表
+			
 			return this.nearbyStoresMap[this.activeStoreTab] || []
 		}
 	},
@@ -262,79 +274,146 @@ export default {
 		this.fetchAllTabsData()
 	},
 	methods: {
-		// 获取所有标签的数据
+		
 		async fetchAllTabsData() {
-			// 并行获取所有标签的数据
-			await Promise.all([
-				this.fetchBrandListByTab('star', { sortBy: 'rating' }),
-				this.fetchBrandListByTab('popular', { sortBy: 'serviceCount' }),
-				this.fetchBrandListByTab('men', { categoryId: 'men' })
-			])
-		},
-		// 根据标签获取品牌列表
-		async fetchBrandListByTab(tabValue, params = {}) {
+			
 			try {
-				const res = await api.brand.getList({ page: 1, pageSize: 20, ...params })
-				if (res.code === 0) {
-					const list = res.data.list || []
+				const res = await api.brand.getList({ page: 1, pageSize: 50 })
+				if (res.code === 200) {
+					const list = res.data?.items || []
+					
+					this.allBrands = list
 					if (list.length > 0) {
-						// 更新附近店铺列表
-						this.nearbyStoresMap[tabValue] = list.map(b => this.transformBrand(b))
-
-						// 更新精选店slides - 每3个为一组
-						const transformedList = list.map(b => this.transformBrandForSlide(b))
-						const slideGroups = []
-						for (let i = 0; i < transformedList.length; i += 3) {
-							slideGroups.push(transformedList.slice(i, i + 3))
-						}
-						if (slideGroups.length > 0) {
-							this.storeSlides[tabValue] = slideGroups
-						}
+						
+						this.classifyBrandsByTab(list)
 					}
 				}
 			} catch (err) {
-				console.error(`获取${tabValue}品牌列表失败:`, err)
+				console.error('获取品牌列表失败:', err)
 			}
 		},
-		// 转换品牌数据 - 用于附近店铺列表
-		transformBrand(b) {
-			// 默认图片
-			const defaultImage = 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png'
-			// 计算经营年限
-			let yearsInBusiness = ''
-			if (b.establishDate) {
-				const establishYear = new Date(b.establishDate).getFullYear()
-				const years = new Date().getFullYear() - establishYear
-				yearsInBusiness = `${years}年开业`
+		
+		classifyBrandsByTab(list) {
+			
+			let filteredList = list
+			if (this.activeBrandType) {
+				filteredList = list.filter(b => {
+					const type = b.brand_type || b.business_mode || ''
+					const typeMap = {
+						'专业店': ['单店经营', '专业店'],
+						'品牌店': ['连锁经营', '品牌直营'],
+						'工作室': ['工作室'],
+						'综合店': ['商场店', '街边店', '写字楼店', '创意园']
+					}
+					const targetTypes = typeMap[this.activeBrandType] || []
+					return targetTypes.some(t => type.includes(t))
+				})
 			}
+
+			
+			const finalList = filteredList.length > 0 ? filteredList : list
+
+			
+			const starList = [...finalList].sort((a, b) => (b.rating || 0) - (a.rating || 0))
+			this.nearbyStoresMap.star = starList.map(b => this.transformBrand(b))
+			this.storeSlides.star = this.groupIntoSlides(starList.map(b => this.transformBrandForSlide(b)))
+
+			
+			const popularList = [...finalList].sort((a, b) => (b.appointment_count || 0) - (a.appointment_count || 0))
+			this.nearbyStoresMap.popular = popularList.map(b => this.transformBrand(b))
+			this.storeSlides.popular = this.groupIntoSlides(popularList.map(b => this.transformBrandForSlide(b)))
+
+			
+			const menList = finalList.filter(b => {
+				const target = (b.target_customer || '').toLowerCase()
+				return target.includes('男士') || target.includes('男') || target.includes('男发')
+			})
+			
+			const finalMenList = menList.length > 0 ? menList : [...finalList].sort((a, b) => (b.appointment_count || 0) - (a.appointment_count || 0))
+			this.nearbyStoresMap.men = finalMenList.map(b => this.transformBrand(b))
+			this.storeSlides.men = this.groupIntoSlides(finalMenList.map(b => this.transformBrandForSlide(b)))
+		},
+		
+		groupIntoSlides(transformedList) {
+			const slideGroups = []
+			for (let i = 0; i < transformedList.length; i += 3) {
+				slideGroups.push(transformedList.slice(i, i + 3))
+			}
+			return slideGroups
+		},
+		handleCategoryClick(item) {
+			
+			if (this.activeBrandType === item.brandType) {
+				
+				this.activeBrandType = ''
+				this.activeCategory = '品牌馆'
+			} else {
+				
+				this.activeBrandType = item.brandType
+				this.activeCategory = item.title
+			}
+			
+			if (this.allBrands.length > 0) {
+				this.classifyBrandsByTab(this.allBrands)
+			}
+		},
+		
+		transformBrand(b) {
+			
+			const defaultImage = 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png'
+			
+			let establishedYear = ''
+			if (b.established_date) {
+				const year = new Date(b.established_date).getFullYear()
+				establishedYear = `${year}年`
+			}
+			
+			const amenities = b.service_features ? b.service_features.split(/[,]/) : (b.tags || ['代客泊车', '免费茶点', '共享工位', '7天无忧'])
+			
+			const level = b.brand_type || b.business_mode || '专业店'
 			return {
 				id: b.id,
-				image: b.avatar || b.coverImage || defaultImage, // mock: avatar或coverImage字段，无图片时使用默认图片
-				name: b.name, // mock: name字段
-				type: `${b.nature || '专业店'}｜${yearsInBusiness || '2012年开业'}`, // mock: nature字段
-				rating: String(b.rating || 4.8), // mock: rating字段
-				designers: `${b.designerCount || 0}人`, // mock: designerCount字段
-				services: String(b.serviceCount || 0), // mock: serviceCount字段
-				amenities: b.tags || ['代客泊车', '免费茶点', '共享工位', '7天无忧'], // mock: tags字段
-				distance: b.distance || '7.5km', // mock: distance字段
-				tag: b.badge || '舒适', // mock: badge字段
+				image: b.avatar || b.coverImage || defaultImage,
+				name: b.brand_intro || b.name || '未知品牌',
+				type: `${level}｜${establishedYear || '2012年'}就业`,
+				rating: String(b.rating || 4.8),
+				designers: `${b.designer_count || 0}人`,
+				services: String(b.appointment_count || 0),
+				amenities: amenities,
+				distance: b.distance || '',
+				tag: level, 
+				targetCustomer: b.target_customer || '', 
+				venueType: b.venue_type || '', 
+				chainCount: b.chain_count || 0 
 			}
 		},
-		// 转换品牌数据 - 用于精选店滑动列表
+		
 		transformBrandForSlide(b) {
 			const baseData = this.transformBrand(b)
+			
+			const amenities = b.service_features ? b.service_features.split(/[,]/) : (b.tags || ['代客泊车', '免费茶点'])
 			return {
 				...baseData,
 				image: b.coverImage || b.avatar || 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png',
 				overlay: 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221.svg',
-				amenities: (b.tags || ['代客泊车', '免费茶点']).slice(0, 2), // 精选店只显示2个标签
+				amenities: amenities.slice(0, 2), 
 			}
 		},
 		handleCategoryClick(item) {
-			// 跳转到搜索页面，执行所点击内容的搜索
-			uni.navigateTo({
-				url: `/pages/main/search?tab=brand&keyword=${encodeURIComponent(item.title)}`
-			})
+			
+			if (this.activeBrandType === item.brandType) {
+				
+				this.activeBrandType = ''
+				this.activeCategory = '品牌馆'
+			} else {
+				
+				this.activeBrandType = item.brandType
+				this.activeCategory = item.title
+			}
+			
+			if (this.allBrands.length > 0) {
+				this.classifyBrandsByTab(this.allBrands)
+			}
 		},
 		switchTab(index) {
 			const tab = this.tabItems[index]
@@ -343,7 +422,7 @@ export default {
 			})
 			this.activeStoreTab = tab.value
 			this.storeSwiperIndex = 0
-			// 点击后清除该标签的 NEW 状态
+			
 			if (tab.new) {
 				tab.new = false
 			}
@@ -352,9 +431,13 @@ export default {
 			this.storeSwiperIndex = e.detail.current
 		},
 		handleStoreClick(store) {
-			// 跳转到品牌详情页面，传递品牌ID等信息
+			
+			if (!store.id) {
+				uni.showToast({ title: '品牌信息不完整', icon: 'none' })
+				return
+			}
 			uni.navigateTo({
-				url: `/pages/brand/detail?id=${store.id || 1}&name=${encodeURIComponent(store.name || '')}`
+				url: `/pages/brand/detail?id=${store.id}&name=${encodeURIComponent(store.name || '')}`
 			})
 		},
 		handleFilter() {
@@ -377,7 +460,7 @@ export default {
 	box-sizing: border-box;
 }
 
-/* 分类卡片 */
+
 .category-card {
 	width: 100%;
 	background-color: #ffffff;
@@ -402,11 +485,22 @@ export default {
 	gap: 6rpx;
 	min-width: 0;
 	flex: 1;
+	padding: 10rpx;
+	border-radius: 8rpx;
+	transition: background-color 0.2s;
+
+	&.active {
+		background-color: rgba(218, 203, 177, 0.2);
+	}
 }
 
 .category-icon {
 	width: 88rpx;
 	height: 88rpx;
+	padding: 20rpx;
+	box-sizing: border-box;
+	background: linear-gradient(180deg, #FEFEFE 0%, #F2F2F2 100%);
+	border-radius: 40rpx 40rpx 40rpx 4rpx;
 }
 
 .category-info {
@@ -441,7 +535,7 @@ export default {
 	width: 100%;
 }
 
-/* 精选店卡片 */
+
 .featured-stores-card {
 	width: 100%;
 	background-color: #ffffff;
@@ -464,12 +558,14 @@ export default {
 
 .card-title {
 	font-family: 'DIN_Black-Regular', Helvetica;
-	font-weight: normal;
+	font-weight: 600;
 	color: #000000;
 	font-size: 28rpx;
 	line-height: 1.5;
 	overflow: visible;
 	height: auto;
+	position: relative;
+	z-index: 2;
 }
 
 .more-icon {
@@ -610,17 +706,18 @@ export default {
 }
 
 .star-container {
-	display: inline-flex;
+	display: flex;
 	align-items: center;
-	gap: 4rpx;
+	justify-content: center;
 	padding: 4rpx;
-	background-color: #ffffff;
+	background-color: #333333;
 	border-radius: 4rpx;
 }
 
 .star-icon {
-	width: 16rpx;
-	height: 16rpx;
+	width: 20rpx;
+	height: 20rpx;
+	filter: brightness(0) invert(1);
 }
 
 .stats-group {
@@ -730,18 +827,18 @@ export default {
 }
 
 .store-tag {
-	width: 100rpx;
 	position: absolute;
-	height: 21.18%;
-	padding: 2rpx 16rpx;
+	height: auto;
+	padding: 4rpx 16rpx;
 	top: 9.41%;
-	left: calc(50% + 272rpx);
+	right: 0;
 	border-radius: 0 4rpx 0 8rpx;
 	background-color: #dacbb1;
 	color: #645e57;
 	font-size: 20rpx;
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
+	white-space: nowrap;
 }
 
 .pagination-dots {
@@ -770,7 +867,7 @@ export default {
 	border-radius: 28rpx;
 }
 
-/* 附近推荐 */
+
 .nearby-header {
 	display: flex;
 	align-items: center;
@@ -782,9 +879,25 @@ export default {
 
 .nearby-title {
 	font-family: 'DIN_Black-Regular', Helvetica;
-	font-weight: normal;
+	font-weight: 600;
 	color: #000000;
 	font-size: 28rpx;
+	position: relative;
+	z-index: 2;
+}
+
+.title-wrapper {
+	display: flex;
+	flex-direction: column;
+}
+
+.title-bar {
+	width: 74rpx;
+	height: 12rpx;
+	background-color: #DACBB1;
+	margin-top: -14rpx;
+	position: relative;
+	z-index: 1;
 }
 
 .filter-btn {

@@ -56,7 +56,7 @@
 							<view v-else class="expand-btn" @tap="toggleExpand(service.id)">
 								<image 
 									class="options-icon" 
-									src="/static/icon/up.png" 
+									src="https://bioflex.cn/static/icon/up.png" 
 									mode="aspectFit"
 								></image>
 							</view>
@@ -64,7 +64,7 @@
 					</view>
 				</view>
 				
-				<!-- 选项区域（如果展开） -->
+				<!-- 选项区域（如果展值） -->
 				<view v-if="isExpanded(service.id)" class="options-section">
 					<!-- 头发长度选择 -->
 					<view class="hair-length-options">
@@ -134,9 +134,9 @@ export default {
 				{ id: "extension", label: "接发", active: false },
 			],
 			services: [],
-			expandedServices: [], // 展开的服务ID列表
-			selectedBrands: {}, // 每个服务选中的品牌 { serviceId: brandId }
-			selectedHairLengths: {}, // 每个服务选中的头发长度 { serviceId: lengthId }
+			expandedServices: [], 
+			selectedBrands: {}, 
+			selectedHairLengths: {}, 
 			hairLengthOptions: [
 				{ id: "short", label: "短发", active: true },
 				{ id: "medium", label: "中发", active: false },
@@ -149,15 +149,15 @@ export default {
 		this.fetchServices()
 	},
 	methods: {
-		// 获取品牌馆服务列表
+		
 		async fetchServices() {
 			if (this.loading) return
 			this.loading = true
 			try {
 				const res = await api.brand.getServices(this.brandId, { pageSize: 50 })
-				if (res.code === 0 && res.data) {
+				if (res.code === 200 && res.data) {
 					const list = res.data.list || res.data.records || []
-					// 转换API数据为组件需要的格式
+					
 					this.services = list.map(service => ({
 						id: service.id,
 						title: service.name || service.title,
@@ -170,7 +170,7 @@ export default {
 						categoryId: service.categoryId,
 						brandOptions: service.brandOptions || []
 					}))
-					// 如果服务有品牌选项，使用第一个服务的品牌选项
+					
 					if (list.length > 0 && list[0].brandOptions) {
 						this.brandOptions = list[0].brandOptions.map(brand => ({
 							id: brand.id,
@@ -193,13 +193,13 @@ export default {
 			this.selectedHairLength = id
 		},
 		toggleExpand(serviceId) {
-			// 切换展开状态
+			
 			const index = this.expandedServices.indexOf(serviceId)
 			if (index > -1) {
 				this.expandedServices.splice(index, 1)
 			} else {
 				this.expandedServices.push(serviceId)
-				// 默认选择第一个头发长度和品牌
+				
 				if (!this.selectedHairLengths[serviceId]) {
 					this.$set(this.selectedHairLengths, serviceId, 'short')
 				}
@@ -209,7 +209,7 @@ export default {
 			}
 		},
 		isExpanded(serviceId) {
-			// 检查服务是否展开
+			
 			return this.expandedServices.includes(serviceId)
 		},
 		getSelectedHairLength(serviceId) {
@@ -480,7 +480,7 @@ export default {
 .options-icon {
 	width: 40rpx;
 	height: 40rpx;
-	filter: brightness(0) invert(1);
+	
 }
 
 .options-section {
@@ -572,7 +572,7 @@ export default {
 .check-icon {
 	width: 20rpx;
 	height: 20rpx;
-	filter: brightness(0) invert(1);
+	
 }
 
 .brand-icon {
@@ -627,7 +627,7 @@ export default {
 	font-size: 26rpx;
 }
 
-/* 动画 */
+
 @keyframes fade-in {
 	0% {
 		opacity: 0;

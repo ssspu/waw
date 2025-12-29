@@ -7,16 +7,16 @@
 					<image class="follow-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-12.svg" mode="aspectFit"></image>
 					<text class="follow-text">关注</text>
 				</view>
-				<text class="follow-subtitle">你的优质好店</text>
+				<text class="follow-subtitle">你的私人品牌</text>
 			</view>
-			
+
 			<!-- 背景装饰 -->
-			<image 
-				class="bg-decoration" 
-				src="https://c.animaapp.com/mi5d4lp0csJxnR/img/subtract.svg" 
+			<image
+				class="bg-decoration"
+				src="https://c.animaapp.com/mi5d4lp0csJxnR/img/subtract.svg"
 				mode="aspectFill"
 			></image>
-			
+
 			<!-- 店铺信息 -->
 			<view class="designer-card">
 				<view class="designer-info">
@@ -35,21 +35,21 @@
 							<text class="role">{{ designerInfo.role }}</text>
 							<text class="divider">｜</text>
 							<view class="cert-badge">
-								<image class="cert-icon" :src="designerInfo.certIcon" mode="aspectFit"></image>
-								<text class="cert-text">{{ designerInfo.certText }}</text>
-								<image class="cert-dot" :src="designerInfo.certDot" mode="aspectFit"></image>
+								<image class="cert-icon" src="/static/icon/renzheng.png" mode="aspectFit"></image>
+								<text class="cert-text">企业认证</text>
+								<image class="cert-dot" src="/static/icon/xiala.png" mode="aspectFit"></image>
 							</view>
 						</view>
 					</view>
 				</view>
 				
-				<!-- 专业擅长和个人简介 -->
+				<!-- 专业擅长和个人介 -->
 				<view class="skills-section">
 					<view class="skill-item">
 						<view class="skill-badge">店铺性质</view>
 						<text class="skill-text">{{ designerInfo.skills }}</text>
 					</view>
-					<view class="skill-item intro-item">
+					<view class="intro-row">
 						<view class="skill-badge2">品牌简介</view>
 						<text class="intro-text">{{ designerInfo.introduction }}</text>
 						<view class="more-btn" @tap="handleMoreClick">
@@ -58,15 +58,15 @@
 						</view>
 					</view>
 				</view>
-				
+
 				<!-- 服务标签 -->
 				<view class="service-badges">
-					<view 
-						v-for="(badge, index) in serviceBadges" 
-						:key="index" 
+					<view
+						v-for="(badge, index) in serviceBadges"
+						:key="index"
 						class="service-badge"
 					>
-						<image class="badge-icon" :src="badge.icon" mode="aspectFit"></image>
+						<image class="badge-icon" src="/static/icon/yellow-gou.png" mode="aspectFit"></image>
 						<text class="badge-label">{{ badge.label }}</text>
 					</view>
 				</view>
@@ -95,6 +95,9 @@
 								<text class="status-note">{{ businessInfo.restDay }}</text>
 							</view>
 							<text class="business-time">{{ businessInfo.hours }}</text>
+							<view class="business-meta" v-if="businessInfo.establishedDate">
+								<text class="established-text">{{ businessInfo.establishedDate }}</text>
+							</view>
 							<view class="business-more" @tap="handleMoreClick">
 								<text class="more-text">更多</text>
 								<image class="more-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-8.svg" mode="aspectFit"></image>
@@ -150,7 +153,7 @@
 					<view class="stat-group">
 						<image class="stat-icon" :src="rightStats.workIcon" mode="aspectFit"></image>
 						<text class="stat-count">({{ rightStats.workCount }})</text>
-						<image class="stat-dot" src="/static/icons/arrow-right.svg" mode="aspectFit"></image>
+						<image class="stat-dot" src="https://bioflex.cn/static/icons/arrow-right.svg" mode="aspectFit"></image>
 					</view>
 				</view>
 			</view>
@@ -165,14 +168,14 @@ export default {
 			type: Object,
 			default: () => ({
 				// avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-153.png",
-				// name: "朱一龙",
+				
 				// verifyIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2110.svg",
-				// role: "技术总监",
+				
 				// certIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2.svg",
-				// certText: "职业认证",
+				
 				// certDot: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg",
-				// skills: "染发设计、短发造型、女士晚装:",
-				// introduction: "从业19年，毕业沙宣美发学院，擅长各种造型设计师有丰富的设计经验擅长..."
+				
+				
 			})
 		},
 		serviceBadges: {
@@ -186,17 +189,17 @@ export default {
 		businessInfo: {
 			type: Object,
 			default: () => ({
-				// status: "营业中",
-				// restDay: "周二休息",
+				
+				
 				// hours: "10:00-21:00"
 			})
 		},
 		shopInfo: {
 			type: Object,
 			default: () => ({
-				// name: "NICE美发造型沙...",
-				// address: "武侯区天府三家B7栋...",
-				// distance: "距您2.7km"
+				name: "NICE美发型沙...",
+				address: "武侯区天府三家B7栋...",
+				distance: "距您2.7km"
 			})
 		},
 		promotions: {
@@ -275,7 +278,7 @@ export default {
 .follow-icon {
 	width: 32rpx;
 	height: 32rpx;
-	filter: brightness(0) invert(1);
+	
 }
 
 .follow-text {
@@ -315,7 +318,7 @@ export default {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background-image: url('/static/background-image/designer-card-bg.png');
+	background-image: url('https://bioflex.cn/static/background-image/designer-card-bg.png');
 	background-size: contain;
 	background-position: center 58rpx;
 	background-repeat: no-repeat;
@@ -325,7 +328,7 @@ export default {
 
 .designer-info {
 	display: flex;
-	align-items: flex-start;
+	align-items: flex-end;
 	gap: 16rpx;
 	margin-top: -18rpx;
 	margin-bottom: 20rpx;
@@ -335,11 +338,10 @@ export default {
 
 .avatar-wrapper {
 	position: relative;
-	left: -1rpx;
 	width: 158rpx;
 	height: 157rpx;
 	flex-shrink: 0;
-	background-image: url('/static/background-image/avatar-shape.png');
+	background-image: url('https://bioflex.cn/static/background-image/avatar-shape.png');
 	background-size: contain;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -354,22 +356,22 @@ export default {
 	background-size: cover;
 	background-position: center;
 	border-radius: 8rpx;
-	mask-image: url('/static/background-image/avatar-shape.png');
+	mask-image: url('https://bioflex.cn/static/background-image/avatar-shape.png');
 	mask-size: contain;
 	mask-position: center;
 	mask-repeat: no-repeat;
-	-webkit-mask-image: url('/static/background-image/avatar-shape.png');
+	-webkit-mask-image: url('https://bioflex.cn/static/background-image/avatar-shape.png');
 	-webkit-mask-size: contain;
 	-webkit-mask-position: center;
 	-webkit-mask-repeat: no-repeat;
 }
 
 .info-content {
-	margin-top: 70rpx;
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	gap: 4rpx;
+	gap: 2rpx;
+	margin-bottom: -8rpx;
 }
 
 .name-row {
@@ -397,14 +399,12 @@ export default {
 }
 
 .role {
-	display: inline-flex;
+	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 0rpx 10rpx;
-	background-color: #dacbb1;
-	border-radius: 6rpx;
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 400;
+	background-color: #DACBB1;
 	color: #645e57;
 	font-size: 22rpx;
 	height: 36rpx;
@@ -443,6 +443,7 @@ export default {
 .cert-dot {
 	width: 14rpx;
 	height: 14rpx;
+	transform: rotate(-90deg);
 }
 
 .skills-section {
@@ -476,8 +477,7 @@ export default {
 	flex-shrink: 0;
 }
 
-.skill-badge2{
-	margin-top: -40rpx;
+.skill-badge2 {
 	display: inline-flex;
 	align-items: center;
 	height: 44rpx;
@@ -489,6 +489,12 @@ export default {
 	color: #333333;
 	font-size: 22rpx;
 	flex-shrink: 0;
+}
+
+.intro-row {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
 }
 .skill-text {
 	font-family: 'PingFang_SC-Regular', Helvetica;
@@ -508,13 +514,12 @@ export default {
 }
 
 .more-btn {
-	position: absolute;
-	top: 42rpx;
-	right: 0;
 	display: inline-flex;
 	align-items: center;
 	gap: 2rpx;
 	cursor: pointer;
+	margin-left: auto;
+	flex-shrink: 0;
 }
 
 .more-text {
@@ -554,10 +559,20 @@ export default {
 	box-sizing: border-box;
 }
 
-.badge-icon {
+.badge-icon-wrapper {
 	width: 24rpx;
 	height: 24rpx;
+	background-color: #dacbb1;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	flex-shrink: 0;
+}
+
+.badge-icon {
+	width: 28rpx;
+	height: 28rpx;
 }
 
 .badge-label {
@@ -673,6 +688,20 @@ export default {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
 	color: #666666;
+	font-size: 22rpx;
+}
+
+.business-meta {
+	display: flex;
+	align-items: center;
+	gap: 8rpx;
+	margin-top: 4rpx;
+}
+
+.established-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: normal;
+	color: #a6a6a6;
 	font-size: 22rpx;
 }
 

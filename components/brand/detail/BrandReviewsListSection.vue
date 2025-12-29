@@ -17,7 +17,7 @@
 									v-for="(star, index) in 5" 
 									:key="index"
 									class="star-icon" 
-									src="https://c.animaapp.com/mi5kx1ohxTkA7e/img/star-1.svg" 
+									src="/static/icon/star.png" 
 									mode="aspectFit"
 								></image>
 							</view>
@@ -88,7 +88,7 @@
 												v-for="(star, index) in 5" 
 												:key="index"
 												class="star-small" 
-												src="https://c.animaapp.com/mi5kx1ohxTkA7e/img/star-1.svg" 
+												src="/static/icon/star.png" 
 												mode="aspectFit"
 											></image>
 										</view>
@@ -147,7 +147,7 @@ export default {
 			],
 			filterTags: [
 				{ label: "全部", count: null, filter: 'all' },
-				{ label: "技术很好", count: 0, filter: 'skill' },
+				{ label: "怊术很好", count: 0, filter: 'skill' },
 				{ label: "效果满意", count: 0, filter: 'effect' },
 				{ label: "服务态度", count: 0, filter: 'service' }
 			],
@@ -167,22 +167,22 @@ export default {
 		this.fetchReviews()
 	},
 	methods: {
-		// 获取品牌馆评价列表
+		
 		async fetchReviews() {
 			if (this.loading) return
 			this.loading = true
 			try {
 				const res = await api.brand.getReviews(this.brandId, { pageSize: 50 })
-				if (res.code === 0 && res.data) {
+				if (res.code === 200 && res.data) {
 					const data = res.data
-					// 更新整体评分
+					
 					if (data.overallRating) {
 						this.overallRating = data.overallRating
 					}
 					if (data.total) {
 						this.reviewCount = data.total
 					}
-					// 更新分类评分
+					
 					if (data.categoryRatings) {
 						this.ratingCategories = data.categoryRatings.map(cat => ({
 							label: cat.label,
@@ -190,7 +190,7 @@ export default {
 							width: Math.round((cat.value / 5) * 100)
 						}))
 					}
-					// 更新标签统计
+					
 					if (data.tagCounts) {
 						this.filterTags = [
 							{ label: "全部", count: null, filter: 'all' },
@@ -201,7 +201,7 @@ export default {
 							}))
 						]
 					}
-					// 转换评价列表
+					
 					const list = data.list || data.records || []
 					this.reviews = list.map(review => ({
 						id: review.id,
@@ -322,8 +322,8 @@ export default {
 }
 
 .star-icon {
-	width: 20.74rpx;
-	height: 19.82rpx;
+	width: 24rpx;
+	height: 24rpx;
 }
 
 .review-count {
@@ -531,8 +531,8 @@ export default {
 }
 
 .star-small {
-	width: 20rpx;
-	height: 20rpx;
+	width: 16rpx;
+	height: 16rpx;
 }
 
 .review-date {

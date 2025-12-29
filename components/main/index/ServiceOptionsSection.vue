@@ -38,11 +38,13 @@
 							</view>
 							<view class="stylist-rating">
 								<text class="rating-score">{{ serviceData.stylist.rating }}</text>
-								<image 
-									class="star-icon" 
-									src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/star-1.svg" 
-									mode="aspectFit"
-								></image>
+								<view class="star-container">
+									<image
+										class="star-icon"
+										src="/static/icon/star.png"
+										mode="aspectFit"
+									></image>
+								</view>
 								<text class="review-count">({{ serviceData.stylist.reviews }})</text>
 							</view>
 						</view>
@@ -220,9 +222,19 @@ export default {
 	font-size: 24rpx;
 }
 
+.star-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 4rpx;
+	background-color: #333333;
+	border-radius: 4rpx;
+}
+
 .star-icon {
 	width: 20rpx;
 	height: 20rpx;
+	filter: brightness(0) invert(1);
 }
 
 .review-count {
@@ -239,7 +251,7 @@ export default {
 	font-size: 22rpx;
 }
 
-/* 动画 */
+
 @keyframes fade-in {
 	0% {
 		opacity: 0;

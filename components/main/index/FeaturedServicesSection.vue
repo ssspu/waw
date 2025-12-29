@@ -22,35 +22,35 @@ export default {
 		return {
 			services: [
 				{
-					icon: "https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-2006-2.svg",
-					label: "造型",
+					icon: "https://bioflex.cn/static/4.png",
+					label: "发型",
 				},
 				{
-					icon: "https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-2006.svg",
+					icon: "https://bioflex.cn/static/Frame@3x.png",
 					label: "剪发",
 				},
 				{
-					icon: "https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-2006-4.svg",
+					icon: "https://bioflex.cn/static/Frame@3x(1).png",
 					label: "烫发",
 				},
 				{
-					icon: "https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-2006-6.svg",
+					icon: "https://bioflex.cn/static/5.png",
 					label: "染发",
 				},
 				{
-					icon: "https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-2006-3.svg",
+					icon: "https://bioflex.cn/static/Frame@3x(2).png",
 					label: "护发",
 				},
 				{
-					icon: "https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-2006-5.svg",
+					icon: "https://bioflex.cn/static/Frame@3x(3).png",
 					label: "头皮",
 				},
 				{
-					icon: "https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-2006-7.svg",
+					icon: "https://bioflex.cn/static/user-3-line@3x.png",
 					label: "接发",
 				},
 				{
-					icon: "https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-2006-1.svg",
+					icon: "https://bioflex.cn/static/user-3-line@3x(1).png",
 					label: "男士",
 				},
 			],
@@ -58,7 +58,7 @@ export default {
 	},
 	methods: {
 		handleServiceClick(service) {
-			// 跳转到搜索页面，执行所点击内容的搜索
+			
 			uni.navigateTo({
 				url: `/pages/main/search?tab=service&keyword=${encodeURIComponent(service.label)}`
 			})
@@ -104,6 +104,10 @@ export default {
 .service-icon {
 	width: 88rpx;
 	height: 88rpx;
+	padding: 20rpx;
+	box-sizing: border-box;
+	background: linear-gradient(180deg, #FEFEFE 0%, #F2F2F2 100%);
+	border-radius: 40rpx 40rpx 40rpx 4rpx;
 }
 
 .service-label {
@@ -114,7 +118,7 @@ export default {
 	text-align: center;
 }
 
-/* 动画 */
+
 @keyframes fade-in {
 	0% {
 		opacity: 0;

@@ -44,7 +44,7 @@
 				<view class="notice-content">
 					<text class="notice-text">门店消费前请出示会员卡和咨询服务项目的优惠折扣核实；</text>
 					<text class="notice-text">如有商户告知特殊优惠，将不能重叠享受优惠；</text>
-					<text class="notice-text">本折扣优惠只限本店使用，最终解释权归本店所有。</text>
+					<text class="notice-text">本折扣优惠只限本店使用，最终解释权归本店所有</text>
 				</view>
 			</view>
 		</view>
@@ -72,29 +72,29 @@ export default {
 			],
 			privilegesData: {
 				hair: [
-					{ id: 1, title: '基础服务折扣', description: '洗吹、造型、洗剪吹', discount: '7折' },
-					{ id: 2, title: '项目服务折扣', description: '烫发、染发、护理等', discount: '6折' },
-					{ id: 3, title: '店卖商品折扣', description: '店内销售相关的商品', discount: '6折' }
+					{ id: 1, title: '基处服务折扣', description: '洗吹发型洗剪吹', discount: '7折' },
+					{ id: 2, title: '项目服务折扣', description: '烫发染发护理等', discount: '6折' },
+					{ id: 3, title: '店卖商品折扣', description: '店内售相关的商品', discount: '6折' }
 				],
 				beauty: [
-					{ id: 1, title: '基础服务折扣', description: '面部护理、清洁', discount: '8折' },
-					{ id: 2, title: '项目服务折扣', description: '美容套餐、SPA', discount: '7折' },
-					{ id: 3, title: '店卖商品折扣', description: '店内销售相关的商品', discount: '6折' }
+					{ id: 1, title: '基服务折扣', description: '面部护理清洁', discount: '8折' },
+					{ id: 2, title: '项目服务折扣', description: '美容套餐SPA', discount: '7折' },
+					{ id: 3, title: '店卖商品折扣', description: '店内售相关的商品', discount: '6折' }
 				],
 				makeup: [
-					{ id: 1, title: '基础服务折扣', description: '日常妆容', discount: '8折' },
-					{ id: 2, title: '项目服务折扣', description: '新娘妆、晚宴妆', discount: '7折' },
-					{ id: 3, title: '店卖商品折扣', description: '店内销售相关的商品', discount: '6折' }
+					{ id: 1, title: '基服务折扣', description: '日常妆容', discount: '8折' },
+					{ id: 2, title: '项目服务折扣', description: '新娘妆晚宴妆', discount: '7折' },
+					{ id: 3, title: '店卖商品折扣', description: '店内售相关的商品', discount: '6折' }
 				],
 				nail: [
 					{ id: 1, title: '基础服务折扣', description: '基础美甲', discount: '8折' },
-					{ id: 2, title: '项目服务折扣', description: '艺术美甲、延长', discount: '7折' },
-					{ id: 3, title: '店卖商品折扣', description: '店内销售相关的商品', discount: '6折' }
+					{ id: 2, title: '项目服务折扣', description: '艺术美甲延长', discount: '7折' },
+					{ id: 3, title: '店卖商品折扣', description: '店内售相关的商品', discount: '6折' }
 				],
 				body: [
 					{ id: 1, title: '基础服务折扣', description: '身体按摩', discount: '8折' },
-					{ id: 2, title: '项目服务折扣', description: '塑形、养生套餐', discount: '7折' },
-					{ id: 3, title: '店卖商品折扣', description: '店内销售相关的商品', discount: '6折' }
+					{ id: 2, title: '项目服务折扣', description: '塑形养生套餐', discount: '7折' },
+					{ id: 3, title: '店卖商品折扣', description: '店内售相关的商品', discount: '6折' }
 				]
 			}
 		}

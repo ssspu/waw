@@ -38,7 +38,7 @@
 							</view>
 						</view>
 						
-						<!-- 服务提供者信息 -->
+						<!-- 服务提供信息 -->
 						<view class="provider-info">
 							<view class="provider-left">
 								<image 
@@ -58,7 +58,7 @@
 										<view class="star-wrapper">
 											<image 
 												class="star-icon" 
-												src="https://c.animaapp.com/mi5kx1ohxTkA7e/img/star-1.svg" 
+												src="/static/icon/star.png" 
 												mode="aspectFit"
 											></image>
 										</view>
@@ -75,7 +75,7 @@
 								<text class="quantity">{{ order.quantity }}</text>
 							</view>
 						</view>
-						
+
 						<!-- 订单底部操作 -->
 						<view class="order-footer">
 							<text class="more-link" @tap.stop="handleMore(order)">更多</text>
@@ -88,6 +88,34 @@
 										<text class="btn-text primary">立即付款</text>
 									</view>
 								</template>
+								<!-- 退款中状态 -->
+								<template v-else-if="order.tab === 'refunding'">
+									<view class="detail-btn" @tap.stop="handleContactMerchant(order)">
+										<text class="btn-text">联系商家</text>
+									</view>
+									<view class="primary-btn" @tap.stop="handleDetail(order)">
+										<text class="btn-text primary">查看进度</text>
+									</view>
+								</template>
+								<!-- 已退款状态 -->
+								<template v-else-if="order.tab === 'refunded'">
+									<view class="detail-btn" @tap.stop="handleDetail(order)">
+										<text class="btn-text">查看详情</text>
+									</view>
+									<view class="primary-btn" @tap.stop="handleReorder(order)">
+										<text class="btn-text primary">再次预约</text>
+									</view>
+								</template>
+								<!-- 已取消状态 -->
+								<template v-else-if="order.tab === 'cancelled'">
+									<view class="detail-btn" @tap.stop="handleDetail(order)">
+										<text class="btn-text">查看详情</text>
+									</view>
+									<view class="primary-btn" @tap.stop="handleReorder(order)">
+										<text class="btn-text primary">再次预约</text>
+									</view>
+								</template>
+								<!-- 售后状态 -->
 								<template v-else-if="order.tab === 'after-sale'">
 									<view class="detail-btn" @tap.stop="handleContactMerchant(order)">
 										<text class="btn-text">联系商家</text>
@@ -100,14 +128,14 @@
 									<image
 										v-if="order.hasIcon && order.tab === 'pending-use'"
 										class="action-icon"
-										src="/static/icon/more.png"
+										src="https://bioflex.cn/static/icon/more.png"
 										mode="aspectFit"
 										@tap.stop="handleShowQrcode(order)"
 									></image>
 									<image
 										v-else-if="order.hasIcon"
 										class="action-icon"
-										src="/static/icon/more.png"
+										src="https://bioflex.cn/static/icon/more.png"
 										mode="aspectFit"
 									></image>
 									<view class="detail-btn" @tap.stop="handleDetail(order)">
@@ -123,7 +151,7 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<!-- 更多操作弹窗 -->
 		<view class="more-modal" v-if="showMoreModal" @tap="handleCloseMoreModal">
 			<view class="more-modal-content" @tap.stop>
@@ -138,7 +166,7 @@
 						<view class="contact-icon online-icon">
 							<image
 								class="icon-image"
-								src="/static/icon/wodekefu.png"
+								src="https://bioflex.cn/static/icon/wodekefu.png"
 								mode="aspectFit"
 							></image>
 						</view>
@@ -148,7 +176,7 @@
 						<view class="contact-icon phone-icon">
 							<image
 								class="icon-image"
-								src="/static/icon/dianhua.png"
+								src="https://bioflex.cn/static/icon/dianhua.png"
 								mode="aspectFit"
 							></image>
 						</view>
@@ -165,7 +193,7 @@
 		<view class="qrcode-modal" v-if="showQrcodeModal" @tap="handleCloseQrcodeModal">
 			<view class="qrcode-modal-content" @tap.stop>
 				<view class="qrcode-modal-header">
-					<text class="qrcode-modal-title">核销二维码</text>
+					<text class="qrcode-modal-title">核二维码</text>
 					<view class="qrcode-close-btn" @tap="handleCloseQrcodeModal">
 						<text class="qrcode-close-icon">×</text>
 					</view>
@@ -174,11 +202,11 @@
 					<view class="qrcode-container">
 						<image
 							class="qrcode-image"
-							src="/static/icon/qrcode-demo.png"
+							src="https://bioflex.cn/static/icon/qrcode-demo.png"
 							mode="aspectFit"
 						></image>
 					</view>
-					<text class="qrcode-tip">请向服务人员出示此二维码完成核销</text>
+					<text class="qrcode-tip">请向服务人员出示此二维码完成核</text>
 					<view class="order-info-list">
 						<view class="order-info-row">
 							<text class="order-info-label">订单编号：</text>
@@ -211,8 +239,8 @@
 					</view>
 				</view>
 				<view class="modal-body">
-					<text class="modal-desc">取消后无法回复,优惠券,M币可退回,有效期内使用;两小以上或未确认订单可以免责取消,确认订单并在两小时内取消,将影响你在平台的信用。</text>
-					<text class="reason-prompt">请选择取消订单原因(必选)</text>
+					<text class="modal-desc">取消后无法回复,优惠券,M币可回,有效期内使用;两小以上或未确认订单可以免责取消,确认订单并在两小时内取消,将影响你在平台的信用</text>
+					<text class="reason-prompt">请择取消订单原因(必)</text>
 					<view class="reason-list">
 						<view 
 							v-for="(reason, index) in cancelReasons" 
@@ -266,15 +294,17 @@ export default {
 			currentQrcodeOrder: null,
 			cancelReasons: [
 				'价格有点贵',
-				'时间选择有问题',
-				'我想换一个设计师',
-				'暂时不需要了',
+				'时间择有问题',
+				'我想换个设计师',
+				'暂时不要了',
 				'其他'
 			],
 			serviceOrders: [],
 			loading: false,
 			page: 1,
-			pageSize: 20
+			pageSize: 20,
+			timeoutOrderIds: new Set(), // 记录已超时的订单ID，防止重复刷新
+			hasFetched: false // 标记是否已经获取过数据
 		}
 	},
 	computed: {
@@ -289,13 +319,14 @@ export default {
 		activeTab: {
 			handler() {
 				this.page = 1
+				this.timeoutOrderIds.clear() // 切换 tab 时重置超时订单记录
 				this.fetchOrders()
 			},
 			immediate: false
 		}
 	},
 	mounted() {
-		this.fetchOrders()
+		this.checkLoginAndFetch()
 	},
 	beforeDestroy() {
 		if (this.countdownTimer) {
@@ -303,109 +334,212 @@ export default {
 		}
 	},
 	methods: {
+		// 检查登录状态后再获取订单
+		checkLoginAndFetch() {
+			const token = uni.getStorageSync('waw_token')
+			if (!token) {
+				uni.showModal({
+					title: '提示',
+					content: '请先登录后查看订单',
+					showCancel: false,
+					success: () => {
+						uni.navigateTo({
+							url: '/pages/login/index'
+						})
+					}
+				})
+				return
+			}
+			this.fetchOrders()
+		},
 		async fetchOrders() {
 			if (this.loading) return
 			this.loading = true
 			try {
+				// 状态映射：前端tab -> 后端API状态值（大写格式）
 				const statusMap = {
-					'all': 'all',
-					'pending-payment': 'pending_payment',
-					'pending-confirm': 'confirmed',
-					'pending-use': 'pending_use',
-					'pending-review': 'completed'
+					'all': '',  // 空字符串表示查询全部
+					'pending-payment': 'PENDING_PAYMENT',
+					'pending-confirm': 'CONFIRMED',
+					'pending-use': 'PENDING_USE',
+					'pending-review': 'COMPLETED'
 				}
 				const res = await api.order.getList({
-					status: statusMap[this.activeTab] || 'all',
+					status: statusMap[this.activeTab] || '',
 					page: this.page,
 					pageSize: this.pageSize
 				})
-				if (res.code === 0) {
-					const list = res.data.list || res.data.records || []
+				console.log('📦 订单列表响应:', res)
+				if (res.code === 200) {
+					const list = res.data.list || res.data.records || res.data.items || []
+					console.log('📋 订单原始数据:', list)
+					if (list.length > 0) {
+						console.log('📄 第一条订单字段:', Object.keys(list[0]))
+						console.log('📄 第一条订单数据:', list[0])
+					}
 					this.serviceOrders = list.map(order => this.transformOrder(order))
+					console.log('🔄 转换后的订单:', this.serviceOrders)
 					this.startCountdown()
 				}
 			} catch (err) {
 				console.error('获取订单列表失败:', err)
+				// 如果是401未授权，跳转登录
+				if (err.code === 401 || err.code === 10001 || err.code === 10002) {
+					uni.showToast({ title: '请重新登录', icon: 'none' })
+					setTimeout(() => {
+						uni.navigateTo({ url: '/pages/login/index' })
+					}, 1500)
+					return
+				}
 				uni.showToast({ title: '获取订单列表失败', icon: 'none' })
 			} finally {
 				this.loading = false
 			}
 		},
 		transformOrder(order) {
+			// 状态配置：后端状态值（大写） -> 前端显示配置
 			const statusConfig = {
-				'pending_payment': { text: '待付款', color: '#ffa77b', tab: 'pending-payment', primaryButton: '立即付款' },
-				'confirmed': { text: '已确认', color: '#ffa77b', tab: 'pending-confirm', primaryButton: '正在确认' },
-				'pending_use': { text: '待使用', color: '#ffa77b', tab: 'pending-use', primaryButton: '订单完成' },
-				'completed': { text: '已完成', color: '#999999', tab: 'pending-review', primaryButton: order.hasReviewed ? '查看评价' : '立即评价' },
-				'cancelled': { text: '已取消', color: '#999999', tab: 'cancelled', primaryButton: '再次预约' }
+				'PENDING_PAYMENT': { text: '待付款', color: '#ffa77b', tab: 'pending-payment', primaryButton: '立即付款' },
+				'CONFIRMED': { text: '已付款', color: '#ffa77b', tab: 'pending-confirm', primaryButton: '等待服务' },
+				'PENDING_USE': { text: '待使用', color: '#ffa77b', tab: 'pending-use', primaryButton: '订单完成' },
+				'IN_SERVICE': { text: '服务中', color: '#ffa77b', tab: 'in-service', primaryButton: '查看进度' },
+				'COMPLETED': { text: '已完成', color: '#999999', tab: 'pending-review', primaryButton: order.has_reviewed || order.hasReviewed ? '查看评价' : '立即评价' },
+				'CANCELLED': { text: '已取消', color: '#999999', tab: 'cancelled', primaryButton: '再次预约' },
+				'REFUNDING': { text: '退款中', color: '#ffa77b', tab: 'refunding', primaryButton: '查看进度' },
+				'REFUNDED': { text: '已退款', color: '#999999', tab: 'refunded', primaryButton: '查看详情' }
 			}
-			const config = statusConfig[order.status] || statusConfig['pending_payment']
+			const config = statusConfig[order.status] || statusConfig['PENDING_PAYMENT']
 
+			// 使用后端返回的 payment_expire_time 计算剩余支付时间
 			let remainingTime = null
-			if (order.status === 'pending_payment' && order.payDeadline) {
-				const deadline = new Date(order.payDeadline).getTime()
-				const now = Date.now()
-				const diff = Math.max(0, deadline - now)
-				const hours = Math.floor(diff / 3600000)
-				const minutes = Math.floor((diff % 3600000) / 60000)
-				const seconds = Math.floor((diff % 60000) / 1000)
-				remainingTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+			const expireTime = order.payment_expire_time || order.paymentExpireTime
+			if (order.status === 'PENDING_PAYMENT' && expireTime) {
+				const expireTimestamp = new Date(expireTime).getTime()
+				const remaining = Math.max(0, expireTimestamp - Date.now())
+
+				if (remaining <= 0) {
+					remainingTime = '00:00'
+				} else {
+					const minutes = Math.floor(remaining / 60000)
+					const seconds = Math.floor((remaining % 60000) / 1000)
+					remainingTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+				}
 			}
+
+			// 兼容 snake_case 和 camelCase 字段名
+			const serviceName = order.service_name || order.serviceName || '待加载...'
+			const orderNo = order.order_no || order.orderNo || order.id
+			const appointmentTime = order.appointment_time || order.appointmentTime || ''
+			const designerName = order.designer_name || order.designerName || ''
+			const shopName = order.shop_name || order.shopName || ''
+			const brandName = order.brand_name || order.brandName || ''
+			const designerAvatar = order.designer_avatar || order.designerAvatar || 'https://bioflex.cn/static/avatar/avatar.png'
+			// 价格字段：优先使用 final_price（实付金额）
+			const payAmount = order.final_price || order.pay_amount || order.payAmount || order.total_price || order.totalPrice || order.price || order.amount || 0
 
 			return {
-				orderNumber: order.id,
+				id: order.id,
+				orderNumber: orderNo,
 				status: config.text,
 				statusColor: config.color,
 				remainingTime,
-				serviceName: order.serviceName,
-				serviceDetails: '洗护+修剪+造型',
-				duration: '预计1小时',
-				time: order.appointmentTime,
+				serviceName: serviceName,
+				serviceDetails: order.service_details || order.serviceDetails || '服务详情',
+				duration: order.duration || order.estimated_time || '预计1小时',
+				time: appointmentTime,
 				provider: {
-					name: order.designerName || order.brandName,
-					badge: order.designerName ? '美发师' : null,
-					avatar: order.designerAvatar || '/static/avatar/avatar.png',
-					rating: '4.8',
-					reviews: '23'
+					name: designerName || brandName || '服务提供者',
+					badge: designerName ? '美发师' : null,
+					avatar: designerAvatar,
+					rating: order.rating || '4.8',
+					reviews: order.review_count || order.reviewCount || '0'
 				},
-				price: String(order.payAmount || order.price),
+				price: String(payAmount),
 				quantity: 'x1',
-				hasIcon: order.status === 'pending_use',
+				hasIcon: order.status === 'PENDING_USE',
 				primaryButton: config.primaryButton,
 				tab: config.tab,
 				rawData: order
 			}
 		},
+		/**
+		 * 启动倒计时 - 使用后端返回的 payment_expire_time
+		 * 仅本地更新UI，不会每秒请求后端
+		 */
 		startCountdown() {
 			if (this.countdownTimer) {
 				clearInterval(this.countdownTimer)
 			}
-			this.countdownTimer = setInterval(() => {
-				this.serviceOrders.forEach(order => {
-					if (order.status === '待付款' && order.remainingTime) {
-						const timeParts = order.remainingTime.split(':')
-						let hours = parseInt(timeParts[0])
-						let minutes = parseInt(timeParts[1])
-						let seconds = parseInt(timeParts[2])
 
-						seconds--
-						if (seconds < 0) {
-							seconds = 59
-							minutes--
-							if (minutes < 0) {
-								minutes = 59
-								hours--
-								if (hours < 0) {
-									hours = 0
-									minutes = 0
-									seconds = 0
-								}
+			this.countdownTimer = setInterval(() => {
+				let hasNewTimeout = false
+
+				this.serviceOrders.forEach(order => {
+					if (order.status === '待付款' && order.rawData) {
+						const expireTime = order.rawData.payment_expire_time || order.rawData.paymentExpireTime
+						if (!expireTime) return
+
+						const expireTimestamp = new Date(expireTime).getTime()
+						const remaining = Math.max(0, expireTimestamp - Date.now())
+
+						if (remaining <= 0) {
+							// 倒计时结束，立即更新为已取消状态
+							order.remainingTime = '00:00'
+							order.status = '已取消'
+							order.statusColor = '#999999'
+							order.tab = 'cancelled'
+							order.primaryButton = '再次预约'
+
+							// 使用组件级的 Set，只有首次超时才标记需要刷新
+							if (!this.timeoutOrderIds.has(order.id)) {
+								this.timeoutOrderIds.add(order.id)
+								hasNewTimeout = true
 							}
+						} else {
+							const minutes = Math.floor(remaining / 60000)
+							const seconds = Math.floor((remaining % 60000) / 1000)
+							order.remainingTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 						}
-						order.remainingTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 					}
 				})
+
+				// 只有新超时的订单才刷新列表（只刷新一次，不重启倒计时）
+				if (hasNewTimeout) {
+					setTimeout(() => {
+						this.refreshOrdersOnce()
+					}, 2000) // 延迟2秒刷新，等待后端状态更新
+				}
 			}, 1000)
+		},
+		/**
+		 * 静默刷新订单列表（不重启倒计时，避免循环调用）
+		 */
+		async refreshOrdersOnce() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				const statusMap = {
+					'all': '',
+					'pending-payment': 'PENDING_PAYMENT',
+					'pending-confirm': 'CONFIRMED',
+					'pending-use': 'PENDING_USE',
+					'pending-review': 'COMPLETED'
+				}
+				const res = await api.order.getList({
+					status: statusMap[this.activeTab] || '',
+					page: this.page,
+					pageSize: this.pageSize
+				})
+				if (res.code === 200) {
+					const list = res.data.list || res.data.records || res.data.items || []
+					this.serviceOrders = list.map(order => this.transformOrder(order))
+					// 注意：不调用 startCountdown()，避免循环
+				}
+			} catch (err) {
+				console.error('刷新订单列表失败:', err)
+			} finally {
+				this.loading = false
+			}
 		},
 		handleShowQrcode(order) {
 			this.currentQrcodeOrder = order
@@ -442,38 +576,53 @@ export default {
 		handleDetail(order) {
 			if (order.status === '待付款' || order.tab === 'pending-payment') {
 				uni.navigateTo({
-					url: `/packageOrder/pages/order/detail?orderId=${order.orderNumber}`
+					url: `/packageOrder/pages/order/detail?orderId=${order.id}`
 				})
 			} else if (order.tab === 'pending-confirm') {
 				uni.navigateTo({
-					url: `/packageOrder/pages/order/detail-pending-confirm?orderId=${order.orderNumber}`
+					url: `/packageOrder/pages/order/detail-pending-confirm?orderId=${order.id}`
 				})
 			} else if (order.tab === 'pending-review') {
 				uni.navigateTo({
-					url: `/packageOrder/pages/order/detail-pending-review?orderId=${order.orderNumber}`
+					url: `/packageOrder/pages/order/detail-pending-review?orderId=${order.id}`
 				})
-			} else if (order.tab === 'after-sale') {
-				// 售后订单跳转到售后详情页
+			} else if (order.tab === 'after-sale' || order.tab === 'refunding' || order.tab === 'refunded' || order.tab === 'cancelled') {
+				// 退款中、已退款、已取消都跳转到售后详情页
 				uni.navigateTo({
-					url: `/packageOrder/pages/order/detail-after-sale?orderId=${order.orderNumber}`
+					url: `/packageOrder/pages/order/detail-after-sale?orderId=${order.id}`
 				})
 			} else {
 				uni.navigateTo({
-					url: `/packageOrder/pages/order/detail-pending-use?orderId=${order.orderNumber}`
+					url: `/packageOrder/pages/order/detail-pending-use?orderId=${order.id}`
 				})
 			}
 		},
 		handlePrimaryAction(order) {
 			if (order.primaryButton === '立即评价') {
 				uni.navigateTo({
-					url: `/packageOrder/pages/order/service-review?orderId=${order.orderNumber}`
+					url: `/packageOrder/pages/order/service-review?orderId=${order.id}`
 				})
 			} else {
 				console.log('Primary action clicked:', order.primaryButton)
 			}
 		},
+		// 再次预约
+		handleReorder(order) {
+			// 跳转到设计师详情页进行预约
+			if (order.rawData && (order.rawData.designer_id || order.rawData.designerId)) {
+				const designerId = order.rawData.designer_id || order.rawData.designerId
+				uni.navigateTo({
+					url: `/pages/designer/detail?id=${designerId}&tab=appointment`
+				})
+			} else {
+				uni.showToast({
+					title: '无法获取设计师信息',
+					icon: 'none'
+				})
+			}
+		},
 		handleContactMerchant(order) {
-			// 联系商家
+			
 			this.currentMoreOrder = order
 			this.showMoreModal = true
 		},
@@ -493,7 +642,7 @@ export default {
 		async handleConfirmCancel() {
 			if (this.selectedReasonIndex === null) {
 				uni.showToast({
-					title: '请选择取消原因',
+					title: '请择取消原因',
 					icon: 'none'
 				})
 				return
@@ -501,9 +650,9 @@ export default {
 
 			const reason = this.cancelReasons[this.selectedReasonIndex]
 			try {
-				const res = await api.order.cancel(this.currentCancelOrder.orderNumber, { reason })
-				if (res.code === 0) {
-					const orderIndex = this.serviceOrders.findIndex(o => o.orderNumber === this.currentCancelOrder.orderNumber)
+				const res = await api.order.cancel(this.currentCancelOrder.id, { reason })
+				if (res.code === 200) {
+					const orderIndex = this.serviceOrders.findIndex(o => o.id === this.currentCancelOrder.id)
 					if (orderIndex !== -1) {
 						this.serviceOrders.splice(orderIndex, 1)
 					}
@@ -522,7 +671,7 @@ export default {
 		},
 		handlePay(order) {
 			uni.navigateTo({
-				url: `/packageOrder/pages/order/detail?orderId=${order.orderNumber}`
+				url: `/packageOrder/pages/order/detail?orderId=${order.id}`
 			})
 		}
 	}
@@ -766,7 +915,6 @@ export default {
 .star-icon {
 	width: 20rpx;
 	height: 20rpx;
-	flex-shrink: 0;
 	filter: brightness(0) invert(1);
 }
 
@@ -909,7 +1057,7 @@ export default {
 	}
 }
 
-/* 取消订单弹窗 */
+
 .cancel-modal {
 	position: fixed;
 	top: 0;
@@ -1083,7 +1231,7 @@ export default {
 	color: #999999;
 }
 
-/* 更多操作弹窗 */
+
 .more-modal {
 	position: fixed;
 	top: 0;
@@ -1178,7 +1326,7 @@ export default {
 }
 
 .phone-icon .icon-image {
-	filter: brightness(0) invert(1);
+	
 }
 
 .contact-option:last-child .contact-text {
@@ -1210,12 +1358,12 @@ export default {
 	text-align: center;
 }
 
-/* 二维码图标样式 */
+
 .qrcode-icon {
 	cursor: pointer;
 }
 
-/* 二维码弹窗 */
+
 .qrcode-modal {
 	position: fixed;
 	top: 0;

@@ -16,7 +16,7 @@
 					<text class="time-label">本月</text>
 					<image
 						class="dropdown-icon"
-						src="/static/icon/vector-1.svg"
+						src="https://bioflex.cn/static/icon/vector-1.svg"
 						mode="aspectFit"
 					></image>
 				</view>
@@ -64,7 +64,7 @@ export default {
 				},
 				{
 					title: '成都美发沙龙',
-					desc: '邀请好友奖励',
+					desc: '适请好友奖励',
 					time: '昨天 11:00',
 					amount: '+80'
 				}

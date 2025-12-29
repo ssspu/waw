@@ -5,7 +5,7 @@
 			<view class="nav-bar">
 				<view class="nav-left">
 					<view class="back-btn" @tap="handleBack">
-						<image class="back-icon" src="/static/icon/arrow-left.png" mode="aspectFit"></image>
+						<image class="back-icon" src="https://bioflex.cn/static/back.png" mode="aspectFit"></image>
 					</view>
 					<text class="nav-title">实体门店入驻</text>
 				</view>
@@ -127,7 +127,7 @@ export default {
 				uni.showToast({ title: '请先同意入驻协议', icon: 'none' })
 				return
 			}
-			// 跳转到结算信息页
+			
 			uni.navigateTo({
 				url: '/packageSettlement/pages/store-settlement/settlement'
 			})
@@ -337,6 +337,7 @@ export default {
 	width: 32rpx;
 	height: 32rpx;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	border: 2rpx solid #d9d9d9;
 	display: flex;
 	align-items: center;

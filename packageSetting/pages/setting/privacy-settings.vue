@@ -40,26 +40,26 @@ export default {
 			privacyItems: [
 				{
 					key: 'showOnlineStatus',
-					label: '开启地理位置',
-					desc: '开启后，其他用户可通过位置搜索到您',
+					label: '值启地理位置',
+					desc: '值启后，其他用户可通过位置搜索到您',
 					checked: false
 				},
 				{
 					key: 'showBrowseHistory',
 					label: '允许访问相册',
-					desc: '开启后，可以访问您的相册信息',
+					desc: '值启后，可以访问您的相册信息',
 					checked: false
 				},
 				{
 					key: 'allowRecommend',
 					label: '允许访问相机',
-					desc: '开启后，可以访问您的相机',
+					desc: '值启后，可以访问您的相机',
 					checked: false
 				},
 				{
 					key: 'allowMicrophone',
 					label: '允许访问麦克风',
-					desc: '开启后，可以访问您的麦克风',
+					desc: '值启后，可以访问您的麦克风',
 					checked: false
 				}
 			]
@@ -74,9 +74,9 @@ export default {
 			this.loading = true
 			try {
 				const res = await api.user.getPrivacySettings()
-				if (res.code === 0) {
+				if (res.code === 200) {
 					const settings = res.data || {}
-					// 更新每个隐私项的状态
+					
 					this.privacyItems.forEach(item => {
 						if (settings[item.key] !== undefined) {
 							item.checked = settings[item.key]
@@ -98,12 +98,12 @@ export default {
 				const updateData = { [item.key]: checked }
 				const res = await api.user.updatePrivacySettings(updateData)
 				if (res.code !== 0) {
-					// 恢复原状态
+					
 					item.checked = oldValue
 					uni.showToast({ title: '设置失败', icon: 'none' })
 				}
 			} catch (err) {
-				// 恢复原状态
+				
 				item.checked = oldValue
 				console.error('更新隐私设置失败:', err)
 				uni.showToast({ title: '设置失败', icon: 'none' })

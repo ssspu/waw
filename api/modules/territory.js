@@ -16,8 +16,8 @@ export default {
    */
   getMyDesigners(params = {}) {
     return get(`${TERRITORY_PREFIX}/designers`, {
-      page: 1,
-      pageSize: 10,
+      page: Number(params.page) || 1,
+      pageSize: Number(params.pageSize) || 10,
       ...params
     })
   },
@@ -29,8 +29,8 @@ export default {
    */
   getDesignerServiceRecords(designerId, params = {}) {
     return get(`${TERRITORY_PREFIX}/designers/${designerId}/records`, {
-      page: 1,
-      pageSize: 10,
+      page: Number(params.page) || 1,
+      pageSize: Number(params.pageSize) || 10,
       ...params
     })
   },
@@ -51,8 +51,8 @@ export default {
    */
   getMyBrands(params = {}) {
     return get(`${TERRITORY_PREFIX}/brands`, {
-      page: 1,
-      pageSize: 10,
+      page: Number(params.page) || 1,
+      pageSize: Number(params.pageSize) || 10,
       ...params
     })
   },
@@ -64,8 +64,8 @@ export default {
    */
   getBrandServiceRecords(brandId, params = {}) {
     return get(`${TERRITORY_PREFIX}/brands/${brandId}/records`, {
-      page: 1,
-      pageSize: 10,
+      page: Number(params.page) || 1,
+      pageSize: Number(params.pageSize) || 10,
       ...params
     })
   },
@@ -86,8 +86,8 @@ export default {
    */
   getServiceRecords(params = {}) {
     return get(`${TERRITORY_PREFIX}/records`, {
-      page: 1,
-      pageSize: 10,
+      page: Number(params.page) || 1,
+      pageSize: Number(params.pageSize) || 10,
       ...params
     })
   },
@@ -105,9 +105,13 @@ export default {
   /**
    * 基于服务记录再次预约
    * @param {string} recordId - 服务记录ID
+   * @param {Object} data - { appointmentTime: 预约时间, remark?: 备注 }
    */
-  reorder(recordId) {
-    return post(`${TERRITORY_PREFIX}/reorder/${recordId}`)
+  reorder(recordId, data = {}) {
+    return post(`${TERRITORY_PREFIX}/reorder/${recordId}`, {
+      appointment_time: data.appointmentTime || data.appointment_time,
+      remark: data.remark
+    })
   },
 
   // ============ 推广分享 ============

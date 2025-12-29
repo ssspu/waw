@@ -4,7 +4,7 @@
 			<!-- 搜索栏 -->
 			<view class="search-bar">
 				<view class="search-input-wrapper">
-					<image class="search-icon" src="/static/icon/search.png" mode="aspectFit"></image>
+					<image class="search-icon" src="https://bioflex.cn/static/icon/search.png" mode="aspectFit"></image>
 					<input 
 						class="search-input" 
 						v-model="searchKeyword"
@@ -52,7 +52,7 @@
 					@tap="handleQuestionClick(question)"
 				>
 					<text class="question-text">{{ question }}</text>
-					<image class="chevron-icon" src="/static/icon/gengduo.png" mode="aspectFit"></image>
+					<image class="chevron-icon" src="https://bioflex.cn/static/icon/gengduo.png" mode="aspectFit"></image>
 					<view v-if="index < questions.length - 1" class="question-separator"></view>
 				</view>
 			</view>
@@ -97,12 +97,12 @@ export default {
 			this.loadQuestions()
 		},
 		loadQuestions() {
-			// 根据选中的标签加载对应的问题列表
-			// 这里暂时使用固定数据
+			
+			
 		},
 		handleQuestionClick(question) {
 			console.log('Question clicked:', question)
-			// 跳转到问题详情页面
+			
 			// uni.navigateTo({ url: `/pages/mine/question-detail?question=${question}` })
 		}
 	}

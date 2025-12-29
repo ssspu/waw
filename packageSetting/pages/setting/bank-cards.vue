@@ -25,7 +25,7 @@
 					</view>
 					<view class="separator-line"></view>
 					<view class="form-row">
-						<text class="row-label">开户行地址</text>
+						<text class="row-label">值户行地倝</text>
 						<text class="row-value-placeholder">{{ card.bankAddress }}</text>
 					</view>
 				</view>
@@ -60,7 +60,7 @@ export default {
 		this.loadBankCards()
 	},
 	onShow() {
-		// 每次显示页面时刷新数据（添加新卡后返回）
+		
 		this.loadBankCards()
 	},
 	methods: {
@@ -69,7 +69,7 @@ export default {
 			this.loading = true
 			try {
 				const res = await api.user.getBankCards()
-				if (res.code === 0) {
+				if (res.code === 200) {
 					this.bankCards = (res.data || []).map(card => ({
 						id: card.id,
 						cardholder: card.holderName || '持卡人',
@@ -86,7 +86,7 @@ export default {
 				this.loading = false
 			}
 		},
-		// 遮掩卡号中间部分
+		
 		maskCardNumber(cardNumber) {
 			if (!cardNumber) return ''
 			const cleaned = cardNumber.replace(/\s/g, '')

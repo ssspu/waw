@@ -9,7 +9,7 @@ const currentUser = {
   id: '1',
   phone: '13800138000',
   nickname: '美丽达人',
-  avatar: '/static/avatar/avatar.png',
+  avatar: 'https://bioflex.cn/static/avatar/avatar.png',
   gender: '女',
   birthday: '1995-06-15',
   signature: '追求美丽，享受生活~',
@@ -26,11 +26,11 @@ const currentUser = {
 
 // 资产明细
 const assetDetails = [
-  { id: '1', type: 'income', title: '订单退款', amount: 288.00, time: '2025-11-28 15:30', orderNo: '20251128001' },
+  { id: '1', type: 'income', title: '订单款', amount: 288.00, time: '2025-11-28 15:30', orderNo: '20251128001' },
   { id: '2', type: 'expense', title: '服务消费', amount: -599.00, time: '2025-11-27 14:20', orderNo: '20251127001' },
-  { id: '3', type: 'income', title: '充值', amount: 1000.00, time: '2025-11-25 10:00', orderNo: '' },
+  { id: '3', type: 'income', title: '充', amount: 1000.00, time: '2025-11-25 10:00', orderNo: '' },
   { id: '4', type: 'expense', title: '服务消费', amount: -399.00, time: '2025-11-22 16:45', orderNo: '20251122001' },
-  { id: '5', type: 'income', title: '邀请奖励', amount: 50.00, time: '2025-11-20 09:30', orderNo: '' },
+  { id: '5', type: 'income', title: '请奖励', amount: 50.00, time: '2025-11-20 09:30', orderNo: '' },
   { id: '6', type: 'expense', title: '服务消费', amount: -799.00, time: '2025-11-18 11:20', orderNo: '20251118001' }
 ]
 
@@ -40,11 +40,11 @@ const favoriteServices = [
     id: '1',
     type: 'service',
     name: '洗吹',
-    description: '水洗+按摩+造型',
+    description: '水洗+按摩+型',
     duration: '1小时',
     distance: '距离1.2km',
     price: 799,
-    cover: '/static/mine/favorites/rectangle-169.png'
+    cover: 'https://bioflex.cn/static/mine/favorites/rectangle-169.png'
   },
   {
     id: '2',
@@ -54,17 +54,17 @@ const favoriteServices = [
     duration: '2小时',
     distance: '距离2.5km',
     price: 1299,
-    cover: '/static/mine/favorites/rectangle-169.png'
+    cover: 'https://bioflex.cn/static/mine/favorites/rectangle-169.png'
   },
   {
     id: '3',
     type: 'service',
-    name: '烫染一体',
-    description: '烫发+染发+造型设计',
+    name: '烫染体',
+    description: '烫发+染发+型设计',
     duration: '3小时',
     distance: '距离1.8km',
     price: 1699,
-    cover: '/static/mine/favorites/rectangle-169.png'
+    cover: 'https://bioflex.cn/static/mine/favorites/rectangle-169.png'
   },
   {
     id: '4',
@@ -74,7 +74,7 @@ const favoriteServices = [
     duration: '1.5小时',
     distance: '距离3.0km',
     price: 599,
-    cover: '/static/mine/favorites/rectangle-169.png'
+    cover: 'https://bioflex.cn/static/mine/favorites/rectangle-169.png'
   }
 ]
 
@@ -87,7 +87,7 @@ const followDesigners = [
     level: '高级',
     role: '店长｜从业12年',
     avatar: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png',
-    specialties: ['女士造型', '烫发设计', '短发造型'],
+    specialties: ['女士型', '烫发设计', '短发型'],
     rating: '4.8',
     services: 287,
     works: 123,
@@ -98,9 +98,9 @@ const followDesigners = [
     type: 'designer',
     name: '张小雨',
     level: '资深',
-    role: '总监｜从业10年',
+    role: '监｜从业10年',
     avatar: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png',
-    specialties: ['时尚染发', '造型设计', '发型修复'],
+    specialties: ['时尚染发', '型设计', '发型修复'],
     rating: '4.9',
     services: 356,
     works: 189,
@@ -113,7 +113,7 @@ const followDesigners = [
     level: '高级',
     role: '美发师｜从业8年',
     avatar: 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-5.png',
-    specialties: ['男士理发', '商务造型', '发型设计'],
+    specialties: ['男士理发', '商务型', '发型设计'],
     rating: '4.7',
     services: 198,
     works: 87,
@@ -126,9 +126,9 @@ const followBrands = [
   {
     id: '1',
     type: 'brand',
-    name: '成都NICE造型沙龙',
+    name: '成都NICE发型沙龙',
     tag: '舒适',
-    type_desc: '专业店｜2012年开业',
+    type_desc: '专业店｜2012年营业',
     rating: '4.8',
     designers: '8人',
     services: '1236',
@@ -141,7 +141,7 @@ const followBrands = [
     type: 'brand',
     name: '潮流发型工作室',
     tag: '时尚',
-    type_desc: '精品店｜2018年开业',
+    type_desc: '精品店｜2018年业',
     rating: '4.6',
     designers: '5人',
     services: '856',
@@ -163,7 +163,7 @@ const browseServiceRecords = [
     price: 799,
     discount: '预约优惠10%',
     ctaText: '快速预约',
-    cover: '/static/mine/favorites/rectangle-169.png'
+    cover: 'https://bioflex.cn/static/mine/favorites/rectangle-169.png'
   },
   {
     id: '2',
@@ -175,19 +175,19 @@ const browseServiceRecords = [
     price: 1299,
     discount: '预约优惠10%',
     ctaText: '快速预约',
-    cover: '/static/mine/favorites/rectangle-169.png'
+    cover: 'https://bioflex.cn/static/mine/favorites/rectangle-169.png'
   },
   {
     id: '3',
     type: 'service',
     name: '烫染一体',
-    description: '烫发+染发+造型设计',
+    description: '烫发+染发+发型设计',
     duration: '3小时',
     sold: 421,
     price: 1699,
     discount: '预约优惠10%',
     ctaText: '快速预约',
-    cover: '/static/mine/favorites/rectangle-169.png'
+    cover: 'https://bioflex.cn/static/mine/favorites/rectangle-169.png'
   },
   {
     id: '4',
@@ -199,7 +199,7 @@ const browseServiceRecords = [
     price: 599,
     discount: '预约优惠10%',
     ctaText: '快速预约',
-    cover: '/static/mine/favorites/rectangle-169.png'
+    cover: 'https://bioflex.cn/static/mine/favorites/rectangle-169.png'
   }
 ]
 
@@ -208,9 +208,9 @@ const browseBrandRecords = [
   {
     id: '1',
     type: 'brand',
-    name: '成都NICE造型沙龙',
+    name: '成都NICE发型沙龙',
     tag: '舒适',
-    type_desc: '专业店｜2012年开业',
+    type_desc: '专业店｜2012年业',
     rating: '4.8',
     designers: '8人',
     services: '1236',
@@ -223,7 +223,7 @@ const browseBrandRecords = [
     type: 'brand',
     name: '潮流发型工作室',
     tag: '时尚',
-    type_desc: '精品店｜2018年开业',
+    type_desc: '精品店｜2018年业',
     rating: '4.6',
     designers: '5人',
     services: '856',
@@ -236,7 +236,7 @@ const browseBrandRecords = [
     type: 'brand',
     name: '时尚美发沙龙',
     tag: '高端',
-    type_desc: '旗舰店｜2015年开业',
+    type_desc: '旗舰店｜2015年业',
     rating: '4.9',
     designers: '12人',
     services: '2156',
@@ -247,9 +247,9 @@ const browseBrandRecords = [
   {
     id: '4',
     type: 'brand',
-    name: '造型达人会所',
+    name: '发型达人会所',
     tag: '精品',
-    type_desc: '精品店｜2020年开业',
+    type_desc: '精品店｜2020年营业',
     rating: '4.7',
     designers: '6人',
     services: '689',
@@ -264,7 +264,7 @@ const favorites = favoriteServices
 const follows = followDesigners
 const browseRecords = browseServiceRecords
 
-// 地址列表
+// 地列表
 const addresses = [
   { id: '1', name: '张三', phone: '13800138000', province: '四川省', city: '成都市', district: '锦江区', detail: '红星路120号IFS国际东门2栋607室', isDefault: true },
   { id: '2', name: '张三', phone: '13800138000', province: '四川省', city: '成都市', district: '武侯区', detail: '天府大道中段666号', isDefault: false }
@@ -280,7 +280,7 @@ const bankCards = [
 const vipLevels = [
   { id: '1', level: 1, name: 'VIP1', price: 99, months: 1, benefits: ['9.5折优惠', '专属客服'] },
   { id: '2', level: 2, name: 'VIP2', price: 299, months: 3, benefits: ['9折优惠', '专属客服', '优先预约'] },
-  { id: '3', level: 3, name: 'VIP3', price: 999, months: 12, benefits: ['8.5折优惠', '专属客服', '优先预约', '免费造型设计'] }
+  { id: '3', level: 3, name: 'VIP3', price: 999, months: 12, benefits: ['8.5折优惠', '专属客服', '优先预约', '免费发型设计'] }
 ]
 
 // 隐私设置
@@ -319,7 +319,7 @@ const beansInfo = {
 
 const beansRecords = [
   { id: '1', type: 'earn', title: '每日签到', amount: 10, balance: 3680, time: '2025-11-28 08:00', remark: '连续签到第7天' },
-  { id: '2', type: 'earn', title: '订单奖励', amount: 50, balance: 3670, time: '2025-11-27 16:00', remark: '消费满100赠送', orderNo: 'O20251127001' },
+  { id: '2', type: 'earn', title: '订单奖励', amount: 50, balance: 3670, time: '2025-11-27 16:00', remark: '消费满100赠', orderNo: 'O20251127001' },
   { id: '3', type: 'spend', title: '兑换优惠券', amount: -200, balance: 3620, time: '2025-11-26 10:30', remark: '10元无门槛券' },
   { id: '4', type: 'earn', title: '评价奖励', amount: 20, balance: 3820, time: '2025-11-25 15:20', remark: '发表优质评价' },
   { id: '5', type: 'earn', title: '邀请奖励', amount: 100, balance: 3800, time: '2025-11-24 11:00', remark: '邀请好友注册' }
@@ -344,24 +344,24 @@ const promotionInfo = {
 }
 
 const promotionRecords = [
-  { id: '1', type: 'invite', title: '邀请奖励', amount: 50.00, status: 'settled', time: '2025-11-28 10:30', remark: '邀请用户张**注册', userId: 'U001' },
+  { id: '1', type: 'invite', title: '请奖励', amount: 50.00, status: 'settled', time: '2025-11-28 10:30', remark: '请用户张**注册', userId: 'U001' },
   { id: '2', type: 'order', title: '订单佣金', amount: 28.80, status: 'settled', time: '2025-11-27 16:20', remark: '下级用户消费288元', orderNo: 'O20251127002' },
   { id: '3', type: 'order', title: '订单佣金', amount: 15.50, status: 'pending', time: '2025-11-26 14:00', remark: '下级用户消费155元', orderNo: 'O20251126002' },
-  { id: '4', type: 'invite', title: '邀请奖励', amount: 50.00, status: 'settled', time: '2025-11-25 09:15', remark: '邀请用户李**注册', userId: 'U002' },
+  { id: '4', type: 'invite', title: '请奖励', amount: 50.00, status: 'settled', time: '2025-11-25 09:15', remark: '请用户李**注册', userId: 'U002' },
   { id: '5', type: 'withdraw', title: '佣金提现', amount: -500.00, status: 'success', time: '2025-11-20 11:00', remark: '提现至招商银行尾号5678' }
 ]
 
 const inviteCode = {
   code: 'WAW2025ABC',
-  qrCodeUrl: '/static/qrcode/invite.png',
+  qrCodeUrl: 'https://bioflex.cn/static/qrcode/invite.png',
   shareUrl: 'https://waw.com/invite/WAW2025ABC',
   expireTime: null
 }
 
 const inviteList = [
-  { id: '1', userId: 'U001', nickname: '张**', avatar: '/static/avatar/user1.png', phone: '138****1234', registerTime: '2025-11-28 10:30', orderCount: 3, totalAmount: 588.00 },
-  { id: '2', userId: 'U002', nickname: '李**', avatar: '/static/avatar/user2.png', phone: '139****5678', registerTime: '2025-11-25 09:15', orderCount: 1, totalAmount: 199.00 },
-  { id: '3', userId: 'U003', nickname: '王**', avatar: '/static/avatar/user3.png', phone: '136****9012', registerTime: '2025-11-20 14:20', orderCount: 5, totalAmount: 1280.00 }
+  { id: '1', userId: 'U001', nickname: '张**', avatar: 'https://bioflex.cn/static/avatar/user1.png', phone: '138****1234', registerTime: '2025-11-28 10:30', orderCount: 3, totalAmount: 588.00 },
+  { id: '2', userId: 'U002', nickname: '李**', avatar: 'https://bioflex.cn/static/avatar/user2.png', phone: '139****5678', registerTime: '2025-11-25 09:15', orderCount: 1, totalAmount: 199.00 },
+  { id: '3', userId: 'U003', nickname: '王**', avatar: 'https://bioflex.cn/static/avatar/user3.png', phone: '136****9012', registerTime: '2025-11-20 14:20', orderCount: 5, totalAmount: 1280.00 }
 ]
 
 const promotionRules = {
@@ -396,10 +396,10 @@ const platformRewardRecords = [
 
 // ============ 二维码名片相关数据 ============
 const qrCodeInfo = {
-  personalQrCode: '/static/qrcode/personal.png',
-  inviteQrCode: '/static/qrcode/invite.png',
+  personalQrCode: 'https://bioflex.cn/static/qrcode/personal.png',
+  inviteQrCode: 'https://bioflex.cn/static/qrcode/invite.png',
   nickname: '美丽达人',
-  avatar: '/static/avatar/avatar.png',
+  avatar: 'https://bioflex.cn/static/avatar/avatar.png',
   userId: '1',
   signature: '追求美丽，享受生活~'
 }
@@ -455,7 +455,7 @@ export const routes = {
 
   // 上传头像
   'POST /api/user/avatar': (params) => {
-    const avatarUrl = '/static/avatar/avatar.png'
+    const avatarUrl = 'https://bioflex.cn/static/avatar/avatar.png'
     currentUser.avatar = avatarUrl
     return success({ url: avatarUrl })
   },
@@ -523,7 +523,7 @@ export const routes = {
     } else if (type === 'brand' || type === 'store') {
       list = followBrands
     } else {
-      // 默认返回所有
+      // 默认返回有
       list = [...followDesigners, ...followBrands]
     }
     return success({
@@ -562,42 +562,42 @@ export const routes = {
     return success(null, '浏览记录已清空')
   },
 
-  // 获取地址列表
+  // 获取地列表
   'GET /api/user/address': () => {
     return success(addresses)
   },
 
-  // 获取地址详情
+  // 获取地详情
   'GET /api/user/address/:addressId': (params) => {
     const address = addresses.find(a => a.id === params.addressId)
-    return address ? success(address) : error('地址不存在')
+    return address ? success(address) : error('地不存在')
   },
 
-  // 新增地址
+  // 新增地
   'POST /api/user/address': (params) => {
     const newAddress = { id: String(addresses.length + 1), ...params }
     addresses.push(newAddress)
     return success(newAddress)
   },
 
-  // 更新地址
+  // 更新地
   'PUT /api/user/address/:addressId': (params) => {
     const address = addresses.find(a => a.id === params.addressId)
     if (address) {
       Object.assign(address, params)
       return success(address)
     }
-    return error('地址不存在')
+    return error('地不存在')
   },
 
-  // 删除地址
+  // 删除地
   'DELETE /api/user/address/:addressId': (params) => {
     const index = addresses.findIndex(a => a.id === params.addressId)
     if (index > -1) {
       addresses.splice(index, 1)
       return success(null, '删除成功')
     }
-    return error('地址不存在')
+    return error('地不存在')
   },
 
   // 设置默认地址
@@ -608,7 +608,7 @@ export const routes = {
       address.isDefault = true
       return success(null, '设置成功')
     }
-    return error('地址不存在')
+    return error('地不存在')
   },
 
   // 获取银行卡列表
@@ -647,9 +647,8 @@ export const routes = {
     return success(vipLevels)
   },
 
-  // 开通/续费会员
   'POST /api/user/vip/buy': (params) => {
-    return success({ orderId: 'VIP' + Date.now() }, '会员开通成功')
+    return success({ orderId: 'VIP' + Date.now() }, '会员成功')
   },
 
   // 提交设计师入驻申请
@@ -662,7 +661,7 @@ export const routes = {
     return success({ applyId: 'AS' + Date.now() }, '申请已提交，请等待审核')
   },
 
-  // 获取入驻申请状态
+  // 获取入驻申请状
   'GET /api/user/apply/:type/status': (params) => {
     return success({
       status: 'pending', // pending/reviewing/approved/rejected
@@ -704,7 +703,7 @@ export const routes = {
     return success(paginate(list, params.page || 1, params.pageSize || 10))
   },
 
-  // 余额充值
+  // 余额充
   'POST /api/user/balance/recharge': (params) => {
     const { amount } = params
     balanceInfo.balance += amount
@@ -712,7 +711,7 @@ export const routes = {
     return success({
       orderId: 'R' + Date.now(),
       balance: balanceInfo.balance
-    }, '充值成功')
+    }, '充成功')
   },
 
   // ============ 美豆相关路由 ============
@@ -761,7 +760,7 @@ export const routes = {
     }, '签到成功')
   },
 
-  // 获取签到状态
+  // 获取签到状
   'GET /api/user/beans/sign-status': () => {
     return success(signStatus)
   },
@@ -802,12 +801,12 @@ export const routes = {
     return success(paginate(list, params.page || 1, params.pageSize || 10))
   },
 
-  // 获取邀请码
+  // 获取请码
   'GET /api/user/promotion/invite-code': () => {
     return success(inviteCode)
   },
 
-  // 获取邀请记录列表
+  // 获取请记录列表
   'GET /api/user/promotion/invites': (params) => {
     return success(paginate(inviteList, params.page || 1, params.pageSize || 10))
   },
@@ -819,7 +818,7 @@ export const routes = {
       return error('可提现佣金不足')
     }
     if (amount < promotionRules.minWithdraw) {
-      return error(`最低提现金额为${promotionRules.minWithdraw}元`)
+      return error(`低提现金额为${promotionRules.minWithdraw}元`)
     }
     promotionInfo.availableCommission -= amount
     promotionInfo.withdrawnCommission += amount
@@ -880,7 +879,7 @@ export const routes = {
   'POST /api/user/qr-code/generate': (params) => {
     const { type = 'personal' } = params
     return success({
-      qrCodeUrl: type === 'invite' ? '/static/qrcode/invite.png' : '/static/qrcode/personal.png',
+      qrCodeUrl: type === 'invite' ? 'https://bioflex.cn/static/qrcode/invite.png' : 'https://bioflex.cn/static/qrcode/personal.png',
       type,
       expireTime: null
     }, '生成成功')
@@ -891,12 +890,11 @@ export const routes = {
     return success(null, '保存成功')
   },
 
-  // ============ 账号注销相关路由 ============
 
-  // 申请注销账号
+  // 申请注账号
   'POST /api/user/deactivation/apply': (params) => {
     if (deactivationStatus.status !== 'none') {
-      return error('已有注销申请在处理中')
+      return error('已有注申请在处理中')
     }
     deactivationStatus.status = 'pending'
     deactivationStatus.applyTime = new Date().toISOString()
@@ -905,25 +903,23 @@ export const routes = {
     return success({
       status: deactivationStatus.status,
       remainingDays: deactivationStatus.remainingDays
-    }, '注销申请已提交，15天内可撤销')
+    }, '注申请已提交，15天内可撤')
   },
 
-  // 取消注销申请
   'POST /api/user/deactivation/cancel': () => {
     if (deactivationStatus.status === 'none') {
-      return error('没有待处理的注销申请')
+      return error('没有待处理的注申请')
     }
     if (deactivationStatus.status === 'completed') {
-      return error('账号已注销，无法撤销')
+      return error('账号已注，无法撤')
     }
     deactivationStatus.status = 'none'
     deactivationStatus.applyTime = null
     deactivationStatus.reason = null
     deactivationStatus.remainingDays = null
-    return success(null, '注销申请已撤销')
+    return success(null, '注申请已撤')
   },
 
-  // 获取注销申请状态
   'GET /api/user/deactivation/status': () => {
     return success(deactivationStatus)
   },
@@ -938,7 +934,6 @@ export const routes = {
     })
   },
 
-  // 更新消息通知设置
   'PUT /api/user/settings/notification': (params) => {
     return success({
       notificationEnabled: params.notificationEnabled

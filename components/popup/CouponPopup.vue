@@ -10,7 +10,7 @@
 				</view>
 			</view>
 
-			<!-- 选择模式下的统计信息 -->
+			<!-- 择模式下的统计信息 -->
 			<view v-if="mode === 'select'" class="select-summary">
 				<view class="summary-left">
 					<text class="summary-text">已选择{{ selectedCount }}张券，共优惠 </text>
@@ -50,7 +50,6 @@
 								<text class="coupon-date">有效期至：{{ coupon.startDate ? coupon.endDate : coupon.validUntil }}</text>
 							</view>
 
-							<!-- 选择按钮（选择模式） -->
 							<view v-if="mode === 'select'" class="select-radio" :class="{ 'checked': selectedCouponId === coupon.id }">
 								<text v-if="selectedCouponId === coupon.id" class="radio-check">✓</text>
 							</view>
@@ -87,12 +86,12 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		// 模式: 'claim' 领取模式, 'select' 选择模式
+		
 		mode: {
 			type: String,
 			default: 'claim'
 		},
-		// 当前选中的优惠券ID（选择模式）
+		
 		selectedId: {
 			type: [Number, String, null],
 			default: null
@@ -201,7 +200,7 @@ export default {
 			}
 		},
 		handleAutoSelect() {
-			// 自动选择最优惠的券
+			
 			if (this.displayCoupons.length > 0) {
 				const bestCoupon = this.displayCoupons.reduce((prev, current) => {
 					const prevAmount = parseFloat(prev.amount || prev.discount) || 0
@@ -290,7 +289,7 @@ export default {
 	line-height: 1;
 }
 
-/* 选择统计信息 */
+
 .select-summary {
 	display: flex;
 	align-items: center;
@@ -330,7 +329,7 @@ export default {
 	color: #666666;
 }
 
-/* 优惠券列表 */
+
 .coupon-list {
 	flex: 1;
 	padding: 0 24rpx;
@@ -360,7 +359,7 @@ export default {
 	box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
 }
 
-/* 左侧金额区域 */
+
 .coupon-left {
 	display: flex;
 	flex-direction: column;
@@ -399,7 +398,7 @@ export default {
 	margin-top: 8rpx;
 }
 
-/* 右侧信息区域 */
+
 .coupon-right {
 	flex: 1;
 	display: flex;
@@ -488,7 +487,7 @@ export default {
 	color: #cccccc;
 }
 
-/* 选择按钮 */
+
 .select-radio {
 	width: 44rpx;
 	height: 44rpx;
@@ -514,7 +513,7 @@ export default {
 	line-height: 1;
 }
 
-/* 领取按钮 */
+
 .claim-btn {
 	display: flex;
 	align-items: center;
@@ -543,7 +542,7 @@ export default {
 	color: #999999;
 }
 
-/* 不使用优惠券 */
+
 .no-coupon-card {
 	padding: 32rpx 24rpx;
 	background-color: #ffffff;
@@ -565,7 +564,7 @@ export default {
 	color: #333333;
 }
 
-/* 底部 */
+
 .list-footer {
 	display: flex;
 	justify-content: center;
@@ -578,7 +577,7 @@ export default {
 	color: #cccccc;
 }
 
-/* 确认按钮 */
+
 .confirm-section {
 	padding: 24rpx 32rpx;
 	padding-bottom: calc(24rpx + constant(safe-area-inset-bottom, 0));

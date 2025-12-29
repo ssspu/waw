@@ -17,7 +17,7 @@
 									v-for="(star, index) in 5"
 									:key="index"
 									class="star-icon"
-									src="https://c.animaapp.com/mi5kx1ohxTkA7e/img/star-1.svg"
+									src="/static/icon/star.png"
 									mode="aspectFit"
 								></image>
 							</view>
@@ -47,7 +47,7 @@
 			</view>
 		</view>
 		
-		<!-- 筛选标签卡片 -->
+		<!-- 筛标签卡片 -->
 		<view class="filter-card">
 			<view class="filter-content">
 				<view class="filter-tags">
@@ -63,13 +63,11 @@
 					</view>
 				</view>
 				
-				<!-- 空数据状态 -->
 				<view v-if="!loading && filteredReviews.length === 0" class="empty-state">
-					<image class="empty-icon" src="/static/icon/empty-review.png" mode="aspectFit"></image>
+					<image class="empty-icon" src="https://bioflex.cn/static/icon/empty-review.png" mode="aspectFit"></image>
 					<text class="empty-text">暂无点评内容</text>
 				</view>
 
-				<!-- 加载状态 -->
 				<view v-if="loading" class="loading-state">
 					<text class="loading-text">加载中...</text>
 				</view>
@@ -99,7 +97,7 @@
 												v-for="(star, index) in 5" 
 												:key="index"
 												class="star-small" 
-												src="https://c.animaapp.com/mi5kx1ohxTkA7e/img/star-1.svg" 
+												src="/static/icon/star.png" 
 												mode="aspectFit"
 											></image>
 										</view>
@@ -150,7 +148,7 @@ export default {
 	data() {
 		return {
 			loading: false,
-			reviewType: 'all', // 评价类型：all, with-image, bad
+			reviewType: 'all', 
 			activeFilterIndex: 0,
 			overallRating: 0,
 			ratingLevel: '',
@@ -172,9 +170,9 @@ export default {
 		activeSubTab: {
 			immediate: true,
 			handler(newVal) {
-				// 子tab切换时根据类型筛选评价
+				
 				this.reviewType = newVal
-				// 重置筛选索引
+				
 				this.activeFilterIndex = 0
 				if (this.designerId) {
 					this.fetchReviews()
@@ -184,7 +182,7 @@ export default {
 	},
 	computed: {
 		currentFilter() {
-			// 计算当前选中的筛选类型
+			
 			if (!this.filterTags || this.filterTags.length === 0) {
 				return 'all'
 			}
@@ -192,7 +190,7 @@ export default {
 			return tag ? tag.filter : 'all'
 		},
 		filteredReviews() {
-			// 根据筛选类型过滤评价列表
+			
 			if (this.currentFilter === 'all') {
 				return this.reviews
 			}
@@ -202,20 +200,20 @@ export default {
 		}
 	},
 	methods: {
-		// 获取评价列表
+		
 		async fetchReviews() {
 			if (!this.designerId || this.loading) return
 			this.loading = true
 			try {
 				const res = await api.designer.getReviews(this.designerId, {
-					reviewType: this.reviewType, // 传递评价类型参数（全部/有图/差评）
+					reviewType: this.reviewType, 
 					page: 1,
 					pageSize: 20
 				})
-				if (res.code === 0) {
+				if (res.code === 200) {
 					const data = res.data
 					const list = data.list || data.records || []
-					// 转换评价数据格式
+					
 					this.reviews = list.map(r => ({
 						id: r.id,
 						userName: r.userName,
@@ -227,7 +225,7 @@ export default {
 						reply: r.reply,
 						tags: r.tags || []
 					}))
-					// 更新评分统计
+					
 					if (data.ratingStats) {
 						const stats = data.ratingStats
 						this.overallRating = stats.overall
@@ -239,12 +237,15 @@ export default {
 				}
 			} catch (err) {
 				console.error('获取评价列表失败:', err)
+				// 接口不存在或失败时，显示空状态
+				this.reviews = []
+				this.totalReviewCount = 0
 			} finally {
 				this.loading = false
 			}
 		},
 		handleTagClick(index) {
-			// 只更新筛选索引，通过计算属性 filteredReviews 进行前端筛选
+			
 			if (index >= 0 && index < this.filterTags.length) {
 				this.activeFilterIndex = index
 			}
@@ -346,8 +347,8 @@ export default {
 }
 
 .star-icon {
-	width: 20.74rpx;
-	height: 19.82rpx;
+	width: 24rpx;
+	height: 24rpx;
 }
 
 .review-count {
@@ -552,11 +553,15 @@ export default {
 	display: flex;
 	align-items: center;
 	gap: 2rpx;
+	padding: 4rpx;
+	background-color: #333333;
+	border-radius: 4rpx;
 }
 
 .star-small {
-	width: 20rpx;
-	height: 20rpx;
+	width: 16rpx;
+	height: 16rpx;
+	filter: brightness(0) invert(1);
 }
 
 .review-date {
@@ -624,7 +629,7 @@ export default {
 	line-height: 32rpx;
 }
 
-/* 空数据和加载状态 */
+
 .empty-state {
 	display: flex;
 	flex-direction: column;

@@ -98,12 +98,12 @@ export default {
 	top: 0;
 	left: 0;
 	right: 0;
-	background-color: #ffffff;
 	z-index: 0;
 }
 
 // 自定义导航栏
 .custom-navbar {
+	background-color: #ffffff;
 	position: relative;
 	width: 100%;
 	z-index: 10;
@@ -124,9 +124,10 @@ export default {
 
 .location-badge {
 	height: 60rpx;
+	width: 380rpx;
 	background-color: #ffffff;
 	border-radius: 52rpx;
-	padding: 0 24rpx;
+	padding: 0 32rpx;
 	display: flex;
 	align-items: center;
 	box-sizing: border-box;
@@ -137,13 +138,14 @@ export default {
 	display: flex;
 	align-items: center;
 	width: 100%;
-	gap: 16rpx;
+	gap: 18rpx;
 }
 
 .location-info {
 	display: flex;
 	align-items: center;
 	gap: 6rpx;
+	flex-shrink: 0;
 }
 
 .location-text {
@@ -167,6 +169,8 @@ export default {
 	display: flex;
 	align-items: center;
 	gap: 4rpx;
+	flex: 1;
+	justify-content: center;
 }
 
 .role-icon {

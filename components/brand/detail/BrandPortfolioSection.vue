@@ -35,7 +35,6 @@
 				</view>
 			</view>
 			
-			<!-- 服务特色标签式布局 -->
 			<view v-if="activeNavTab === 1" class="features-content">
 				<view v-for="(section, sectionIndex) in serviceFeaturesData" :key="sectionIndex" class="feature-section">
 					<text v-if="section.title" class="section-title">{{ section.title }}</text>
@@ -51,7 +50,6 @@
 				</view>
 			</view>
 			
-			<!-- 环境设施标签式布局 -->
 			<view v-if="activeNavTab === 2" class="features-content">
 				<view v-for="(section, sectionIndex) in environmentData" :key="sectionIndex" class="feature-section">
 					<text v-if="section.title" class="section-title">{{ section.title }}</text>
@@ -121,7 +119,7 @@
 											v-for="i in 5" 
 											:key="i" 
 											class="star-icon" 
-											src="https://c.animaapp.com/mi5d4lp0csJxnR/img/star-1.svg" 
+											src="/static/icon/star.png" 
 											mode="aspectFit"
 										></image>
 									</view>
@@ -173,7 +171,7 @@
 		</view>
 		
 		<!-- 免责声明 -->
-		<text class="disclaimer">*本页面内信息有门店/设计师发布并对信息的真实性及合法性负责，如您对信息真实性及合法性有质疑，请向**反馈</text>
+		<text class="disclaimer">*本页面内信息有门店/设计师发布并对信息的真实及合法性负责，如您对信息真实及合法性有质疑，请向**反馈</text>
 	</view>
 </template>
 
@@ -186,7 +184,7 @@ export default {
 			serviceInfoData: [
 				{ label: "职位", value: "店长" },
 				{ label: "职称", value: "国家高级美发师" },
-				{ label: "擅长", value: "男士油头造型、细软烫发" },
+				{ label: "擅长", value: "男士油头发型细软烫发" },
 				{ label: "工作时间", value: "周二 - 周日", extra: "10:00-21:00" },
 				{ label: "从业时间", value: "12年" },
 				{ label: "预约时间", value: "提前3小时" },
@@ -196,7 +194,7 @@ export default {
 					title: "",
 					tags: [
 						"全预约制", "免费茶点",
-						"头皮检测", "免费停车",
+						"头皮测试", "免费停车",
 						"烫染专业店", "免费修眉",
 						"一对一服务", "免费按摩",
 						"没有隐形消费", "可上门服务"
@@ -278,7 +276,7 @@ export default {
 					title: "性价比很高",
 					rating: "4.7",
 					content: "性价比很高，服务周到，环境舒适...",
-					author: "追求者",
+					author: "追求品质",
 					avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/ellipse-34.svg",
 					date: "2019-12-21",
 					image: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
@@ -338,7 +336,7 @@ export default {
 				"只烫不染的短发多少钱？头发比较干，不知道能不能做？",
 				"刘海发际线太高怎么办？",
 			],
-			// 滚动虚化效果相关
+			
 			reviewScrollLeft: 0,
 			lastReviewScrollLeft: 0,
 			showReviewLeftFade: false,
@@ -361,11 +359,11 @@ export default {
 			}
 		},
 		totalReviewCount() {
-			// 计算总评价数量（可以从所有标签的count中计算，或者使用reviews数组长度）
+			
 			return this.reviews.length || this.reviewTags.reduce((sum, tag) => sum + parseInt(tag.count || 0), 0)
 		},
 		displayedReviews() {
-			// 最多显示10条评价
+			
 			return this.reviews.slice(0, 10)
 		}
 	},
@@ -379,7 +377,7 @@ export default {
 			})
 		},
 		handleViewMoreReviews() {
-			// 跳转到评价详情页
+			
 			uni.navigateTo({
 				url: '/pages/brand/reviews'
 			})
@@ -398,7 +396,7 @@ export default {
 			const maxScroll = this.getReviewMaxScroll()
 			const direction = scrollLeft - this.lastReviewScrollLeft
 
-			// 清除之前的淡出定时器
+			
 			if (this.reviewFadeTimeout) {
 				clearTimeout(this.reviewFadeTimeout)
 			}
@@ -406,15 +404,15 @@ export default {
 				clearTimeout(this.reviewFadeStartTimeout)
 			}
 
-			// 滚动时，取消淡出状态
+			
 			this.reviewFadeOut = false
 
 			if (direction > 0) {
-				// 向左滑动，显示右侧虚化
+				
 				this.showReviewRightFade = scrollLeft < maxScroll - 2
 				this.showReviewLeftFade = false
 			} else if (direction < 0) {
-				// 向右滑动，显示左侧虚化
+				
 				this.showReviewLeftFade = scrollLeft > 2
 				this.showReviewRightFade = false
 			}
@@ -423,11 +421,11 @@ export default {
 			this.reviewScrollLeft = scrollLeft
 			this.updateReviewFadeEdges(scrollLeft)
 
-			// 检测停止滚动：如果300ms内没有新的滚动事件，则认为停止，立即开始淡出
+			
 			this.reviewFadeStartTimeout = setTimeout(() => {
-				// 立即开始淡出（1.5秒内线性淡化）
+				
 				this.reviewFadeOut = true
-				// 1.5秒后完全隐藏
+				
 				this.reviewFadeTimeout = setTimeout(() => {
 					this.showReviewLeftFade = false
 					this.showReviewRightFade = false
@@ -623,7 +621,7 @@ export default {
 	margin-bottom: 20rpx;
 }
 
-/* 服务特色和环境设施标签式布局 */
+
 .features-content {
 	padding: 0 20rpx 20rpx;
 	width: 100%;
@@ -866,6 +864,8 @@ export default {
 	display: inline-flex;
 	align-items: center;
 	gap: 4rpx;
+	padding: 4rpx;
+	border-radius: 4rpx;
 }
 
 .star-icon {

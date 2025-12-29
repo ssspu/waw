@@ -8,12 +8,12 @@ import { success, error, paginate, generateId, formatNow } from '../utils.js'
 
 // 作品分类
 const categories = [
-  { id: 'women', name: '女士', icon: '/static/icons/women.png' },
-  { id: 'men', name: '男士', icon: '/static/icons/men.png' },
-  { id: 'children', name: '儿童', icon: '/static/icons/children.png' }
+  { id: 'women', name: '女士', icon: 'https://bioflex.cn/static/icons/women.png' },
+  { id: 'men', name: '男士', icon: 'https://bioflex.cn/static/icons/men.png' },
+  { id: 'children', name: '儿童', icon: 'https://bioflex.cn/static/icons/children.png' }
 ]
 
-// 筛选条件
+// 筛条件
 const filters = {
   faceType: [
     { id: 'oval', name: '鹅蛋脸' },
@@ -25,7 +25,7 @@ const filters = {
   ],
   hairVolume: [
     { id: 'thick', name: '发量多' },
-    { id: 'normal', name: '发量适中' },
+    { id: 'normal', name: '发量中' },
     { id: 'thin', name: '发量少' }
   ],
   hairQuality: [
@@ -47,7 +47,7 @@ const portfolios = [
     images: ['https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600', 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=600'],
     coverImage: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600',
     title: '温柔中长发',
-    description: '适合日常的温柔中长发造型，简约大方又不失气质',
+    description: '适合日常的温柔中长发发型，简约大方又不失气质',
     category: 'women',
     tags: ['中长发', '温柔风', '日常'],
     designerId: 'designer_001',
@@ -72,12 +72,12 @@ const portfolios = [
     id: 'work_002',
     images: ['https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=600', 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600'],
     coverImage: 'https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=600',
-    title: '时尚短发造型',
-    description: '干练又时髦的短发造型，展现独立自信的气质',
+    title: '时尚短发发型',
+    description: '干练又时髦的短发发型，展现独立自信的气质',
     category: 'women',
     tags: ['短发', '时尚', '干练'],
     designerId: 'designer_002',
-    designerName: '王造型师',
+    designerName: '王发型师',
     designerAvatar: 'https://randomuser.me/api/portraits/women/68.jpg',
     brandId: 'brand_001',
     brandName: 'WAW旗舰店',
@@ -106,7 +106,7 @@ const portfolios = [
     designerName: '李天天',
     designerAvatar: 'https://randomuser.me/api/portraits/women/44.jpg',
     brandId: 'brand_002',
-    brandName: '型男造型',
+    brandName: '型男发型',
     faceType: ['square', 'long'],
     hairVolume: 'normal',
     hairQuality: 'straight',
@@ -125,7 +125,7 @@ const portfolios = [
     images: ['https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600', 'https://images.unsplash.com/photo-1519457431-44ccd64a579b?w=600'],
     coverImage: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600',
     title: '可爱儿童短发',
-    description: '活泼可爱的儿童短发造型，打理方便又好看',
+    description: '活泼可爱的儿童短发型，打理方便又好看',
     category: 'children',
     tags: ['儿童', '可爱', '短发'],
     designerId: 'designer_003',
@@ -151,11 +151,11 @@ const portfolios = [
     images: ['https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?w=600', 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=600'],
     coverImage: 'https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?w=600',
     title: '浪漫卷发',
-    description: '浪漫优雅的大波浪卷发，适合各种场合',
+    description: '浪漫优雅的大波浪卷发，合各种场合',
     category: 'women',
     tags: ['卷发', '浪漫', '优雅'],
     designerId: 'designer_002',
-    designerName: '王造型师',
+    designerName: '王发型师',
     designerAvatar: 'https://randomuser.me/api/portraits/women/68.jpg',
     brandId: 'brand_001',
     brandName: 'WAW旗舰店',
@@ -177,14 +177,14 @@ const portfolios = [
     images: ['https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600'],
     coverImage: 'https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600',
     title: '潮流男生发型',
-    description: '年轻潮流的男生发型，展现个性与活力',
+    description: '年轻潮流的男生发型，展现个与活力',
     category: 'men',
-    tags: ['潮流', '男生', '个性'],
+    tags: ['潮流', '男生', '个'],
     designerId: 'designer_001',
     designerName: '李天天',
     designerAvatar: 'https://randomuser.me/api/portraits/women/44.jpg',
     brandId: 'brand_002',
-    brandName: '型男造型',
+    brandName: '型男型',
     faceType: ['oval', 'round'],
     hairVolume: 'normal',
     hairQuality: 'straight',
@@ -203,7 +203,7 @@ const portfolios = [
     images: ['https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600', 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600'],
     coverImage: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600',
     title: '气质长发',
-    description: '优雅气质的长发造型，展现女性魅力',
+    description: '优雅气质的长发型，展现女魅力',
     category: 'women',
     tags: ['长发', '气质', '优雅'],
     designerId: 'designer_001',
@@ -233,10 +233,10 @@ const portfolios = [
     category: 'men',
     tags: ['韩式', '清爽', '帅气'],
     designerId: 'designer_002',
-    designerName: '王造型师',
+    designerName: '王型师',
     designerAvatar: 'https://randomuser.me/api/portraits/women/68.jpg',
     brandId: 'brand_002',
-    brandName: '型男造型',
+    brandName: '型男型',
     faceType: ['oval', 'round', 'long'],
     hairVolume: 'normal',
     hairQuality: 'straight',
@@ -281,14 +281,14 @@ const portfolios = [
     images: ['https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600'],
     coverImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600',
     title: '复古油头',
-    description: '经典复古的油头造型，绅士风范十足',
+    description: '经典复古的油头型，绅士风范十足',
     category: 'men',
     tags: ['复古', '油头', '绅士'],
     designerId: 'designer_001',
     designerName: '李天天',
     designerAvatar: 'https://randomuser.me/api/portraits/women/44.jpg',
     brandId: 'brand_002',
-    brandName: '型男造型',
+    brandName: '型男型',
     faceType: ['oval', 'square', 'long'],
     hairVolume: 'thick',
     hairQuality: 'straight',
@@ -306,7 +306,7 @@ const portfolios = [
     id: 'work_011',
     images: ['https://images.unsplash.com/photo-1514846326710-096e4a8035e0?w=600'],
     coverImage: 'https://images.unsplash.com/photo-1514846326710-096e4a8035e0?w=600',
-    title: '活力儿童造型',
+    title: '活力儿童型',
     description: '充满活力的儿童发型，让宝贝更加可爱',
     category: 'children',
     tags: ['儿童', '活力', '可爱'],
@@ -333,11 +333,11 @@ const portfolios = [
     images: ['https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600', 'https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=600'],
     coverImage: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600',
     title: '法式慵懒卷',
-    description: '慵懒随性的法式卷发，自然又有气质',
+    description: '慵懒随的法式卷发，自然又有气质',
     category: 'women',
     tags: ['法式', '慵懒', '卷发'],
     designerId: 'designer_002',
-    designerName: '王造型师',
+    designerName: '王型师',
     designerAvatar: 'https://randomuser.me/api/portraits/women/68.jpg',
     brandId: 'brand_001',
     brandName: 'WAW旗舰店',
@@ -364,7 +364,7 @@ const comments = {
       workId: 'work_001',
       userId: 'user_002',
       userName: '小美',
-      userAvatar: '/static/avatar/user2.png',
+      userAvatar: 'https://bioflex.cn/static/avatar/user2.png',
       content: '这个发型好好看，想去做同款！',
       likes: 25,
       isLiked: false,
@@ -375,7 +375,7 @@ const comments = {
           commentId: 'comment_001',
           userId: 'designer_001',
           userName: '李设计师',
-          userAvatar: '/static/avatar/designer1.png',
+          userAvatar: 'https://bioflex.cn/static/avatar/designer1.png',
           content: '欢迎预约哦～',
           likes: 8,
           isLiked: false,
@@ -389,8 +389,8 @@ const comments = {
       workId: 'work_001',
       userId: 'user_003',
       userName: '优雅小姐',
-      userAvatar: '/static/avatar/user3.png',
-      content: '请问这个发型需要多久能做完？',
+      userAvatar: 'https://bioflex.cn/static/avatar/user3.png',
+      content: '请问这个发型要多久能做完？',
       likes: 12,
       isLiked: true,
       replyTo: null,
@@ -402,7 +402,7 @@ const comments = {
       workId: 'work_001',
       userId: 'user_004',
       userName: '时尚达人',
-      userAvatar: '/static/avatar/user4.png',
+      userAvatar: 'https://bioflex.cn/static/avatar/user4.png',
       content: '我也做了同款，效果很好！',
       likes: 38,
       isLiked: false,
@@ -417,8 +417,8 @@ const comments = {
       workId: 'work_002',
       userId: 'user_005',
       userName: '自信女生',
-      userAvatar: '/static/avatar/user5.png',
-      content: '干练又好看，适合职场',
+      userAvatar: 'https://bioflex.cn/static/avatar/user5.png',
+      content: '干练又好看，合职场',
       likes: 18,
       isLiked: false,
       replyTo: null,
@@ -432,7 +432,7 @@ const comments = {
       workId: 'work_005',
       userId: 'user_002',
       userName: '小美',
-      userAvatar: '/static/avatar/user2.png',
+      userAvatar: 'https://bioflex.cn/static/avatar/user2.png',
       content: '太美了！这个卷度刚刚好',
       likes: 56,
       isLiked: true,
@@ -443,8 +443,8 @@ const comments = {
           commentId: 'comment_020',
           userId: 'user_003',
           userName: '优雅小姐',
-          userAvatar: '/static/avatar/user3.png',
-          content: '同意！这个造型师太厉害了',
+          userAvatar: 'https://bioflex.cn/static/avatar/user3.png',
+          content: '同意！这个型师太厉害了',
           likes: 12,
           isLiked: false,
           createdAt: '2024-01-02 11:00:00'
@@ -506,7 +506,7 @@ export const routes = {
   'GET /api/portfolio/list': (params) => {
     const { page = 1, pageSize = 10 } = params
     const filtered = filterPortfolios(portfolios, params)
-    // 按更新时间倒序
+    // 按更新时间序
     const sorted = filtered.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
     return success(paginate(sorted, page, pageSize))
   },
@@ -525,7 +525,7 @@ export const routes = {
     return success(categories)
   },
 
-  // 获取筛选条件
+  // 获取筛条件
   'GET /api/portfolio/filters': () => {
     return success(filters)
   },
@@ -618,7 +618,7 @@ export const routes = {
       workId,
       userId: 'user_001',
       userName: '我',
-      userAvatar: '/static/avatar/avatar.png',
+      userAvatar: 'https://bioflex.cn/static/avatar/avatar.png',
       content: content.trim(),
       likes: 0,
       isLiked: false,
@@ -640,7 +640,7 @@ export const routes = {
           commentId: replyTo,
           userId: 'user_001',
           userName: '我',
-          userAvatar: '/static/avatar/avatar.png',
+          userAvatar: 'https://bioflex.cn/static/avatar/avatar.png',
           content: content.trim(),
           likes: 0,
           isLiked: false,
@@ -670,7 +670,7 @@ export const routes = {
       return error('评论不存在')
     }
 
-    // 检查是否是自己的评论
+    // 查是否是自己的评论
     if (commentList[index].userId !== 'user_001') {
       return error('只能删除自己的评论')
     }
@@ -733,7 +733,7 @@ export const routes = {
       result = result.filter(p => p.id !== excludeId)
     }
 
-    // 简单随机排序
+    // 单随机排序
     result.sort(() => Math.random() - 0.5)
 
     return success(result.slice(0, Number(limit)))
@@ -786,7 +786,7 @@ export const routes = {
   'POST /api/portfolio/:workId/report': (params) => {
     const { workId, reason } = params
     if (!reason) {
-      return error('请选择举报原因')
+      return error('请择举报原因')
     }
 
     const work = portfolios.find(p => p.id === workId)

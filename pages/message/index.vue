@@ -4,7 +4,7 @@
 		<view class="header-section">
 			<image
 				class="header-bg"
-				src="/static/background-image/message-center.png"
+				src="https://bioflex.cn/static/background-image/message-center.png"
 				mode="aspectFill"
 			></image>
 		</view>
@@ -31,7 +31,7 @@
 						@tap="handleMessageClick(message)"
 					>
 						<view class="message-avatar">
-							<image class="avatar-img" src="/static/icon/notification.png" mode="aspectFit"></image>
+							<image class="avatar-img" src="https://bioflex.cn/static/icon/notification.png" mode="aspectFit"></image>
 							<view v-if="message.unread" class="unread-dot"></view>
 						</view>
 						<view class="message-content">
@@ -43,7 +43,7 @@
 						</view>
 					</view>
 					<view class="delete-btn" @tap.stop="handleDelete(groupIndex, msgIndex, message)">
-						<image class="delete-icon" src="/static/icon/delete.png" mode="aspectFit"></image>
+						<image class="delete-icon" src="https://bioflex.cn/static/icon/delete.png" mode="aspectFit"></image>
 					</view>
 				</view>
 			</view>
@@ -71,7 +71,7 @@ export default {
 		return {
 			startX: 0,
 			currentMessage: null,
-			deleteWidth: -140, // 删除按钮宽度
+			deleteWidth: -140, 
 			messageGroups: [],
 			loading: false,
 			page: 1,
@@ -83,7 +83,7 @@ export default {
 		this.fetchMessages()
 	},
 	methods: {
-		// 获取消息列表
+		
 		async fetchMessages() {
 			if (this.loading) return
 			this.loading = true
@@ -92,9 +92,9 @@ export default {
 					page: this.page,
 					pageSize: this.pageSize
 				})
-				if (res.code === 0) {
+				if (res.code === 200) {
 					const groups = res.data.groups || []
-					// 为每个消息添加offsetX属性用于滑动
+					
 					groups.forEach(group => {
 						group.messages.forEach(msg => {
 							msg.offsetX = 0
@@ -114,31 +114,31 @@ export default {
 				this.loading = false
 			}
 		},
-		// 触摸开始
+		
 		onTouchStart(e, message) {
-			// 先关闭其他已打开的消息
+			
 			this.closeAllMessages()
 			this.startX = e.touches[0].clientX
 			this.currentMessage = message
 		},
-		// 触摸移动
+		
 		onTouchMove(e, message) {
 			if (this.currentMessage !== message) return
 			const moveX = e.touches[0].clientX
-			const diffX = (moveX - this.startX) * 2 // 转换为 rpx 约等于 *2
+			const diffX = (moveX - this.startX) * 2 
 			
 			if (diffX < 0) {
-				// 左滑
+				
 				message.offsetX = Math.max(diffX, this.deleteWidth)
 			} else if (message.offsetX < 0) {
-				// 右滑恢复
+				
 				message.offsetX = Math.min(0, message.offsetX + diffX)
 			}
 		},
-		// 触摸结束
+		
 		onTouchEnd(e, message) {
 			if (this.currentMessage !== message) return
-			// 如果滑动超过一半，则完全展开，否则收回
+			
 			if (message.offsetX < this.deleteWidth / 2) {
 				message.offsetX = this.deleteWidth
 			} else {
@@ -146,7 +146,7 @@ export default {
 			}
 			this.currentMessage = null
 		},
-		// 关闭所有已打开的消息
+		
 		closeAllMessages() {
 			this.messageGroups.forEach(group => {
 				group.messages.forEach(msg => {
@@ -156,7 +156,7 @@ export default {
 				})
 			})
 		},
-		// 删除消息
+		
 		handleDelete(groupIndex, msgIndex, message) {
 			uni.showModal({
 				title: '提示',
@@ -167,7 +167,7 @@ export default {
 							const result = await api.message.delete(message.id)
 							if (result.code === 0) {
 								this.messageGroups[groupIndex].messages.splice(msgIndex, 1)
-								// 如果该分组没有消息了，删除分组
+								
 								if (this.messageGroups[groupIndex].messages.length === 0) {
 									this.messageGroups.splice(groupIndex, 1)
 								}
@@ -181,14 +181,14 @@ export default {
 				}
 			})
 		},
-		// 点击消息
+		
 		async handleMessageClick(message) {
-			// 如果正在滑动状态，不触发点击
+			
 			if (message.offsetX && message.offsetX < 0) {
 				message.offsetX = 0
 				return
 			}
-			// 调用API标记为已读
+			
 			if (message.unread) {
 				try {
 					await api.message.markAsRead(message.id)
@@ -197,7 +197,7 @@ export default {
 					console.error('标记已读失败:', err)
 				}
 			}
-			// 跳转到消息详情页
+			
 			uni.navigateTo({
 				url: `/pages/message/detail?id=${message.id}`
 			})
@@ -308,7 +308,7 @@ export default {
 .delete-icon {
 	width: 48rpx;
 	height: 48rpx;
-	filter: brightness(0) invert(1);
+	
 }
 
 .message-avatar {

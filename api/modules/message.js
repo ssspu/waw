@@ -14,8 +14,8 @@ export default {
    */
   getList(params = {}) {
     return get(`${MESSAGE_PREFIX}/list`, {
-      page: 1,
-      pageSize: 10,
+      page: Number(params.page) || 1,
+      pageSize: Number(params.pageSize) || 10,
       ...params
     })
   },
@@ -45,7 +45,7 @@ export default {
   },
 
   /**
-   * 标记所有消息为已读
+   * 标记怉有消息为已读
    */
   markAllAsRead() {
     return put(`${MESSAGE_PREFIX}/read-all`)
@@ -68,7 +68,7 @@ export default {
   },
 
   /**
-   * 清空所有消息
+   * 清空怉有消息
    * @param {Object} params - { type?: 消息类型，不传则清空全部 }
    */
   clearAll(params = {}) {
@@ -96,8 +96,8 @@ export default {
    */
   getGroupedList(params = {}) {
     return get(`${MESSAGE_PREFIX}/grouped`, {
-      page: 1,
-      pageSize: 20,
+      page: Number(params.page) || 1,
+      pageSize: Number(params.pageSize) || 20,
       ...params
     })
   }

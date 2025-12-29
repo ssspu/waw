@@ -5,7 +5,7 @@
 			<view class="nav-bar">
 				<view class="nav-left">
 					<view class="back-btn" @tap="handleBack">
-						<image class="back-icon" src="/static/icon/arrow-left.png" mode="aspectFit"></image>
+						<image class="back-icon" src="https://bioflex.cn/static/back.png" mode="aspectFit"></image>
 					</view>
 					<text class="nav-title">实体门店入驻</text>
 				</view>
@@ -49,7 +49,7 @@
 						<text class="form-value" :class="{ placeholder: !formData.category }">
 							{{ formData.category || '选择提供的服务项目' }}
 						</text>
-						<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
+						<image class="arrow-icon" src="https://bioflex.cn/static/icon/right.png" mode="aspectFit"></image>
 					</view>
 				</view>
 			</view>
@@ -62,25 +62,25 @@
 				
 				<view class="form-item">
 					<text class="form-label">店铺名称</text>
-					<input class="form-input" v-model="formData.storeName" placeholder="需与门脸牌匾一致" />
+					<input class="form-input" v-model="formData.storeName" placeholder="逜与门脸牌匾一致" />
 				</view>
 				<view class="form-divider"></view>
 				
 				<view class="form-item">
-					<text class="form-label">经营地址</text>
-					<input class="form-input" v-model="formData.address" placeholder="请输入经营地址" />
+					<text class="form-label">经营地倝</text>
+					<input class="form-input" v-model="formData.address" placeholder="请输入经营地倝" />
 				</view>
 				<view class="form-divider"></view>
 				
 				<view class="form-item">
 					<text class="form-label">门牌号码</text>
-					<input class="form-input" v-model="formData.doorNumber" placeholder="详细地址" />
+					<input class="form-input" v-model="formData.doorNumber" placeholder="详细地倝" />
 				</view>
 				<view class="form-divider"></view>
 				
 				<view class="form-item">
 					<text class="form-label">省市编号</text>
-					<input class="form-input" v-model="formData.cityCode" placeholder="请输入所在城市编号" />
+					<input class="form-input" v-model="formData.cityCode" placeholder="请输入怉在城市编号" />
 				</view>
 				<view class="form-divider"></view>
 				
@@ -95,7 +95,7 @@
 			<view class="card">
 				<view class="card-header">
 					<text class="card-title">门店图片</text>
-					<text class="card-desc">需拍出完整门匾、内部环境、前台</text>
+					<text class="card-desc">逜拍出完整门匾、内部环境、前台</text>
 				</view>
 				
 				<view class="upload-row">
@@ -194,7 +194,7 @@ export default {
 		},
 	methods: {
 				selectCategory() {
-			// 选择经营品类
+			
 			uni.showActionSheet({
 				itemList: ['美发', '美甲', '美容', '养生'],
 				success: (res) => {
@@ -227,13 +227,13 @@ export default {
 				}
 			})
 		},
-		// 验证手机号格式
+		
 		validatePhone(phone) {
 			const reg = /^1[3-9]\d{9}$/
 			return reg.test(phone)
 		},
 		handleNext() {
-			// 验证表单
+			
 			if (!this.formData.category) {
 				uni.showToast({ title: '请选择经营品类', icon: 'none' })
 				return
@@ -247,7 +247,7 @@ export default {
 				return
 			}
 			if (!this.formData.address) {
-				uni.showToast({ title: '请输入经营地址', icon: 'none' })
+				uni.showToast({ title: '请输入经营地倝', icon: 'none' })
 				return
 			}
 			if (!this.formData.doorNumber) {
@@ -266,7 +266,7 @@ export default {
 				uni.showToast({ title: '请上传门头照片', icon: 'none' })
 				return
 			}
-			// 跳转到执照认证页
+			
 			uni.navigateTo({
 				url: '/packageSettlement/pages/store-settlement/license'
 			})

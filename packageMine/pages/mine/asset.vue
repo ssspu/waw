@@ -12,7 +12,7 @@
 					<view class="header-right">
 						<image
 							class="arrow-right-icon-white"
-							src="/static/icon/vector-4.svg"
+							src="https://bioflex.cn/static/icon/vector-4.svg"
 							mode="aspectFit"
 						></image>
 					</view>
@@ -52,7 +52,7 @@
 							<view class="bank-icon-wrapper">
 								<image
 									class="bank-icon"
-									src="/static/icon/vector-2.svg"
+									src="https://bioflex.cn/static/icon/vector-2.svg"
 									mode="aspectFit"
 								></image>
 							</view>
@@ -62,7 +62,7 @@
 							<text class="bank-status">{{ bankCardStatus }}</text>
 							<image
 								class="arrow-right-icon"
-								src="/static/icon/vector-4.svg"
+								src="https://bioflex.cn/static/icon/vector-4.svg"
 								mode="aspectFit"
 							></image>
 						</view>
@@ -94,7 +94,7 @@ export default {
 		this.fetchAssetData()
 	},
 	onShow() {
-		// 每次显示页面时刷新数据
+		
 		this.fetchAssetData()
 	},
 	methods: {
@@ -102,7 +102,7 @@ export default {
 			if (this.loading) return
 			this.loading = true
 			try {
-				// 并行请求多个接口
+				
 				const [balanceRes, beansRes, promotionRes, rewardRes, bankRes] = await Promise.all([
 					api.user.getBalance(),
 					api.user.getBeans(),
@@ -128,7 +128,7 @@ export default {
 					this.bankCardStatus = cards.length > 0 ? '已绑定' : '未绑定'
 				}
 
-				// 计算总资产
+				
 				this.assetInfo.totalAsset = this.assetInfo.balance + this.assetInfo.platformReward + this.assetInfo.promotion + this.assetInfo.beans
 			} catch (err) {
 				console.error('获取资产数据失败:', err)
@@ -268,7 +268,7 @@ export default {
 .arrow-right-icon-white {
 	width: 28rpx;
 	height: 28rpx;
-	filter: brightness(0) invert(1);
+	
 }
 
 .asset-amount {

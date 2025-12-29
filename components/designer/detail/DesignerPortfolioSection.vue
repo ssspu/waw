@@ -35,7 +35,6 @@
 				</view>
 			</view>
 			
-			<!-- 服务特色标签式布局 -->
 			<view v-if="activeNavTab === 1" class="features-content">
 				<view v-for="(section, sectionIndex) in serviceFeaturesData" :key="sectionIndex" class="feature-section">
 					<text v-if="section.title" class="section-title">{{ section.title }}</text>
@@ -51,7 +50,6 @@
 				</view>
 			</view>
 			
-			<!-- 环境设施标签式布局 -->
 			<view v-if="activeNavTab === 2" class="features-content">
 				<view v-for="(section, sectionIndex) in environmentData" :key="sectionIndex" class="feature-section">
 					<text v-if="section.title" class="section-title">{{ section.title }}</text>
@@ -121,7 +119,7 @@
 											v-for="i in 5" 
 											:key="i" 
 											class="star-icon" 
-											src="https://c.animaapp.com/mi5d4lp0csJxnR/img/star-1.svg" 
+											src="/static/icon/star.png" 
 											mode="aspectFit"
 										></image>
 									</view>
@@ -173,7 +171,7 @@
 		</view>
 		
 		<!-- 免责声明 -->
-		<text class="disclaimer">*本页面内信息有门店/设计师发布并对信息的真实性及合法性负责，如您对信息真实性及合法性有质疑，请向**反馈</text>
+		<text class="disclaimer">*本页面内信息有门店/设计师发布并对信息的真实性和合法性负责，如您对信息真实性和合法性有质疑，请向**反馈</text>
 	</view>
 </template>
 
@@ -197,7 +195,7 @@ export default {
 			reviewTags: [],
 			reviews: [],
 			questions: [],
-			// 滚动虚化效果相关
+			
 			reviewScrollLeft: 0,
 			lastReviewScrollLeft: 0,
 			showReviewLeftFade: false,
@@ -234,17 +232,28 @@ export default {
 	methods: {
 		async loadDesignerInfo() {
 			try {
-				const res = await designerApi.getInfo(this.designerId)
-				if (res && res.data) {
+				// 检查 designerId 是否为有效的 UUID 格式（32位无连字符）
+				const isValidUUID = this.designerId && /^[0-9a-f]{32}$/i.test(this.designerId)
+				if (!isValidUUID) {
+					console.warn('designerId 格式不正确，使用默认数据:', this.designerId)
+					this.setDefaultData()
+					return
+				}
+
+				// 调用新的 portfolio 接口获取设计师档案信息
+				const res = await designerApi.getPortfolioInfo(this.designerId)
+				if (res && res.code === 200 && res.data) {
 					const data = res.data
+					const serviceInfo = data.serviceInfo || {}
+
 					// 服务须知数据
 					this.serviceInfoData = [
-						{ label: "职位", value: data.position || "店长" },
-						{ label: "职称", value: data.title || "国家高级美发师" },
-						{ label: "擅长", value: data.specialties ? data.specialties.join('、') : "男士油头造型、细软烫发" },
-						{ label: "工作时间", value: data.workDays || "周二 - 周日", extra: data.workHours || "10:00-21:00" },
-						{ label: "从业时间", value: `${data.experience || 12}年` },
-						{ label: "预约时间", value: data.appointmentAdvance || "提前3小时" },
+						{ label: "职位", value: serviceInfo.position || "店长" },
+						{ label: "职称", value: serviceInfo.title || "国家高级美发师" },
+						{ label: "擅长", value: Array.isArray(serviceInfo.specialties) ? serviceInfo.specialties.join('、') : (serviceInfo.specialties || "男士油头发型及细软烫发") },
+						{ label: "工作时间", value: serviceInfo.workDays || "周二 - 周日", extra: serviceInfo.workHours || "10:00-21:00" },
+						{ label: "从业时间", value: `${serviceInfo.experience || 12}年` },
+						{ label: "预约时间", value: serviceInfo.appointmentAdvance || "提前3小时" },
 					]
 
 					// 服务特色数据
@@ -270,18 +279,75 @@ export default {
 							tags: ["特定吸烟区", "电梯", "有停车位", "空调", "先进/刷卡支付"]
 						}
 					]
+
+					// 问TA数据
+					this.questions = data.questions || [
+						"这边发质受损严重可以做什么项目呢?",
+						"周末人多吗，需要提前预约吗?",
+						"剪发大概需要多长时间?"
+					]
+				} else {
+					// API 返回非200状态码，使用默认数据
+					console.warn('获取设计师档案信息失败，使用默认数据')
+					this.setDefaultData()
 				}
 			} catch (error) {
-				console.error('加载设计师信息失败:', error)
+				console.error('加载设计师档案信息失败:', error)
+				// 加载失败时使用默认数据
+				this.setDefaultData()
 			}
+		},
+
+		// 设置默认数据
+		setDefaultData() {
+			this.serviceInfoData = [
+				{ label: "职位", value: "店长" },
+				{ label: "职称", value: "国家高级美发师" },
+				{ label: "擅长", value: "男士油头发型及细软烫发" },
+				{ label: "工作时间", value: "周二 - 周日", extra: "10:00-21:00" },
+				{ label: "从业时间", value: "12年" },
+				{ label: "预约时间", value: "提前3小时" },
+			]
+			this.serviceFeaturesData = [
+				{
+					title: "",
+					tags: ["全预约制", "免费茶点", "头皮检测", "免费停车", "烫染专业店", "免费修眉", "一对一服务", "免费按摩", "没有隐形消费", "可上门服务"]
+				},
+				{
+					title: "其他",
+					tags: ["不可携带宠物", "服务区不可吸烟"]
+				}
+			]
+			this.environmentData = [
+				{
+					title: "",
+					tags: ["储物柜", "免费Wifi", "充电宝", "可看电视", "VIP专区", "沙发座"]
+				},
+				{
+					title: "通用设施",
+					tags: ["特定吸烟区", "电梯", "有停车位", "空调", "先进/刷卡支付"]
+				}
+			]
+			this.questions = [
+				"这边发质受损严重可以做什么项目呢?",
+				"周末人多吗，需要提前预约吗?",
+				"剪发大概需要多长时间?"
+			]
 		},
 		async loadReviews() {
 			try {
+				// 检查 designerId 是否为有效的 UUID 格式
+				const isValidUUID = this.designerId && /^[0-9a-f]{32}$/i.test(this.designerId)
+				if (!isValidUUID) {
+					console.warn('designerId 格式不正确，跳过加载评价:', this.designerId)
+					return
+				}
+
 				const res = await designerApi.getReviews(this.designerId, { page: 1, pageSize: 10 })
 				if (res && res.data) {
 					const data = res.data
 					const list = data.list || data.records || []
-					// 转换点评数据格式
+					
 					this.reviews = list.map(r => ({
 						id: r.id,
 						title: r.title || "服务很好",
@@ -293,7 +359,7 @@ export default {
 						image: r.images && r.images.length > 0 ? r.images[0] : "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-187.png"
 					}))
 
-					// 点评标签
+					
 					const ratingStats = data.ratingStats
 					this.reviewTags = ratingStats?.filterTags?.map((tag, index) => ({
 						text: tag.label,
@@ -318,7 +384,7 @@ export default {
 			})
 		},
 		handleViewMoreReviews() {
-			// 跳转到评价详情页
+			
 			uni.navigateTo({
 				url: '/pages/designer/reviews'
 			})
@@ -337,7 +403,7 @@ export default {
 			const maxScroll = this.getReviewMaxScroll()
 			const direction = scrollLeft - this.lastReviewScrollLeft
 
-			// 清除之前的淡出定时器
+			
 			if (this.reviewFadeTimeout) {
 				clearTimeout(this.reviewFadeTimeout)
 			}
@@ -345,15 +411,15 @@ export default {
 				clearTimeout(this.reviewFadeStartTimeout)
 			}
 
-			// 滚动时，取消淡出状态
+			
 			this.reviewFadeOut = false
 
 			if (direction > 0) {
-				// 向左滑动，显示右侧虚化
+				
 				this.showReviewRightFade = scrollLeft < maxScroll - 2
 				this.showReviewLeftFade = false
 			} else if (direction < 0) {
-				// 向右滑动，显示左侧虚化
+				
 				this.showReviewLeftFade = scrollLeft > 2
 				this.showReviewRightFade = false
 			}
@@ -362,11 +428,11 @@ export default {
 			this.reviewScrollLeft = scrollLeft
 			this.updateReviewFadeEdges(scrollLeft)
 
-			// 检测停止滚动：如果300ms内没有新的滚动事件，则认为停止，立即开始淡出
+			
 			this.reviewFadeStartTimeout = setTimeout(() => {
-				// 立即开始淡出（1.5秒内线性淡化）
+				
 				this.reviewFadeOut = true
-				// 1.5秒后完全隐藏
+				
 				this.reviewFadeTimeout = setTimeout(() => {
 					this.showReviewLeftFade = false
 					this.showReviewRightFade = false
@@ -574,7 +640,7 @@ export default {
 	margin-bottom: 20rpx;
 }
 
-/* 服务特色和环境设施标签式布局 */
+
 .features-content {
 	padding: 0 20rpx 20rpx;
 	width: 100%;
@@ -817,11 +883,15 @@ export default {
 	display: inline-flex;
 	align-items: center;
 	gap: 4rpx;
+	padding: 4rpx;
+	background-color: #333333;
+	border-radius: 4rpx;
 }
 
 .star-icon {
 	width: 20rpx;
 	height: 20rpx;
+	filter: brightness(0) invert(1);
 }
 
 .review-text {

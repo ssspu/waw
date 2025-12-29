@@ -36,15 +36,15 @@ export default {
 		this.fetchFavorites()
 	},
 	methods: {
-		// 获取收藏列表
+		
 		async fetchFavorites() {
 			if (this.loading) return
 			this.loading = true
 			try {
 				const res = await api.user.getFavorites({ page: 1, pageSize: 20 })
-				if (res.code === 0 && res.data) {
+				if (res.code === 200 && res.data) {
 					const list = res.data.list || res.data.records || []
-					// 转换数据格式
+					
 					this.favorites = list.map(item => ({
 						id: item.id,
 						name: item.name || item.serviceName,
@@ -71,10 +71,10 @@ export default {
 		},
 		async handleUnfavorite(item) {
 			try {
-				// 调用API取消收藏
+				
 				const res = await api.user.batchUnfavorite({ ids: [item.id] })
-				if (res.code === 0) {
-					// 从本地列表中移除
+				if (res.code === 200) {
+					
 					const index = this.favorites.findIndex(f => f.id === item.id)
 					if (index !== -1) {
 						this.favorites.splice(index, 1)

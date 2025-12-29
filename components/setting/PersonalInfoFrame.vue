@@ -5,11 +5,11 @@
       <div class="div-2">
         <div class="yangqixiaonv">{{ text1 }}</div>
         <div class="vector-wrapper">
-          <img class="vector" alt="Vector" src="/static/icon/gengduo.png" />
+          <img class="vector" alt="Vector" src="https://bioflex.cn/static/icon/gengduo.png" />
         </div>
       </div>
     </div>
-    <img class="img" alt="Vector" src="/static/icon/separator.svg" />
+    <img class="img" alt="Vector" src="https://bioflex.cn/static/icon/separator.svg" />
   </div>
 </template>
 

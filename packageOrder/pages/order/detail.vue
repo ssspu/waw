@@ -1,13 +1,12 @@
 <template>
 	<view class="order-detail-page">
-		<!-- 订单状态提示 -->
 		<view class="order-status-section">
 			<view class="status-content">
 				<text class="status-title">您有待付款订单</text>
 				<text class="countdown-time">{{ countdown }}</text>
 			</view>
 			<view class="status-desc">
-				<text class="desc-text">请在30分钟内付款,超时订单将自动关闭</text>
+				<text class="desc-text">请在15分钟内付款,超时订单将自动关闭</text>
 				<text class="desc-text">付款倒计时</text>
 			</view>
 		</view>
@@ -142,7 +141,7 @@
 					</view>
 				</view>
 				<view class="modal-body">
-					<text class="modal-desc">取消后无法回复,优惠券,M币可退回,有效期内使用;两小以上或未确认订单可以免责取消,确认订单并在两小时内取消,将影响你在平台的信用。</text>
+					<text class="modal-desc">取消后无法回复,优惠券,M币可收回,有效期内使用;两小以上或未确认订单可以免责取消,确认订单并在两小时内取消,将影响你在平台的信用</text>
 					<text class="reason-prompt">请选择取消订单原因(必选)</text>
 					<view class="reason-list">
 						<view 
@@ -195,8 +194,10 @@ export default {
 	},
 	data() {
 		return {
-						countdown: '00:30:00',
+			countdown: '15:00',
 			countdownTimer: null,
+			isTimeout: false,
+			paymentExpireTime: null,  // 后端返回的支付过期时间
 			showCancelModal: false,
 			showCouponPopup: false,
 			selectedCoupon: null,
@@ -207,11 +208,11 @@ export default {
 				'价格有点贵',
 				'时间选择有问题',
 				'我想换一个设计师',
-				'暂时不需要了',
+				'暂时不要了',
 				'其他'
 			],
 			productInfo: {
-				image: '/static/icon/rectangle-169.png',
+				image: 'https://bioflex.cn/static/icon/rectangle-169.png',
 				name: '欧莱雅植物洗护套装一套',
 				category: '洗护',
 				duration: '1小时',
@@ -224,11 +225,13 @@ export default {
 				address: ''
 			},
 			orderInfo: {
+				id: '',
 				createTime: '2022-04-22 12:04:22',
 				paymentMethod: '在线支付',
 				points: '获得60积分',
 				orderNumber: 'CD902847058048906'
-			}
+			},
+			rawOrderData: null
 		}
 	},
 	computed: {
@@ -242,8 +245,8 @@ export default {
 		}
 	},
 	onLoad(options) {
-		// 从持久化存储获取状态栏高度
-		// 从预约页面传递的数据
+		
+		
 		if (options.data) {
 			try {
 				const orderData = JSON.parse(decodeURIComponent(options.data))
@@ -252,17 +255,23 @@ export default {
 				console.error('解析订单数据失败:', e)
 			}
 		}
-		// 可以从 options 中获取订单ID等信息
+		
 		if (options.orderId) {
 			this.fetchOrderDetail(options.orderId)
 		}
 		this.startCountdown()
-		// 生成订单号
+		
 		this.orderInfo.orderNumber = this.generateOrderNumber()
-		// 设置创建时间
+		
 		this.orderInfo.createTime = this.formatDateTime(new Date())
-		// 获取可用优惠券
+		
 		this.fetchAvailableCoupons()
+	},
+	onShow() {
+		// 页面显示时重新计算倒计时（处理用户切换页面后返回的情况）
+		if (this.orderInfo.createTime && !this.isTimeout) {
+			this.startCountdown()
+		}
 	},
 	onUnload() {
 		if (this.countdownTimer) {
@@ -270,36 +279,81 @@ export default {
 		}
 	},
 	methods: {
-				startCountdown() {
-			// 解析倒计时时间
-			const timeParts = this.countdown.split(':')
-			let hours = parseInt(timeParts[0])
-			let minutes = parseInt(timeParts[1])
-			let seconds = parseInt(timeParts[2])
-			
-			this.countdownTimer = setInterval(() => {
-				seconds--
-				if (seconds < 0) {
-					seconds = 59
-					minutes--
-					if (minutes < 0) {
-						minutes = 59
-						hours--
-						if (hours < 0) {
-							hours = 0
-							minutes = 0
-							seconds = 0
-							clearInterval(this.countdownTimer)
-							uni.showToast({
-								title: '订单已超时',
-								icon: 'none'
+		/**
+		 * 启动倒计时 - 使用后端返回的 payment_expire_time
+		 */
+		startCountdown() {
+			if (this.countdownTimer) {
+				clearInterval(this.countdownTimer)
+			}
+
+			const updateCountdown = () => {
+				if (!this.paymentExpireTime) {
+					this.countdown = '15:00'
+					return
+				}
+
+				const expireTimestamp = new Date(this.paymentExpireTime).getTime()
+				const remaining = Math.max(0, expireTimestamp - Date.now())
+
+				if (remaining <= 0) {
+					this.countdown = '00:00'
+					this.isTimeout = true
+					clearInterval(this.countdownTimer)
+					this.handleOrderTimeout()
+					return
+				}
+
+				const minutes = Math.floor(remaining / 60000)
+				const seconds = Math.floor((remaining % 60000) / 1000)
+				this.countdown = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+			}
+
+			updateCountdown()
+			this.countdownTimer = setInterval(updateCountdown, 1000)
+		},
+
+		/**
+		 * 处理订单超时
+		 */
+		async handleOrderTimeout() {
+			uni.showToast({
+				title: '订单已超时，正在刷新状态...',
+				icon: 'none'
+			})
+
+			// 如果有订单ID，刷新订单状态
+			if (this.orderInfo.id) {
+				try {
+					const res = await api.order.getDetail(this.orderInfo.id)
+					if (res.code === 200 && res.data) {
+						const order = res.data
+						if (order.status === 'CANCELLED') {
+							uni.showModal({
+								title: '订单已取消',
+								content: order.cancel_reason || '订单超时未支付，系统自动取消',
+								showCancel: false,
+								confirmText: '我知道了',
+								success: () => {
+									uni.navigateBack()
+								}
 							})
 						}
 					}
+				} catch (err) {
+					console.error('刷新订单状态失败:', err)
 				}
-				
-				this.countdown = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-			}, 1000)
+			} else {
+				uni.showModal({
+					title: '订单已超时',
+					content: '订单超时未支付，已自动取消',
+					showCancel: false,
+					confirmText: '我知道了',
+					success: () => {
+						uni.navigateBack()
+					}
+				})
+			}
 		},
 		handleCopy() {
 			uni.setClipboardData({
@@ -332,7 +386,7 @@ export default {
 				return
 			}
 			
-			// 这里可以调用取消订单的API
+			
 			const reason = this.cancelReasons[this.selectedReasonIndex]
 			console.log('取消订单原因:', reason)
 			
@@ -347,16 +401,156 @@ export default {
 			}, 1500)
 		},
 		handlePay() {
-			uni.navigateTo({
-				url: `/pages/payment/index?orderId=${this.orderInfo.orderNumber}`
-			})
+			this.doWechatPay()
+		},
+
+		async doWechatPay() {
+			uni.showLoading({ title: '正在发起支付...' })
+			try {
+				// 如果没有订单ID，先创建订单
+				if (!this.orderInfo.id) {
+					const createRes = await this.createOrder()
+					if (!createRes) {
+						return
+					}
+				}
+
+				const res = await api.payment.prepay(this.orderInfo.id)
+				uni.hideLoading()
+
+				if (res.code !== 200) {
+					// 根据API文档定义的错误码
+					const errorMessages = {
+						400001: '订单不存在',
+						400002: '无权操作此订单',
+						400003: '订单状态不允许此操作',
+						400004: '订单已支付',
+						400101: '微信支付配置错误',
+						400102: '微信支付下单失败',
+						400103: '微信支付签名验证失败',
+						400104: '微信退款失败',
+						400105: '用户OpenID未找到，请先绑定微信账号'
+					}
+
+					// 如果是OpenID未找到，弹出绑定微信确认框
+					if (res.code === 400105) {
+						uni.showModal({
+							title: '提示',
+							content: '您还未绑定微信账号，是否立即绑定？',
+							confirmText: '立即绑定',
+							success: (modalRes) => {
+								if (modalRes.confirm) {
+									this.bindWechat()
+								}
+							}
+						})
+						return
+					}
+
+					uni.showToast({
+						title: errorMessages[res.code] || res.message || '支付失败',
+						icon: 'none'
+					})
+					return
+				}
+
+				
+				const { pay_params } = res.data
+
+				
+				uni.requestPayment({
+					provider: 'wxpay',
+					timeStamp: pay_params.timeStamp,
+					nonceStr: pay_params.nonceStr,
+					package: pay_params.package,
+					signType: pay_params.signType,
+					paySign: pay_params.paySign,
+					success: () => {
+						
+						this.pollPaymentStatus()
+					},
+					fail: (err) => {
+						if (err.errMsg && err.errMsg.includes('cancel')) {
+							uni.showToast({ title: '已取消支付', icon: 'none' })
+						} else {
+							uni.showToast({ title: '支付失败', icon: 'error' })
+						}
+					}
+				})
+			} catch (err) {
+				uni.hideLoading()
+				console.error('支付失败:', err)
+				uni.showToast({ title: '支付失败，请重试', icon: 'none' })
+			}
+		},
+		
+		/**
+		 * 轮询查询支付状态
+		 * 根据API文档，trade_state状态值：
+		 * - SUCCESS: 支付成功
+		 * - NOTPAY: 未支付
+		 * - CLOSED: 已关闭
+		 * - USERPAYING: 支付中
+		 * - PAYERROR: 支付失败
+		 */
+		async pollPaymentStatus(maxRetries = 10) {
+			uni.showLoading({ title: '确认支付结果...' })
+			for (let i = 0; i < maxRetries; i++) {
+				try {
+					const res = await api.payment.queryStatus(this.orderInfo.id)
+					if (res.code === 200 && res.data) {
+						const { trade_state, trade_state_desc } = res.data
+
+						// 支付成功
+						if (trade_state === 'SUCCESS') {
+							uni.hideLoading()
+							uni.showToast({ title: '支付成功', icon: 'success' })
+
+							setTimeout(() => {
+								uni.redirectTo({
+									url: `/packageOrder/pages/order/detail-pending-use?orderId=${this.orderInfo.id}`
+								})
+							}, 1500)
+							return { success: true }
+						}
+
+						// 支付失败或已关闭
+						if (['CLOSED', 'PAYERROR'].includes(trade_state)) {
+							uni.hideLoading()
+							uni.showToast({
+								title: trade_state_desc || '支付失败',
+								icon: 'none'
+							})
+							return { success: false, message: trade_state_desc }
+						}
+
+						// 未支付状态 - 继续轮询
+						if (trade_state === 'NOTPAY') {
+							// 继续轮询，用户可能还在支付中
+						}
+
+						// 支付中状态 - 继续轮询
+						if (trade_state === 'USERPAYING') {
+							// 用户正在支付，继续等待
+						}
+					}
+				} catch (err) {
+					console.error('查询支付状态失败:', err)
+				}
+
+				// 等待2秒后重试
+				await new Promise(resolve => setTimeout(resolve, 2000))
+			}
+			uni.hideLoading()
+			uni.showToast({ title: '查询超时，请稍后查看订单状态', icon: 'none' })
+			return { success: false, message: '查询超时，请稍后查看订单状态' }
 		},
 		handleOpenCoupon() {
 			this.showCouponPopup = true
 		},
 		handleSelectCoupon(coupon) {
 			if (coupon) {
-				// 检查是否满足使用条件
+				
 				const price = parseFloat(this.productInfo.price) || 0
 				if (price >= coupon.minAmount) {
 					this.selectedCoupon = coupon
@@ -367,30 +561,32 @@ export default {
 					})
 				} else {
 					uni.showToast({
-						title: `需满${coupon.minAmount}元才能使用`,
+						title: `满${coupon.minAmount}元才能使用`,
 						icon: 'none'
 					})
 					return
 				}
 			} else {
-				// 取消使用优惠券
+				
 				this.selectedCoupon = null
 				this.discountAmount = 0
 			}
 			this.showCouponPopup = false
 		},
 		parseOrderData(orderData) {
-			// 解析服务信息
+			// 保存原始订单数据用于创建订单
+			this.rawOrderData = orderData
+
 			if (orderData.service) {
 				this.productInfo = {
-					image: orderData.service.image || '/static/icon/rectangle-169.png',
+					image: orderData.service.image || 'https://bioflex.cn/static/icon/rectangle-169.png',
 					name: `${orderData.service.title}${orderData.brand ? ' - ' + orderData.brand.name : ''}`,
 					category: orderData.hairLength ? orderData.hairLength.label : '',
 					duration: orderData.service.estimatedTime || '1小时',
 					price: orderData.price || '799'
 				}
 			}
-			// 解析预约信息
+
 			if (orderData.designer) {
 				this.bookingInfo = {
 					designer: orderData.designer.name || '',
@@ -400,8 +596,125 @@ export default {
 				}
 			}
 		},
+		async createOrder() {
+			if (!this.rawOrderData) {
+				uni.showToast({ title: '订单数据不完整', icon: 'none' })
+				return false
+			}
+
+			try {
+				const data = this.rawOrderData
+				console.log('创建订单原始数据:', JSON.stringify(data))
+
+				// 构建预约时间
+				let appointmentTime = ''
+				if (data.date && data.timeSlot) {
+					let targetDate = new Date()
+
+					if (data.date === 'today') {
+						// 今天，不需要修改日期
+					} else if (data.date === 'tomorrow') {
+						targetDate.setDate(targetDate.getDate() + 1)
+					} else if (data.date) {
+						// 尝试解析日期字符串
+						targetDate = new Date(data.date)
+					}
+
+					// 设置时间
+					const timeParts = data.timeSlot.time.split(':')
+					targetDate.setHours(parseInt(timeParts[0]) || 0)
+					targetDate.setMinutes(parseInt(timeParts[1]) || 0)
+					targetDate.setSeconds(0)
+					targetDate.setMilliseconds(0)
+
+					// 使用带时区的ISO格式 (toISOString 自动带Z表示UTC时区)
+					appointmentTime = targetDate.toISOString()
+				}
+
+				const serviceId = data.service?.id
+				const designerId = data.designer?.id
+
+				console.log('serviceId:', serviceId)
+				console.log('designerId:', designerId)
+
+				if (!serviceId) {
+					uni.showToast({ title: '服务ID不能为空', icon: 'none' })
+					return false
+				}
+				if (!designerId) {
+					uni.showToast({ title: '设计师ID不能为空', icon: 'none' })
+					return false
+				}
+
+				const orderData = {
+					serviceId: serviceId,
+					designerId: designerId,
+					appointmentTime: appointmentTime,
+					couponId: this.selectedCoupon?.id,
+					remark: ''
+				}
+
+				console.log('创建订单请求数据:', JSON.stringify(orderData))
+
+				const res = await api.order.create(orderData)
+				if (res.code === 200 && res.data) {
+					this.orderInfo.id = res.data.id || res.data.orderId
+					this.orderInfo.orderNumber = res.data.order_no || res.data.orderNo || res.data.id
+					// 保存支付过期时间并启动倒计时
+					this.paymentExpireTime = res.data.payment_expire_time || res.data.paymentExpireTime
+					if (this.paymentExpireTime) {
+						this.startCountdown()
+					}
+					return true
+				} else {
+					uni.hideLoading()
+					uni.showToast({ title: res.message || '创建订单失败', icon: 'none' })
+					return false
+				}
+			} catch (err) {
+				console.error('创建订单失败:', err)
+				uni.hideLoading()
+				uni.showToast({ title: '创建订单失败', icon: 'none' })
+				return false
+			}
+		},
+		// 绑定微信
+		bindWechat() {
+			uni.login({
+				provider: 'weixin',
+				success: async (loginRes) => {
+					if (loginRes.code) {
+						uni.showLoading({ title: '绑定中...' })
+						try {
+							const res = await api.auth.bindWechat({
+								code: loginRes.code
+							})
+							uni.hideLoading()
+							if (res.code === 200) {
+								uni.showToast({ title: '绑定成功', icon: 'success' })
+								// 绑定成功后重新发起支付
+								setTimeout(() => {
+									this.doWechatPay()
+								}, 1500)
+							} else {
+								uni.showToast({ title: res.message || '绑定失败', icon: 'none' })
+							}
+						} catch (err) {
+							uni.hideLoading()
+							console.error('绑定微信失败:', err)
+							uni.showToast({ title: '绑定失败', icon: 'none' })
+						}
+					} else {
+						uni.showToast({ title: '获取微信授权失败', icon: 'none' })
+					}
+				},
+				fail: () => {
+					uni.showToast({ title: '微信授权失败', icon: 'none' })
+				}
+			})
+		},
 		formatDate(dateId) {
-			// 根据日期ID转换为可读日期
+			
 			const dateMap = {
 				'today': '今天',
 				'tomorrow': '明天'
@@ -409,7 +722,7 @@ export default {
 			if (dateMap[dateId]) {
 				return dateMap[dateId]
 			}
-			// 如果是日期格式如 "1205"，转换为 "12月05日"
+			
 			if (dateId && dateId.length === 4) {
 				return `${dateId.slice(0, 2)}月${dateId.slice(2)}日`
 			}
@@ -425,26 +738,26 @@ export default {
 			return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
 		},
 		generateOrderNumber() {
-			// 生成订单号：前缀 + 时间戳 + 随机数
+			
 			const timestamp = Date.now().toString().slice(-10)
 			const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0')
 			return `CD${timestamp}${random}`
 		},
-		// 获取可用优惠券
+		
 		async fetchAvailableCoupons() {
 			try {
 				const price = parseFloat(this.productInfo.price) || 0
 				const res = await api.coupon.getAvailable({ amount: price })
-				if (res.code === 0 && res.data) {
+				if (res.code === 200 && res.data) {
 					const list = Array.isArray(res.data) ? res.data : (res.data.list || [])
 					this.coupons = list.map(coupon => {
-						// 根据type计算折扣金额
+						
 						let discountValue = coupon.value || 0
 						let amountText = String(coupon.value || 0)
 						let conditionText = coupon.minAmount > 0 ? `满${coupon.minAmount}可用` : '无门槛'
 
 						if (coupon.type === 'discount') {
-							// 折扣券显示为折扣
+							
 							amountText = `${10 - coupon.value / 10}折`
 							discountValue = coupon.maxDiscount || 50
 						}
@@ -466,35 +779,44 @@ export default {
 				console.error('获取可用优惠券失败:', err)
 			}
 		},
-		// 获取订单详情
+		
 		async fetchOrderDetail(orderId) {
 			try {
 				const res = await api.order.getDetail(orderId)
-				if (res.code === 0 && res.data) {
+				if (res.code === 200 && res.data) {
 					const order = res.data
-					// 更新商品信息
+
 					this.productInfo = {
-						image: order.serviceImage || order.image || '/static/icon/rectangle-169.png',
-						name: order.serviceName || order.name || '',
+						image: order.service_image || order.serviceImage || 'https://bioflex.cn/static/icon/rectangle-169.png',
+						name: order.service_name || order.serviceName || '',
 						category: order.category || '',
 						duration: order.duration || '1小时',
-						price: String(order.price || 0)
+						price: String(order.final_price || order.price || 0)
 					}
-					// 更新预约信息
-					if (order.designer) {
+
+					if (order.designer_name || order.designerName) {
 						this.bookingInfo = {
-							designer: order.designer.name || '',
-							date: order.bookingDate || '',
-							time: order.bookingTime || '',
-							address: order.address || ''
+							designer: order.designer_name || order.designerName || '',
+							date: order.booking_date || order.bookingDate || '',
+							time: order.booking_time || order.bookingTime || '',
+							address: order.shop_name || order.address || ''
 						}
 					}
-					// 更新订单信息
+
 					this.orderInfo = {
-						createTime: order.createTime || this.formatDateTime(new Date()),
-						paymentMethod: order.paymentMethod || '在线支付',
+						id: order.id || '',
+						createTime: order.create_time || order.createTime || this.formatDateTime(new Date()),
+						paymentMethod: order.payment_method || order.paymentMethod || '在线支付',
 						points: order.points || '',
-						orderNumber: order.orderNo || order.id || this.generateOrderNumber()
+						orderNumber: order.order_no || order.orderNo || order.id || this.generateOrderNumber()
+					}
+
+					// 设置支付过期时间并启动倒计时
+					if (order.status === 'PENDING_PAYMENT') {
+						this.paymentExpireTime = order.payment_expire_time || order.paymentExpireTime
+						if (this.paymentExpireTime) {
+							this.startCountdown()
+						}
 					}
 				}
 			} catch (err) {
@@ -733,6 +1055,7 @@ export default {
 .coupon-available-tag {
 	background-color: #fff1f0;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	padding: 3rpx 10rpx;
 	display: inline-flex;
 	align-items: center;
@@ -888,7 +1211,7 @@ export default {
 	color: #FFA87C;
 }
 
-/* 取消订单弹窗 */
+
 .cancel-modal {
 	position: fixed;
 	top: 0;

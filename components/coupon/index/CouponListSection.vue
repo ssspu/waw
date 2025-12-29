@@ -32,7 +32,7 @@ export default {
 		return {
 			tabItems: [
 				{ id: "service", label: "服务券" },
-				// { id: "product", label: "商品券" }, // 测试阶段隐藏
+				
 				{ id: "ended", label: "已结束" },
 			],
 		}

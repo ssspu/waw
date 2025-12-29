@@ -29,7 +29,7 @@
 					</view>
 					<view class="advantage-item-wrapper">
 						<view class="advantage-item">
-							<text class="advantage-title">营销工具</text>
+							<text class="advantage-title">营途工具</text>
 							<text class="advantage-desc">快速获取精准顾客流量,项目快速传播</text>
 						</view>
 						<view class="advantage-divider"></view>
@@ -48,7 +48,7 @@
 				<text class="link-text">我是独立设计师,如何入驻</text>
 				<image 
 					class="link-arrow" 
-					src="/static/icon/vector-4.svg" 
+					src="https://bioflex.cn/static/icon/vector-4.svg" 
 					mode="aspectFit"
 				></image>
 			</view>

@@ -5,7 +5,7 @@
 			<view class="nav-bar">
 				<view class="nav-left">
 					<view class="back-btn" @tap="handleBack">
-						<image class="back-icon" src="/static/icon/arrow-left.png" mode="aspectFit"></image>
+						<image class="back-icon" src="https://bioflex.cn/static/back.png" mode="aspectFit"></image>
 					</view>
 					<text class="nav-title">设计师入驻</text>
 				</view>
@@ -41,19 +41,19 @@
 		
 		<!-- 主内容区域 -->
 		<scroll-view class="main-content" scroll-y>
-			<!-- 所属行业卡片 -->
+			<!-- 怉属行业卡片 -->
 			<view class="card">
 				<view class="card-title-row">
-					<text class="card-title">所属行业</text>
+					<text class="card-title">怉属行业</text>
 				</view>
 				
 				<view class="form-item clickable" @tap="selectIndustry">
-					<text class="form-label">所属行业</text>
+					<text class="form-label">怉属行业</text>
 					<view class="form-right">
 						<text class="form-value" :class="{ placeholder: !formData.industry }">
 							{{ formData.industry || '去选择' }}
 						</text>
-						<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
+						<image class="arrow-icon" src="https://bioflex.cn/static/icon/right.png" mode="aspectFit"></image>
 					</view>
 				</view>
 				<view class="form-divider"></view>
@@ -64,7 +64,7 @@
 						<text class="form-value" :class="{ placeholder: !formData.level }">
 							{{ formData.level || '去选择' }}
 						</text>
-						<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
+						<image class="arrow-icon" src="https://bioflex.cn/static/icon/right.png" mode="aspectFit"></image>
 					</view>
 				</view>
 				<view class="form-divider"></view>
@@ -75,7 +75,7 @@
 				<view class="card-header">
 					<text class="card-title">职业资格证</text>
 				</view>
-				<text class="card-desc">信息仅用于职业和等级验证，提供你最高级别的职业等级证书</text>
+				<text class="card-desc">信息仅用于职业和等级验证，提供你怜高级别的职业等级证书</text>
 				
 				<view class="upload-row">
 					<view class="upload-box" @tap="uploadCert1">
@@ -85,7 +85,7 @@
 								<view class="upload-circle">
 									<text class="plus-icon">+</text>
 								</view>
-								<text class="upload-text">上传国家劳动技能证</text>
+								<text class="upload-text">上传国家劳动怊能证</text>
 							</view>
 						</view>
 					</view>
@@ -122,7 +122,7 @@
 						<text class="form-value" :class="{ placeholder: !formData.certDate }">
 							{{ formData.certDate || '请选择取证时间' }}
 						</text>
-						<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
+						<image class="arrow-icon" src="https://bioflex.cn/static/icon/right.png" mode="aspectFit"></image>
 					</view>
 				</picker>
 				<view class="form-divider"></view>
@@ -198,9 +198,9 @@ export default {
 		},
 		selectLevel() {
 			uni.showActionSheet({
-				itemList: ['初级', '中级', '高级', '技师', '高级技师'],
+				itemList: ['初级', '中级', '高级', '怊师', '高级怊师'],
 				success: (res) => {
-					const levels = ['初级', '中级', '高级', '技师', '高级技师']
+					const levels = ['初级', '中级', '高级', '怊师', '高级怊师']
 					this.formData.level = levels[res.tapIndex]
 				}
 			})
@@ -225,7 +225,7 @@ export default {
 			uni.navigateBack()
 		},
 		handleNext() {
-			// 表单验证
+			
 			if (!this.formData.level) {
 				uni.showToast({ title: '请选择职业等级', icon: 'none' })
 				return

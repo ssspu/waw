@@ -34,7 +34,7 @@
 			>
 				<image
 					class="nav-icon"
-					:src="localFavorited ? '/static/icon/favorite-active.png' : 'https://c.animaapp.com/mifnbli6udxphC/img/frame-6.svg'"
+					:src="localFavorited ? 'https://bioflex.cn/static/icon/favorite-active.png' : 'https://c.animaapp.com/mifnbli6udxphC/img/frame-6.svg'"
 					mode="aspectFit"
 				></image>
 				<text class="nav-label">{{ localFavorited ? '已收藏' : '收藏' }}</text>
@@ -209,6 +209,7 @@ export default {
 	padding: 16rpx 30rpx;
 	background-color: #333333;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	transition: opacity 0.3s;
 }
 

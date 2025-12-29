@@ -3,7 +3,7 @@
 		<view class="record-content">
 			<image 
 				class="record-image" 
-				src="/static/icon/rectangle-169.png" 
+				src="https://bioflex.cn/static/icon/rectangle-169.png" 
 				mode="aspectFill"
 			></image>
 			<view class="record-info">
@@ -18,7 +18,7 @@
 		<image 
 			v-if="!isLast"
 			class="divider" 
-			src="/static/icon/vector-20.svg" 
+			src="https://bioflex.cn/static/icon/vector-20.svg" 
 			mode="aspectFit"
 		></image>
 	</view>

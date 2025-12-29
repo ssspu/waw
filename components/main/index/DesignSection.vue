@@ -18,7 +18,7 @@
 			</view>
 		</view>
 		
-		<!-- 预约选项 - 测试阶段不显示 -->
+		<!-- 预约项 - 测试阶段不显示 -->
 		<!-- <view class="booking-options">
 			<view
 				v-for="(option, index) in bookingOptions"
@@ -39,7 +39,10 @@
 		<!-- 排行榜 -->
 		<view class="ranking-card">
 			<view class="ranking-header">
-				<text class="ranking-title">排行榜</text>
+				<view class="title-wrapper">
+					<text class="ranking-title">排行榜</text>
+					<view class="title-bar"></view>
+				</view>
 				<!-- 测试阶段不显示 -->
 				<!-- <image class="more-icon" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-2.svg" mode="aspectFit"></image> -->
 			</view>
@@ -89,7 +92,9 @@
 								<text class="stylist-role">{{ stylist.role }}</text>
 								<view class="stylist-rating">
 									<text class="rating-score">{{ stylist.rating }}</text>
-									<image class="star-icon" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/star-1.svg" mode="aspectFit"></image>
+									<view class="star-container">
+										<image class="star-icon" src="/static/icon/star.png" mode="aspectFit"></image>
+									</view>
 								</view>
 							</view>
 						</view>
@@ -110,9 +115,12 @@
 		<!-- 附近推荐 -->
 		<view id="nearby-section" class="nearby-section">
 			<view class="nearby-header">
-				<text class="nearby-title">附近推荐</text>
+				<view class="title-wrapper">
+					<text class="nearby-title">附近推荐</text>
+					<view class="title-bar"></view>
+				</view>
 				<!-- <view class="filter-btn" @tap="handleFilter">
-					<text class="filter-text">筛选</text>
+					<text class="filter-text">筛</text>
 					<image class="filter-icon" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-3.svg" mode="aspectFit"></image>
 				</view> -->
 			</view>
@@ -120,11 +128,11 @@
 			<!-- 分类标签 -->
 			<view class="category-tab">
 				<view class="tab-content">
-					<image class="tab-icon" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame.svg" mode="aspectFit"></image>
+					<image class="tab-icon" src="/static/icon/1.png" mode="aspectFit"></image>
 					<text class="tab-text">{{ activeCategory }}</text>
 				</view>
 			</view>
-			
+
 			<!-- 附近设计师列表 -->
 			<view class="nearby-list">
 				<view
@@ -133,8 +141,6 @@
 					class="nearby-item"
 					@tap="handleStylistClick(stylist)"
 				>
-					<!-- 背景图片 -->
-					<view class="nearby-cover" :style="{ backgroundImage: `url(${stylist.coverImage || stylist.image || 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-11.png'})` }"></view>
 					<view class="nearby-item-wrapper">
 						<view class="nearby-avatar" :style="{ backgroundImage: `url(${stylist.image || 'https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-11.png'})` }"></view>
 						<view class="nearby-info">
@@ -157,7 +163,7 @@
 								<view class="stats-rating">
 									<text class="stats-rating-score">{{ stylist.rating }}</text>
 									<view class="star-container">
-										<image class="star-small" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/star-1.svg" mode="aspectFit"></image>
+										<image class="star-small" src="/static/icon/star.png" mode="aspectFit"></image>
 									</view>
 								</view>
 								<view class="stats-info">
@@ -200,22 +206,22 @@ export default {
 		return {
 			serviceCategories: [
 				{
-					icon: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-2006.svg",
+					icon: "https://bioflex.cn/static/1.png",
 					title: "首席创意",
 					subtitle: "新潮时尚引领",
 				},
 				{
-					icon: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-2005-1.svg",
+					icon: "https://bioflex.cn/static/2.png",
 					title: "总监店长",
 					subtitle: "资深技术大咖",
 				},
 				{
-					icon: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-2005.svg",
+					icon: "https://bioflex.cn/static/容器@3x(2).png",
 					title: "人气名师",
 					subtitle: "人气霸榜标杆",
 				},
 				{
-					icon: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-2006-1.svg",
+					icon: "https://bioflex.cn/static/容器@3x(3).png",
 					title: "国际导师",
 					subtitle: "海内外多语种",
 				},
@@ -233,30 +239,56 @@ export default {
 				},
 			],
 			rankingTabs: [
-				{ label: "新秀榜", active: true, value: "rookie", new: true },
+				{ label: "新秀榜", active: true, value: "rookie", new: false },
 				{ label: "专业榜", active: false, value: "pro", new: false },
 				{ label: "服务榜", active: false, value: "service", new: true },
 			],
 			activeRankingTab: "rookie",
 			rankingSwiperIndex: 0,
-			// 从API获取的设计师列表
+			
 			designers: [],
-			// 当前选中的分类
+			
 			activeCategory: '美发师',
+			
+			nearbyTabs: [
+				{ label: "附近推荐", value: "nearby" },
+				{ label: "我的关注", value: "follow" }
+			],
+			activeNearbyTab: "nearby",
 		}
 	},
 	async created() {
 		await this.loadDesigners()
 	},
 	computed: {
-		// 排行榜数据，基于designers分组
-		currentRankingSlides() {
+		
+		rankedDesigners() {
 			if (!this.designers.length) return []
-			// 将设计师分成每6个一组
+
+			let sorted = [...this.designers]
+
+			switch (this.activeRankingTab) {
+				case 'rookie': 
+					sorted.sort((a, b) => a.experience - b.experience)
+					break
+				case 'pro': 
+					sorted.sort((a, b) => (b.levelValue || 0) - (a.levelValue || 0))
+					break
+				case 'service': 
+					sorted.sort((a, b) => (b.serviceCount || 0) - (a.serviceCount || 0))
+					break
+			}
+
+			return sorted
+		},
+		
+		currentRankingSlides() {
+			if (!this.rankedDesigners.length) return []
+			
 			const chunkSize = 6
 			const slides = []
-			for (let i = 0; i < this.designers.length; i += chunkSize) {
-				slides.push(this.designers.slice(i, i + chunkSize).map(d => ({
+			for (let i = 0; i < this.rankedDesigners.length; i += chunkSize) {
+				slides.push(this.rankedDesigners.slice(i, i + chunkSize).map(d => ({
 					id: d.id,
 					image: d.avatar,
 					name: d.name,
@@ -267,16 +299,16 @@ export default {
 			}
 			return slides
 		},
-		// 根据当前选中分类获取美发师列表
+		
 		nearbyStylistsData() {
 			if (!this.designers.length) return []
-			// 转换为附近设计师列表格式
+			
 			let filteredDesigners = this.designers
-			// 根据分类筛选
+			
 			if (this.activeCategory !== '美发师') {
 				const categoryLevelMap = {
 					'首席创意': ['首席', '特级'],
-					'总监店长': ['总监'],
+					'监店长': ['监'],
 					'人气名师': ['名师', '高级'],
 					'国际导师': ['国际']
 				}
@@ -304,18 +336,47 @@ export default {
 		}
 	},
 	methods: {
-		// 加载设计师列表
+		
+		getLevelText(level) {
+			const levelMap = {
+				1: '初级',
+				2: '中级',
+				3: '高级',
+				4: '导师',
+				5: '名师'
+			}
+			return levelMap[level] || '普'
+		},
+		
+		formatDesignerData(data) {
+			const level = data.professional_level || data.designerLevel || 1
+			return {
+				id: data.id,
+				avatar: data.avatar || data.coverImage || '',
+				name: data.real_name || data.name || '未知设计师',
+				level: this.getLevelText(level),
+				levelValue: level,
+				position: data.position || '美发师',
+				experience: data.work_years || data.experience || 0,
+				rating: data.rating || 0,
+				serviceCount: data.total_appointments || 0,
+				worksCount: data.worksCount || 0,
+				specialties: data.expertise ? data.expertise.split(/[,]/).map(s => s.trim()) : [],
+				tags: data.service_features ? String(data.service_features).split(/[,]/).map(t => t.trim()) : []
+			}
+		},
+		
 		async loadDesigners() {
 			try {
 				const res = await designerApi.getList({ page: 1, pageSize: 20 })
 				if (res && res.data && res.data.list) {
-					this.designers = res.data.list
+					this.designers = res.data.list.map(d => this.formatDesignerData(d))
 				}
 			} catch (error) {
 				console.error('加载设计师列表失败:', error)
 			}
 		},
-		// 供父组件调用的滚动方法
+		
 		scrollToNearby() {
 			this.$nextTick(() => {
 				const query = uni.createSelectorQuery().in(this)
@@ -335,7 +396,7 @@ export default {
 		},
 		handleCategoryClick(category) {
 			console.log('Category clicked:', category)
-			// 跳转到搜索页面，执行所点击内容的搜索
+			
 			uni.navigateTo({
 				url: `/pages/main/search?tab=designer&keyword=${encodeURIComponent(category.title)}`
 			})
@@ -350,7 +411,7 @@ export default {
 			})
 			this.activeRankingTab = tab.value
 			this.rankingSwiperIndex = 0
-			// 点击后清除该标签的 NEW 状态
+			
 			if (tab.new) {
 				tab.new = false
 			}
@@ -359,14 +420,17 @@ export default {
 			this.rankingSwiperIndex = e.detail.current
 		},
 		handleStylistClick(stylist) {
-			// 跳转到设计师详情页面，传递设计师ID等信息
+			
 			uni.navigateTo({
 				url: `/pages/designer/detail?id=${stylist.id || 1}&name=${encodeURIComponent(stylist.name || '')}`
 			})
 		},
 		handleFilter() {
 			console.log('Filter clicked')
-		}
+		},
+		switchNearbyTab(value) {
+			this.activeNearbyTab = value
+		},
 	}
 }
 </script>
@@ -383,7 +447,7 @@ export default {
 	gap: 18rpx;
 }
 
-/* 服务分类 */
+
 .service-categories-card {
 	width: 100%;
 	background-color: #ffffff;
@@ -411,6 +475,10 @@ export default {
 .category-icon {
 	width: 88rpx;
 	height: 88rpx;
+	padding: 20rpx;
+	box-sizing: border-box;
+	background: linear-gradient(180deg, #FEFEFE 0%, #F2F2F2 100%);
+	border-radius: 40rpx 40rpx 40rpx 4rpx;
 }
 
 .category-info {
@@ -439,7 +507,7 @@ export default {
 	white-space: nowrap;
 }
 
-/* 预约选项 */
+
 .booking-options {
 	display: flex;
 	width: 100%;
@@ -490,7 +558,7 @@ export default {
 	height: 76rpx;
 }
 
-/* 排行榜 */
+
 .ranking-card {
 	width: 100%;
 	background-color: #ffffff;
@@ -510,11 +578,27 @@ export default {
 	box-sizing: border-box;
 }
 
+.title-wrapper {
+	display: flex;
+	flex-direction: column;
+}
+
 .ranking-title {
 	font-size: 28rpx;
 	font-family: 'DIN_Black-Regular', Helvetica;
-	font-weight: normal;
+	font-weight: 600;
 	color: #000000;
+	position: relative;
+	z-index: 2;
+}
+
+.title-bar {
+	width: 74rpx;
+	height: 12rpx;
+	background-color: #DACBB1;
+	margin-top: -14rpx;
+	position: relative;
+	z-index: 1;
 }
 
 .more-icon {
@@ -572,8 +656,8 @@ export default {
 
 .ranking-swiper {
 	width: 100%;
-	height: 470rpx;
-	min-height: 460rpx;
+	height: 520rpx;
+	min-height: 520rpx;
 }
 
 .ranking-swiper-item {
@@ -585,31 +669,33 @@ export default {
 .ranking-list {
 	display: flex;
 	flex-wrap: wrap;
-	align-items: center;
+	align-content: flex-start;
 	justify-content: space-between;
-	gap: 20rpx;
 	width: 100%;
 	padding: 20rpx;
 	box-sizing: border-box;
+	gap: 16rpx 0;
 }
 
 .ranking-item {
 	display: flex;
 	width: calc((100% - 20rpx) / 2);
 	min-width: 0;
-	align-items: center;
+	align-items: flex-start;
 	gap: 12rpx;
 	background-color: #ffffff;
 	border-radius: 8rpx;
 	box-sizing: border-box;
+	padding: 8rpx 0;
 }
 
 .stylist-avatar {
 	width: 112rpx;
-	height: 111.3rpx;
+	height: 112rpx;
+	background-color: #F4F4F4;
 	background-size: cover;
 	background-position: center;
-	border-radius: 8rpx;
+	border-radius: 50%;
 	flex-shrink: 0;
 }
 
@@ -620,6 +706,7 @@ export default {
 	gap: 6rpx;
 	padding: 8rpx 0;
 	flex: 1;
+	min-width: 0;
 }
 
 .stylist-header {
@@ -627,6 +714,7 @@ export default {
 	align-items: center;
 	gap: 8rpx;
 	width: 100%;
+	flex-wrap: wrap;
 }
 
 .stylist-name {
@@ -634,6 +722,7 @@ export default {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
 	color: #000000;
+	word-break: break-all;
 }
 
 .stylist-badge {
@@ -645,6 +734,8 @@ export default {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
+	white-space: nowrap;
 }
 
 .stylist-role {
@@ -652,6 +743,8 @@ export default {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
 	color: #a6a6a6;
+	word-break: break-all;
+	line-height: 1.4;
 }
 
 .stylist-rating {
@@ -671,6 +764,7 @@ export default {
 .star-icon {
 	width: 20rpx;
 	height: 20rpx;
+	filter: brightness(0) invert(1);
 }
 
 .pagination-dots {
@@ -696,7 +790,7 @@ export default {
 	border-radius: 28rpx;
 }
 
-/* 附近推荐 */
+
 .nearby-section {
 	width: 100%;
 	box-sizing: border-box;
@@ -712,8 +806,10 @@ export default {
 .nearby-title {
 	font-size: 28rpx;
 	font-family: 'DIN_Black-Regular', Helvetica;
-	font-weight: normal;
+	font-weight: 600;
 	color: #000000;
+	position: relative;
+	z-index: 2;
 }
 
 .filter-btn {
@@ -769,6 +865,43 @@ export default {
 	color: #dacbb1;
 }
 
+.nearby-tabs {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	margin-top: 20rpx;
+	gap: 40rpx;
+}
+
+.nearby-tab-item {
+	position: relative;
+	padding-bottom: 8rpx;
+}
+
+.nearby-tab-text {
+	font-size: 28rpx;
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	color: #a6a6a6;
+}
+
+.nearby-tab-text.active {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-weight: 600;
+	color: #000000;
+}
+
+.nearby-tab-item.active::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 40rpx;
+	height: 6rpx;
+	background-color: #000000;
+	border-radius: 3rpx;
+}
+
 .nearby-list {
 	display: flex;
 	flex-direction: column;
@@ -789,18 +922,6 @@ export default {
 	box-sizing: border-box;
 	position: relative;
 	overflow: hidden;
-}
-
-.nearby-cover {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 160rpx;
-	background-size: cover;
-	background-position: center;
-	opacity: 0.15;
-	z-index: 0;
 }
 
 .nearby-item-wrapper {
@@ -856,6 +977,7 @@ export default {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 }
 
 .nearby-role {
@@ -888,6 +1010,7 @@ export default {
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-weight: normal;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 }
 
 .nearby-stats {
@@ -912,7 +1035,7 @@ export default {
 .star-container {
 	display: flex;
 	align-items: center;
-	gap: 4rpx;
+	justify-content: center;
 	padding: 4rpx;
 	background-color: #333333;
 	border-radius: 4rpx;

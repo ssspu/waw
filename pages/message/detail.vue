@@ -5,7 +5,7 @@
 			<!-- 消息头部 -->
 			<view class="message-header">
 				<view class="avatar-wrapper">
-					<image class="avatar-img" src="/static/icon/notification.png" mode="aspectFit"></image>
+					<image class="avatar-img" src="https://bioflex.cn/static/icon/notification.png" mode="aspectFit"></image>
 				</view>
 				<view class="header-info">
 					<text class="message-title">{{ messageDetail.title }}</text>
@@ -71,7 +71,7 @@ export default {
 				async loadMessageDetail(id) {
 			try {
 				const res = await api.message.getDetail(id)
-				if (res.code === 0 && res.data) {
+				if (res.code === 200 && res.data) {
 					this.messageDetail = {
 						id: res.data.id,
 						title: res.data.title || '系统通知',

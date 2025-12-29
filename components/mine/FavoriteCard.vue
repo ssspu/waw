@@ -62,7 +62,7 @@
 						<view class="stylist-rating">
 							<text class="rating-score">{{ item.stylist.rating }}</text>
 							<view class="star-wrapper">
-								<image class="star-icon" src="https://c.animaapp.com/mi5kx1ohxTkA7e/img/star-1.svg" mode="aspectFit"></image>
+								<image class="star-icon" src="/static/icon/star.png" mode="aspectFit"></image>
 							</view>
 							<text class="rating-count">({{ item.stylist.reviews }})</text>
 						</view>
@@ -70,7 +70,7 @@
 				</view>
 				<view class="stylist-right">
 					<view class="location-info">
-						<image class="location-icon" src="/static/icon/position.png" mode="aspectFit"></image>
+						<image class="location-icon" src="https://bioflex.cn/static/icon/position.png" mode="aspectFit"></image>
 						<text class="location-text">{{ item.stylist.location }}</text>
 					</view>
 					<text class="distance-text">{{ item.stylist.distance }}</text>
@@ -231,6 +231,7 @@ export default {
 	background-color: #2f2f2f;
 	color: #f8b88d;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	font-size: 26rpx;
 	border: none;
 	font-family: 'PingFang_SC-Medium', Helvetica;
@@ -240,7 +241,7 @@ export default {
 	border: none;
 }
 
-/* 分隔线 */
+
 .divider {
 	width: 100%;
 	height: 2rpx;
@@ -248,7 +249,7 @@ export default {
 	margin: 16rpx 0;
 }
 
-/* 设计师信息区域 */
+
 .stylist-section {
 	display: flex;
 	justify-content: space-between;
@@ -292,6 +293,7 @@ export default {
 	background-color: #f6f6f6;
 	padding: 4rpx 8rpx;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	display: flex;
 	align-items: center;
 	height: 32rpx;

@@ -1,6 +1,6 @@
 /**
  * 作品集模块 API
- * 包含作品列表、详情、点赞、收藏、评论等接口
+ * 包含作品列表详情点赞收藏评论等接口
  */
 
 import { post, get, del } from '../request.js'
@@ -14,8 +14,8 @@ export default {
    */
   getList(params = {}) {
     return get(`${PORTFOLIO_PREFIX}/list`, {
-      page: 1,
-      pageSize: 10,
+      page: Number(params.page) || 1,
+      pageSize: Number(params.pageSize) || 10,
       ...params
     })
   },
@@ -36,8 +36,7 @@ export default {
   },
 
   /**
-   * 获取筛选条件
-   * 返回脸型、发量、发质、粗细等筛选选项
+
    */
   getFilters() {
     return get(`${PORTFOLIO_PREFIX}/filters`)
@@ -59,21 +58,8 @@ export default {
     return del(`${PORTFOLIO_PREFIX}/${workId}/like`)
   },
 
-  /**
-   * 收藏作品
-   * @param {string} workId - 作品ID
-   */
-  favorite(workId) {
-    return post(`${PORTFOLIO_PREFIX}/${workId}/favorite`)
-  },
-
-  /**
-   * 取消收藏
-   * @param {string} workId - 作品ID
-   */
-  unfavorite(workId) {
-    return del(`${PORTFOLIO_PREFIX}/${workId}/favorite`)
-  },
+  // 注意: 后端暂无作品收藏接口 /portfolio/{workId}/favorite
+  // 如收藏作品，请使用 favorite 模块的用收藏接口
 
   /**
    * 获取作品评论列表
@@ -82,8 +68,8 @@ export default {
    */
   getComments(workId, params = {}) {
     return get(`${PORTFOLIO_PREFIX}/${workId}/comments`, {
-      page: 1,
-      pageSize: 10,
+      page: Number(params.page) || 1,
+      pageSize: Number(params.pageSize) || 10,
       ...params
     })
   },
@@ -130,7 +116,7 @@ export default {
    */
   getRecommend(params = {}) {
     return get(`${PORTFOLIO_PREFIX}/recommend`, {
-      limit: 6,
+      limit: Number(params.limit) || 6,
       ...params
     })
   },
@@ -141,7 +127,7 @@ export default {
    */
   getHot(params = {}) {
     return get(`${PORTFOLIO_PREFIX}/hot`, {
-      limit: 10,
+      limit: Number(params.limit) || 10,
       ...params
     })
   },
@@ -153,8 +139,8 @@ export default {
    */
   getByDesigner(designerId, params = {}) {
     return get(`${PORTFOLIO_PREFIX}/designer/${designerId}`, {
-      page: 1,
-      pageSize: 10,
+      page: Number(params.page) || 1,
+      pageSize: Number(params.pageSize) || 10,
       ...params
     })
   },
@@ -166,8 +152,8 @@ export default {
    */
   getByBrand(brandId, params = {}) {
     return get(`${PORTFOLIO_PREFIX}/brand/${brandId}`, {
-      page: 1,
-      pageSize: 10,
+      page: Number(params.page) || 1,
+      pageSize: Number(params.pageSize) || 10,
       ...params
     })
   },

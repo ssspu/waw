@@ -45,7 +45,7 @@
 				<view class="action-icon-wrapper">
 					<image 
 						class="action-icon" 
-						src="/static/icon/saoyisao.png" 
+						src="https://bioflex.cn/static/icon/saoyisao.png" 
 						mode="aspectFit"
 					></image>
 				</view>
@@ -55,7 +55,7 @@
 				<view class="action-icon-wrapper">
 					<image 
 						class="action-icon" 
-						src="/static/icon/xiazai.png" 
+						src="https://bioflex.cn/static/icon/xiazai.png" 
 						mode="aspectFit"
 					></image>
 				</view>
@@ -65,7 +65,7 @@
 				<view class="action-icon-wrapper">
 					<image 
 						class="action-icon" 
-						src="/static/icon/zhuanfa.png" 
+						src="https://bioflex.cn/static/icon/zhuanfa.png" 
 						mode="aspectFit"
 					></image>
 				</view>

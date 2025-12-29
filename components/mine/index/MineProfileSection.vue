@@ -9,7 +9,7 @@
 						<text class="more-text">全部订单</text>
 						<image 
 							class="more-icon" 
-							src="/static/icon/right.png" 
+							src="https://bioflex.cn/static/icon/right.png" 
 							mode="aspectFit"
 						></image>
 					</view>
@@ -93,7 +93,7 @@ export default {
 				},
 				{
 					icon: "https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-5.svg",
-					label: "退款/售后",
+					label: "付款/售后",
 				},
 			],
 			assetItems: [
@@ -115,7 +115,7 @@ export default {
 				{
 					icon: "https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-9.svg",
 					label: "美豆",
-					disabled: true, // 正在开发中
+					disabled: true, 
 				},
 			],
 			settlementItems: [
@@ -140,14 +140,14 @@ export default {
 		},
 		handleOrderItemClick(item) {
 			console.log('Order item clicked:', item)
-			// 根据不同的订单状态跳转到订单页面
-			if (item.label === '待付款' || item.label === '待确认' || item.label === '待使用' || item.label === '待评价' || item.label === '退款/售后') {
+			
+			if (item.label === '待付款' || item.label === '待确认' || item.label === '待使用' || item.label === '待评价' || item.label === '付款/售后') {
 				uni.navigateTo({ url: '/packageOrder/pages/order/index?tab=' + this.getOrderTabId(item.label) })
 			}
 		},
 		handleAssetItemClick(item) {
 			console.log('Asset item clicked:', item)
-			// 如果是禁用状态，显示正在开发提示
+			
 			if (item.disabled) {
 				uni.showToast({
 					title: '敬请期待',
@@ -156,34 +156,34 @@ export default {
 				})
 				return
 			}
-			// 点击优惠券跳转到优惠券页面
+			
 			if (item.label === '优惠券') {
 				uni.navigateTo({ url: '/packageOthers/pages/coupon/index' })
 			}
-			// 点击资产跳转到资产页面
+			
 			if (item.label === '资产') {
 				uni.navigateTo({ url: '/packageMine/pages/mine/asset' })
 			}
-			// 点击推广佣金跳转到推广佣金页面
+			
 			if (item.label === '推广佣金') {
 				uni.navigateTo({ url: '/packageMine/pages/mine/promotion' })
 			}
-			// 点击美豆跳转到美豆页面
+			
 			if (item.label === '美豆') {
 				uni.navigateTo({ url: '/packageMine/pages/mine/beans' })
 			}
 		},
 		handleSettlementItemClick(item) {
 			console.log('Settlement item clicked:', item)
-			// 点击我要入驻跳转到申请入驻页面
+			
 			if (item.label === '我要入驻') {
 				uni.navigateTo({ url: '/packageMine/pages/mine/apply-settlement' })
 			}
-			// 点击我要推广跳转到推广页面
+			
 			if (item.label === '我要推广') {
 				uni.navigateTo({ url: '/packageMine/pages/mine/share-promotion' })
 			}
-			// 点击个人设置跳转到设置页面
+			
 			if (item.label === '个人设置') {
 				uni.navigateTo({ url: '/packageSetting/pages/setting/index' })
 			}
@@ -194,7 +194,7 @@ export default {
 				'待确认': 'pending-confirm',
 				'待使用': 'pending-use',
 				'待评价': 'pending-review',
-				'退款/售后': 'after-sale'
+				'付款/售后': 'after-sale'
 			}
 			return map[label] || 'all'
 		}
@@ -240,8 +240,7 @@ export default {
 
 .card-title {
 	font-family: 'PingFang_SC-Semibold', Helvetica;
-	font-weight: normal;
-	color: #000000;
+	font-weight: 600;	color: #000000;
 	font-size: 26rpx;
 }
 
@@ -306,10 +305,10 @@ export default {
 	}
 }
 
-// 禁用状态样式
+
 .asset-item.disabled {
 	opacity: 0.6;
-	pointer-events: auto; // 保持可点击以显示提示
+	pointer-events: auto; 
 }
 
 .asset-icon.disabled {

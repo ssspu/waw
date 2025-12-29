@@ -21,14 +21,14 @@
 								</view>
 								<image 
 									class="arrow-icon" 
-									src="/static/icon/vector-4.svg" 
+									src="https://bioflex.cn/static/icon/vector-4.svg" 
 									mode="aspectFit"
 								></image>
 							</view>
 						</view>
 						<image 
 							class="divider" 
-							src="/static/icon/vector-20-1.svg" 
+							src="https://bioflex.cn/static/icon/vector-20-1.svg" 
 							mode="aspectFit"
 						></image>
 					</view>
@@ -42,7 +42,7 @@
 								</view>
 								<image 
 									class="arrow-icon" 
-									src="/static/icon/vector-4.svg" 
+									src="https://bioflex.cn/static/icon/vector-4.svg" 
 									mode="aspectFit"
 								></image>
 							</view>
@@ -64,14 +64,14 @@
 								</view>
 								<image
 									class="arrow-icon"
-									src="/static/icon/vector-4.svg"
+									src="https://bioflex.cn/static/icon/vector-4.svg"
 									mode="aspectFit"
 								></image>
 							</view>
 						</view>
 						<image
 							class="divider"
-							src="/static/icon/vector-20-1.svg"
+							src="https://bioflex.cn/static/icon/vector-20-1.svg"
 							mode="aspectFit"
 						></image>
 					</view>
@@ -81,11 +81,11 @@
 							<view class="item-content">
 								<view class="item-info">
 									<text class="item-title">教育拍档</text>
-									<text class="item-desc">职业教育合作，美业技能培训，职业证书认证</text>
+									<text class="item-desc">职业教育合作，美业怊能培训，职业证书认证</text>
 								</view>
 								<image
 									class="arrow-icon"
-									src="/static/icon/vector-4.svg"
+									src="https://bioflex.cn/static/icon/vector-4.svg"
 									mode="aspectFit"
 								></image>
 							</view>

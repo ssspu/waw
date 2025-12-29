@@ -1,5 +1,27 @@
 <template>
 	<view class="search-page">
+		<!-- 自定义导航栏搜索框 -->
+		<view class="custom-nav-bar">
+			<view class="status-bar"></view>
+			<view class="nav-content">
+				<view class="back-btn" @tap="goBack">
+					<image class="back-icon" src="/static/icon/back.png" mode="aspectFit"></image>
+				</view>
+				<view class="search-input-wrapper">
+					<image class="search-icon" src="https://bioflex.cn/static/icon/search.png" mode="aspectFit"></image>
+					<input
+						class="search-input"
+						type="text"
+						v-model="searchKeyword"
+						:placeholder="currentPlaceholder"
+						confirm-type="search"
+						@confirm="handleSearch"
+					/>
+					<image v-if="searchKeyword" class="clear-icon" src="https://bioflex.cn/static/icon/delete.png" mode="aspectFit" @tap.stop="clearSearch"></image>
+				</view>
+			</view>
+		</view>
+
 		<!-- 标签页 -->
 		<view class="tabs-bar">
 			<view
@@ -14,24 +36,23 @@
 			</view>
 		</view>
 
-		<!-- 筛选和排序栏 -->
 		<view class="filter-bar-wrapper">
 			<view class="filter-bar">
 				<view class="filter-item" :class="{ active: showCategoryDropdown }" @tap.stop="toggleCategoryDropdown">
 					<text class="filter-text">{{ selectedCategory }}</text>
-					<image class="filter-arrow" src="@/static/icon/xiala.png" mode="aspectFit"></image>
+					<image class="filter-arrow" src="https://bioflex.cn/static/icon/xiala.png" mode="aspectFit"></image>
 				</view>
 				<view class="filter-item" :class="{ active: showSortDropdown }" @tap.stop="toggleSortDropdown">
 					<text class="filter-text">{{ selectedSort }}</text>
-					<image class="filter-arrow" src="@/static/icon/xiala.png" mode="aspectFit"></image>
+					<image class="filter-arrow" src="https://bioflex.cn/static/icon/xiala.png" mode="aspectFit"></image>
 				</view>
 				<view class="filter-item" :class="{ active: showLocationDropdown }" @tap.stop="toggleLocationDropdown">
 					<text class="filter-text">{{ selectedLocation }}</text>
-					<image class="filter-arrow" src="@/static/icon/xiala.png" mode="aspectFit"></image>
+					<image class="filter-arrow" src="https://bioflex.cn/static/icon/xiala.png" mode="aspectFit"></image>
 				</view>
 				<view class="filter-item" :class="{ active: showFilterModal }" @tap.stop="toggleFilterModal">
 					<text class="filter-text">筛选</text>
-					<image class="filter-arrow" src="@/static/icon/xiala.png" mode="aspectFit"></image>
+					<image class="filter-arrow" src="https://bioflex.cn/static/icon/xiala.png" mode="aspectFit"></image>
 				</view>
 			</view>
 
@@ -131,7 +152,6 @@
 				</view>
 			</view>
 
-			<!-- 筛选下拉菜单 -->
 			<view class="dropdown-menu filter-dropdown-menu" v-if="showFilterModal" @tap.stop>
 				<view class="modal-filter-container">
 					<!-- 左侧分类列表 -->
@@ -147,9 +167,7 @@
 						</view>
 					</view>
 					
-					<!-- 右侧筛选内容 -->
 					<view class="modal-filter-content">
-						<!-- 价格选择 -->
 						<view v-if="modalSelectedCategoryIndex === 0" class="filter-content-section">
 							<view class="filter-section-title">价格选择</view>
 							<!-- 价格滑块 -->
@@ -321,7 +339,7 @@
 									<view class="stats-rating">
 										<text class="stats-rating-score">{{ stylist.rating }}</text>
 										<view class="star-container">
-											<image class="star-small" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/star-1.svg" mode="aspectFit"></image>
+											<image class="star-small" src="/static/icon/star.png" mode="aspectFit"></image>
 										</view>
 									</view>
 									<view class="stats-info">
@@ -381,6 +399,7 @@
 <script>
 import ServiceGallerySection from '../../components/main/index/ServiceGallerySection.vue'
 import NearbyStoreItem from '../../components/common/NearbyStoreItem.vue'
+import api from '@/api'
 
 export default {
 	name: 'SearchPage',
@@ -390,7 +409,7 @@ export default {
 	},
 	data() {
 		return {
-						activeTab: 'designer', // 默认显示设计师标签
+			activeTab: 'designer', 
 			tabs: [
 				{ label: '服务', value: 'service' },
 				{ label: '设计师', value: 'designer' },
@@ -444,11 +463,189 @@ export default {
 			selectedDesignerStar: 0,
 			selectedMerchantDiamond: 0,
 			selectedStoreType: 0,
-			designerStarOptions: ['二星/中级', '三星/高级', '四星/导师', '五星/名师', '不限'],
-			merchantDiamondOptions: ['二星/中级', '三星/高级', '四星/导师', '五星/名师', '不限'],
-			storeTypeOptions: ['独立设计师', '工作室', '专业店', '综合店', '连锁店', '品牌店'],
-			sortOptions: ['推荐排序', '距离最近', '评分最高', '服务最多', '价格最低'],
-			locationRegions: [
+			designerStarOptions: [],
+			merchantDiamondOptions: [],
+			storeTypeOptions: [],
+			sortOptions: [],
+			locationRegions: [],
+			categories: [],
+			serviceTypes: [],
+			serviceSubTabs: [],
+			activeServiceSubTab: 0,
+			designerSubTabs: [],
+			activeDesignerSubTab: 0,
+			brandSubTabs: [],
+			activeBrandSubTab: 0,
+			nearbyStylistsData: [],
+			brandRecords: [],
+			loading: false,
+
+			searchParams: {
+				page: 1,
+				pageSize: 20,
+				keyword: '',
+				categoryId: '',
+				serviceTypeId: '',
+				sortBy: '',
+				region: '',
+				area: '',
+				minPrice: 0,
+				maxPrice: 1000,
+				designerStar: '',
+				merchantDiamond: '',
+				storeType: ''
+			}
+		}
+	},
+	computed: {
+		currentPlaceholder() {
+			return this.searchPlaceholderMap[this.activeTab] || '搜索';
+		},
+		currentLocationGroups() {
+			const region = this.locationRegions[this.activeLocationRegionIndex];
+			if (region && Array.isArray(region.groups) && region.groups.length) {
+				return region.groups;
+			}
+			return [
+				{
+					title: '全部区域',
+					items: [{ label: '全城', value: 'all-city' }]
+				}
+			];
+		},
+		minHandleStyle() {
+			const percent = ((this.priceRange[0] - this.sliderMin) / (this.sliderMax - this.sliderMin)) * 100
+			return {
+				left: `${percent}%`,
+				transform: 'translateX(-50%)'
+			}
+		},
+		maxHandleStyle() {
+			const percent = ((this.priceRange[1] - this.sliderMin) / (this.sliderMax - this.sliderMin)) * 100
+			return {
+				left: `${percent}%`,
+				transform: 'translateX(-50%)'
+			}
+		},
+		activeRangeStyle() {
+			const minPercent = ((this.priceRange[0] - this.sliderMin) / (this.sliderMax - this.sliderMin)) * 100
+			const maxPercent = ((this.priceRange[1] - this.sliderMin) / (this.sliderMax - this.sliderMin)) * 100
+			return {
+				left: `${minPercent}%`,
+				width: `${maxPercent - minPercent}%`
+			}
+		},
+		minLabelPosition() {
+			const percent = ((this.priceRange[0] - this.sliderMin) / (this.sliderMax - this.sliderMin)) * 100
+			return `${percent}%`
+		},
+		maxLabelPosition() {
+			const percent = ((this.priceRange[1] - this.sliderMin) / (this.sliderMax - this.sliderMin)) * 100
+			return `${percent}%`
+		}
+	},
+	onLoad(options) {
+		
+		this.loadFilterOptions()
+
+		
+		
+		if (options.tab) {
+			const validTabs = ['designer', 'service', 'brand']
+			if (validTabs.includes(options.tab)) {
+				this.activeTab = options.tab
+			}
+		}
+
+		
+		if (options.keyword) {
+			this.searchKeyword = decodeURIComponent(options.keyword)
+			
+			const pages = getCurrentPages()
+			const page = pages[pages.length - 1]
+			const currentWebview = page.$getAppWebview?.()
+			if (currentWebview) {
+				currentWebview.setTitleNViewSearchInputText?.(this.searchKeyword)
+			}
+		}
+
+		
+		this.loadData()
+	},
+	onShow() {
+		
+		this.loadData()
+	},
+	
+	onNavigationBarSearchInputChanged(e) {
+		this.searchKeyword = e.text
+	},
+	
+	onNavigationBarSearchInputConfirmed() {
+		this.handleSearch()
+	},
+	
+	onNavigationBarSearchInputFocusChanged(e) {
+		
+	},
+	onReady() {
+		
+		const query = uni.createSelectorQuery().in(this)
+		query.select('.range-slider-track').boundingClientRect((data) => {
+			if (data) {
+				this.sliderWidth = data.width
+			}
+		}).exec()
+	},
+	methods: {
+		
+		async loadFilterOptions() {
+			try {
+				
+				this.sortOptions = ['推荐排序', '距离近', '评分高', '服务多', '价格低']
+
+				
+				this.designerStarOptions = ['不限', '二星/中级', '三星/高级', '四星/导师', '五星/名师']
+
+				
+				this.merchantDiamondOptions = ['不限', '钻石', '二星/中级', '三星/高级', '四星/导师', '五星/名师']
+
+				
+				this.storeTypeOptions = ['不限', '独立设计师', '工作室', '专业店', '综合店', '连锁店', '品牌店']
+
+				
+				this.locationRegions = this.getDefaultLocationRegions()
+
+				
+				this.categories = [
+					{ name: '美发' },
+					{ name: '美容' },
+					{ name: '美甲' },
+					{ name: '美睫' }
+				]
+
+				
+				this.serviceTypes = [
+					{ name: '全部', count: 0 },
+					{ name: '发型', count: 0 },
+					{ name: '剪发', count: 0 },
+					{ name: '烫发', count: 0 },
+					{ name: '染发', count: 0 },
+					{ name: '护发', count: 0 }
+				]
+
+				
+				this.serviceSubTabs = ['全部', '洗剪吹', '烫发', '染发', '护发', '头皮', '接发']
+				this.designerSubTabs = ['全部', '洗剪吹', '烫发', '染发', '护发', '头皮', '接发']
+				this.brandSubTabs = ['全部', '洗剪吹', '烫发', '染发', '护发', '头皮', '接发']
+			} catch (err) {
+				console.error('加载筛选配置失败:', err)
+			}
+		},
+
+		
+		getDefaultLocationRegions() {
+			return [
 				{
 					name: '全部',
 					groups: [
@@ -474,7 +671,7 @@ export default {
 							title: '推荐商圈',
 							items: [
 								{ label: '双林路', value: 'nearby-shuanglin' },
-								{ label: '电子科技大学', value: 'nearby-uestc' },
+								{ label: '电子科怊大学', value: 'nearby-uestc' },
 								{ label: '新华公园', value: 'nearby-xinhua' },
 								{ label: '万象城', value: 'nearby-wanxiang' },
 								{ label: '抚琴', value: 'nearby-fuqin' },
@@ -506,7 +703,7 @@ export default {
 							items: [
 								{ label: '宽窄巷子', value: 'qingyang-kuanzhai' },
 								{ label: '杜甫草堂', value: 'qingyang-dufu' },
-								{ label: '金沙遗址', value: 'qingyang-jinsha' },
+								{ label: '金沙遗倝', value: 'qingyang-jinsha' },
 								{ label: '青羊宫', value: 'qingyang-qingyanggong' },
 								{ label: '浣花溪', value: 'qingyang-huanhuaxi' }
 							]
@@ -573,266 +770,164 @@ export default {
 						}
 					]
 				}
-			],
-			categories: [
-				// { name: '附近' },
-				{ name: '美发' },
-				// { name: '美容' },
-				// { name: '美妆' },
-				// { name: '美体' },
-				// { name: '美甲' },
-				// { name: '美睫' }
-			],
-			serviceTypes: [
-				{ name: '全部', count: 2365 },
-				{ name: '造型', count: 523 },
-				{ name: '剪发', count: 456 },
-				{ name: '烫发', count: 856 },
-				{ name: '染发', count: 642 },
-				{ name: '护发', count: 421 },
-				{ name: '头皮', count: 289 },
-				{ name: '接发', count: 156 },
-				{ name: '男士', count: 678 },
-				{ name: '套餐优选', count: 234 },
-				{ name: '防脱护理', count: 189 }
-			],
-			serviceSubTabs: ['洗剪吹', '烫发', '染发', '护发', '头皮', '接发'],
-			activeServiceSubTab: 0,
-			designerSubTabs: ['洗剪吹', '烫发', '染发', '护发', '头皮', '接发'],
-			activeDesignerSubTab: 0,
-			brandSubTabs: ['洗剪吹', '烫发', '染发', '护发', '头皮', '接发'],
-			activeBrandSubTab: 0,
-			nearbyStylistsData: [
-				{
-					id: 7,
-					image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-11.png",
-					name: "李天天",
-					level: "高级",
-					role: "店长｜从业12年",
-					specialties: ["女士造型", "烫发设计", "短发造型"],
-					rating: "4.8",
-					services: "287",
-					works: "123",
-					tags: ["明星网红", "预约服务", "免费设计", "7天无忧"],
-					distance: "7.5km",
-				},
-				{
-					id: 8,
-					image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-7.png",
-					name: "李天天",
-					level: "高级",
-					role: "店长｜从业12年",
-					specialties: ["女士造型", "烫发设计", "短发造型"],
-					rating: "4.8",
-					services: "287",
-					works: "123",
-					tags: ["明星网红", "预约服务", "免费设计", "7天无忧"],
-					distance: "7.5km",
-				},
-				{
-					id: 9,
-					image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-8.png",
-					name: "李天天",
-					level: "高级",
-					role: "店长｜从业12年",
-					specialties: ["女士造型", "烫发设计", "短发造型"],
-					rating: "4.8",
-					services: "287",
-					works: "123",
-					tags: ["明星网红", "预约服务", "免费设计", "7天无忧"],
-					distance: "7.5km",
-				},
-				{
-					id: 10,
-					image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-9.png",
-					name: "李天天",
-					level: "高级",
-					role: "店长｜从业12年",
-					specialties: ["女士造型", "烫发设计", "短发造型"],
-					rating: "4.8",
-					services: "287",
-					works: "123",
-					tags: ["明星网红", "预约服务", "免费设计", "7天无忧"],
-					distance: "7.5km",
-				},
-				{
-					id: 11,
-					image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-10.png",
-					name: "李天天",
-					level: "高级",
-					role: "店长｜从业12年",
-					specialties: ["女士造型", "烫发设计", "短发造型"],
-					rating: "4.8",
-					services: "287",
-					works: "123",
-					tags: ["明星网红", "预约服务", "免费设计", "7天无忧"],
-					distance: "7.5km",
-				},
-				{
-					id: 12,
-					image: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-153-11.png",
-					name: "李天天",
-					level: "高级",
-					role: "店长｜从业12年",
-					specialties: ["女士造型", "烫发设计", "短发造型"],
-					rating: "4.8",
-					services: "287",
-					works: "123",
-					tags: ["明星网红", "预约服务", "免费设计", "7天无忧"],
-					distance: "7.5km",
-				},
-			],
-			brandRecords: [
-				{
-					id: 1,
-					name: '成都NICE造型沙龙',
-					tag: '舒适',
-					type: '专业店｜2012年开业',
-					rating: '4.8',
-					designers: '8人',
-					services: '1236',
-					distance: '7.5km',
-					amenities: ['代客泊车', '免费茶点', '共享工位', '7天无忧'],
-					image: 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-6.png'
-				},
-				{
-					id: 2,
-					name: '成都NICE造型沙龙',
-					tag: '舒适',
-					type: '专业店｜2012年开业',
-					rating: '4.8',
-					designers: '8人',
-					services: '1236',
-					distance: '7.5km',
-					amenities: ['代客泊车', '免费茶点', '共享工位', '7天无忧'],
-					image: 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-1.png'
-				},
-				{
-					id: 3,
-					name: '成都NICE造型沙龙',
-					tag: '舒适',
-					type: '专业店｜2012年开业',
-					rating: '4.8',
-					designers: '8人',
-					services: '1236',
-					distance: '7.5km',
-					amenities: ['代客泊车', '免费茶点', '共享工位', '7天无忧'],
-					image: 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-4.png'
-				},
-				{
-					id: 4,
-					name: '成都NICE造型沙龙',
-					tag: '舒适',
-					type: '专业店｜2012年开业',
-					rating: '4.8',
-					designers: '8人',
-					services: '1236',
-					distance: '7.5km',
-					amenities: ['代客泊车', '免费茶点', '共享工位', '7天无忧'],
-					image: 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-153-5.png'
-				}
 			]
-		}
-	},
-	computed: {
-		currentPlaceholder() {
-			return this.searchPlaceholderMap[this.activeTab] || '搜索';
 		},
-		currentLocationGroups() {
-			const region = this.locationRegions[this.activeLocationRegionIndex];
-			if (region && Array.isArray(region.groups) && region.groups.length) {
-				return region.groups;
-			}
-			return [
-				{
-					title: '全部区域',
-					items: [{ label: '全城', value: 'all-city' }]
-				}
-			];
-		},
-		minHandleStyle() {
-			const percent = ((this.priceRange[0] - this.sliderMin) / (this.sliderMax - this.sliderMin)) * 100
-			return {
-				left: `${percent}%`,
-				transform: 'translateX(-50%)'
-			}
-		},
-		maxHandleStyle() {
-			const percent = ((this.priceRange[1] - this.sliderMin) / (this.sliderMax - this.sliderMin)) * 100
-			return {
-				left: `${percent}%`,
-				transform: 'translateX(-50%)'
-			}
-		},
-		activeRangeStyle() {
-			const minPercent = ((this.priceRange[0] - this.sliderMin) / (this.sliderMax - this.sliderMin)) * 100
-			const maxPercent = ((this.priceRange[1] - this.sliderMin) / (this.sliderMax - this.sliderMin)) * 100
-			return {
-				left: `${minPercent}%`,
-				width: `${maxPercent - minPercent}%`
-			}
-		},
-		minLabelPosition() {
-			const percent = ((this.priceRange[0] - this.sliderMin) / (this.sliderMax - this.sliderMin)) * 100
-			return `${percent}%`
-		},
-		maxLabelPosition() {
-			const percent = ((this.priceRange[1] - this.sliderMin) / (this.sliderMax - this.sliderMin)) * 100
-			return `${percent}%`
-		}
-	},
-	onLoad(options) {
-		// 从持久化存储获取状态栏高度
-		// 从URL参数获取tab，切换到对应标签
-		if (options.tab) {
-			const validTabs = ['designer', 'service', 'brand']
-			if (validTabs.includes(options.tab)) {
-				this.activeTab = options.tab
-			}
-		}
 
-		// 从URL参数获取keyword，设置到搜索框
-		if (options.keyword) {
-			this.searchKeyword = decodeURIComponent(options.keyword)
-			// 设置导航栏搜索框的值
-			const pages = getCurrentPages()
-			const page = pages[pages.length - 1]
-			const currentWebview = page.$getAppWebview?.()
-			if (currentWebview) {
-				currentWebview.setTitleNViewSearchInputText?.(this.searchKeyword)
+		
+		async loadData() {
+			if (this.loading) return
+			this.loading = true
+
+			try {
+				
+				switch (this.activeTab) {
+					case 'designer':
+						await this.loadDesigners()
+						break
+					case 'service':
+						await this.loadServices()
+						break
+					case 'brand':
+						await this.loadBrands()
+						break
+				}
+			} catch (err) {
+				console.error('加载数据失败:', err)
+			} finally {
+				this.loading = false
 			}
-		}
-	},
-	// 监听导航栏搜索框输入
-	onNavigationBarSearchInputChanged(e) {
-		this.searchKeyword = e.text
-	},
-	// 监听导航栏搜索框确认
-	onNavigationBarSearchInputConfirmed() {
-		this.handleSearch()
-	},
-	// 监听导航栏搜索框聚焦
-	onNavigationBarSearchInputFocusChanged(e) {
-		// 可以在这里处理聚焦/失焦逻辑
-	},
-	onReady() {
-		// 获取滑块轨道宽度
-		const query = uni.createSelectorQuery().in(this)
-		query.select('.range-slider-track').boundingClientRect((data) => {
-			if (data) {
-				this.sliderWidth = data.width
-			}
-		}).exec()
-	},
-	methods: {
-		handleBack() {
-			uni.navigateBack({
-				fail: () => uni.switchTab({ url: '/pages/main/index' })
-			})
 		},
-		handleSearch() {
-			console.log('Search keyword:', this.searchKeyword)
-			// TODO: 实现搜索逻辑
+
+		
+		async loadDesigners() {
+			try {
+				const params = {
+					page: this.searchParams.page,
+					pageSize: this.searchParams.pageSize,
+					keyword: this.searchKeyword,
+					sortBy: this.getSortField(this.searchParams.sortBy)
+				}
+
+				const res = await api.designer.getList(params)
+				if (res.code === 200) {
+					const list = res.data?.list || res.data?.items || []
+					this.nearbyStylistsData = list.map(item => this.formatDesignerData(item))
+				}
+			} catch (err) {
+				console.error('加载设计师数据失败:', err)
+			}
+		},
+
+		
+		async loadServices() {
+			try {
+				const params = {
+					page: this.searchParams.page,
+					pageSize: this.searchParams.pageSize,
+					keyword: this.searchKeyword
+				}
+
+				const res = await api.service.getList(params)
+				if (res.code === 200) {
+					
+					console.log('服务数据:', res.data)
+				}
+			} catch (err) {
+				console.error('加载服务数据失败:', err)
+			}
+		},
+
+		
+		async loadBrands() {
+			try {
+				const params = {
+					page: this.searchParams.page,
+					pageSize: this.searchParams.pageSize,
+					keyword: this.searchKeyword
+				}
+
+				const res = await api.brand.getList(params)
+				if (res.code === 200) {
+					const list = res.data?.list || res.data?.items || []
+					this.brandRecords = list.map(item => this.formatBrandData(item))
+				}
+			} catch (err) {
+				console.error('加载品牌馆数据失败:', err)
+			}
+		},
+
+		
+		formatDesignerData(data) {
+			return {
+				id: data.id,
+				image: data.avatar || data.image || '',
+				name: data.real_name || data.name || '未知设计师',
+				level: data.level || this.getLevelText(data.professional_level),
+				role: `${data.position || ''}｜从业${data.work_years || data.experience || 0}年`,
+				specialties: data.expertise ? data.expertise.split(/[,]/).slice(0, 3) : (data.specialties || []),
+				rating: String(data.rating || 0),
+				services: String(data.total_appointments || data.appointmentCount || 0),
+				works: String(data.worksCount || 0),
+				tags: data.tags || [],
+				distance: data.distance ? `距您${data.distance}km` : ''
+			}
+		},
+
+		
+		formatBrandData(data) {
+			
+			const level = data.brand_type || data.business_mode || ''
+			return {
+				id: data.id,
+				name: data.brand_intro || data.name || '未知品牌',
+				tag: level, 
+				type: `${data.brand_type || data.business_mode || '专业店'}｜${data.established_date ? new Date(data.established_date).getFullYear() + '年值业' : ''}`,
+				rating: String(data.rating || 0),
+				designers: `${data.designer_count || 0}人`,
+				services: String(data.appointment_count || 0),
+				distance: data.distance ? `距您${data.distance}km` : '',
+				amenities: data.service_features ? data.service_features.split(/[,]/) : (data.tags || []),
+				image: data.avatar || data.coverImage || data.image || ''
+			}
+		},
+
+		
+		getLevelText(level) {
+			const levelMap = {
+				1: '初级',
+				2: '中级',
+				3: '高级',
+				4: '导师',
+				5: '名师'
+			}
+			return levelMap[level] || '普通'
+		},
+
+		
+		getSortField(sortText) {
+			const sortMap = {
+				'推荐排序': '',
+				'距离近': 'distance',
+				'评分高': 'rating',
+				'服务多': 'serviceCount',
+				'价格低': 'price'
+			}
+			return sortMap[sortText] || ''
+		},
+
+		
+		async handleSearch() {
+			this.searchParams.keyword = this.searchKeyword
+			this.searchParams.page = 1
+			await this.loadData()
+		},
+		goBack() {
+			uni.navigateBack()
+		},
+		clearSearch() {
+			this.searchKeyword = ''
+			this.searchParams.keyword = ''
+			this.loadData()
 		},
 		handleInput(e) {
 			this.searchKeyword = e.detail.value
@@ -840,10 +935,12 @@ export default {
 		handleFilter() {
 			console.log('Filter clicked')
 		},
-		switchTab(value) {
+		async switchTab(value) {
 			this.activeTab = value
-			// 切换标签时关闭所有下拉菜单
+			
 			this.closeAllDropdowns()
+			
+			await this.loadData()
 		},
 		handleStylistClick(stylist) {
 			uni.navigateTo({
@@ -860,7 +957,7 @@ export default {
 			if (this.showCategoryDropdown) {
 				this.showSortDropdown = false
 				this.showLocationDropdown = false
-				// 同步当前选中状态
+				
 				this.dropdownSelectedCategoryIndex = this.selectedCategoryIndex
 				this.dropdownSelectedServiceIndex = this.selectedServiceIndex
 			}
@@ -871,7 +968,7 @@ export default {
 				this.showCategoryDropdown = false
 				this.showLocationDropdown = false
 				this.showFilterModal = false
-				// 同步当前选中状态
+				
 				this.dropdownSelectedSortIndex = this.selectedSortIndex
 			}
 		},
@@ -901,12 +998,12 @@ export default {
 		},
 		selectDropdownCategory(index) {
 			this.dropdownSelectedCategoryIndex = index
-			// 切换分类时重置服务类型选择
+			
 			this.dropdownSelectedServiceIndex = 0
 		},
 		selectDropdownService(index) {
 			this.dropdownSelectedServiceIndex = index
-			// 选择"全部"时自动确认并关闭弹窗
+			
 			if (index === 0) {
 				this.handleCategoryConfirm()
 			}
@@ -921,10 +1018,10 @@ export default {
 		handleCategoryConfirm() {
 			this.selectedCategoryIndex = this.dropdownSelectedCategoryIndex
 			this.selectedServiceIndex = this.dropdownSelectedServiceIndex
-			// 显示选择的服务类型（二级筛选内容）
+			
 			this.selectedCategory = this.serviceTypes[this.dropdownSelectedServiceIndex].name
 			this.closeAllDropdowns()
-			// TODO: 根据选中的分类和服务类型筛选数据
+			
 		},
 		handleSortReset() {
 			this.dropdownSelectedSortIndex = 0
@@ -933,13 +1030,13 @@ export default {
 			this.selectedSortIndex = this.dropdownSelectedSortIndex
 			this.selectedSort = this.sortOptions[this.dropdownSelectedSortIndex]
 			this.closeAllDropdowns()
-			// TODO: 根据选中的排序方式排序数据
+			
 		},
 		selectSort(index) {
 			this.selectedSortIndex = index
 			this.selectedSort = this.sortOptions[index]
 			this.closeAllDropdowns()
-			// TODO: 根据选中的排序方式排序数据
+			
 		},
 		handleLocationRegionChange(index) {
 			this.activeLocationRegionIndex = index
@@ -985,7 +1082,7 @@ export default {
 		},
 		positionToValue(percent) {
 			const value = this.sliderMin + (percent / 100) * (this.sliderMax - this.sliderMin)
-			return Math.round(value / 10) * 10 // 按10的倍数取整
+			return Math.round(value / 10) * 10 
 		},
 		handleTrackTap(e) {
 			if (this.draggingMin || this.draggingMax) return
@@ -1001,7 +1098,7 @@ export default {
 					const percent = ((touchX - trackLeft) / trackWidth) * 100
 					const value = this.positionToValue(percent)
 					
-					// 判断点击位置更靠近哪个滑块
+					
 					const minDistance = Math.abs(value - this.priceRange[0])
 					const maxDistance = Math.abs(value - this.priceRange[1])
 					
@@ -1079,7 +1176,7 @@ export default {
 			this.selectedStoreType = index
 		},
 		handleReset() {
-			// 重置弹窗中的筛选条件
+			
 			this.modalSelectedCategoryIndex = 0
 			this.modalSelectedServiceIndex = 0
 			this.priceRange = [160, 460]
@@ -1088,21 +1185,21 @@ export default {
 			this.selectedStoreType = 0
 		},
 		handleConfirm() {
-			// 应用筛选条件到主页面
+			
 			this.showFilterModal = false
-			// TODO: 根据筛选条件更新数据
+			
 		},
 		selectServiceSubTab(index) {
 			this.activeServiceSubTab = index
-			// TODO: 根据 serviceSubTabs[index] 筛选服务列表数据
+			
 		},
 		selectDesignerSubTab(index) {
 			this.activeDesignerSubTab = index
-			// TODO: 根据 designerSubTabs[index] 筛选设计师列表数据
+			
 		},
 		selectBrandSubTab(index) {
 			this.activeBrandSubTab = index
-			// TODO: 根据 brandSubTabs[index] 筛选品牌馆列表数据
+			
 		}
 	}
 }
@@ -1117,8 +1214,78 @@ export default {
 	flex-direction: column;
 }
 
+.custom-nav-bar {
+	width: 100%;
+	background-color: #ffffff;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 100;
+}
 
-/* 标签页 */
+.status-bar {
+	height: var(--status-bar-height);
+}
+
+.nav-content {
+	margin-top: 44rpx;
+	display: flex;
+	align-items: center;
+	padding: 16rpx 30rpx;
+	height: 88rpx;
+	box-sizing: border-box;
+}
+
+.back-btn {
+	width: 60rpx;
+	height: 64rpx;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	flex-shrink: 0;
+}
+
+.back-icon {
+	width: 32rpx;
+	height: 32rpx;
+}
+
+.search-input-wrapper {
+	width: 460rpx;
+	height: 64rpx;
+	background-color: #F6F6F6;
+	border-radius: 32rpx;
+	display: flex;
+	align-items: center;
+	padding: 0 24rpx;
+	box-sizing: border-box;
+}
+
+.search-icon {
+	width: 32rpx;
+	height: 32rpx;
+	flex-shrink: 0;
+}
+
+.search-input {
+	flex: 1;
+	height: 64rpx;
+	padding: 0 16rpx;
+	font-size: 28rpx;
+	color: #333;
+	background-color: transparent;
+	border: none;
+	outline: none;
+}
+
+.clear-icon {
+	width: 32rpx;
+	height: 32rpx;
+	flex-shrink: 0;
+}
+
+
 .tabs-bar {
 	display: flex;
 	align-items: center;
@@ -1127,6 +1294,9 @@ export default {
 	gap: 40rpx;
 	background-color: #ffffff;
 	border-bottom: 1rpx solid #f0f0f0;
+	margin-top: calc(var(--status-bar-height) + 132rpx);
+	position: relative;
+	z-index: 100;
 }
 
 .tab-item {
@@ -1159,11 +1329,11 @@ export default {
 	border-radius: 3rpx;
 }
 
-/* 筛选和排序栏 */
+
 .filter-bar-wrapper {
-	position: relative;
 	background-color: #ffffff;
-	z-index: 101;
+	position: relative;
+	z-index: 100;
 }
 
 .filter-bar {
@@ -1201,7 +1371,7 @@ export default {
 	height: 20rpx;
 }
 
-/* 下拉菜单 */
+
 .dropdown-menu {
 	position: absolute;
 	top: 100%;
@@ -1295,7 +1465,7 @@ export default {
 	font-weight: 600;
 }
 
-/* 遮罩层 */
+
 .dropdown-mask {
 	position: fixed;
 	top: 0;
@@ -1306,7 +1476,7 @@ export default {
 	z-index: 99;
 }
 
-/* 两级菜单容器 */
+
 .dropdown-filter-container {
 	display: flex;
 	width: 100%;
@@ -1315,7 +1485,7 @@ export default {
 	background-color: #ffffff;
 }
 
-/* 下拉菜单中的左侧分类列表 */
+
 .dropdown-category-sidebar {
 	width: 200rpx;
 	background-color: #f8f8f8;
@@ -1345,7 +1515,7 @@ export default {
 	font-weight: 500;
 }
 
-/* 下拉菜单中的右侧服务类型列表 */
+
 .dropdown-service-types {
 	flex: 1;
 	padding: 20rpx;
@@ -1371,7 +1541,7 @@ export default {
 	font-family: 'PingFang_SC-Regular', Helvetica;
 }
 
-/* 单级下拉列表 */
+
 .dropdown-list {
 	padding: 20rpx 0;
 	flex: 1;
@@ -1446,7 +1616,7 @@ export default {
 	gap: 12rpx;
 }
 
-/* 附近推荐 */
+
 .nearby-section {
 	width: 100%;
 	box-sizing: border-box;
@@ -1455,7 +1625,7 @@ export default {
 .nearby-title {
 	font-size: 28rpx;
 	font-family: 'DIN_Black-Regular', Helvetica;
-	font-weight: normal;
+	font-weight: 600;
 	color: #000000;
 }
 
@@ -1549,6 +1719,7 @@ export default {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 }
 
 .nearby-role {
@@ -1581,6 +1752,7 @@ export default {
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-weight: normal;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 }
 
 .nearby-stats {
@@ -1605,7 +1777,7 @@ export default {
 .star-container {
 	display: flex;
 	align-items: center;
-	gap: 4rpx;
+	justify-content: center;
 	padding: 4rpx;
 	background-color: #333333;
 	border-radius: 4rpx;
@@ -1692,14 +1864,14 @@ export default {
 	height: 40rpx;
 }
 
-/* 筛选下拉菜单 */
+
 .filter-dropdown-menu {
 	max-height: 70vh;
 	display: flex;
 	flex-direction: column;
 }
 
-/* 弹窗中的分类筛选容器 */
+
 .modal-filter-container {
 	display: flex;
 	width: 100%;
@@ -1708,7 +1880,7 @@ export default {
 	background-color: #ffffff;
 }
 
-/* 弹窗中的左侧分类列表 */
+
 .modal-category-sidebar {
 	width: 160rpx;
 	background-color: #f8f8f8;
@@ -1738,7 +1910,7 @@ export default {
 	font-weight: 500;
 }
 
-/* 弹窗中的右侧服务类型列表 */
+
 .modal-service-types {
 	flex: 1;
 	padding: 20rpx;
@@ -1749,7 +1921,7 @@ export default {
 	background-color: #ffffff;
 }
 
-/* 弹窗中的右侧筛选内容 */
+
 .modal-filter-content {
 	flex: 1;
 	padding: 30rpx;
@@ -1772,7 +1944,7 @@ export default {
 	margin-bottom: 10rpx;
 }
 
-/* 价格滑块容器 */
+
 .price-slider-container {
 	display: flex;
 	flex-direction: column;
@@ -1860,7 +2032,7 @@ export default {
 	cursor: grab;
 }
 
-/* 筛选选项组 */
+
 .filter-option-group {
 	padding: 15rpx 0;
 	display: flex;

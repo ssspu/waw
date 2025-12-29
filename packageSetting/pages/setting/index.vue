@@ -35,7 +35,7 @@
 								>
 									<image 
 										class="button-icon" 
-										src="/static/icon/gengduo.png" 
+										src="https://bioflex.cn/static/icon/gengduo.png" 
 										mode="aspectFit"
 									></image>
 								</view>
@@ -45,7 +45,6 @@
 				</view>
 			</view>
 			
-			<!-- 退出登录卡片 -->
 			<view class="logout-card">
 				<view class="card-content">
 					<view class="logout-btn" @tap="handleLogout">
@@ -78,9 +77,9 @@ export default {
 				{
 					items: [
 						{ label: "账号安全" },
-						// { label: "申请认证" },
-						// { label: "地址管理" },
-						// { label: "支付设置" }, // 测试阶段不需要
+						
+						
+						
 					],
 				},
 				{
@@ -93,7 +92,7 @@ export default {
 				{
 					items: [
 						{ label: "反馈意见" },
-						// { label: "关于众美" }, // 测试阶段不需要
+						
 						{ label: "协议与条款" },
 					],
 				},
@@ -109,11 +108,11 @@ export default {
 			this.loading = true
 			try {
 				const res = await api.user.getSettings()
-				if (res.code === 0) {
+				if (res.code === 200) {
 					const settings = res.data || {}
-					// 更新消息通知状态
+					
 					this.updateSettingItem('notificationEnabled', 'checked', settings.notificationEnabled)
-					// 更新缓存大小
+					
 					this.updateSettingItem('cacheSize', 'rightText', settings.cacheSize || '0M')
 				}
 			} catch (err) {
@@ -122,7 +121,7 @@ export default {
 				this.loading = false
 			}
 		},
-		// 更新指定设置项的属性
+		
 		updateSettingItem(key, prop, value) {
 			for (const group of this.settingsGroups) {
 				const item = group.items.find(i => i.key === key)
@@ -132,7 +131,7 @@ export default {
 				}
 			}
 		},
-		// 获取指定设置项
+		
 		getSettingItem(key) {
 			for (const group of this.settingsGroups) {
 				const item = group.items.find(i => i.key === key)
@@ -148,14 +147,14 @@ export default {
 		},
 		handleSettingClick(item) {
 			console.log('Setting clicked:', item.label)
-			// 根据不同的设置项进行不同的处理
+			
 			if (item.label === '清除缓存') {
-				// 如果点击到按钮以外的区域，导航到详情页
+				
 				if (!event.target.closest('.action-button')) {
 					this.navigateToDetailPage(item.label)
 				}
 			} else if (item.hasToggle) {
-				// toggle 项不需要导航
+				
 				return
 			} else {
 				this.navigateToDetailPage(item.label)
@@ -190,17 +189,17 @@ export default {
 			const oldValue = item.checked
 			item.checked = checked
 
-			// 如果是消息通知，调用 API 更新
+			
 			if (item.key === 'notificationEnabled') {
 				try {
 					const res = await api.user.updateNotificationSetting({ notificationEnabled: checked })
 					if (res.code !== 0) {
-						// 恢复原状态
+						
 						item.checked = oldValue
 						uni.showToast({ title: '设置失败', icon: 'none' })
 					}
 				} catch (err) {
-					// 恢复原状态
+					
 					item.checked = oldValue
 					console.error('更新消息通知设置失败:', err)
 					uni.showToast({ title: '设置失败', icon: 'none' })
@@ -219,7 +218,7 @@ export default {
 						try {
 							const result = await api.user.clearCache()
 							if (result.code === 0) {
-								// 更新缓存大小显示
+								
 								this.updateSettingItem('cacheSize', 'rightText', result.data.cacheSize || '0M')
 								uni.showToast({ title: '缓存已清除', icon: 'success' })
 							} else {
@@ -240,7 +239,7 @@ export default {
 				success: (res) => {
 					if (res.confirm) {
 						console.log('Logout')
-						// 这里可以添加退出登录的逻辑
+						
 						uni.reLaunch({ url: '/pages/index/index' })
 					}
 				}

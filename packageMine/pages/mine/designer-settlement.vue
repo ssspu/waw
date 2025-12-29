@@ -30,7 +30,7 @@
 					<view class="advantage-item-wrapper">
 						<view class="advantage-item">
 							<text class="advantage-title">营销工具</text>
-							<text class="advantage-desc">快速获取精准顾客流量,顾客预约、项目管理</text>
+							<text class="advantage-desc">快速获取精准顾客流量,顾客预约项目管理</text>
 						</view>
 						<view class="advantage-divider"></view>
 					</view>
@@ -48,7 +48,7 @@
 				<text class="link-text">我是企业商户,如何入驻</text>
 				<image 
 					class="link-arrow" 
-					src="/static/icon/vector-4.svg" 
+					src="https://bioflex.cn/static/icon/vector-4.svg" 
 					mode="aspectFit"
 				></image>
 			</view>

@@ -1,7 +1,7 @@
 <template>
 	<view class="register-page">
 		<!-- 背景图片 -->
-		<image class="bg-image" src="/static/background-image/register.png" mode="aspectFill"></image>
+		<image class="bg-image" src="https://bioflex.cn/static/background-image/register.png" mode="aspectFill"></image>
 		
 		<!-- 自定义导航栏 -->
 		<view class="custom-navbar" >
@@ -10,8 +10,8 @@
 					<image class="nav-icon" src="https://c.animaapp.com/mi5ng54v4eM3X6/img/frame.svg" mode="aspectFit"></image>
 				</view>
 				<view class="nav-right">
-					<image class="nav-icon" src="/static/icon/more.svg" mode="aspectFit"></image>
-					<image class="nav-icon" src="/static/icon/scan.svg" mode="aspectFit"></image>
+					<image class="nav-icon" src="https://bioflex.cn/static/icon/more.svg" mode="aspectFit"></image>
+					<image class="nav-icon" src="https://bioflex.cn/static/icon/scan.svg" mode="aspectFit"></image>
 				</view>
 			</view>
 		</view>
@@ -131,6 +131,9 @@
 
 <script>
 import { getUserAgreement, getPrivacyPolicy } from '@/data/agreements.js'
+import api from '@/api'
+import { setToken, setRefreshToken } from '@/api/request.js'
+import { BUSINESS_CODE } from '@/api/config.js'
 
 export default {
 	data() {
@@ -183,24 +186,37 @@ export default {
 		toggleAgreement() {
 			this.isAgreed = !this.isAgreed
 		},
-		getVerifyCode() {
+		async getVerifyCode() {
 			if (this.countdown > 0) return
 			if (!this.phone || this.phone.length !== 11) {
 				uni.showToast({ title: '请输入正确的手机号码', icon: 'none' })
 				return
 			}
-			// 开始倒计时
-			this.countdown = 60
-			this.timer = setInterval(() => {
-				this.countdown--
-				if (this.countdown <= 0) {
-					clearInterval(this.timer)
-					this.timer = null
+
+			try {
+				const res = await api.auth.sendCode({
+					phone: this.phone,
+					type: 'register'
+				})
+
+				if (res.code === BUSINESS_CODE.SUCCESS) {
+					
+					this.countdown = 60
+					this.timer = setInterval(() => {
+						this.countdown--
+						if (this.countdown <= 0) {
+							clearInterval(this.timer)
+							this.timer = null
+						}
+					}, 1000)
+					uni.showToast({ title: '验证码已发送', icon: 'success' })
 				}
-			}, 1000)
-			uni.showToast({ title: '验证码已发送', icon: 'success' })
+			} catch (err) {
+				console.error('发送验证码失败:', err)
+				uni.showToast({ title: err.message || '发送验证码失败', icon: 'none' })
+			}
 		},
-		handleRegister() {
+		async handleRegister() {
 			if (!this.phone || this.phone.length !== 11) {
 				uni.showToast({ title: '请输入正确的手机号码', icon: 'none' })
 				return
@@ -221,13 +237,33 @@ export default {
 				uni.showToast({ title: '请先同意用户协议', icon: 'none' })
 				return
 			}
-			// 注册成功后跳转首页
-			uni.showToast({ title: '注册成功', icon: 'success' })
-			setTimeout(() => {
-				uni.reLaunch({
-					url: '/pages/index/index'
+
+			try {
+				const res = await api.auth.register({
+					phone: this.phone,
+					code: this.verifyCode,
+					password: this.password,
+					confirmPassword: this.confirmPassword
 				})
-			}, 1500)
+
+				if (res.code === BUSINESS_CODE.SUCCESS && res.data) {
+					
+					if (res.data.token) {
+						setToken(res.data.token)
+					}
+					if (res.data.refreshToken) {
+						setRefreshToken(res.data.refreshToken)
+					}
+
+					uni.showToast({ title: '注册成功', icon: 'success' })
+					setTimeout(() => {
+						uni.reLaunch({ url: '/pages/index/index' })
+					}, 1500)
+				}
+			} catch (err) {
+				console.error('注册失败:', err)
+				uni.showToast({ title: err.message || '注册失败', icon: 'none' })
+			}
 		},
 		goToLogin() {
 			uni.navigateBack()
@@ -526,7 +562,7 @@ export default {
 	border-radius: 100rpx;
 }
 
-// 协议弹窗
+
 .agreement-modal {
 	position: fixed;
 	top: 0;

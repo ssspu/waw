@@ -6,7 +6,7 @@ import { success, error } from '../utils.js'
 
 // 设计师入驻进度
 const designerProgress = {
-  currentStep: 0, // 0-未开始, 1-身份认证, 2-职业认证, 3-合作协议, 4-结算信息
+  currentStep: 0, // 0-未始, 1-身份认证, 2-职业认证, 3-合作协议, 4-结算信息
   steps: [
     { step: 1, name: '身份认证', completed: false },
     { step: 2, name: '职业认证', completed: false },
@@ -62,7 +62,7 @@ const banks = [
   { code: 'ABC', name: '中国农业银行' },
   { code: 'BOC', name: '中国银行' },
   { code: 'CMB', name: '招商银行' },
-  { code: 'COMM', name: '交通银行' },
+  { code: 'COMM', name: '交银行' },
   { code: 'CITIC', name: '中信银行' },
   { code: 'SPDB', name: '浦发银行' },
   { code: 'CEB', name: '光大银行' },
@@ -104,12 +104,12 @@ const storeAgreement = {
   content: `
     众美平台门店入驻合作协议
 
-    甲方：众美科技有限公司
+    甲方：众美科有限公司
     乙方：入驻门店
 
-    第一条 合作内容
+    第条 合作内容
     1.1 甲方为乙方提供在线预约平台服务...
-    1.2 乙方通过甲方平台接受用户预约服务...
+    1.2 乙方过甲方平台接受用户预约服务...
 
     第二条 权利义务
     2.1 甲方的权利义务...
@@ -120,7 +120,7 @@ const storeAgreement = {
     3.2 结算周期和方式...
 
     第四条 协议期限
-    本协议有效期为一年，自审核通过之日起生效...
+    本协议有效期为年，自审核过之日起生效...
 
     第五条 其他条款
     ...
@@ -188,7 +188,7 @@ export const routes = {
   // 提交设计师入驻申请
   'POST /api/settlement/designer/submit': () => {
     if (designerProgress.currentStep < 4) {
-      return error('请先完成所有步骤')
+      return error('请先完成有步骤')
     }
     return success({
       applyId: 'AD' + Date.now(),
@@ -197,7 +197,7 @@ export const routes = {
     }, '申请已提交，请等待审核')
   },
 
-  // 获取设计师入驻申请状态
+  // 获取设计师入驻申请状
   'GET /api/settlement/designer/status': () => {
     return success({
       status: 'pending', // pending/reviewing/approved/rejected
@@ -254,7 +254,7 @@ export const routes = {
   // 提交门店入驻申请
   'POST /api/settlement/store/submit': () => {
     if (storeProgress.currentStep < 4) {
-      return error('请先完成所有步骤')
+      return error('请先完成有步骤')
     }
     return success({
       applyId: 'AS' + Date.now(),
@@ -263,7 +263,7 @@ export const routes = {
     }, '申请已提交，请等待审核')
   },
 
-  // 获取门店入驻申请状态
+  // 获取门店入驻申请状
   'GET /api/settlement/store/status': () => {
     return success({
       status: 'pending',
@@ -273,12 +273,12 @@ export const routes = {
     })
   },
 
-  // ============ 通用接口 ============
+  // ============ 用接口 ============
 
   // 上传入驻相关图片
   'POST /api/settlement/upload': (params) => {
     return success({
-      url: '/static/upload/' + Date.now() + '.png',
+      url: 'https://bioflex.cn/static/upload/' + Date.now() + '.png',
       name: 'uploaded_file.png'
     })
   },
@@ -309,7 +309,7 @@ export const routes = {
     return success(storeTypes)
   },
 
-  // 撤销入驻申请
+  // 撤入驻申请
   'POST /api/settlement/:type/cancel': (params) => {
     if (params.type === 'designer') {
       // 重置设计师进度
@@ -322,7 +322,7 @@ export const routes = {
       storeProgress.steps.forEach(s => s.completed = false)
       storeProgress.data = { store: null, license: null, agreement: false, settlement: null }
     }
-    return success(null, '申请已撤销')
+    return success(null, '申请已撤')
   },
 
   // 重新提交入驻申请

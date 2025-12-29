@@ -70,9 +70,9 @@
 		{
 			"path": "pages/main/search",
 			"style": {
-				"navigationBarTitleText": "搜索",
+				"navigationStyle": "custom",
 				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#f2f2f2"
+				"navigationBarBackgroundColor": "#ffffff"
 			}
 		},
 		{

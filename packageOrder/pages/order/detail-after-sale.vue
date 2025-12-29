@@ -120,38 +120,43 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import api from '@/api'
 
-// 退款状态: pending-退款中, success-退款成功
+// 订单ID
+const orderId = ref('')
+
+// 退款状态: pending-退款中, success-退款成功, rejected-退款被拒绝, cancelled-已取消
 const refundStatus = ref('pending')
 
 const orderData = ref({
 	seller: {
-		name: '李天天',
+		name: '',
 		role: '美发师'
 	},
 	product: {
-		name: '欧莱雅植物洗护套装一套',
-		specs: ['洗发水+护发素', '500ml+500ml'],
-		price: 799,
+		name: '',
+		image: '',
+		specs: [],
+		price: 0,
 		quantity: 1
 	},
 	order: {
-		productAmount: 'CD902847058048906',
-		discount: 6,
-		totalPayment: 799
+		productAmount: '',
+		discount: 0,
+		totalPayment: 0
 	}
 })
 
 const afterSalesData = ref({
-	applicationTime: '2022-04-22 12:04:22',
-	refundReason: '不想要了',
-	refundAmount: 799,
-	completionTime: '2022-04-22 12:04:22',
-	refundNumber: 'CD902847058048906'
+	applicationTime: '',
+	refundReason: '',
+	refundAmount: 0,
+	completionTime: '-',
+	refundNumber: ''
 })
 
-// 根据退款状态显示不同的文案
+// 状态配置
 const statusConfig = computed(() => {
 	const configs = {
 		pending: {
@@ -160,33 +165,99 @@ const statusConfig = computed(() => {
 		},
 		success: {
 			title: '退款成功',
-			desc: '商家同意退款，钱款原路退回'
+			desc: '商家同意退款，钱款已原路退回'
+		},
+		rejected: {
+			title: '退款被拒绝',
+			desc: '商家拒绝了您的退款申请'
+		},
+		cancelled: {
+			title: '订单已取消',
+			desc: '订单已取消'
 		}
 	}
 	return configs[refundStatus.value] || configs.pending
 })
 
-// 生命周期
-const onLoad = (options) => {
-	if (options && options.orderId) {
-		// 根据订单ID加载订单详情
-		// 示例：调用接口获取退款状态
-		// uni.request({
-		//   url: '/api/order/refundDetail',
-		//   data: { orderId: options.orderId },
-		//   success: (res) => {
-		//     refundStatus.value = res.data.refundStatus // 'pending' 或 'success'
-		//     // 更新其他订单数据...
-		//   }
-		// })
+// 加载订单详情
+const fetchOrderDetail = async (id) => {
+	try {
+		const res = await api.order.getDetail(id)
+		if (res.code === 200 && res.data) {
+			parseOrderData(res.data)
+		}
+	} catch (err) {
+		console.error('获取订单详情失败:', err)
+		uni.showToast({ title: '获取订单信息失败', icon: 'none' })
 	}
 }
 
-// 方法
-const handleBack = () => {
-	uni.navigateBack()
+// 解析订单数据
+const parseOrderData = (order) => {
+	// 根据订单状态设置退款状态
+	const status = order.status || order.orderStatus
+	if (status === 'REFUNDING') {
+		refundStatus.value = 'pending'
+	} else if (status === 'REFUNDED') {
+		refundStatus.value = 'success'
+	} else if (status === 'CANCELLED') {
+		refundStatus.value = 'cancelled'
+	}
+
+	// 卖家信息
+	orderData.value.seller = {
+		name: order.designer_name || order.designerName || '服务提供者',
+		role: '美发师'
+	}
+
+	// 商品信息
+	orderData.value.product = {
+		name: order.service_name || order.serviceName || '服务项目',
+		image: order.service_image || order.serviceImage || '',
+		specs: [order.sku_name || order.skuName || '', order.duration || ''].filter(Boolean),
+		price: order.final_price || order.finalPrice || order.price || 0,
+		quantity: 1
+	}
+
+	// 订单金额信息
+	orderData.value.order = {
+		productAmount: order.original_price || order.originalPrice || '0',
+		discount: order.discount_amount || order.discountAmount || 0,
+		totalPayment: order.final_price || order.finalPrice || order.pay_amount || 0
+	}
+
+	// 售后信息
+	afterSalesData.value = {
+		applicationTime: formatDateTime(order.refund_apply_time || order.refundApplyTime || order.create_time || order.createTime),
+		refundReason: order.refund_reason || order.refundReason || '用户申请退款',
+		refundAmount: order.refund_amount || order.refundAmount || order.final_price || order.finalPrice || 0,
+		completionTime: order.refund_complete_time || order.refundCompleteTime ? formatDateTime(order.refund_complete_time || order.refundCompleteTime) : '-',
+		refundNumber: order.refund_no || order.refundNo || order.order_no || order.orderNo || order.id
+	}
 }
 
+// 格式化日期时间
+const formatDateTime = (dateStr) => {
+	if (!dateStr) return ''
+	const date = new Date(dateStr)
+	const year = date.getFullYear()
+	const month = String(date.getMonth() + 1).padStart(2, '0')
+	const day = String(date.getDate()).padStart(2, '0')
+	const hours = String(date.getHours()).padStart(2, '0')
+	const minutes = String(date.getMinutes()).padStart(2, '0')
+	const seconds = String(date.getSeconds()).padStart(2, '0')
+	return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
+
+// 页面加载
+const onLoad = (options) => {
+	if (options && options.orderId) {
+		orderId.value = options.orderId
+		fetchOrderDetail(options.orderId)
+	}
+}
+
+// 复制退款编号
 const handleCopy = () => {
 	uni.setClipboardData({
 		data: afterSalesData.value.refundNumber,
@@ -199,8 +270,9 @@ const handleCopy = () => {
 	})
 }
 
+// 删除订单
 const handleDelete = () => {
-	// 如果是退款中状态，不可点击
+	// 退款中状态不允许删除
 	if (refundStatus.value === 'pending') {
 		return
 	}
@@ -222,6 +294,7 @@ const handleDelete = () => {
 	})
 }
 
+// 联系商家
 const handleContact = () => {
 	uni.makePhoneCall({
 		phoneNumber: '400-123-4567',
@@ -234,7 +307,7 @@ const handleContact = () => {
 	})
 }
 
-// 暴露给页面生命周期
+// 暴露方法给页面
 defineExpose({
 	onLoad
 })
@@ -325,6 +398,7 @@ defineExpose({
 	background-color: #f6f6f6;
 	padding: 4rpx 8rpx;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 }
 
 .arrow-icon {

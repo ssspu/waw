@@ -46,6 +46,7 @@ import territoryApi from './modules/territory.js'
 import settlementApi from './modules/settlement.js'
 import portfolioApi from './modules/portfolio.js'
 import chatApi from './modules/chat.js'
+import paymentApi from './modules/payment.js'
 
 // 统一 API 对象
 const api = {
@@ -61,7 +62,8 @@ const api = {
   territory: territoryApi,
   settlement: settlementApi,
   portfolio: portfolioApi,
-  chat: chatApi
+  chat: chatApi,
+  payment: paymentApi
 }
 
 // 默认导出
@@ -81,7 +83,8 @@ export {
   territoryApi,
   settlementApi,
   portfolioApi,
-  chatApi
+  chatApi,
+  paymentApi
 }
 
 // 具名导出 - 请求工具

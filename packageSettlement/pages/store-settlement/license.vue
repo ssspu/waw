@@ -5,7 +5,7 @@
 			<view class="nav-bar">
 				<view class="nav-left">
 					<view class="back-btn" @tap="handleBack">
-						<image class="back-icon" src="/static/icon/arrow-left.png" mode="aspectFit"></image>
+						<image class="back-icon" src="https://bioflex.cn/static/back.png" mode="aspectFit"></image>
 					</view>
 					<text class="nav-title">实体门店入驻</text>
 				</view>
@@ -47,7 +47,7 @@
 					<text class="form-label">营业执照类型</text>
 					<view class="form-right">
 						<text class="form-value">{{ formData.licenseType }}</text>
-						<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
+						<image class="arrow-icon" src="https://bioflex.cn/static/icon/right.png" mode="aspectFit"></image>
 					</view>
 				</view>
 			</view>
@@ -117,10 +117,10 @@
 				<view class="form-divider" v-if="!formData.isPermanent"></view>
 			</view>
 			
-			<!-- 经营基础信息卡片 -->
+			<!-- 经营基瀡信息卡片 -->
 			<view class="card">
 				<view class="card-title-row">
-					<text class="card-title">经营基础信息</text>
+					<text class="card-title">经营基瀡信息</text>
 				</view>
 				
 				<view class="form-item">
@@ -163,7 +163,7 @@
 					<text class="form-label">人脸验证</text>
 					<view class="form-right">
 						<text class="form-hint">去验证</text>
-						<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
+						<image class="arrow-icon" src="https://bioflex.cn/static/icon/right.png" mode="aspectFit"></image>
 					</view>
 				</view>
 			</view>
@@ -241,19 +241,19 @@ export default {
 			this.formData.isPermanent = !this.formData.isPermanent
 		},
 		selectDate() {
-			// 选择日期
+			
 		},
-		// 验证身份证号格式
+		
 		validateIdNumber(idNumber) {
 			const reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
 			return reg.test(idNumber)
 		},
-		// 验证手机号格式
+		
 		validatePhone(phone) {
 			const reg = /^1[3-9]\d{9}$/
 			return reg.test(phone)
 		},
-		// 验证邮箱格式
+		
 		validateEmail(email) {
 			const reg = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 			return reg.test(email)
@@ -270,13 +270,13 @@ export default {
 			uni.showToast({ title: '验证码已发送', icon: 'success' })
 		},
 		goFaceVerify() {
-			uni.showToast({ title: '人脸验证功能开发中', icon: 'none' })
+			uni.showToast({ title: '人脸验证功能值发中', icon: 'none' })
 		},
 		handlePrev() {
 			uni.navigateBack()
 		},
 		handleNext() {
-			// 营业执照验证
+			
 			if (!this.formData.licenseUrl) {
 				uni.showToast({ title: '请上传营业执照', icon: 'none' })
 				return
@@ -289,7 +289,7 @@ export default {
 				uni.showToast({ title: '请输入营业执照号', icon: 'none' })
 				return
 			}
-			// 法人信息验证
+			
 			if (!this.formData.ownerName) {
 				uni.showToast({ title: '请输入法人姓名', icon: 'none' })
 				return
@@ -306,7 +306,7 @@ export default {
 				uni.showToast({ title: '身份证号格式不正确', icon: 'none' })
 				return
 			}
-			// 联系方式验证
+			
 			if (!this.formData.email) {
 				uni.showToast({ title: '请输入邮箱', icon: 'none' })
 				return
@@ -331,7 +331,7 @@ export default {
 				uni.showToast({ title: '验证码格式不正确', icon: 'none' })
 				return
 			}
-			// 跳转到合作协议页
+			
 			uni.navigateTo({
 				url: '/packageSettlement/pages/store-settlement/agreement'
 			})
@@ -608,6 +608,7 @@ export default {
 	width: 32rpx;
 	height: 32rpx;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	border: 2rpx solid #d9d9d9;
 	display: flex;
 	align-items: center;

@@ -14,8 +14,8 @@ export default {
    */
   getList(params = {}) {
     return get(`${SERVICE_PREFIX}/list`, {
-      page: 1,
-      pageSize: 10,
+      page: Number(params.page) || 1,
+      pageSize: Number(params.pageSize) || 10,
       ...params
     })
   },
@@ -65,18 +65,8 @@ export default {
    */
   unfavorite(serviceId) {
     return post(`${SERVICE_PREFIX}/${serviceId}/unfavorite`)
-  },
-
-  /**
-   * 获取服务评价
-   * @param {string} serviceId - 服务ID
-   * @param {Object} params - { page, pageSize }
-   */
-  getReviews(serviceId, params = {}) {
-    return get(`${SERVICE_PREFIX}/${serviceId}/reviews`, {
-      page: 1,
-      pageSize: 10,
-      ...params
-    })
   }
+
+  // 注意: 后端暂无服务评价接口 /service/${serviceId}/reviews
+  // 如逜获取评价请使用订单评价接口
 }

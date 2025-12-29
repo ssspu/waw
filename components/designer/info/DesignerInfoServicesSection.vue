@@ -9,7 +9,7 @@
 		<template v-else-if="activeTab === 'designer'">
 			<image
 				class="profile-image"
-				:src="designer && designer.coverImage ? designer.coverImage : '/static/background-image/designer-cover.png'"
+				:src="designer && designer.coverImage ? designer.coverImage : 'https://bioflex.cn/static/background-image/designer-cover.png'"
 				mode="aspectFill"
 			></image>
 
@@ -160,7 +160,7 @@ export default {
 			this.loading = true
 			try {
 				const res = await api.designer.getDetail(this.designerId)
-				if (res.code === 0 && res.data) {
+				if (res.code === 200 && res.data) {
 					this.designer = res.data
 					this.buildOverviewItems()
 					this.buildFeatures()
@@ -185,12 +185,12 @@ export default {
 			]
 		},
 		buildFeatures() {
-			// 根据设计师标签生成服务特色
+			
 			if (this.designer && this.designer.tags) {
 				this.serviceFeatures = [
 					'全预约制',
 					'免费茶点',
-					'头皮检测',
+					'头皮怣测',
 					'免费停车',
 					'烫染专业店',
 					'免费修眉',
@@ -203,7 +203,7 @@ export default {
 				this.serviceFeatures = [
 					'全预约制',
 					'免费茶点',
-					'头皮检测',
+					'头皮怣测',
 					'免费停车'
 				]
 			}

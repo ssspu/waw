@@ -1,6 +1,6 @@
 /**
  * 私信/聊天模块 API
- * 包含会话列表、聊天记录、发送消息等接口
+ * 包含会话列表聊天记录发消息等接口
  */
 
 import { post, get, put, del } from '../request.js'
@@ -50,7 +50,7 @@ export default {
   },
 
   /**
-   * 发送消息
+   * 发消息
    * @param {string} conversationId - 会话ID
    * @param {Object} data - { type: 消息类型(text/image/service), content: 消息内容, extra?: 附加数据 }
    */
@@ -67,7 +67,7 @@ export default {
   },
 
   /**
-   * 标记所有会话已读
+   * 标记有会话已读
    */
   markAllAsRead() {
     return put(`${CHAT_PREFIX}/conversations/read-all`)
@@ -100,7 +100,7 @@ export default {
   },
 
   /**
-   * 获取未读消息总数
+   * 获取未读消息数
    */
   getUnreadCount() {
     return get(`${CHAT_PREFIX}/unread-count`, {}, { showLoading: false })
@@ -168,7 +168,7 @@ export default {
   },
 
   /**
-   * 发送服务卡片消息
+   * 发服务卡片消息
    * @param {string} conversationId - 会话ID
    * @param {Object} data - { serviceId, designerId? }
    */
@@ -177,7 +177,6 @@ export default {
   },
 
   /**
-   * 发送预约卡片消息
    * @param {string} conversationId - 会话ID
    * @param {Object} data - { orderId }
    */

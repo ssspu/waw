@@ -113,10 +113,14 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
 	data() {
 		return {
-						selectedReasonIndex: null,
+			orderId: '',
+			loading: false,
+			selectedReasonIndex: null,
 			refundReasons: [
 				'店铺/商品信息问题',
 				'价格不划算',
@@ -128,30 +132,61 @@ export default {
 				'商家无法提供服务'
 			],
 			orderInfo: {
-				providerName: '李天天',
+				providerName: '',
 				providerRole: '美发师',
-				productImage: '/static/icon/rectangle-169.png',
-				productName: '欧莱雅植物洗护套装一套',
-				productSpec: '洗发水+护发素',
-				productSize: '500ml+500ml',
-				refundAmount: '799',
-				onlinePayment: '699',
-				discountAmount: '100'
+				productImage: 'https://bioflex.cn/static/icon/rectangle-169.png',
+				productName: '',
+				productSpec: '',
+				productSize: '',
+				refundAmount: '0',
+				onlinePayment: '0',
+				discountAmount: '0'
 			}
 		}
 	},
 	onLoad(options) {
-		// 获取系统状态栏高度
-		// 可从 options 获取订单信息
 		if (options.orderId) {
-			// 根据订单ID加载订单详情
+			this.orderId = options.orderId
+			this.fetchOrderDetail(options.orderId)
 		}
 	},
 	methods: {
-				selectReason(index) {
+		async fetchOrderDetail(orderId) {
+			this.loading = true
+			try {
+				const res = await api.order.getDetail(orderId)
+				if (res.code === 200 && res.data) {
+					this.parseOrderData(res.data)
+				}
+			} catch (err) {
+				console.error('获取订单详情失败:', err)
+				uni.showToast({ title: '获取订单信息失败', icon: 'none' })
+			} finally {
+				this.loading = false
+			}
+		},
+		parseOrderData(order) {
+			// 解析订单数据用于退款页面显示
+			const finalPrice = order.final_price || order.finalPrice || order.pay_amount || '0'
+			const originalPrice = order.original_price || order.originalPrice || finalPrice
+			const discountAmount = order.discount_amount || order.discountAmount || '0'
+
+			this.orderInfo = {
+				providerName: order.designer_name || order.designerName || '服务提供者',
+				providerRole: '美发师',
+				productImage: order.service_image || order.serviceImage || 'https://bioflex.cn/static/icon/rectangle-169.png',
+				productName: order.service_name || order.serviceName || '服务项目',
+				productSpec: order.sku_name || order.skuName || '',
+				productSize: order.duration || '',
+				refundAmount: String(finalPrice),
+				onlinePayment: String(finalPrice),
+				discountAmount: String(discountAmount)
+			}
+		},
+		selectReason(index) {
 			this.selectedReasonIndex = index
 		},
-		handleSubmit() {
+		async handleSubmit() {
 			if (this.selectedReasonIndex === null) {
 				uni.showToast({
 					title: '请选择退款原因',
@@ -161,27 +196,44 @@ export default {
 			}
 
 			const reason = this.refundReasons[this.selectedReasonIndex]
-			console.log('退款原因:', reason)
 
-			// 提交退款申请
 			uni.showLoading({
 				title: '提交中...'
 			})
 
-			// 模拟API请求
-			setTimeout(() => {
-				uni.hideLoading()
-				uni.showToast({
-					title: '退款申请已提交',
-					icon: 'success'
+			try {
+				const res = await api.order.refund(this.orderId, {
+					reason: reason,
+					description: ''
 				})
-				setTimeout(() => {
-					// 跳转到订单详情-售后页
-					uni.redirectTo({
-						url: '/packageOrder/pages/order/detail-after-sale'
+
+				uni.hideLoading()
+
+				if (res.code === 200) {
+					uni.showToast({
+						title: '退款申请已提交',
+						icon: 'success'
 					})
-				}, 1500)
-			}, 1000)
+					setTimeout(() => {
+						// 跳转到售后详情页
+						uni.redirectTo({
+							url: `/packageOrder/pages/order/detail-after-sale?orderId=${this.orderId}`
+						})
+					}, 1500)
+				} else {
+					uni.showToast({
+						title: res.message || '退款申请失败',
+						icon: 'none'
+					})
+				}
+			} catch (err) {
+				uni.hideLoading()
+				console.error('退款申请失败:', err)
+				uni.showToast({
+					title: '退款申请失败，请重试',
+					icon: 'none'
+				})
+			}
 		}
 	}
 }
@@ -216,7 +268,7 @@ export default {
 	padding: 24rpx;
 }
 
-/* 商品信息卡片 */
+
 .product-card {
 	display: flex;
 	flex-direction: column;
@@ -240,6 +292,7 @@ export default {
 	height: 32rpx;
 	background-color: #f6f6f6;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	padding: 0 12rpx;
 	display: flex;
 	align-items: center;
@@ -300,7 +353,7 @@ export default {
 	color: #a6a6a6;
 }
 
-/* 退款金额卡片 */
+
 .refund-amount-card {
 	display: flex;
 	flex-direction: column;
@@ -352,7 +405,7 @@ export default {
 	color: #333333;
 }
 
-/* 退款明细 */
+
 .refund-detail-box {
 	background-color: #f7f7f7;
 	border-radius: 8rpx;
@@ -409,7 +462,7 @@ export default {
 	color: #a6a6a6;
 }
 
-/* 退回账户 */
+
 .refund-account-row {
 	display: flex;
 	align-items: center;
@@ -456,7 +509,7 @@ export default {
 	color: #a6a6a6;
 }
 
-/* 退款原因卡片 */
+
 .reason-card {
 	display: flex;
 	flex-direction: column;
@@ -525,7 +578,7 @@ export default {
 	background-color: #333333;
 }
 
-/* 底部按钮 */
+
 .footer {
 	position: fixed;
 	bottom: 0;

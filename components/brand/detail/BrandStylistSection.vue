@@ -2,9 +2,9 @@
 	<view class="stylist-section">
 		<!-- 分类标签 -->
 		<view class="category-nav">
-			<view 
-				v-for="category in categoryTabs" 
-				:key="category.id" 
+			<view
+				v-for="category in categoryTabs"
+				:key="category.id"
 				class="category-btn"
 				:class="{ active: selectedCategory === category.id }"
 				@tap="selectCategory(category.id)"
@@ -12,9 +12,19 @@
 				<text>{{ category.label }}</text>
 			</view>
 		</view>
-		
+
+		<!-- 加载状态 -->
+		<view v-if="loading" class="loading-state">
+			<text class="loading-text">加载中...</text>
+		</view>
+
+		<!-- 空状态 -->
+		<view v-else-if="filteredStylistData.length === 0" class="empty-state">
+			<text class="empty-text">暂无设计师</text>
+		</view>
+
 		<!-- 发型师列表 -->
-		<view class="stylist-list">
+		<view v-else class="stylist-list">
 			<view 
 				v-for="stylist in filteredStylistData" 
 				:key="stylist.id" 
@@ -58,7 +68,7 @@
 									<view class="rating">
 										<text class="rating-value">{{ stylist.rating }}</text>
 										<view class="star-badge">
-											<image class="star-icon" src="https://c.animaapp.com/mi5l377nJk1HHO/img/star-1.svg" mode="aspectFit"></image>
+											<image class="star-icon" src="/static/icon/star.png" mode="aspectFit"></image>
 										</view>
 									</view>
 									<text class="stats-separator">｜</text>
@@ -108,7 +118,7 @@
 </template>
 
 <script>
-import api from '@/api'
+import { designerApi } from '@/api'
 
 export default {
 	props: {
@@ -143,35 +153,74 @@ export default {
 			return this.stylistData.filter(stylist => stylist.category === this.selectedCategory)
 		}
 	},
+	watch: {
+		brandId: {
+			immediate: true,
+			handler(newVal) {
+				if (newVal) {
+					this.fetchDesigners()
+				}
+			}
+		}
+	},
 	mounted() {
-		this.fetchDesigners()
+		if (this.brandId) {
+			this.fetchDesigners()
+		}
 	},
 	methods: {
-		// 获取品牌馆设计师列表
+
 		async fetchDesigners() {
 			if (this.loading) return
 			this.loading = true
 			try {
-				const res = await api.brand.getDesigners(this.brandId, { pageSize: 50 })
-				if (res.code === 0 && res.data) {
-					const list = res.data.list || res.data.records || []
-					// 转换API数据为组件需要的格式
+				// 获取设计师列表
+				const res = await designerApi.getList({ page: 1, pageSize: 50 })
+				console.log('Designer list response:', res)
+				if (res.code === 200 && res.data) {
+					const allList = res.data.items || res.data.list || res.data.records || []
+
+					// 根据 shop_id 筛选属于该门店的设计师
+					const list = allList.filter(designer => designer.shop_id === this.brandId)
+					console.log('Filtered designers for brand:', this.brandId, list)
+
+					// 获取等级文本
+					const getLevelText = (level) => {
+						const levelMap = {
+							1: '初级',
+							2: '中级',
+							3: '高级',
+							4: '资深',
+							5: '首席'
+						}
+						return levelMap[level] || '高级'
+					}
+
+					// 获取分类
+					const getCategory = (position, level) => {
+						if (position && position.includes('店长')) return 'manager'
+						if (position && position.includes('总监')) return 'director'
+						if (level >= 5 || (position && position.includes('首席'))) return 'chief'
+						if (level >= 4 || (position && position.includes('资深'))) return 'senior'
+						return 'hairstylist'
+					}
+
 					this.stylistData = list.map(designer => ({
 						id: designer.id,
-						name: designer.name,
+						name: designer.real_name || designer.name || '未知',
 						image: designer.avatar || '',
-						role: designer.role || '美发师',
-						level: designer.level || '高级',
-						category: designer.category || 'hairstylist',
-						position: designer.position || `${designer.level}｜从业${designer.experience || 5}年`,
-						specialties: designer.specialties || [],
+						role: designer.position || '美发师',
+						level: getLevelText(designer.professional_level),
+						category: getCategory(designer.position, designer.professional_level),
+						position: `${designer.position || '美发师'}｜从业${designer.work_years || 0}年`,
+						specialties: designer.expertise ? designer.expertise.split(/[,，]/).map(s => s.trim()) : [],
 						rating: designer.rating || 0,
-						serviceCount: designer.serviceCount || 0,
+						serviceCount: designer.total_appointments || 0,
 						worksCount: designer.worksCount || 0,
-						tags: designer.tags || [],
+						tags: designer.service_features ? String(designer.service_features).split(/[,，]/).map(t => t.trim()) : [],
 						price: designer.price || 0,
 						discount: designer.discount || '',
-						soldCount: designer.soldCount || 0
+						soldCount: designer.sold_count || 0
 					}))
 				}
 			} catch (err) {
@@ -273,7 +322,7 @@ export default {
 	min-width: 0;
 }
 
-// 限制高度容器：与头像高度一致
+
 .info-height-limit {
 	height: 160rpx;
 	display: flex;
@@ -381,9 +430,9 @@ export default {
 }
 
 .star-icon {
-	width: 16rpx;
-	height: 16rpx;
-	filter: brightness(0) invert(1)
+	width: 20rpx;
+	height: 20rpx;
+	filter: brightness(0) invert(1);
 }
 
 .stats-item {
@@ -493,5 +542,39 @@ export default {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-size: 24rpx;
 	color: #ffa77b;
+}
+
+.loading-state {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 60rpx 0;
+	width: 100%;
+	background-color: #ffffff;
+	border-radius: 12rpx;
+}
+
+.loading-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 26rpx;
+	color: #a6a6a6;
+}
+
+.empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 80rpx 40rpx;
+	width: 100%;
+	background-color: #ffffff;
+	border-radius: 12rpx;
+	box-sizing: border-box;
+}
+
+.empty-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 28rpx;
+	color: #a6a6a6;
 }
 </style>

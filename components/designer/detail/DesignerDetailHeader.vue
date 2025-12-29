@@ -36,7 +36,7 @@ export default {
 		}
 	},
 	created() {
-		// 从持久化存储获取状态栏高度
+		
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
@@ -94,7 +94,7 @@ export default {
 	box-sizing: border-box;
 }
 
-// 自定义导航栏
+
 .custom-navbar {
 	position: absolute;
 	top: 0;
@@ -127,7 +127,7 @@ export default {
 	width: 60;
 	height: 60rpx;
 	flex-shrink: 0;
-	filter: brightness(0) invert(1);
+	
 }
 
 .logo {

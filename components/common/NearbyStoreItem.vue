@@ -14,7 +14,7 @@
 				<view class="stats-rating">
 					<text class="stats-rating-score">{{ store.rating }}</text>
 					<view class="star-container-small">
-						<image class="star-small" src="https://c.animaapp.com/mi5cgxi6ndVkfo/img/star-1.svg" mode="aspectFit"></image>
+						<image class="star-small" src="/static/icon/star.png" mode="aspectFit"></image>
 					</view>
 				</view>
 				<view class="store-stats-info">
@@ -99,18 +99,20 @@ export default {
 }
 
 .store-name {
-	font-size: 32rpx;
-	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 28rpx;
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-weight: 500;
 	color: #000000;
 }
 
 .store-tag-badge {
-	padding: 6rpx 16rpx;
+	padding: 4rpx 8rpx;
 	background-color: #dacbb1;
 	color: #645e57;
-	font-size: 22rpx;
+	font-size: 20rpx;
 	font-family: 'PingFang_SC-Medium', Helvetica;
-	border-radius: 8rpx;
+	font-weight: 500;
+	border-radius: 4rpx;
 }
 
 .store-action {
@@ -119,9 +121,10 @@ export default {
 }
 
 .store-type {
-	font-size: 24rpx;
-	font-family: 'PingFang_SC-Regular', Helvetica;
-	color: #999999;
+	font-size: 22rpx;
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-weight: 500;
+	color: #a6a6a6;
 }
 
 .store-stats-row {
@@ -171,15 +174,17 @@ export default {
 }
 
 .stat-label {
-	font-size: 24rpx;
+	font-size: 22rpx;
 	font-family: 'PingFang_SC-Regular', Helvetica;
-	color: #999999;
+	font-weight: normal;
+	color: #a6a6a6;
 }
 
 .stat-value {
-	font-size: 26rpx;
+	font-size: 24rpx;
 	font-family: 'PingFang_SC-Medium', Helvetica;
-	color: #333333;
+	font-weight: 500;
+	color: #666666;
 }
 
 .stat-divider {

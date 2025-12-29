@@ -78,15 +78,15 @@ export default {
 		this.fetchBrowseRecords()
 	},
 	methods: {
-		// 获取浏览记录
+		
 		async fetchBrowseRecords() {
 			if (this.loading) return
 			this.loading = true
 			try {
 				const res = await api.user.getBrowseRecords({ page: 1, pageSize: 20 })
-				if (res.code === 0 && res.data) {
+				if (res.code === 200 && res.data) {
 					const list = res.data.list || res.data.records || []
-					// 分离服务和品牌记录
+					
 					this.serviceRecords = list.filter(item => item.type === 'service').map(item => ({
 						id: item.id,
 						name: item.name || item.serviceName,
@@ -135,13 +135,13 @@ export default {
 			this.activeTab = value
 		},
 		handleServiceTap(item) {
-			// 跳转到设计师详情页查看服务
+			
 			uni.navigateTo({
 				url: `/pages/designer/detail?serviceId=${item.id}`
 			})
 		},
 		handleCardAction(item) {
-			// 跳转到设计师详情页进行预约
+			
 			uni.navigateTo({
 				url: `/pages/designer/detail?serviceId=${item.id}&designerId=${item.stylist?.id || ''}`
 			})
@@ -188,7 +188,7 @@ export default {
 }
 
 .toggle-btn.active .toggle-icon {
-	filter: brightness(0) invert(1);
+	
 }
 
 .toggle-icon {

@@ -120,14 +120,14 @@ export default {
 			hairQuality: 'soft',
 			hairThickness: 'fine',
 			loading: false,
-			// 脸型选项
+			
 			faceTypes: [
-				{ id: 'oval', icon: '/static/icon/face-oval.png', activeIcon: '/static/icon/face-oval-active.png' },
-				{ id: 'circle', icon: '/static/icon/face-circle.png', activeIcon: '/static/icon/face-circle-active.png' },
-				{ id: 'square', icon: '/static/icon/face-square.png', activeIcon: '/static/icon/face-square-active.png' },
-				{ id: 'diamond', icon: '/static/icon/face-diamond.png', activeIcon: '/static/icon/face-diamond-active.png' },
-				{ id: 'triangle', icon: '/static/icon/face-triangle.png', activeIcon: '/static/icon/face-triangle-active.png' },
-				{ id: 'rounded-rect', icon: '/static/icon/face-rounded-rect.png', activeIcon: '/static/icon/face-rounded-rect-active.png' }
+				{ id: 'oval', icon: 'https://bioflex.cn/static/icon/face-oval.png', activeIcon: 'https://bioflex.cn/static/icon/face-oval-active.png' },
+				{ id: 'circle', icon: 'https://bioflex.cn/static/icon/face-circle.png', activeIcon: 'https://bioflex.cn/static/icon/face-circle-active.png' },
+				{ id: 'square', icon: 'https://bioflex.cn/static/icon/face-square.png', activeIcon: 'https://bioflex.cn/static/icon/face-square-active.png' },
+				{ id: 'diamond', icon: 'https://bioflex.cn/static/icon/face-diamond.png', activeIcon: 'https://bioflex.cn/static/icon/face-diamond-active.png' },
+				{ id: 'triangle', icon: 'https://bioflex.cn/static/icon/face-triangle.png', activeIcon: 'https://bioflex.cn/static/icon/face-triangle-active.png' },
+				{ id: 'rounded-rect', icon: 'https://bioflex.cn/static/icon/face-rounded-rect.png', activeIcon: 'https://bioflex.cn/static/icon/face-rounded-rect-active.png' }
 			],
 			hairAttributes: [
 				{
@@ -164,15 +164,15 @@ export default {
 		this.fetchWorks()
 	},
 	methods: {
-		// 获取品牌馆作品列表
+		
 		async fetchWorks() {
 			if (this.loading) return
 			this.loading = true
 			try {
 				const res = await api.brand.getWorks(this.brandId, { pageSize: 50 })
-				if (res.code === 0 && res.data) {
+				if (res.code === 200 && res.data) {
 					const list = res.data.list || res.data.records || []
-					// 转换API数据为组件需要的格式
+					
 					this.galleryImages = list.map(work => ({
 						id: work.id,
 						src: work.image || work.cover || ''
@@ -309,6 +309,7 @@ export default {
 	&.active {
 		background-color: #333333;
 		border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	}
 }
 

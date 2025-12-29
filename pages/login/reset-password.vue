@@ -1,7 +1,7 @@
 <template>
 	<view class="register-page">
 		<!-- 背景图片 -->
-		<image class="bg-image" src="/static/background-image/register.png" mode="aspectFill"></image>
+		<image class="bg-image" src="https://bioflex.cn/static/background-image/register.png" mode="aspectFill"></image>
 
 		<!-- 自定义导航栏 -->
 		<view class="custom-navbar" >
@@ -10,8 +10,8 @@
 					<image class="nav-icon" src="https://c.animaapp.com/mi5ng54v4eM3X6/img/frame.svg" mode="aspectFit"></image>
 				</view>
 				<view class="nav-right">
-					<image class="nav-icon" src="/static/icon/more.svg" mode="aspectFit"></image>
-					<image class="nav-icon" src="/static/icon/scan.svg" mode="aspectFit"></image>
+					<image class="nav-icon" src="https://bioflex.cn/static/icon/more.svg" mode="aspectFit"></image>
+					<image class="nav-icon" src="https://bioflex.cn/static/icon/scan.svg" mode="aspectFit"></image>
 				</view>
 			</view>
 		</view>
@@ -183,7 +183,7 @@ export default {
 				uni.showToast({ title: '请输入正确的手机号码', icon: 'none' })
 				return
 			}
-			// 开始倒计时
+			
 			this.countdown = 60
 			this.timer = setInterval(() => {
 				this.countdown--
@@ -215,7 +215,7 @@ export default {
 				uni.showToast({ title: '请先同意用户协议', icon: 'none' })
 				return
 			}
-			// 重置密码成功后返回登录页
+			
 			uni.showToast({ title: '密码重置成功', icon: 'success' })
 			setTimeout(() => {
 				uni.navigateBack()
@@ -496,7 +496,7 @@ export default {
 	border-radius: 100rpx;
 }
 
-// 协议弹窗
+
 .agreement-modal {
 	position: fixed;
 	top: 0;

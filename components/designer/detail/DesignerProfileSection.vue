@@ -10,7 +10,7 @@
 					class="category-btn"
 					:class="{ active: selectedCategory === category.id }"
 					@tap="selectCategory(category.id)"
-				>
+				>	
 					<text>{{ category.label }}</text>
 				</view>
 			</view>
@@ -18,7 +18,7 @@
 
 		<!-- 空数据状态 -->
 		<view v-if="!loading && services.length === 0" class="empty-state">
-			<image class="empty-icon" src="/static/icon/empty-service.png" mode="aspectFit"></image>
+			<image class="empty-icon" src="https://bioflex.cn/static/icon/empty-service.png" mode="aspectFit"></image>
 			<text class="empty-text">暂无服务内容</text>
 		</view>
 
@@ -70,7 +70,7 @@
 							<view v-else class="expand-btn" @tap="toggleExpand(service.id)">
 								<image 
 									class="options-icon" 
-									src="/static/icon/up.png" 
+									src="https://bioflex.cn/static/icon/up.png" 
 									mode="aspectFit"
 								></image>
 							</view>
@@ -78,7 +78,7 @@
 					</view>
 				</view>
 				
-				<!-- 选项区域（如果展开） -->
+				<!-- 选项区域（如果展值） -->
 				<view v-if="isExpanded(service.id)" class="options-section">
 					<!-- 头发长度选择 -->
 					<view class="hair-length-options">
@@ -133,6 +133,10 @@ export default {
 			type: [String, Number],
 			default: null
 		},
+		designerUserId: {
+			type: String,
+			default: ''
+		},
 		activeSubTab: {
 			type: String,
 			default: 'hair-service'
@@ -141,7 +145,7 @@ export default {
 	data() {
 		return {
 			loading: false,
-			serviceType: 'hair-service', // 服务类型：hair-service, beauty-service, other-service
+			serviceType: 'hair-service', 
 			selectedSecondary: 'hairstylist',
 			secondaryTabs: [
 				{ id: 'hairstylist', label: '美发师' },
@@ -149,23 +153,36 @@ export default {
 			],
 			selectedCategory: "wash-cut-blow",
 			selectedHairLength: "short",
-			categories: [],
+			categories: [
+				{ id: 'wash-cut-blow', label: '洗剪吹', count: 5 },
+				{ id: 'perm', label: '烫发', count: 3 },
+				{ id: 'dye', label: '染发', count: 4 },
+				{ id: 'care', label: '护理', count: 2 }
+			],
 			services: [],
 			expandedServices: [],
 			selectedBrands: {},
 			selectedHairLengths: {},
-			hairLengthOptions: [],
-			brandOptions: [],
+			hairLengthOptions: [
+				{ id: 'short', label: '短发' },
+				{ id: 'medium', label: '中发' },
+				{ id: 'long', label: '长发' }
+			],
+			brandOptions: [
+				{ id: 'brand1', name: '施华蔻', price: '288' },
+				{ id: 'brand2', name: '欧莱雅', price: '388' },
+				{ id: 'brand3', name: '卡诗', price: '488' }
+			],
 		}
 	},
 	computed: {
-		// 只显示有服务内容的分类
+		
 		availableCategories() {
 			return this.categories.filter(cat => cat.count > 0)
 		}
 	},
 	watch: {
-		designerId: {
+		designerUserId: {
 			immediate: true,
 			handler(newVal) {
 				if (newVal) {
@@ -176,47 +193,60 @@ export default {
 		activeSubTab: {
 			immediate: true,
 			handler(newVal) {
-				// 子tab切换时更新服务类型
+				
 				this.serviceType = newVal
-				if (this.designerId) {
+				if (this.designerUserId) {
 					this.fetchServices()
 				}
 			}
 		},
 		selectedCategory() {
-			this.fetchServices()
+			if (this.designerUserId) {
+				this.fetchServices()
+			}
 		}
 	},
 	methods: {
-		// 获取设计师服务列表
+		
 		async fetchServices() {
-			if (!this.designerId || this.loading) return
+			if (!this.designerUserId || this.loading) return
 			this.loading = true
 			try {
-				const res = await api.designer.getServices(this.designerId, {
-					category: this.selectedCategory,
-					serviceType: this.serviceType, // 传递服务类型参数
+				
+				const res = await api.service.getList({
 					page: 1,
-					pageSize: 20
+					pageSize: 50
 				})
-				if (res.code === 0) {
+				if (res.code === 200) {
 					const data = res.data
-					// 转换服务数据格式
-					const list = data.list || data.records || []
-					this.services = list.map(s => ({
-						id: s.id,
-						title: s.name,
-						description: s.description,
-						estimatedTime: s.duration ? `${s.duration}分钟` : '1小时',
-						salesCount: String(s.soldCount || 0),
-						price: String(s.price),
-						discount: s.discount || '',
-						image: s.image
-					}))
-					// 更新分类和选项
+					
+					const allList = data.items || data.list || data.records || []
+
+					
+					const list = allList.filter(s => s.user_id === this.designerUserId)
+
+					
+					this.services = list.map(s => {
+						
+						const image = Array.isArray(s.image_urls) && s.image_urls.length > 0
+							? s.image_urls[0]
+							: (s.image || '')
+
+						return {
+							id: s.id,
+							title: s.name,
+							description: s.detail_text || s.description || '',
+							estimatedTime: s.duration_min ? `${s.duration_min}分钟` : '1小时',
+							salesCount: String(s.sold_count || s.soldCount || 0),
+							price: String(s.fixed_price || s.price || 0),
+							discount: s.discount || '',
+							image: image
+						}
+					})
+
+					
 					if (data.categories) {
 						this.categories = data.categories
-						// 如果当前选中的分类没有服务，自动选择第一个有服务的分类
 						const available = data.categories.filter(cat => cat.count > 0)
 						if (available.length > 0 && !available.find(cat => cat.id === this.selectedCategory)) {
 							this.selectedCategory = available[0].id
@@ -245,13 +275,13 @@ export default {
 			this.selectedHairLength = id
 		},
 		toggleExpand(serviceId) {
-			// 切换展开状态
+			
 			const index = this.expandedServices.indexOf(serviceId)
 			if (index > -1) {
 				this.expandedServices.splice(index, 1)
 			} else {
 				this.expandedServices.push(serviceId)
-				// 默认选择第一个头发长度和品牌
+				
 				if (!this.selectedHairLengths[serviceId]) {
 					this.$set(this.selectedHairLengths, serviceId, 'short')
 				}
@@ -261,7 +291,7 @@ export default {
 			}
 		},
 		isExpanded(serviceId) {
-			// 检查服务是否展开
+			
 			return this.expandedServices.includes(serviceId)
 		},
 		getSelectedHairLength(serviceId) {
@@ -277,15 +307,15 @@ export default {
 			return this.selectedBrands[serviceId] || (this.brandOptions && this.brandOptions.length > 0 ? this.brandOptions[0].id : null)
 		},
 		handleBook(service) {
-			// 获取选择的头发长度
+			
 			const selectedHairLengthId = this.getSelectedHairLength(service.id)
 			const selectedHairLength = this.hairLengthOptions.find(opt => opt.id === selectedHairLengthId)
 
-			// 获取选择的品牌
+			
 			const selectedBrandId = this.getSelectedBrand(service.id)
 			const selectedBrand = this.brandOptions.find(opt => opt.id === selectedBrandId)
 
-			// 构建选择的服务数据
+			
 			const bookingData = {
 				service: {
 					id: service.id,
@@ -300,7 +330,7 @@ export default {
 				price: selectedBrand ? selectedBrand.price : service.price
 			}
 
-			// 触发事件传递数据到父组件
+			
 			this.$emit('book-service', bookingData)
 		}
 	}
@@ -585,7 +615,7 @@ export default {
 .options-icon {
 	width: 40rpx;
 	height: 40rpx;
-	filter: brightness(0) invert(1);
+	
 }
 
 .options-section {
@@ -677,7 +707,7 @@ export default {
 .check-icon {
 	width: 20rpx;
 	height: 20rpx;
-	filter: brightness(0) invert(1);
+	
 }
 
 .brand-icon {
@@ -732,7 +762,7 @@ export default {
 	font-size: 26rpx;
 }
 
-/* 空数据和加载状态 */
+
 .empty-state {
 	display: flex;
 	flex-direction: column;
@@ -772,7 +802,7 @@ export default {
 	color: #a6a6a6;
 }
 
-/* 动画 */
+
 @keyframes fade-in {
 	0% {
 		opacity: 0;

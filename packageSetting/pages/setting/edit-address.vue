@@ -26,28 +26,28 @@
 					</view>
 					<view class="separator-line"></view>
 					<view class="form-row region-row" @tap="handleChooseRegion">
-						<text class="row-label">所在地</text>
+						<text class="row-label">怉在地</text>
 						<view class="region-input">
 							<text :class="['region-text', { placeholder: !regionDisplay }]">
 								{{ regionDisplay || '请选择' }}
 							</text>
-							<image class="chevron-icon" src="/static/icon/gengduo.png" mode="aspectFit"></image>
+							<image class="chevron-icon" src="https://bioflex.cn/static/icon/gengduo.png" mode="aspectFit"></image>
 						</view>
 					</view>
 					<view class="separator-line"></view>
 					<view class="form-row">
-						<text class="row-label">详细地址</text>
+						<text class="row-label">详细地倝</text>
 						<input
 							class="row-input"
 							v-model="detailAddress"
 							type="text"
-							placeholder="详细地址"
+							placeholder="详细地倝"
 							maxlength="60"
 						/>
 					</view>
 					<view class="separator-line"></view>
 					<view class="form-row switch-row">
-						<text class="row-label">设为默认地址</text>
+						<text class="row-label">设为默认地倝</text>
 						<switch
 							class="default-switch"
 							:checked="isDefault"
@@ -59,7 +59,7 @@
 			</view>
 
 			<view class="delete-card">
-				<button class="delete-btn" @tap="handleDelete">删除收货地址</button>
+				<button class="delete-btn" @tap="handleDelete">删除收货地倝</button>
 			</view>
 
 			<view class="submit-btn-group">
@@ -109,8 +109,8 @@ export default {
 		},
 		handleDelete() {
 			uni.showModal({
-				title: '删除收货地址',
-				content: '确定要删除该地址吗？',
+				title: '删除收货地倝',
+				content: '确定要删除该地倝吗？',
 				success: (res) => {
 					if (res.confirm) {
 						uni.showToast({ title: '已删除', icon: 'success' })
@@ -133,7 +133,7 @@ export default {
 				return
 			}
 			if (!this.detailAddress.trim()) {
-				uni.showToast({ title: '请输入详细地址', icon: 'none' })
+				uni.showToast({ title: '请输入详细地倝', icon: 'none' })
 				return
 			}
 			uni.showLoading({ title: '保存中...' })

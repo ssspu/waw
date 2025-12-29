@@ -22,7 +22,7 @@
 				<view class="product-section">
 					<image
 						class="product-image"
-						src="/static/icon/rectangle-169.png"
+						src="https://bioflex.cn/static/icon/rectangle-169.png"
 						mode="aspectFill"
 					></image>
 					<view class="product-info">
@@ -115,10 +115,10 @@ export default {
 		}
 	},
 	onLoad(options) {
-		// 可以从 options 中获取订单ID等信息
+		
 		if (options.orderId) {
 			this.orderId = options.orderId
-			// 根据订单ID加载订单详情
+			
 		}
 	},
 	methods: {
@@ -134,7 +134,7 @@ export default {
 			})
 		},
 		handleReview() {
-			// 跳转到评价页面
+			
 			uni.navigateTo({
 				url: `/packageOrder/pages/order/service-review?orderId=${this.orderId || this.orderInfo.orderNumber}`
 			})

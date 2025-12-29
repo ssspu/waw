@@ -19,7 +19,7 @@
 								mode="aspectFit"
 							></image>
 						</view>
-						<text class="nav-title">洗剪吹</text>
+						<text class="nav-title">{{ serviceData.name || '服务详情' }}</text>
 					</view>
 				</view>
 
@@ -37,6 +37,7 @@
 		<ServicePurchaseFooter
 			:service-id="serviceId"
 			:designer-id="serviceData.designer ? serviceData.designer.id : ''"
+			:service-data="serviceData"
 			:is-favorited="isFavorited"
 			@favorite-change="handleFooterFavoriteChange"
 		/>
@@ -74,7 +75,7 @@ export default {
 		}
 	},
 	onLoad(options) {
-		// 从持久化存储获取状态栏高度
+		
 		if (options.id) {
 			this.serviceId = options.id
 			this.fetchServiceDetail(options.id)
@@ -93,84 +94,120 @@ export default {
 				this.$refs.profileSection.isFavorited = isFavorited
 			}
 		},
-		// 获取服务详情
+		
 		async fetchServiceDetail(serviceId) {
 			this.loading = true
 			try {
 				const res = await api.service.getDetail(serviceId)
-				if (res.code === 0 && res.data) {
+				if (res.code === 200 && res.data) {
 					const service = res.data
-					// 头部图片
-					this.headerImages = service.images || [service.cover || service.image]
-					// 服务数据传给子组件
+
+					// 头部图片 - 支持 image_urls 数组或单个图片
+					this.headerImages = service.image_urls || service.images || [service.cover || service.image]
+
+					// 计算价格 - 优先使用第一个 SKU 的价格，否则使用固定价格
+					const firstSku = service.skus && service.skus.length > 0 ? service.skus[0] : null
+					const price = firstSku ? parseFloat(firstSku.sell_price) : parseFloat(service.fixed_price) || 0
+					const refPrice = firstSku ? parseFloat(firstSku.ref_price) : parseFloat(service.fixed_ref_price) || price
+
+					// 将 SKUs 转换为服务项目列表
+					const serviceItems = (service.skus || []).map(sku => ({
+						name: sku.sku_name || sku.name || '',
+						quantity: `¥${sku.sell_price}`
+					}))
+
+					// 温馨提示 - 从 notice_text 生成数组
+					const warmTips = []
+					if (service.notice_text) {
+						warmTips.push(service.notice_text)
+					}
+					if (service.detail_text) {
+						warmTips.push(service.detail_text)
+					}
+					if (service.is_seven_day_guarantee) {
+						warmTips.push('支持7天无理由退款')
+					}
+					if (service.duration_min) {
+						warmTips.push(`预计服务时长：${service.duration_min}分钟`)
+					}
+
 					this.serviceData = {
 						id: service.id,
 						name: service.name || service.title || '',
 						fullTitle: service.fullTitle || service.name || service.title || '',
-						price: service.price || 0,
-						appointmentPrice: service.appointmentPrice || service.price || 0,
-						soldCount: service.soldCount || service.sales || 0,
-						isFavorited: service.isFavorited || false,
-						// 优惠券信息
+						price: price,
+						appointmentPrice: refPrice,
+						soldCount: service.sold_count || service.soldCount || service.sales || 0,
+						isFavorited: service.isFavorited || service.is_favorited || false,
+						rating: service.rating || 5.0,
+						reviewCount: service.review_count || service.reviewCount || 0,
+						tags: service.tag_ids || service.tags || [],
+
+						// 优惠券 - 如果后端返回了就使用，否则为空
 						coupons: (service.coupons || []).map(c => ({
 							id: c.id,
-							text: c.text || c.title || ''
+							text: c.text || c.title || c.name || ''
 						})),
-						// 设计师信息
-						designer: service.designer ? {
-							id: service.designer.id,
-							name: service.designer.name || '',
-							avatar: service.designer.avatar || '',
-							badge: service.designer.badge || service.designer.level || '',
-							role: service.designer.role || service.designer.title || '',
-							rating: service.designer.rating || 5.0,
-							serviceCount: service.designer.serviceCount || 0,
-							worksCount: service.designer.worksCount || 0
+
+						// 设计师信息 - 支持新的扁平化字段和嵌套对象
+						designer: (service.designer_name || service.designer) ? {
+							id: service.user_id || service.designer_id || (service.designer && service.designer.id) || '',
+							name: service.designer_name || (service.designer && service.designer.name) || '',
+							avatar: service.designer_avatar || (service.designer && service.designer.avatar) || '',
+							badge: service.designer_badge || (service.designer && (service.designer.badge || service.designer.level)) || '',
+							role: service.designer_role || (service.designer && (service.designer.role || service.designer.title)) || '设计师',
+							rating: service.designer_rating || (service.designer && service.designer.rating) || service.rating || 5.0,
+							serviceCount: service.designer_service_count || (service.designer && service.designer.serviceCount) || 0,
+							worksCount: service.designer_works_count || (service.designer && service.designer.worksCount) || 0
 						} : null,
-						// 服务内容
-						serviceItems: (service.items || service.serviceItems || []).map(item => ({
-							name: item.name || item.title || '',
-							quantity: item.quantity || item.value || ''
-						})),
+
+						// 服务项目 - 从 SKUs 生成
+						serviceItems: serviceItems,
+
 						// 温馨提示
-						warmTips: service.warmTips || service.tips || [],
-						// 图文详情
-						detailImages: service.detailImages || service.details || [],
+						warmTips: warmTips.length > 0 ? warmTips : (service.warmTips || service.tips || []),
+
+						// 详情图片
+						detailImages: service.detail_images || service.detailImages || service.image_urls || service.details || [],
+
 						// 评价标签
-						reviewTags: (service.reviewTags || []).map(tag => ({
+						reviewTags: (service.reviewTags || service.review_tags || []).map(tag => ({
 							text: tag.text || tag.name || '',
 							count: tag.count || 0,
 							active: tag.active || false
 						})),
+
 						// 评价列表
 						reviews: (service.reviews || []).map(review => ({
 							image: review.image || review.cover || '',
 							title: review.title || '',
 							rating: review.rating || 5.0,
 							content: review.content || review.text || '',
-							avatar: review.avatar || review.userAvatar || '',
-							author: review.author || review.userName || '',
-							date: review.date || review.createTime || ''
+							avatar: review.avatar || review.userAvatar || review.user_avatar || '',
+							author: review.author || review.userName || review.user_name || '',
+							date: review.date || review.createTime || review.create_time || ''
 						})),
+
 						// 问答
 						questions: service.questions || [],
-						questionCount: service.questionCount || (service.questions || []).length,
+						questionCount: service.questionCount || service.question_count || (service.questions || []).length,
+
 						// 推荐服务
-						recommendedServices: (service.recommendedServices || []).map(s => ({
+						recommendedServices: (service.recommendedServices || service.recommended_services || []).map(s => ({
 							id: s.id,
-							image: s.image || s.cover || '',
+							image: s.image || s.cover || (s.image_urls && s.image_urls[0]) || '',
 							title: s.title || s.name || '',
-							description: s.description || s.desc || '',
-							price: s.price || 0,
-							avatar: s.designer?.avatar || s.avatar || '',
-							stylistName: s.designer?.name || s.stylistName || '',
-							stylistRole: s.designer?.role || s.stylistRole || '',
+							description: s.description || s.desc || s.detail_text || '',
+							price: parseFloat(s.price || s.fixed_price) || 0,
+							avatar: s.designer_avatar || (s.designer && s.designer.avatar) || s.avatar || '',
+							stylistName: s.designer_name || (s.designer && s.designer.name) || s.stylistName || '',
+							stylistRole: s.designer_role || (s.designer && s.designer.role) || s.stylistRole || '',
 							rating: s.rating || 5.0,
-							reviewCount: s.reviewCount || 0,
+							reviewCount: s.review_count || s.reviewCount || 0,
 							distance: s.distance || ''
 						}))
 					}
-					this.isFavorited = service.isFavorited || false
+					this.isFavorited = service.isFavorited || service.is_favorited || false
 				}
 			} catch (err) {
 				console.error('获取服务详情失败:', err)
@@ -211,7 +248,7 @@ export default {
 	height: 100%;
 }
 
-// 自定义导航栏
+
 .custom-navbar {
 	position: absolute;
 	top: 88rpx;

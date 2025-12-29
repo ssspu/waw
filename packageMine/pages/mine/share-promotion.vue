@@ -3,7 +3,7 @@
 		<!-- 整体背景图片 -->
 		<image
 			class="page-bg"
-			src="/packageMine/static/background-image/share-bg.png"
+			src="https://bioflex.cn/static/background-image/share-bg.png"
 			mode="aspectFill"
 		></image>
 
@@ -80,7 +80,7 @@ export default {
 	onLoad() {},
 	methods: {
 		handleShare() {
-			// 分享功能
+			
 			uni.showActionSheet({
 				itemList: ['复制链接', '保存图片'],
 				success: (res) => {
@@ -101,7 +101,7 @@ export default {
 			})
 		},
 		saveQRCode() {
-			// 保存二维码图片
+			
 			uni.showToast({
 				title: '保存成功',
 				icon: 'success'

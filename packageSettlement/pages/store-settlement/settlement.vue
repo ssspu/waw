@@ -5,7 +5,7 @@
 			<view class="nav-bar">
 				<view class="nav-left">
 					<view class="back-btn" @tap="handleBack">
-						<image class="back-icon" src="/static/icon/arrow-left.png" mode="aspectFit"></image>
+						<image class="back-icon" src="https://bioflex.cn/static/back.png" mode="aspectFit"></image>
 					</view>
 					<text class="nav-title">实体门店入驻</text>
 				</view>
@@ -51,7 +51,7 @@
 					<text class="form-label">结算方式</text>
 					<view class="form-right">
 						<text class="form-value">{{ formData.settlementType }}</text>
-						<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
+						<image class="arrow-icon" src="https://bioflex.cn/static/icon/right.png" mode="aspectFit"></image>
 					</view>
 				</view>
 				<view class="form-divider"></view>
@@ -64,41 +64,41 @@
 				</view>
 				
 				<view class="form-item clickable" @tap="selectAccountType">
-					<text class="form-label">开户类型</text>
+					<text class="form-label">用户类型</text>
 					<text class="form-value">{{ formData.accountType }}</text>
-					<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
+					<image class="arrow-icon" src="https://bioflex.cn/static/icon/right.png" mode="aspectFit"></image>
 				</view>
 				<view class="form-divider"></view>
 				
 				<view class="form-item">
-					<text class="form-label">开户名称</text>
+					<text class="form-label">用户名称</text>
 					<input class="form-input" v-model="formData.accountName" placeholder="请输入对公银行名称" />
 				</view>
 				<view class="form-divider"></view>
 				
 				<view class="form-item clickable" @tap="selectBank">
-					<text class="form-label">开户银行</text>
+					<text class="form-label">用户银行</text>
 					<text class="form-value" :class="{ placeholder: !formData.bankName }">
-						{{ formData.bankName || '选择开户银行' }}
+						{{ formData.bankName || '选择用户银行' }}
 					</text>
-					<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
+					<image class="arrow-icon" src="https://bioflex.cn/static/icon/right.png" mode="aspectFit"></image>
 				</view>
 				<view class="form-divider"></view>
 				
 				<view class="form-item">
-					<text class="form-label">开户银行全称</text>
-					<input class="form-input" v-model="formData.branchName" placeholder="请输入开户支行" />
+					<text class="form-label">用户银行全称</text>
+					<input class="form-input" v-model="formData.branchName" placeholder="请输入用户支行" />
 				</view>
 				<view class="form-divider"></view>
 				
 				<view class="form-item">
-					<text class="form-label">开户银行省市</text>
-					<input class="form-input" v-model="formData.bankCity" placeholder="请输入开户城市编码" />
+					<text class="form-label">用户银行省市</text>
+					<input class="form-input" v-model="formData.bankCity" placeholder="请输入用户城市编码" />
 				</view>
 				<view class="form-divider"></view>
 				
 				<view class="form-item">
-					<text class="form-label">开户银行帐号</text>
+					<text class="form-label">用户银行帐号</text>
 					<input class="form-input" v-model="formData.accountNumber" placeholder="请输入你的银行卡号" />
 				</view>
 				<view class="form-divider"></view>
@@ -168,7 +168,7 @@ export default {
 		},
 		selectBranch() {
 			if (!this.formData.bankName) {
-				uni.showToast({ title: '请先选择开户银行', icon: 'none' })
+				uni.showToast({ title: '请先选择用户银行', icon: 'none' })
 				return
 			}
 			uni.showToast({ title: '选择支行功能开发中', icon: 'none' })
@@ -176,27 +176,27 @@ export default {
 		handlePrev() {
 			uni.navigateBack()
 		},
-		// 验证银行卡号格式
+		
 		validateBankCard(cardNumber) {
 			const reg = /^\d{16,19}$/
 			return reg.test(cardNumber)
 		},
 		handleSubmit() {
-			// 验证表单
+			
 			if (!this.formData.accountName) {
-				uni.showToast({ title: '请输入开户名称', icon: 'none' })
+				uni.showToast({ title: '请输入用户名称', icon: 'none' })
 				return
 			}
 			if (this.formData.accountName.length < 2) {
-				uni.showToast({ title: '开户名称至少2个字符', icon: 'none' })
+				uni.showToast({ title: '用户名称至少2个字符', icon: 'none' })
 				return
 			}
 			if (!this.formData.bankName) {
-				uni.showToast({ title: '请选择开户银行', icon: 'none' })
+				uni.showToast({ title: '请选择用户银行', icon: 'none' })
 				return
 			}
 			if (!this.formData.branchName) {
-				uni.showToast({ title: '请输入开户支行', icon: 'none' })
+				uni.showToast({ title: '请输入用户支行', icon: 'none' })
 				return
 			}
 			if (!this.formData.accountNumber) {
@@ -208,7 +208,7 @@ export default {
 				return
 			}
 			
-			// 提交审核
+			
 			uni.showLoading({ title: '提交中...' })
 			setTimeout(() => {
 				uni.hideLoading()

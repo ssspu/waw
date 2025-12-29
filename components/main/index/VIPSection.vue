@@ -58,7 +58,7 @@ export default {
 	height: 20rpx;
 }
 
-/* 动画 */
+
 @keyframes fade-in {
 	0% {
 		opacity: 0;

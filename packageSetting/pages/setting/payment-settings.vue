@@ -17,7 +17,7 @@
 								<view class="action-button">
 									<image 
 										class="button-icon" 
-										src="/static/icon/gengduo.png" 
+										src="https://bioflex.cn/static/icon/gengduo.png" 
 										mode="aspectFit"
 									></image>
 								</view>
@@ -56,7 +56,7 @@ export default {
 	methods: {
 		handleItemClick(item) {
 			console.log('Edit:', item.label)
-			// 根据不同的支付设置项打开对应的页面
+			
 			if (item.label === '银行卡') {
 				uni.navigateTo({ url: '/packageSetting/pages/setting/bank-cards' })
 			}
@@ -68,7 +68,7 @@ export default {
 				success: (res) => {
 					if (res.confirm) {
 						console.log('Unbind card:', card.id)
-						// 解绑卡片的逻辑
+						
 					}
 				}
 			})

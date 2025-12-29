@@ -16,7 +16,7 @@
 					<text class="time-label">本月</text>
 					<image 
 						class="dropdown-icon" 
-						src="/static/icon/vector-1.svg" 
+						src="https://bioflex.cn/static/icon/vector-1.svg" 
 						mode="aspectFit"
 					></image>
 				</view>

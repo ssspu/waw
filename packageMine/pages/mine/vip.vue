@@ -16,7 +16,7 @@
 
 				<view class="vip-card-header">
 					<view class="vip-icon-wrap">
-						<image class="vip-icon" src="/static/vip/vector-4.svg" mode="aspectFit" />
+						<image class="vip-icon" src="https://bioflex.cn/static/vip/vector-4.svg" mode="aspectFit" />
 					</view>
 					<view class="vip-title-block">
 						<text class="vip-name">美VIP</text>
@@ -25,20 +25,23 @@
 				</view>
 
 				<view class="vip-card-body">
-					<text class="vip-card-title">消费购买指定商品满365元</text>
+					<view class="title-with-bar">
+						<text class="vip-card-title">消费购买指定商品满365元</text>
+						<view class="title-bar"></view>
+					</view>
 					<text class="vip-card-desc">即可升级为美VIP会员1年，享受六大会员权益；</text>
 
 					<view class="vip-tags">
 						<view v-for="tag in tags" :key="tag" class="vip-tag">
 							<view class="tag-icon">
-								<image src="/static/vip/vector-3.svg" mode="aspectFit" />
+								<image src="https://bioflex.cn/static/vip/vector-3.svg" mode="aspectFit" />
 							</view>
 							<text>{{ tag }}</text>
 						</view>
 					</view>
 
-					<text class="vip-card-footnote">本活动最终解释权归本平台所有</text>
-					<image class="vip-diamond" src="/static/vip/3d-vip-194815565-1.png" mode="aspectFit" />
+					<text class="vip-card-footnote">本活动怜终解释权归本平台怉有</text>
+					<image class="vip-diamond" src="https://bioflex.cn/static/vip/3d-vip-194815565-1.png" mode="aspectFit" />
 				</view>
 			</view>
 
@@ -89,7 +92,7 @@ export default {
 		},
 		handlePay() {
 			uni.showToast({
-				title: '支付功能暂未开放',
+				title: '支付功能暂未值放',
 				icon: 'none'
 			})
 		}
@@ -293,6 +296,7 @@ export default {
 	background-color: rgba(246, 246, 246, 0.2);
 	padding: 4rpx 8rpx;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	color: #F4ECDD;
 	font-family: 'PingFang SC', sans-serif;
 	font-size: 20rpx;

@@ -1,12 +1,11 @@
 <template>
 	<view class="screen">
-		<!-- 背景图片 - 预加载所有背景图避免切换闪烁 -->
 		<image
 			v-for="(tab, key) in assets"
 			:key="'header-' + key"
 			class="bg-image-1"
 			:class="{ active: activeTab === key }"
-			:src="tab.headerBg"
+			src="https://bioflex.cn/static/back.png"
 			mode="aspectFill"
 		></image>
 
@@ -18,7 +17,7 @@
 						<image class="back-icon" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-4.svg" mode="aspectFit"></image>
 					</view>
 					<text class="nav-title">美发</text>
-				</view>
+				</view>	
 				<!-- 搜索栏 -->
 				<view class="search-bar" @tap="handleSearchClick">
 					<image class="search-icon" :src="currentBadgeIcon" mode="aspectFit"></image>
@@ -33,7 +32,6 @@
 		<view class="content-section">
 			<!-- Tabs 背景块 -->
 			<view class="tabs-bg"></view>
-			<!-- 预加载所有背景图，通过 opacity 切换避免闪烁 -->
 			<image
 				v-for="(tab, key) in assets"
 				:key="key"
@@ -113,8 +111,8 @@ export default {
 		return {
 			statusBarHeight: 44,
 			activeTab: 'designer',
-			selectedServiceCategory: '', // 空字符串表示"优服务"显示全部
-			tabSwitchCount: 0, // 用于重置组件状态
+			selectedServiceCategory: '', 
+			tabSwitchCount: 0, 
 			tabItems: [
 				{ value: "designer", label: "设计师" },
 				{ value: "service", label: "优服务" },
@@ -124,21 +122,21 @@ export default {
 			assets: {
 				designer: {
 					headerBg: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/rectangle-217.png",
-					mainBg: "/static/background-image/mian-background-left.png",
+					mainBg: "https://bioflex.cn/static/background-image/mian-background-left.png",
 					badgeIcon: "https://c.animaapp.com/mi4wi1dxPPrFZt/img/frame-1.svg",
-					tabBg: "/static/background-image/mian-background-left.png"
+					tabBg: "https://bioflex.cn/static/background-image/mian-background-left.png"
 				},
 				service: {
 					headerBg: "https://c.animaapp.com/mi5bcgvrGbkedE/img/rectangle-217.png",
-					mainBg: "/static/background-image/mian-background-mid.png",
+					mainBg: "https://bioflex.cn/static/background-image/mian-background-mid.png",
 					badgeIcon: "https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-3.svg",
-					tabBg: "/static/background-image/mian-background-mid.png"
+					tabBg: "https://bioflex.cn/static/background-image/mian-background-mid.png"
 				},
 				brand: {
 					headerBg: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-217.png",
-					mainBg: "/static/background-image/mian-background-right.png",
+					mainBg: "https://bioflex.cn/static/background-image/mian-background-right.png",
 					badgeIcon: "https://c.animaapp.com/mi5cgxi6ndVkfo/img/frame-4.svg",
-					tabBg: "/static/background-image/mian-background-right.png"
+					tabBg: "https://bioflex.cn/static/background-image/mian-background-right.png"
 				}
 			}
 		}
@@ -159,7 +157,7 @@ export default {
 		}
 	},
 	onLoad(options) {
-		// 从持久化存储获取状态栏高度
+		
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 
 		console.log('main页面 onLoad, 接收到的参数:', options)
@@ -176,12 +174,12 @@ export default {
 			console.log('没有接收到tab参数，使用默认标签: designer')
 		}
 
-		// 处理滚动到附近推荐
+		
 		if (options.scrollTo === 'nearby') {
 			this.$nextTick(() => {
 				setTimeout(() => {
 					this.scrollToNearbySection()
-				}, 500) // 等待页面渲染完成
+				}, 500) 
 			})
 		}
 	},
@@ -191,7 +189,7 @@ export default {
 		},
 		switchTab(value) {
 			this.activeTab = value
-			// 切换tabs时重置分类为默认
+			
 			this.selectedServiceCategory = ''
 			this.tabSwitchCount++
 		},
@@ -201,22 +199,22 @@ export default {
 			})
 		},
 		handleServiceCategoryClick(service) {
-			// 切换服务分类
+			
 			this.selectedServiceCategory = service.label
-			// 滚动到列表区域
+			
 			this.scrollToServiceGallery()
 		},
 		handleRecommendationCardClick(card) {
-			// 只处理套餐优选和防脱护理
+			
 			if (card.id === 'package' || card.id === 'haircare') {
 				this.selectedServiceCategory = card.title
-				// 滚动到列表区域
+				
 				this.scrollToServiceGallery()
 			}
-			// 会员特区可以跳转到会员页面（暂不处理）
+			
 		},
 		scrollToServiceGallery() {
-			// 通过 ref 调用子组件方法，确保微信小程序中也能正常工作
+			
 			this.$nextTick(() => {
 				if (this.$refs.serviceGallerySection) {
 					this.$refs.serviceGallerySection.scrollToTop()
@@ -224,8 +222,8 @@ export default {
 			})
 		},
 		scrollToNearbySection() {
-			// 滚动到附近推荐区域，使其直接显示在屏幕顶端
-			// 通过 ref 调用子组件方法，确保微信小程序中也能正常工作
+			
+			
 			this.$nextTick(() => {
 				if (this.$refs.designSection) {
 					this.$refs.designSection.scrollToNearby()
@@ -245,11 +243,11 @@ export default {
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
-	// 禁用微信小程序点击高亮
+	
 	-webkit-tap-highlight-color: transparent;
 	tap-highlight-color: transparent;
 
-	// 所有可点击元素禁用高亮
+	
 	view, text, image {
 		-webkit-tap-highlight-color: transparent;
 	}
@@ -283,7 +281,7 @@ export default {
 	transition: opacity 0.3s ease;
 }
 
-// 自定义导航栏
+
 .custom-navbar {
 	position: relative;
 	width: 100%;
@@ -471,7 +469,7 @@ export default {
 	cursor: pointer;
 	box-sizing: border-box;
 	transition: color 0.15s ease;
-	// 禁用微信小程序点击高亮
+	
 	-webkit-tap-highlight-color: transparent;
 	tap-highlight-color: transparent;
 
@@ -491,12 +489,12 @@ export default {
 	position: relative;
 	top: 16rpx;
 	z-index: 2;
-	// 禁用微信小程序点击高亮
+	
 	-webkit-tap-highlight-color: transparent;
 
 	&.active {
 		font-family: 'DIN_Black-Regular', Helvetica;
-		font-weight: 700;
+		font-weight: 900;
 		color: #000000;
 	}
 }
@@ -562,7 +560,7 @@ export default {
 	border-radius: 200rpx;
 }
 
-/* 内容容器 */
+
 .designer-content,
 .service-content,
 .brand-content {
@@ -572,7 +570,7 @@ export default {
 	gap: 18rpx;
 }
 
-/* 动画 */
+
 @keyframes fade-up {
 	0% {
 		opacity: 0;

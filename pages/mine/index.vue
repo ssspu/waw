@@ -9,10 +9,10 @@
 			<view class="hero-toolbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 				<view class="toolbar-btns">
 					<view class="toolbar-btn" @tap="handleOnlineService">
-						<image class="toolbar-icon" src="/static/icon/online—service.png" mode="aspectFit"></image>
+						<image class="toolbar-icon" src="https://bioflex.cn/static/icon/online-service.png" mode="aspectFit"></image>
 					</view>
 					<view class="toolbar-btn" @tap="handleNotice">
-						<image class="toolbar-icon" src="/static/icon/notice.png" mode="aspectFit"></image>
+						<image class="toolbar-icon" src="https://bioflex.cn/static/icon/notice.png" mode="aspectFit"></image>
 					</view>
 				</view>
 			</view>
@@ -44,7 +44,7 @@ export default {
 		}
 	},
 	onLoad() {
-		// 从持久化存储获取状态栏高度
+		
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
@@ -54,7 +54,7 @@ export default {
 		},
 		handleNotice() {
 			console.log('Notice button clicked')
-			uni.navigateTo({ url: '/pages/mine/notice' })
+			uni.navigateTo({ url: '/pages/message/index' })
 		}
 	}
 }
@@ -141,10 +141,7 @@ export default {
 	position: relative;
 	margin-top: 20rpx;
 	width: 100%;
-	max-width: 750rpx;
-	margin-left: auto;
-	margin-right: auto;
-	padding: 0 20rpx 160rpx;
+	padding: 0 30rpx 160rpx;
 	display: flex;
 	flex-direction: column;
 	align-items: center;

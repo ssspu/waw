@@ -21,7 +21,7 @@
 				<view class="product-info">
 					<image 
 						class="product-image" 
-						src="/static/icon/rectangle-169.png" 
+						src="https://bioflex.cn/static/icon/rectangle-169.png" 
 						mode="aspectFill"
 					></image>
 					<view class="product-details">
@@ -84,7 +84,7 @@
 					<view class="media-btn" @tap="handleAddImage">
 						<image 
 							class="media-icon" 
-							src="/static/icon/zhaoxiangji.png" 
+							src="https://bioflex.cn/static/icon/zhaoxiangji.png" 
 							mode="aspectFit"
 						></image>
 						<text class="media-text">添加图片</text>
@@ -92,7 +92,7 @@
 					<view class="media-btn" @tap="handleAddVideo">
 						<image 
 							class="media-icon" 
-							src="/static/icon/shipin.png" 
+							src="https://bioflex.cn/static/icon/shipin.png" 
 							mode="aspectFit"
 						></image>
 						<text class="media-text">添加视频</text>
@@ -128,7 +128,7 @@ export default {
 	data() {
 		return {
 						commentText: '',
-			selectedTags: [0], // 默认选中第一个标签
+			selectedTags: [0], 
 			feedbackTags: [
 				'服务热情',
 				'环境优雅',
@@ -147,7 +147,7 @@ export default {
 		}
 	},
 	onLoad() {
-		// 从持久化存储获取状态栏高度
+		
 		},
 	computed: {
 		averageRating() {
@@ -158,14 +158,14 @@ export default {
 	},
 	methods: {
 		getStarIcon(index, rating) {
-			// 根据评分返回对应的星星图标
-			// star-4-3.svg 是填充的星星，star-6-3.svg 是空心的星星
+			
+			
 			if (index < Math.floor(rating)) {
-				return '/static/icon/star-4-3.svg'
+				return 'https://bioflex.cn/static/icon/star-4-3.svg'
 			} else if (index < rating) {
-				return '/static/icon/star-4-3.svg' // 半星也用填充
+				return 'https://bioflex.cn/static/icon/star-fill.png'
 			} else {
-				return '/static/icon/star-6-3.svg'
+				return 'https://bioflex.cn/static/icon/star-6-3.svg'
 			}
 		},
 		handleSelectStar(categoryIndex, starIndex) {
@@ -204,7 +204,7 @@ export default {
 				return
 			}
 			
-			// 这里可以调用发布评价的API
+			
 			uni.showToast({
 				title: '发布成功',
 				icon: 'success'
@@ -301,6 +301,7 @@ export default {
 .provider-badge {
 	background-color: #f6f6f6;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	padding: 2rpx 8rpx;
 }
 
@@ -466,9 +467,9 @@ export default {
 }
 
 .star-icon {
-	width: 28rpx;
-	height: 28rpx;
-	cursor: pointer;
+	width: 20rpx;
+	height: 20rpx;
+	filter: brightness(0) invert(1);
 }
 
 .rating-value {
@@ -542,6 +543,7 @@ export default {
 	height: 68rpx;
 	padding: 0;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	background-color: #f6f6f6;
 	box-sizing: border-box;
 }
@@ -579,6 +581,7 @@ export default {
 	height: 84rpx;
 	background-color: #333333;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	display: flex;
 	align-items: center;
 	justify-content: center;

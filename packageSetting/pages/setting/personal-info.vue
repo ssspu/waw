@@ -1,7 +1,7 @@
 <template>
 	<view class="setting-detail-page">
 		<view class="main-content">
-			<!-- 所有项目卡片 -->
+			<!-- 怉有项目卡片 -->
 			<view class="settings-card">
 				<view class="card-content">
 					<!-- 头像 -->
@@ -16,7 +16,7 @@
 								<view class="action-button">
 									<image 
 										class="button-icon" 
-										src="/static/icon/gengduo.png" 
+										src="https://bioflex.cn/static/icon/gengduo.png" 
 										mode="aspectFit"
 									></image>
 								</view>
@@ -36,7 +36,7 @@
 								<view class="action-button">
 									<image 
 										class="button-icon" 
-										src="/static/icon/gengduo.png" 
+										src="https://bioflex.cn/static/icon/gengduo.png" 
 										mode="aspectFit"
 									></image>
 								</view>
@@ -56,7 +56,7 @@
 								<view class="action-button">
 									<image 
 										class="button-icon" 
-										src="/static/icon/gengduo.png" 
+										src="https://bioflex.cn/static/icon/gengduo.png" 
 										mode="aspectFit"
 									></image>
 								</view>
@@ -76,7 +76,7 @@
 								<view class="action-button">
 									<image 
 										class="button-icon" 
-										src="/static/icon/gengduo.png" 
+										src="https://bioflex.cn/static/icon/gengduo.png" 
 										mode="aspectFit"
 									></image>
 								</view>
@@ -96,7 +96,7 @@
 								<view class="action-button">
 									<image
 										class="button-icon"
-										src="/static/icon/gengduo.png"
+										src="https://bioflex.cn/static/icon/gengduo.png"
 										mode="aspectFit"
 									></image>
 								</view>
@@ -116,7 +116,7 @@
 								<view class="action-button">
 									<image 
 										class="button-icon" 
-										src="/static/icon/gengduo.png" 
+										src="https://bioflex.cn/static/icon/gengduo.png" 
 										mode="aspectFit"
 									></image>
 								</view>
@@ -127,16 +127,16 @@
 					<!-- 分隔线 -->
 					<view class="separator-line"></view>
 
-					<!-- 简介 -->
+					<!-- 瀮介 -->
 					<view class="setting-item-wrapper">
 						<view class="setting-item" @tap="handleBioClick">
-							<text class="setting-label">简介</text>
+							<text class="setting-label">瀮介</text>
 							<view class="setting-right">
 								<text class="right-text bio-placeholder">{{ userInfo.bio }}</text>
 								<view class="action-button">
 									<image 
 										class="button-icon" 
-										src="/static/icon/gengduo.png" 
+										src="https://bioflex.cn/static/icon/gengduo.png" 
 										mode="aspectFit"
 									></image>
 								</view>
@@ -147,17 +147,17 @@
 			</view>
 		</view>
 
-		<!-- 简介编辑弹窗 -->
+		<!-- 瀮介编辑弹窗 -->
 		<view class="bio-modal" v-if="showBioModal" @tap="closeBioModal">
 			<view class="bio-modal-content" @tap.stop>
 				<view class="bio-modal-header">
-					<text class="bio-modal-title">修改简介</text>
+					<text class="bio-modal-title">修改瀮介</text>
 					<text class="bio-modal-close" @tap="closeBioModal">×</text>
 				</view>
 				<textarea
 					class="bio-textarea"
 					v-model="tempBio"
-					placeholder="请输入1-30字简介"
+					placeholder="请输入1-30字瀮介"
 					maxlength="30"
 					:focus="showBioModal"
 				></textarea>
@@ -186,7 +186,7 @@ export default {
 				{ label: '地区', key: 'region' }
 			],
 			userInfo: {
-				avatar: '/static/avatar/avatar.png',
+				avatar: 'https://bioflex.cn/static/avatar/avatar.png',
 				nickname: '',
 				gender: '',
 				profession: '',
@@ -207,10 +207,10 @@ export default {
 			this.loading = true
 			try {
 				const res = await api.user.getInfo()
-				if (res.code === 0) {
+				if (res.code === 200) {
 					const data = res.data || {}
 					this.userInfo = {
-						avatar: data.avatar || '/static/avatar/avatar.png',
+						avatar: data.avatar || 'https://bioflex.cn/static/avatar/avatar.png',
 						nickname: data.nickname || '',
 						gender: data.gender || '保密',
 						profession: data.profession || '',
@@ -227,7 +227,7 @@ export default {
 		async updateUserInfo(key, value) {
 			try {
 				const res = await api.user.updateInfo({ [key]: value })
-				if (res.code === 0) {
+				if (res.code === 200) {
 					uni.showToast({ title: '已更新', icon: 'success' })
 					return true
 				} else {
@@ -245,16 +245,16 @@ export default {
 				itemList: ['拍照', '从相册选择'],
 				success: (res) => {
 					if (res.tapIndex === 0) {
-						// 拍照
+						
 						uni.chooseImage({
 							count: 1,
 							sourceType: ['camera'],
 							success: async (result) => {
 								const tempPath = result.tempFilePaths[0]
-								// 先显示临时图片
+								
 								const oldAvatar = this.userInfo.avatar
 								this.userInfo.avatar = tempPath
-								// 上传头像
+								
 								try {
 									const uploadRes = await api.user.uploadAvatar(tempPath)
 									if (uploadRes.code === 0) {
@@ -271,7 +271,7 @@ export default {
 							}
 						})
 					} else if (res.tapIndex === 1) {
-						// 从相册选择
+						
 						uni.chooseImage({
 							count: 1,
 							sourceType: ['album'],
@@ -519,7 +519,7 @@ export default {
 	width: 50rpx;
 	height: 50rpx;
 	flex-shrink: 0;
-	background-image: url('/static/icon/erweima.png');
+	background-image: url('https://bioflex.cn/static/icon/erweima.png');
 	background-position: 0% 0%;
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
@@ -544,7 +544,7 @@ export default {
 	flex-shrink: 0;
 }
 
-/* 简介编辑弹窗 */
+
 .bio-modal {
 	position: fixed;
 	top: 0;

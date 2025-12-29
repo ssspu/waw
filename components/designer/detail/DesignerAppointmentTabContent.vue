@@ -1,6 +1,11 @@
 <template>
 	<view class="appointment-tab-content">
-		<designer-booking-profile-section :designer-id="designerId"></designer-booking-profile-section>
+		<designer-booking-profile-section
+			:designer-id="designerId"
+			:designer-user-id="designerUserId"
+			:active-sub-tab="activeSubTab"
+			@time-selected="handleTimeSelected"
+		></designer-booking-profile-section>
 	</view>
 </template>
 
@@ -21,9 +26,19 @@ export default {
 			type: [String, Number],
 			default: null
 		},
+		designerUserId: {
+			type: String,
+			default: ''
+		},
 		activeSubTab: {
 			type: String,
 			default: 'today'
+		}
+	},
+	methods: {
+		handleTimeSelected(timeSlot) {
+			
+			this.$emit('time-selected', timeSlot)
 		}
 	}
 }
@@ -37,7 +52,7 @@ export default {
 	gap: 16rpx;
 }
 
-/* 未选服务提示弹窗 */
+
 .service-prompt-modal {
 	position: fixed;
 	top: 0;

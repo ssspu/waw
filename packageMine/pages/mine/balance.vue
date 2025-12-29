@@ -16,7 +16,7 @@
 					<text class="time-label">本月</text>
 					<image
 						class="dropdown-icon"
-						src="/static/icon/vector-1.svg"
+						src="https://bioflex.cn/static/icon/vector-1.svg"
 						mode="aspectFit"
 					></image>
 				</view>
@@ -53,12 +53,12 @@ export default {
 		this.fetchBalanceData()
 	},
 	methods: {
-		// 获取余额和记录
+		
 		async fetchBalanceData() {
 			if (this.loading) return
 			this.loading = true
 			try {
-				// 并行获取余额和记录
+				
 				const [balanceRes, recordsRes] = await Promise.all([
 					api.user.getBalance(),
 					api.user.getBalanceRecords({ page: 1, pageSize: 20 })

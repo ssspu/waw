@@ -2,7 +2,10 @@
 	<view id="service-gallery-section" class="service-gallery-section">
 		<!-- 附近推荐标题 -->
 		<view v-if="showNearbyHeader" class="nearby-header">
-			<text class="nearby-title">附近推荐</text>
+			<view class="title-wrapper">
+				<text class="nearby-title">附近推荐</text>
+				<view class="title-bar"></view>
+			</view>
 		</view>
 
 		<!-- 分类标题 -->
@@ -60,7 +63,9 @@
 								</view>
 								<view class="stylist-rating">
 									<text class="rating-score">{{ card.rating }}</text>
-									<text class="star-icon">★</text>
+									<view class="star-container">
+										<image class="star-icon" src="/static/icon/star.png" mode="aspectFit"></image>
+									</view>
 									<text class="review-count">({{ card.reviews }})</text>
 								</view>
 							</view>
@@ -93,7 +98,7 @@ export default {
 	},
 	data() {
 		return {
-			// 从API获取的服务数据
+			
 			serviceCards: [],
 			loading: false
 		}
@@ -102,36 +107,43 @@ export default {
 		this.fetchServices()
 	},
 	methods: {
-		// 从API获取服务列表
+		
 		async fetchServices() {
 			if (this.loading) return
 			this.loading = true
 			try {
 				const res = await api.service.getList({ pageSize: 50 })
 				console.log('API响应:', JSON.stringify(res, null, 2))
-				if (res && res.code === 0 && res.data) {
-					// 支持 list 或 records 字段
-					const list = res.data.list || res.data.records || []
-					console.log('第一条数据:', list[0])
-					console.log('第一条图片URL:', list[0]?.image)
-					// 转换API数据为组件需要的格式
-					this.serviceCards = list.map(service => ({
-						id: service.id,
-						category: service.categoryName,
-						image: service.image || '',
-						title: service.name,
-						description: service.description,
-						price: String(service.price),
-						stylist: {
-							name: service.designerName,
-							role: '设计师',
-							avatar: service.designerAvatar || ''
-						},
-						rating: String(service.rating),
-						reviews: String(service.reviewCount),
-						distance: service.distance
-					}))
-					console.log('转换后第一条:', this.serviceCards[0])
+				if (res && res.code === 200 && res.data) {
+					
+					const list = res.data.items || res.data.list || res.data.records || []
+					console.log('服务列表数量:', list.length)
+					
+					this.serviceCards = list.map(service => {
+						
+						const image = Array.isArray(service.image_urls) && service.image_urls.length > 0
+							? service.image_urls[0]
+							: (service.image || '')
+
+						return {
+							id: service.id,
+							category: service.categoryName || service.category_id,
+							image: image,
+							title: service.name,
+							description: service.detail_text || service.description || '',
+							price: String(service.fixed_price || service.price || 0),
+							appointmentPrice: String(service.fixed_ref_price || service.appointmentPrice || service.fixed_price || 0),
+							stylist: {
+								name: service.designerName || '',
+								role: '设计师',
+								avatar: service.designerAvatar || ''
+							},
+							rating: String(service.rating || 0),
+							reviews: String(service.review_count || service.reviewCount || 0),
+							distance: service.distance || ''
+						}
+					})
+					console.log('转换后服务数量:', this.serviceCards.length)
 				}
 			} catch (err) {
 				console.error('获取服务列表失败:', err)
@@ -139,7 +151,7 @@ export default {
 				this.loading = false
 			}
 		},
-		// 供父组件调用的滚动方法
+		
 		scrollToTop() {
 			this.$nextTick(() => {
 				const query = uni.createSelectorQuery().in(this)
@@ -158,24 +170,24 @@ export default {
 			})
 		},
 		handleCardClick(card) {
-			// 跳转到服务订单购买页面，并传递服务卡片的 id
+			
 			uni.navigateTo({
 				url: `/packageOrder/pages/order/purchase?id=${card.id}`
 			})
 		}
 	},
 	computed: {
-		// 显示的标题
+		
 		displayTitle() {
 			return this.selectedCategory || '优服务'
 		},
-		// 根据选中的分类筛选服务卡片
+		
 		filteredServiceCards() {
 			if (!this.selectedCategory) {
-				// 没有选择分类时显示全部
+				
 				return this.serviceCards
 			}
-			// 根据分类筛选
+			
 			return this.serviceCards.filter(card => card.category === this.selectedCategory)
 		}
 	}
@@ -213,9 +225,25 @@ export default {
 
 .nearby-title {
 	font-family: 'DIN_Black-Regular', Helvetica;
-	font-weight: normal;
+	font-weight: 600;
 	color: #000000;
 	font-size: 28rpx;
+	position: relative;
+	z-index: 2;
+}
+
+.title-wrapper {
+	display: flex;
+	flex-direction: column;
+}
+
+.title-bar {
+	width: 74rpx;
+	height: 12rpx;
+	background-color: #DACBB1;
+	margin-top: -14rpx;
+	position: relative;
+	z-index: 1;
 }
 
 .category-header {
@@ -292,6 +320,9 @@ export default {
 	font-weight: 500;
 	color: #a6a6a6;
 	font-size: 24rpx;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .card-price {
@@ -388,9 +419,19 @@ export default {
 	font-size: 24rpx;
 }
 
+.star-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 4rpx;
+	background-color: #333333;
+	border-radius: 4rpx;
+}
+
 .star-icon {
-	font-size: 20rpx;
-	color: #333333;
+	width: 20rpx;
+	height: 20rpx;
+	filter: brightness(0) invert(1);
 }
 
 .review-count {
@@ -407,7 +448,7 @@ export default {
 	font-size: 22rpx;
 }
 
-/* 动画 */
+
 @keyframes fade-in {
 	0% {
 		opacity: 0;

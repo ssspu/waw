@@ -4,7 +4,7 @@
 		<view class="header">
 			<view class="nav-bar">
 				<view class="back-btn" @tap="handleBack">
-					<image class="back-icon" src="/static/icon/arrow-left.png" mode="aspectFit"></image>
+					<image class="back-icon" src="https://bioflex.cn/static/back.png" mode="aspectFit"></image>
 				</view>
 				<text class="nav-title">{{ title }}</text>
 				<view class="nav-right"></view>
@@ -15,7 +15,7 @@
 		<view class="main-content">
 			<!-- 成功图标 -->
 			<view class="success-icon-wrapper">
-				<image class="success-icon" src="/static/image/submit-successful.png" mode="aspectFit"></image>
+				<image class="success-icon" src="https://bioflex.cn/static/image/submit-successful.png" mode="aspectFit"></image>
 			</view>
 			
 			<!-- 提示文字 -->
@@ -38,13 +38,13 @@ export default {
 	data() {
 		return {
 			title: '入驻申请',
-			type: 'designer', // designer 或 store
+			type: 'designer', 
 			countdown: 10,
 			timer: null
 		}
 	},
 	onLoad(options) {
-		// 根据参数设置标题
+		
 		if (options.type === 'store') {
 			this.title = '实体门店入驻'
 			this.type = 'store'
@@ -53,11 +53,11 @@ export default {
 			this.type = 'designer'
 		}
 		
-		// 开始倒计时
+		
 		this.startCountdown()
 	},
 	onUnload() {
-		// 清除定时器
+		
 		if (this.timer) {
 			clearInterval(this.timer)
 		}
@@ -76,7 +76,7 @@ export default {
 			}, 1000)
 		},
 		goBack() {
-			// 返回到我的页面
+			
 			uni.reLaunch({
 				url: '/pages/mine/index'
 			})

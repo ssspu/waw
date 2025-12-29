@@ -2,7 +2,7 @@
 	<view class="setting-detail-page">
 		<view class="main-content">
 			<view class="feedback-section">
-				<text class="section-title">所属问题</text>
+				<text class="section-title">怉属问题</text>
 				<view class="problem-grid">
 					<view
 						v-for="(type, index) in problemTypes"

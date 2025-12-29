@@ -1,7 +1,7 @@
 <template>
 	<view class="login-page">
 		<!-- 背景图片 -->
-		<image class="bg-image" src="/static/background-image/register.png" mode="aspectFill"></image>
+		<image class="bg-image" src="https://bioflex.cn/static/background-image/register.png" mode="aspectFill"></image>
 
 		<!-- 自定义导航栏 -->
 		<view class="custom-navbar" >
@@ -11,8 +11,8 @@
 				</view>
 				<text class="nav-title">账户登录</text>
 				<!-- <view class="nav-right">
-					<image class="nav-icon" src="/static/icon/more.svg" mode="aspectFit"></image>
-					<image class="nav-icon" src="/static/icon/scan.svg" mode="aspectFit"></image>
+					<image class="nav-icon" src="https://bioflex.cn/static/icon/more.svg" mode="aspectFit"></image>
+					<image class="nav-icon" src="https://bioflex.cn/static/icon/scan.svg" mode="aspectFit"></image>
 				</view> -->
 			</view>
 		</view>
@@ -29,9 +29,9 @@
 
 		<!-- 按钮区域 -->
 		<view class="button-section">
-			<view class="primary-btn" @tap="handleQuickLogin">
+			<button class="primary-btn wx-btn" open-type="getPhoneNumber" @getphonenumber="handleGetPhoneNumber">
 				<text class="primary-btn-text">一键登录</text>
-			</view>
+			</button>
 			<view class="secondary-btn" @tap="goToPasswordLogin">
 				<text class="secondary-btn-text">帐号密码登录</text>
 			</view>
@@ -80,6 +80,9 @@
 
 <script>
 import { getUserAgreement, getPrivacyPolicy } from '@/data/agreements.js'
+import api from '@/api'
+import { setToken, setRefreshToken } from '@/api/request.js'
+import { BUSINESS_CODE } from '@/api/config.js'
 
 export default {
 	data() {
@@ -110,7 +113,7 @@ export default {
 		}
 	},
 	onLoad() {
-		// 从持久化存储获取状态栏高度
+		
 		},
 	onUnload() {
 		if (this.modalTimer) {
@@ -128,6 +131,93 @@ export default {
 		toggleAgreement() {
 			this.isAgreed = !this.isAgreed
 		},
+		// 获取手机号授权
+		handleGetPhoneNumber(e) {
+			if (!this.isAgreed) {
+				uni.showToast({
+					title: '请先同意用户协议',
+					icon: 'none'
+				})
+				return
+			}
+
+			if (e.detail.errMsg !== 'getPhoneNumber:ok') {
+				uni.showToast({ title: '需要授权手机号才能登录', icon: 'none' })
+				return
+			}
+
+			// 获取手机号的加密数据
+			const phoneCode = e.detail.code
+			const encryptedData = e.detail.encryptedData
+			const iv = e.detail.iv
+
+			// 获取用户信息和登录
+			this.doWechatLogin(phoneCode, encryptedData, iv)
+		},
+		// 执行微信登录
+		async doWechatLogin(phoneCode, encryptedData, iv) {
+			uni.showLoading({ title: '登录中...' })
+
+			try {
+				// 获取微信登录code
+				const loginRes = await new Promise((resolve, reject) => {
+					uni.login({
+						provider: 'weixin',
+						success: resolve,
+						fail: reject
+					})
+				})
+
+				if (!loginRes.code) {
+					uni.hideLoading()
+					uni.showToast({ title: '获取微信授权失败', icon: 'none' })
+					return
+				}
+
+				// 调用后端登录接口
+				const res = await api.auth.loginByWechat({
+					code: loginRes.code,
+					phoneCode: phoneCode,
+					encryptedData: encryptedData,
+					iv: iv
+				})
+
+				uni.hideLoading()
+
+				if (res.code === BUSINESS_CODE.SUCCESS && res.data) {
+					if (res.data.token) {
+						setToken(res.data.token)
+					}
+					if (res.data.refreshToken) {
+						setRefreshToken(res.data.refreshToken)
+					}
+
+					// 保存用户信息到本地存储
+					if (res.data.userInfo || res.data.user) {
+						const userInfo = res.data.userInfo || res.data.user
+						uni.setStorageSync('userInfo', userInfo)
+					} else if (res.data.nickname || res.data.avatar) {
+						// 如果直接返回在data根级别
+						uni.setStorageSync('userInfo', {
+							nickname: res.data.nickname || '',
+							avatar: res.data.avatar || '',
+							phone: res.data.phone || ''
+						})
+					}
+
+					uni.showToast({ title: '登录成功', icon: 'success' })
+					setTimeout(() => {
+						uni.reLaunch({ url: '/pages/index/index' })
+					}, 1500)
+				} else {
+					uni.showToast({ title: res.message || '登录失败', icon: 'none' })
+				}
+			} catch (err) {
+				uni.hideLoading()
+				console.error('微信登录失败:', err)
+				uni.showToast({ title: '登录失败', icon: 'none' })
+			}
+		},
 		handleQuickLogin() {
 			if (!this.isAgreed) {
 				uni.showToast({
@@ -136,8 +226,71 @@ export default {
 				})
 				return
 			}
-			uni.reLaunch({
-				url: '/pages/index/index'
+
+			// 先获取用户信息（头像、昵称）
+			uni.getUserProfile({
+				desc: '用于完善用户资料',
+				success: (profileRes) => {
+					const userInfo = profileRes.userInfo
+					// 再获取微信登录code
+					uni.login({
+						provider: 'weixin',
+						success: async (loginRes) => {
+							if (loginRes.code) {
+								try {
+									const res = await api.auth.loginByWechat({
+										code: loginRes.code,
+										nickName: userInfo.nickName,
+										avatarUrl: userInfo.avatarUrl,
+										gender: userInfo.gender
+									})
+
+									if (res.code === BUSINESS_CODE.SUCCESS && res.data) {
+										if (res.data.token) {
+											setToken(res.data.token)
+										}
+										if (res.data.refreshToken) {
+											setRefreshToken(res.data.refreshToken)
+										}
+
+										// 保存用户信息到本地存储
+										if (res.data.userInfo || res.data.user) {
+											const savedUserInfo = res.data.userInfo || res.data.user
+											uni.setStorageSync('userInfo', savedUserInfo)
+										} else {
+											// 使用微信返回的用户信息
+											uni.setStorageSync('userInfo', {
+												nickname: res.data.nickname || userInfo.nickName || '',
+												avatar: res.data.avatar || userInfo.avatarUrl || '',
+												phone: res.data.phone || ''
+											})
+										}
+
+										uni.showToast({ title: '登录成功', icon: 'success' })
+										setTimeout(() => {
+											uni.reLaunch({ url: '/pages/index/index' })
+										}, 1500)
+									} else {
+										uni.showToast({ title: res.message || '登录失败', icon: 'none' })
+									}
+								} catch (err) {
+									console.error('微信登录失败:', err)
+									uni.showToast({ title: err.message || '登录失败', icon: 'none' })
+								}
+							} else {
+								uni.showToast({ title: '获取微信授权失败', icon: 'none' })
+							}
+						},
+						fail: (err) => {
+							console.error('uni.login 失败:', err)
+							uni.showToast({ title: '微信登录失败', icon: 'none' })
+						}
+					})
+				},
+				fail: (err) => {
+					console.error('获取用户信息失败:', err)
+					uni.showToast({ title: '请授权获取用户信息', icon: 'none' })
+				}
 			})
 		},
 		goToPasswordLogin() {
@@ -219,7 +372,7 @@ export default {
 	object-fit: cover;
 }
 
-// 导航栏
+
 .custom-navbar {
 	position: relative;
 	width: 100%;
@@ -259,7 +412,7 @@ export default {
 	gap: 24rpx;
 }
 
-// Logo 区域
+
 .logo-section {
 	position: relative;
 	z-index: 5;
@@ -283,7 +436,7 @@ export default {
 	text-align: center;
 }
 
-// 按钮区域
+
 .button-section {
 	position: relative;
 	z-index: 5;
@@ -306,6 +459,19 @@ export default {
 	
 	&:active {
 		background-color: #5d48e1;
+	}
+}
+
+// 微信按钮重置样式
+.wx-btn {
+	margin: 0;
+	padding: 0;
+	border: none;
+	line-height: normal;
+	background-color: #6d58f1;
+
+	&::after {
+		border: none;
 	}
 }
 
@@ -338,7 +504,7 @@ export default {
 	font-size: 28rpx;
 }
 
-// 底部协议
+
 .footer-agreement {
 	position: relative;
 	z-index: 5;
@@ -391,7 +557,7 @@ export default {
 	font-size: 24rpx;
 }
 
-// 底部指示条
+
 .home-indicator {
 	width: 100%;
 	height: 68rpx;
@@ -408,7 +574,7 @@ export default {
 	border-radius: 100rpx;
 }
 
-// 协议弹窗
+
 .agreement-modal {
 	position: fixed;
 	top: 0;

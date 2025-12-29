@@ -1,12 +1,10 @@
 <template>
 	<view class="profile-section">
-		<!-- 空数据状态 -->
 		<view v-if="!loading && morningSlots.length === 0 && afternoonSlots.length === 0" class="empty-state">
-			<image class="empty-icon" src="/static/icon/empty-time.png" mode="aspectFit"></image>
+			<image class="empty-icon" src="https://bioflex.cn/static/icon/empty-time.png" mode="aspectFit"></image>
 			<text class="empty-text">暂无可预约时间</text>
 		</view>
 
-		<!-- 加载状态 -->
 		<view v-if="loading" class="loading-state">
 			<text class="loading-text">加载中...</text>
 		</view>
@@ -86,6 +84,10 @@ export default {
 			type: [String, Number],
 			default: null
 		},
+		designerUserId: {
+			type: String,
+			default: ''
+		},
 		activeSubTab: {
 			type: String,
 			default: 'today'
@@ -100,7 +102,7 @@ export default {
 		}
 	},
 	watch: {
-		designerId: {
+		designerUserId: {
 			immediate: true,
 			handler(newVal) {
 				if (newVal) {
@@ -109,33 +111,56 @@ export default {
 			}
 		},
 		activeSubTab() {
-			this.fetchAvailableTime()
+			if (this.designerUserId) {
+				this.fetchAvailableTime()
+			}
 		}
 	},
 	methods: {
-		// 获取可预约时间
+		
 		async fetchAvailableTime() {
-			if (!this.designerId || this.loading) return
+			if (!this.designerUserId || this.loading) return
 			this.loading = true
 			try {
-				const res = await api.designer.getAvailableTime(this.designerId, {
-					date: this.activeSubTab
+				
+				const dateStr = this.getDateFromSubTab(this.activeSubTab)
+				const res = await api.designer.getAvailableTime(this.designerUserId, {
+					date: dateStr
 				})
-				if (res.code === 0) {
+				if (res.code === 200) {
 					const data = res.data
-					// 转换上午时间段数据
-					this.morningSlots = (data.morningSlots || []).map(slot => ({
-						time: slot.time,
-						status: slot.status || 'available',
-						label: slot.label || null
-					}))
-					// 转换下午时间段数据
-					this.afternoonSlots = (data.afternoonSlots || []).map(slot => ({
-						time: slot.time,
-						status: slot.status || 'available',
-						label: slot.label || null
-					}))
-					// 更新提示文案
+
+					// 兼容多种字段名：timeSlots, slots, items, list
+					const slots = data.timeSlots || data.slots || data.items || data.list || []
+					console.log('📅 可预约时间:', slots)
+
+					
+					const morning = []
+					const afternoon = []
+
+					slots.forEach(slot => {
+						const time = slot.time || slot.start_time || ''
+						const hour = parseInt(time.split(':')[0], 10)
+						
+						const status = slot.available === false ? 'booked' : 'available'
+
+						const slotData = {
+							time: time,
+							status: status,
+							label: slot.label || null
+						}
+
+						if (hour < 12) {
+							morning.push(slotData)
+						} else {
+							afternoon.push(slotData)
+						}
+					})
+
+					this.morningSlots = morning
+					this.afternoonSlots = afternoon
+
+					
 					if (data.notice) {
 						this.noticeText = data.notice
 					}
@@ -146,52 +171,78 @@ export default {
 				this.loading = false
 			}
 		},
+		
+		getDateFromSubTab(subTab) {
+			const today = new Date()
+			let targetDate = new Date(today)
+
+			if (subTab === 'today') {
+				
+			} else if (subTab === 'tomorrow') {
+				targetDate.setDate(today.getDate() + 1)
+			} else {
+				
+				const match = subTab.match(/^(\d{2})(\d{2})$/)
+				if (match) {
+					const month = parseInt(match[1], 10)
+					const day = parseInt(match[2], 10)
+					targetDate.setMonth(month - 1)
+					targetDate.setDate(day)
+				}
+			}
+
+			
+			const year = targetDate.getFullYear()
+			const month = String(targetDate.getMonth() + 1).padStart(2, '0')
+			const day = String(targetDate.getDate()).padStart(2, '0')
+			return `${year}-${month}-${day}`
+		},
 		handleSlotClick(period, index) {
 			let selectedSlot = null
 			if (period === 'morning') {
 				const slot = this.morningSlots[index]
 				if (slot.status === 'booked') {
-					return // 已预约的不能选择
+					return 
 				}
-				// 重置所有上午时间段的选择状态
+				
 				this.morningSlots.forEach((s) => {
 					if (s.status === 'selected') {
 						s.status = 'available'
 						s.label = null
 					}
 				})
-				// 重置所有下午时间段的选择状态
+				
 				this.afternoonSlots.forEach((s) => {
 					if (s.status === 'selected') {
 						s.status = 'available'
 					}
 				})
-				// 设置当前选择
+				
 				slot.status = 'selected'
 				selectedSlot = { period: 'morning', time: slot.time }
 			} else if (period === 'afternoon') {
 				const slot = this.afternoonSlots[index]
 				if (slot.status === 'booked') {
-					return // 已预约的不能选择
+					return 
 				}
-				// 重置所有上午时间段的选择状态
+				
 				this.morningSlots.forEach((s) => {
 					if (s.status === 'selected') {
 						s.status = 'available'
 						s.label = null
 					}
 				})
-				// 重置所有下午时间段的选择状态
+				
 				this.afternoonSlots.forEach((s) => {
 					if (s.status === 'selected') {
 						s.status = 'available'
 					}
 				})
-				// 设置当前选择
+				
 				slot.status = 'selected'
 				selectedSlot = { period: 'afternoon', time: slot.time }
 			}
-			// 触发时间选择事件
+			
 			if (selectedSlot) {
 				this.$emit('time-selected', selectedSlot)
 			}
@@ -316,7 +367,7 @@ export default {
 	letter-spacing: 0;
 }
 
-/* 空数据和加载状态 */
+
 .empty-state {
 	display: flex;
 	flex-direction: column;

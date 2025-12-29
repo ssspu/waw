@@ -7,7 +7,7 @@
 				<!-- 美发师信息 -->
 				<view class="provider-section">
 					<view class="provider-info">
-						<text class="provider-name">李天天</text>
+						<text class="provider-name">{{ designerInfo.name }}</text>
 						<text class="provider-badge">美发师</text>
 					</view>
 					<image
@@ -17,24 +17,23 @@
 					></image>
 				</view>
 
-
-				<!-- 第二个商品信息（产品） -->
+				<!-- 商品信息 -->
 				<view class="product-section">
 					<image
 						class="product-image"
-						src="/static/icon/rectangle-169.png"
+						:src="productInfo.image"
 						mode="aspectFill"
 					></image>
 					<view class="product-info">
 						<view class="product-left">
-							<text class="product-name">欧莱雅植物洗护套装一套</text>
-							<text class="product-category">洗发水+护发素</text>
-							<text class="product-duration">500ml+500ml</text>
+							<text class="product-name">{{ productInfo.name }}</text>
+							<text class="product-category">{{ productInfo.category }}</text>
+							<text class="product-duration">{{ productInfo.duration }}</text>
 						</view>
 						<view class="product-right">
 							<view class="price-row">
 								<text class="price-symbol">¥</text>
-								<text class="price-value">799</text>
+								<text class="price-value">{{ productInfo.price }}</text>
 							</view>
 							<text class="quantity">*1</text>
 						</view>
@@ -48,16 +47,16 @@
 				<view class="price-list">
 					<view class="price-item">
 						<text class="price-label">商品金额</text>
-						<text class="price-text">¥799</text>
+						<text class="price-text">¥{{ priceInfo.originalPrice }}</text>
 					</view>
 					<view class="price-item">
 						<text class="price-label">优惠金额</text>
-						<text class="price-text">¥0</text>
+						<text class="price-text">-¥{{ priceInfo.discountAmount }}</text>
 					</view>
 					<view class="price-item total">
 						<text class="price-label">合计支付</text>
 						<view class="total-price">
-							<text class="total-price-value">¥799</text>
+							<text class="total-price-value">¥{{ priceInfo.finalPrice }}</text>
 						</view>
 					</view>
 				</view>
@@ -89,8 +88,8 @@
 
 		<!-- 底部操作栏 -->
 		<view class="footer-actions">
-			<view class="action-btn cancel-btn" @tap="handleCancelOrder">
-				<text class="btn-text">取消订单</text>
+			<view class="action-btn refund-btn" @tap="handleRefund">
+				<text class="btn-text">申请退款</text>
 			</view>
 			<view class="action-btn contact-btn" @tap="handleContactMerchant">
 				<text class="btn-text">联系商家</text>
@@ -107,7 +106,7 @@
 					</view>
 				</view>
 				<view class="modal-body">
-					<text class="modal-desc">取消后无法回复,优惠券,M币可退回,有效期内使用;两小以上或未确认订单可以免责取消,确认订单并在两小时内取消,将影响你在平台的信用。</text>
+					<text class="modal-desc">取消后无法恢复,优惠券、M币可退回,有效期内使用;两小时以上或未确认订单可以免责取消,确认订单并在两小时内取消,将影响你在平台的信用度</text>
 					<text class="reason-prompt">请选择取消订单原因(必选)</text>
 					<view class="reason-list">
 						<view
@@ -141,10 +140,14 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
 	data() {
 		return {
-						showCancelModal: false,
+			orderId: '',
+			loading: false,
+			showCancelModal: false,
 			selectedReasonIndex: null,
 			merchantPhone: '400-123-4567',
 			cancelReasons: [
@@ -154,21 +157,88 @@ export default {
 				'暂时不需要了',
 				'其他'
 			],
+			designerInfo: {
+				name: '',
+				avatar: ''
+			},
+			productInfo: {
+				image: 'https://bioflex.cn/static/icon/rectangle-169.png',
+				name: '',
+				category: '',
+				duration: ''
+			},
+			priceInfo: {
+				originalPrice: '0',
+				discountAmount: '0',
+				finalPrice: '0'
+			},
 			orderInfo: {
-				createTime: '2022-04-22 12:04:22',
+				createTime: '',
 				paymentMethod: '在线支付',
-				points: '获得60积分',
-				orderNumber: 'CD902847058048906'
+				orderNumber: ''
 			}
 		}
 	},
 	onLoad(options) {
 		if (options.orderId) {
-			// 根据订单ID加载订单详情
+			this.orderId = options.orderId
+			this.fetchOrderDetail(options.orderId)
 		}
 	},
 	methods: {
-				handleCopy() {
+		async fetchOrderDetail(orderId) {
+			this.loading = true
+			try {
+				const res = await api.order.getDetail(orderId)
+				if (res.code === 200 && res.data) {
+					this.parseOrderData(res.data)
+				}
+			} catch (err) {
+				console.error('获取订单详情失败:', err)
+				uni.showToast({ title: '获取订单详情失败', icon: 'none' })
+			} finally {
+				this.loading = false
+			}
+		},
+		parseOrderData(order) {
+			// 设计师信息
+			this.designerInfo = {
+				name: order.designer_name || order.designerName || '设计师',
+				avatar: order.designer_avatar || order.designerAvatar || ''
+			}
+			// 商品信息
+			this.productInfo = {
+				image: order.service_image || order.serviceImage || 'https://bioflex.cn/static/icon/rectangle-169.png',
+				name: order.service_name || order.serviceName || '服务项目',
+				category: order.sku_name || order.skuName || '',
+				duration: order.duration || '预计1小时',
+				price: order.original_price || order.originalPrice || '0'
+			}
+			// 价格信息
+			this.priceInfo = {
+				originalPrice: order.original_price || order.originalPrice || '0',
+				discountAmount: order.discount_amount || order.discountAmount || '0',
+				finalPrice: order.final_price || order.finalPrice || '0'
+			}
+			// 订单信息
+			this.orderInfo = {
+				createTime: this.formatDateTime(order.create_time || order.createTime),
+				paymentMethod: order.payment_method === 'wechat' ? '微信支付' : '在线支付',
+				orderNumber: order.order_no || order.orderNo || order.id
+			}
+		},
+		formatDateTime(dateStr) {
+			if (!dateStr) return ''
+			const date = new Date(dateStr)
+			const year = date.getFullYear()
+			const month = String(date.getMonth() + 1).padStart(2, '0')
+			const day = String(date.getDate()).padStart(2, '0')
+			const hours = String(date.getHours()).padStart(2, '0')
+			const minutes = String(date.getMinutes()).padStart(2, '0')
+			const seconds = String(date.getSeconds()).padStart(2, '0')
+			return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+		},
+		handleCopy() {
 			uni.setClipboardData({
 				data: this.orderInfo.orderNumber,
 				success: () => {
@@ -220,6 +290,12 @@ export default {
 				fail: (err) => {
 					console.log('拨打电话失败', err)
 				}
+			})
+		},
+		handleRefund() {
+			// 跳转到退款申请页面
+			uni.navigateTo({
+				url: `/packageOrder/pages/order/refund?orderId=${this.orderId}`
 			})
 		}
 	}
@@ -518,6 +594,15 @@ export default {
 	border: 2rpx solid #e0e0e0;
 }
 
+.refund-btn {
+	background-color: #ffffff;
+	border: 2rpx solid #ff6b35;
+}
+
+.refund-btn .btn-text {
+	color: #ff6b35;
+}
+
 .contact-btn {
 	background-color: #333333;
 }
@@ -536,7 +621,7 @@ export default {
 	color: #ffffff;
 }
 
-/* 取消订单弹窗 */
+
 .cancel-modal {
 	position: fixed;
 	top: 0;

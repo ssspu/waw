@@ -8,15 +8,17 @@ import { success, error, paginate } from '../utils.js'
 const orders = [
   {
     id: 'ORD20251128001',
-    status: 'pending_payment', // pending_payment/confirmed/pending_use/completed/cancelled
+    status: 'pending_payment', // pending_payment/paid/pending_service/in_service/completed/cancelled/refunding/refunded
     statusText: '待付款',
     serviceId: '1',
     serviceName: '精致剪发',
-    serviceImage: '/static/service/service1.png',
+    serviceImage: 'https://bioflex.cn/static/service/service1.png',
     designerId: '1',
     designerName: '李天天',
-    designerAvatar: '/static/avatar/avatar.png',
+    designerAvatar: 'https://bioflex.cn/static/avatar/avatar.png',
     brandId: '1',
+    shopId: 'SHOP001',
+    shopName: '金龙旗舰店',
     brandName: '金龙大好人美发沙龙',
     appointmentTime: '2025-11-30 14:00',
     price: 99,
@@ -29,15 +31,17 @@ const orders = [
   },
   {
     id: 'ORD20251127001',
-    status: 'confirmed',
-    statusText: '已确认',
+    status: 'paid',
+    statusText: '已付款',
     serviceId: '2',
     serviceName: '时尚烫发',
-    serviceImage: '/static/service/service2.png',
+    serviceImage: 'https://bioflex.cn/static/service/service2.png',
     designerId: '1',
     designerName: '李天天',
-    designerAvatar: '/static/avatar/avatar.png',
+    designerAvatar: 'https://bioflex.cn/static/avatar/avatar.png',
     brandId: '1',
+    shopId: 'SHOP001',
+    shopName: '金龙旗舰店',
     brandName: '金龙大好人美发沙龙',
     appointmentTime: '2025-11-29 15:00',
     price: 399,
@@ -46,19 +50,21 @@ const orders = [
     payAmount: 349,
     createTime: '2025-11-27 16:20',
     payTime: '2025-11-27 16:25',
-    remark: '希望自然一点'
+    remark: '希望自然点'
   },
   {
     id: 'ORD20251125001',
-    status: 'pending_use',
-    statusText: '待使用',
+    status: 'pending_service',
+    statusText: '待服务',
     serviceId: '3',
-    serviceName: '个性染发',
-    serviceImage: '/static/service/service3.png',
+    serviceName: '个染发',
+    serviceImage: 'https://bioflex.cn/static/service/service3.png',
     designerId: '2',
     designerName: '张小雨',
-    designerAvatar: '/static/avatar/avatar.png',
+    designerAvatar: 'https://bioflex.cn/static/avatar/avatar.png',
     brandId: '1',
+    shopId: 'SHOP001',
+    shopName: '金龙旗舰店',
     brandName: '金龙大好人美发沙龙',
     appointmentTime: '2025-11-28 16:00',
     price: 299,
@@ -77,11 +83,13 @@ const orders = [
     statusText: '已完成',
     serviceId: '1',
     serviceName: '精致剪发',
-    serviceImage: '/static/service/service1.png',
+    serviceImage: 'https://bioflex.cn/static/service/service1.png',
     designerId: '3',
     designerName: '王大明',
-    designerAvatar: '/static/avatar/avatar.png',
+    designerAvatar: 'https://bioflex.cn/static/avatar/avatar.png',
     brandId: '1',
+    shopId: 'SHOP001',
+    shopName: '金龙旗舰店',
     brandName: '金龙大好人美发沙龙',
     appointmentTime: '2025-11-22 14:00',
     price: 99,
@@ -101,11 +109,13 @@ const orders = [
     statusText: '已取消',
     serviceId: '2',
     serviceName: '时尚烫发',
-    serviceImage: '/static/service/service2.png',
+    serviceImage: 'https://bioflex.cn/static/service/service2.png',
     designerId: '1',
     designerName: '李天天',
-    designerAvatar: '/static/avatar/avatar.png',
+    designerAvatar: 'https://bioflex.cn/static/avatar/avatar.png',
     brandId: '1',
+    shopId: 'SHOP001',
+    shopName: '金龙旗舰店',
     brandName: '金龙大好人美发沙龙',
     appointmentTime: '2025-11-20 10:00',
     price: 399,
@@ -125,8 +135,8 @@ const orderReviews = {
     id: '1',
     orderId: 'ORD20251122001',
     rating: 5,
-    content: '王老师技术很好，剪出来的效果很满意！店里环境也很好，下次还会来！',
-    images: ['/static/review/review1.png', '/static/review/review2.png'],
+    content: '王师术很好，剪出来的效果很满意！店里环境也很好，下次还会来！',
+    images: ['https://bioflex.cn/static/review/review1.png', 'https://bioflex.cn/static/review/review2.png'],
     anonymous: false,
     createTime: '2025-11-22 16:00'
   }
@@ -146,7 +156,7 @@ export const routes = {
     if (params.status && params.status !== 'all') {
       list = list.filter(o => o.status === params.status)
     }
-    // 按创建时间倒序
+    // 按创建时间序
     list.sort((a, b) => new Date(b.createTime) - new Date(a.createTime))
     return success(paginate(list, params.page, params.pageSize))
   },
@@ -175,8 +185,8 @@ export const routes = {
   'PUT /api/order/cancel/:orderId': (params) => {
     const order = orders.find(o => o.id === params.orderId)
     if (!order) return error('订单不存在')
-    if (order.status !== 'pending_payment' && order.status !== 'confirmed') {
-      return error('当前订单状态不可取消')
+    if (order.status !== 'pending_payment' && order.status !== 'paid') {
+      return error('当前订单状不可取消')
     }
     order.status = 'cancelled'
     order.statusText = '已取消'
@@ -190,11 +200,11 @@ export const routes = {
     const order = orders.find(o => o.id === params.orderId)
     if (!order) return error('订单不存在')
     if (order.status !== 'pending_payment') {
-      return error('订单状态异常')
+      return error('订单状异常')
     }
     // 模拟支付成功
-    order.status = 'confirmed'
-    order.statusText = '已确认'
+    order.status = 'paid'
+    order.statusText = '已付款'
     order.payTime = new Date().toISOString().replace('T', ' ').slice(0, 19)
     return success({
       paymentId: 'PAY' + Date.now(),
@@ -207,8 +217,8 @@ export const routes = {
   'PUT /api/order/complete/:orderId': (params) => {
     const order = orders.find(o => o.id === params.orderId)
     if (!order) return error('订单不存在')
-    if (order.status !== 'pending_use') {
-      return error('订单状态异常')
+    if (order.status !== 'pending_service') {
+      return error('订单状异常')
     }
     order.status = 'completed'
     order.statusText = '已完成'
@@ -243,27 +253,30 @@ export const routes = {
     return review ? success(review) : error('评价不存在')
   },
 
-  // 申请退款
+  // 申请款
   'POST /api/order/refund/:orderId': (params) => {
     const order = orders.find(o => o.id === params.orderId)
     if (!order) return error('订单不存在')
-    if (order.status !== 'confirmed' && order.status !== 'pending_use') {
-      return error('当前订单状态不可退款')
+    if (order.status !== 'paid' && order.status !== 'pending_service') {
+      return error('当前订单状不可款')
     }
     return success({
       refundId: 'REF' + Date.now(),
       status: 'pending' // pending/approved/rejected
-    }, '退款申请已提交')
+    }, '款申请已提交')
   },
 
   // 获取订单统计
   'GET /api/order/statistics': () => {
     const stats = {
       pending_payment: orders.filter(o => o.status === 'pending_payment').length,
-      confirmed: orders.filter(o => o.status === 'confirmed').length,
-      pending_use: orders.filter(o => o.status === 'pending_use').length,
+      paid: orders.filter(o => o.status === 'paid').length,
+      pending_service: orders.filter(o => o.status === 'pending_service').length,
+      in_service: orders.filter(o => o.status === 'in_service').length,
       completed: orders.filter(o => o.status === 'completed').length,
-      cancelled: orders.filter(o => o.status === 'cancelled').length
+      cancelled: orders.filter(o => o.status === 'cancelled').length,
+      refunding: orders.filter(o => o.status === 'refunding').length,
+      refunded: orders.filter(o => o.status === 'refunded').length
     }
     return success(stats)
   },

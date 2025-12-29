@@ -1,10 +1,9 @@
 <template>
 	<view class="portfolio-page">
-		<!-- 搜索和筛选区域 -->
 		<view class="filter-section">
 			<!-- 搜索框 -->
 			<view class="search-box">
-				<image class="search-icon" src="/static/icon/search.png" mode="aspectFit"></image>
+				<image class="search-icon" src="https://bioflex.cn/static/icon/search.png" mode="aspectFit"></image>
 				<input
 					class="search-input"
 					type="text"
@@ -17,13 +16,12 @@
 				<image
 					v-if="searchKeyword"
 					class="clear-icon"
-					src="/static/icon/close.png"
+					src="https://bioflex.cn/static/icon/close.png"
 					mode="aspectFit"
 					@tap="handleClearSearch"
 				></image>
 			</view>
 
-			<!-- 分类和筛选 -->
 			<view class="category-row">
 				<view class="category-tabs">
 					<view
@@ -42,17 +40,15 @@
 					<image
 						class="filter-arrow"
 						:class="{ rotate: showFilterDrawer }"
-						src="/static/icon/down.png"
+						src="https://bioflex.cn/static/icon/down.png"
 						mode="aspectFit"
 					></image>
 				</view>
 			</view>
 
-			<!-- 下拉筛选卡片 -->
 			<view class="filter-drawer" :class="{ show: showFilterDrawer }">
 				<view class="filter-card">
 					<view class="filter-content">
-						<!-- 脸型选择 -->
 						<view class="filter-row">
 							<text class="filter-label">脸型</text>
 							<view class="face-type-group">
@@ -72,7 +68,6 @@
 							</view>
 						</view>
 
-						<!-- 发量选择 -->
 						<view class="filter-row">
 							<text class="filter-label">发量</text>
 							<view class="toggle-group">
@@ -90,7 +85,6 @@
 							</view>
 						</view>
 
-						<!-- 发质选择 -->
 						<view class="filter-row">
 							<text class="filter-label">发质</text>
 							<view class="toggle-group">
@@ -108,7 +102,6 @@
 							</view>
 						</view>
 
-						<!-- 粗细选择 -->
 						<view class="filter-row">
 							<text class="filter-label">粗细</text>
 							<view class="toggle-group">
@@ -140,7 +133,6 @@
 			</view>
 		</view>
 
-		<!-- 筛选标签卡片 - 独立区块 -->
 		<view class="filter-tags-card" v-if="showFilterTags">
 			<view class="filter-tags-content">
 				<!-- 脸型标签 -->
@@ -148,9 +140,8 @@
 					<view class="filter-tag-item" @tap="handleTagClick('face')">
 						<text class="tag-label">脸型</text>
 						<image class="tag-face-icon" :src="selectedFaceIcon" mode="aspectFit"></image>
-						<image class="tag-arrow-icon" :class="{ rotate: activeTagDropdown === 'face' }" src="/static/icon/down.png" mode="aspectFit"></image>
+						<image class="tag-arrow-icon" :class="{ rotate: activeTagDropdown === 'face' }" src="https://bioflex.cn/static/icon/down.png" mode="aspectFit"></image>
 					</view>
-					<!-- 脸型下拉选项 -->
 					<view class="tag-dropdown" v-if="activeTagDropdown === 'face'">
 						<view class="face-options">
 							<view
@@ -170,9 +161,8 @@
 					<view class="filter-tag-item" @tap="handleTagClick('volume')">
 						<text class="tag-label">发量</text>
 						<text class="tag-value">{{ selectedVolumeLabel }}</text>
-						<image class="tag-arrow-icon" :class="{ rotate: activeTagDropdown === 'volume' }" src="/static/icon/down.png" mode="aspectFit"></image>
+						<image class="tag-arrow-icon" :class="{ rotate: activeTagDropdown === 'volume' }" src="https://bioflex.cn/static/icon/down.png" mode="aspectFit"></image>
 					</view>
-					<!-- 发量下拉选项 -->
 					<view class="tag-dropdown" v-if="activeTagDropdown === 'volume'">
 						<view class="text-options">
 							<view
@@ -192,9 +182,8 @@
 					<view class="filter-tag-item" @tap="handleTagClick('quality')">
 						<text class="tag-label">发质</text>
 						<text class="tag-value">{{ selectedQualityLabel }}</text>
-						<image class="tag-arrow-icon" :class="{ rotate: activeTagDropdown === 'quality' }" src="/static/icon/down.png" mode="aspectFit"></image>
+						<image class="tag-arrow-icon" :class="{ rotate: activeTagDropdown === 'quality' }" src="https://bioflex.cn/static/icon/down.png" mode="aspectFit"></image>
 					</view>
-					<!-- 发质下拉选项 -->
 					<view class="tag-dropdown" v-if="activeTagDropdown === 'quality'">
 						<view class="text-options">
 							<view
@@ -212,7 +201,6 @@
 			</view>
 		</view>
 
-		<!-- 筛选按钮的遮罩层 -->
 		<view class="filter-mask" v-if="showFilterDrawer" @tap="handleCloseFilter"></view>
 
 		<!-- 作品列表 -->
@@ -237,7 +225,6 @@
 					></image>
 				</view>
 			</view>
-			<!-- 加载状态 -->
 			<view class="load-more" v-if="displayList.length > 0">
 				<text class="load-more-text">{{ loadMoreText }}</text>
 			</view>
@@ -259,16 +246,16 @@ const hairQuality = ref('normal')
 const hairThickness = ref('normal')
 const searchKeyword = ref('')
 
-// 分页相关
+
 const pageSize = 6
 const currentPage = ref(1)
 const isLoading = ref(false)
 const hasMore = ref(true)
 
-// 作品列表数据
+
 const portfolioList = ref([])
 
-// 分类和筛选选项（从API获取）
+
 const categories = ref([
 	{ label: '女士', value: 'women' },
 	{ label: '男士', value: 'men' },
@@ -276,12 +263,12 @@ const categories = ref([
 ])
 
 const faceTypes = ref([
-	{ id: 'oval', icon: '/static/icon/face-oval.png', activeIcon: '/static/icon/face-oval-active.png' },
-	{ id: 'circle', icon: '/static/icon/face-circle.png', activeIcon: '/static/icon/face-circle-active.png' },
-	{ id: 'square', icon: '/static/icon/face-square.png', activeIcon: '/static/icon/face-square-active.png' },
-	{ id: 'diamond', icon: '/static/icon/face-diamond.png', activeIcon: '/static/icon/face-diamond-active.png' },
-	{ id: 'triangle', icon: '/static/icon/face-triangle.png', activeIcon: '/static/icon/face-triangle-active.png' },
-	{ id: 'rounded-rect', icon: '/static/icon/face-rounded-rect.png', activeIcon: '/static/icon/face-rounded-rect-active.png' }
+	{ id: 'oval', icon: 'https://bioflex.cn/static/icon/face-oval.png', activeIcon: 'https://bioflex.cn/static/icon/face-oval-active.png' },
+	{ id: 'circle', icon: 'https://bioflex.cn/static/icon/face-circle.png', activeIcon: 'https://bioflex.cn/static/icon/face-circle-active.png' },
+	{ id: 'square', icon: 'https://bioflex.cn/static/icon/face-square.png', activeIcon: 'https://bioflex.cn/static/icon/face-square-active.png' },
+	{ id: 'diamond', icon: 'https://bioflex.cn/static/icon/face-diamond.png', activeIcon: 'https://bioflex.cn/static/icon/face-diamond-active.png' },
+	{ id: 'triangle', icon: 'https://bioflex.cn/static/icon/face-triangle.png', activeIcon: 'https://bioflex.cn/static/icon/face-triangle-active.png' },
+	{ id: 'rounded-rect', icon: 'https://bioflex.cn/static/icon/face-rounded-rect.png', activeIcon: 'https://bioflex.cn/static/icon/face-rounded-rect-active.png' }
 ])
 
 const hairAmountOptions = ref([
@@ -302,7 +289,7 @@ const hairThicknessOptions = ref([
 	{ label: '粗', value: 'thick' }
 ])
 
-// 获取作品列表
+
 const fetchPortfolioList = async (reset = false) => {
 	if (isLoading.value) return
 	isLoading.value = true
@@ -324,7 +311,7 @@ const fetchPortfolioList = async (reset = false) => {
 			keyword: searchKeyword.value || undefined
 		})
 
-		if (res.code === 0) {
+		if (res.code === 200) {
 			const newList = (res.data.list || res.data.records || []).map(item => ({
 				id: item.id,
 				image: item.coverImage || item.images?.[0],
@@ -346,11 +333,11 @@ const fetchPortfolioList = async (reset = false) => {
 	}
 }
 
-// 获取分类列表
+
 const fetchCategories = async () => {
 	try {
 		const res = await portfolioApi.getCategories()
-		if (res.code === 0 && res.data) {
+		if (res.code === 200 && res.data) {
 			categories.value = res.data.map(item => ({
 				label: item.name,
 				value: item.id
@@ -361,21 +348,21 @@ const fetchCategories = async () => {
 	}
 }
 
-// 获取筛选条件
+
 const fetchFilters = async () => {
 	try {
 		const res = await portfolioApi.getFilters()
-		if (res.code === 0 && res.data) {
-			// 可以根据API返回更新筛选选项
+		if (res.code === 200 && res.data) {
+			
 		}
 	} catch (e) {
 		console.error('获取筛选条件失败', e)
 	}
 }
 
-// 页面加载时获取参数和状态栏高度
+
 onMounted(() => {
-	// 获取状态栏高度
+	
 	const pages = getCurrentPages()
 	const currentPageInfo = pages[pages.length - 1]
 	const options = currentPageInfo.options || {}
@@ -383,15 +370,15 @@ onMounted(() => {
 		activeCategory.value = options.category
 	}
 
-	// 获取数据
+	
 	fetchCategories()
 	fetchFilters()
 	fetchPortfolioList(true)
 })
 
-// 筛选标签显示图标
+
 const selectedFaceIcon = computed(() => {
-	return `/static/icon/face-${selectedFace.value}-mini.png`
+	return `https://bioflex.cn/static/icon/face-${selectedFace.value}-mini.png`
 })
 
 const selectedVolumeLabel = computed(() => {
@@ -404,19 +391,19 @@ const selectedQualityLabel = computed(() => {
 	return option ? option.label : '正常'
 })
 
-// 显示列表直接使用API获取的数据
+
 const displayList = computed(() => {
 	return portfolioList.value
 })
 
-// 加载更多文案
+
 const loadMoreText = computed(() => {
 	if (isLoading.value) return '加载中...'
 	if (!hasMore.value) return '没有更多了'
 	return '上拉加载更多'
 })
 
-// 监听分类变化，重新获取数据
+
 watch(activeCategory, () => {
 	fetchPortfolioList(true)
 })
@@ -435,7 +422,7 @@ const handleClearSearch = () => {
 	fetchPortfolioList(true)
 }
 
-// 加载更多
+
 const handleLoadMore = () => {
 	if (isLoading.value || !hasMore.value) return
 
@@ -635,7 +622,7 @@ const handleItemClick = (item) => {
 	transform: rotate(180deg);
 }
 
-/* 筛选标签卡片 - 独立区块 */
+
 .filter-tags-card {
 	padding: 12rpx 12rpx 0 12rpx;
 	background-color: #f2f2f2;
@@ -692,7 +679,7 @@ const handleItemClick = (item) => {
 	transform: rotate(180deg);
 }
 
-/* 标签下拉选项 */
+
 .tag-dropdown {
 	position: absolute;
 	top: 56rpx;
@@ -760,7 +747,7 @@ const handleItemClick = (item) => {
 	color: #ffffff;
 }
 
-/* 下拉筛选抽屉 */
+
 .filter-drawer {
 	position: absolute;
 	top: 100%;
@@ -855,6 +842,7 @@ const handleItemClick = (item) => {
 	&.active {
 		background-color: #333333;
 		border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	}
 }
 
@@ -915,7 +903,7 @@ const handleItemClick = (item) => {
 	color: #ffffff;
 }
 
-/* 遮罩层 */
+
 .filter-mask {
 	position: fixed;
 	top: 0;
@@ -954,7 +942,7 @@ const handleItemClick = (item) => {
 	height: 478rpx;
 }
 
-/* 加载更多 */
+
 .load-more {
 	display: flex;
 	align-items: center;

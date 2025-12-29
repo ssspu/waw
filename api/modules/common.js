@@ -130,7 +130,7 @@ export default {
   },
 
   /**
-   * 检查更新
+   * 怣查更新
    * @param {Object} params - { platform: 平台(ios/android), version: 当前版本 }
    */
   checkUpdate(params) {
@@ -167,7 +167,7 @@ export default {
   },
 
   /**
-   * 获取所有排行榜数据（一次性返回三个榜单）
+   * 获取怉有排行榜数据（一次性返回三个榜单）
    */
   getAllRanking() {
     return get(`${COMMON_PREFIX}/ranking/all`)

@@ -11,7 +11,7 @@ const users = [
     phone: '13800138000',
     password: '123456',
     nickname: '测试用户',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     token: 'mock_token_13800138000',
     refreshToken: 'mock_refresh_token_13800138000'
   },
@@ -20,7 +20,7 @@ const users = [
     phone: '13900139000',
     password: '123456',
     nickname: '设计师用户',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     token: 'mock_token_13900139000',
     refreshToken: 'mock_refresh_token_13900139000'
   }
@@ -36,7 +36,7 @@ export const data = {
 
 // Mock 路由处理
 export const routes = {
-  // 发送验证码
+  // 发验证码
   'POST /api/auth/send-code': (params) => {
     const { phone, type } = params
     if (!phone || !/^1\d{10}$/.test(phone)) {
@@ -45,7 +45,7 @@ export const routes = {
     // 生成6位验证码
     const code = '123456' // 固定验证码方便测试
     verificationCodes[phone] = { code, type, expireAt: Date.now() + 5 * 60 * 1000 }
-    return success(null, '验证码发送成功')
+    return success(null, '验证码发成功')
   },
 
   // 验证码登录
@@ -62,7 +62,7 @@ export const routes = {
         id: String(users.length + 1),
         phone,
         nickname: `用户${phone.slice(-4)}`,
-        avatar: '/static/avatar/avatar.png',
+        avatar: 'https://bioflex.cn/static/avatar/avatar.png',
         token: `mock_token_${phone}`,
         refreshToken: `mock_refresh_token_${phone}`
       }
@@ -108,7 +108,7 @@ export const routes = {
         id: '100',
         phone: '',
         nickname: '微信用户',
-        avatar: '/static/avatar/avatar.png'
+        avatar: 'https://bioflex.cn/static/avatar/avatar.png'
       }
     })
   },
@@ -122,7 +122,7 @@ export const routes = {
         id: '101',
         phone: '',
         nickname: 'Apple用户',
-        avatar: '/static/avatar/avatar.png'
+        avatar: 'https://bioflex.cn/static/avatar/avatar.png'
       }
     })
   },
@@ -141,7 +141,7 @@ export const routes = {
       phone,
       password,
       nickname: `用户${phone.slice(-4)}`,
-      avatar: '/static/avatar/avatar.png',
+      avatar: 'https://bioflex.cn/static/avatar/avatar.png',
       token: `mock_token_${phone}`,
       refreshToken: `mock_refresh_token_${phone}`
     }
@@ -185,12 +185,11 @@ export const routes = {
     })
   },
 
-  // 退出登录
   'POST /api/auth/logout': () => {
-    return success(null, '退出成功')
+    return success(null, '出成功')
   },
 
-  // 检查手机号是否已注册
+  // 查手机号是否已注册
   'GET /api/auth/check-phone': (params) => {
     const { phone } = params
     const exists = users.some(u => u.phone === phone)

@@ -1,6 +1,5 @@
 /**
  * 入驻模块 API
- * 包含设计师入驻、门店入驻、审核状态等接口
  */
 
 import { post, get, put, upload } from '../request.js'
@@ -56,14 +55,14 @@ export default {
   },
 
   /**
-   * 提交设计师入驻申请（最终提交）
+   * 提交设计师入驻申请（终提交）
    */
   submitDesignerApplication() {
     return post(`${SETTLEMENT_PREFIX}/designer/submit`)
   },
 
   /**
-   * 获取设计师入驻申请状态
+   * 获取设计师入驻申请状
    * 返回 { status: pending/reviewing/approved/rejected, rejectReason? }
    */
   getDesignerStatus() {
@@ -118,21 +117,21 @@ export default {
   },
 
   /**
-   * 提交门店入驻申请（最终提交）
+   * 提交门店入驻申请（终提交）
    */
   submitStoreApplication() {
     return post(`${SETTLEMENT_PREFIX}/store/submit`)
   },
 
   /**
-   * 获取门店入驻申请状态
+   * 获取门店入驻申请状
    * 返回 { status: pending/reviewing/approved/rejected, rejectReason? }
    */
   getStoreStatus() {
     return get(`${SETTLEMENT_PREFIX}/store/status`)
   },
 
-  // ============ 通用接口 ============
+  // ============ 用接口 ============
 
   /**
    * 上传入驻相关图片
@@ -173,7 +172,7 @@ export default {
   },
 
   /**
-   * 撤销入驻申请
+   * 撤入驻申请
    * @param {string} type - 类型(designer/store)
    */
   cancelApplication(type) {

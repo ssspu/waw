@@ -13,11 +13,12 @@
 				<view class="back-btn" @tap="goBack">
 					<image class="back-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1877.svg" mode="aspectFit"></image>
 				</view>
-				<!-- 测试阶段隐藏分享按钮 -->
-				<!-- <view class="share-btn" @tap="handleShare">
-					<image class="share-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1879-1.svg" mode="aspectFit"></image>
-				</view> -->
 			</view>
+		</view>
+
+		<!-- 品牌名称 -->
+		<view class="brand-name-overlay">
+			<text class="brand-name-text">{{ brandName }}</text>
 		</view>
 	</view>
 </template>
@@ -28,6 +29,10 @@ export default {
 		coverImage: {
 			type: String,
 			default: ''
+		},
+		brandName: {
+			type: String,
+			default: ''
 		}
 	},
 	data() {
@@ -36,7 +41,7 @@ export default {
 		}
 	},
 	created() {
-		// 从持久化存储获取状态栏高度
+		
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
 	},
 	methods: {
@@ -95,7 +100,7 @@ export default {
 	box-sizing: border-box;
 }
 
-// 自定义导航栏
+
 .custom-navbar {
 	position: absolute;
 	top: 0;
@@ -128,7 +133,7 @@ export default {
 	width: 60;
 	height: 60rpx;
 	flex-shrink: 0;
-	filter: brightness(0) invert(1);
+	
 }
 
 .logo {

@@ -3,14 +3,14 @@
 		<view class="user-card">
 			<!-- VIP背景层（在白色卡片后面，测试阶段禁用） -->
 			<view class="vip-chip-bg-layer disabled">
-				<image class="vip-chip-bg" src="/static/background-image/mine_vip_bg.png" mode="aspectFit"></image>
+				<image class="vip-chip-bg" src="https://bioflex.cn/static/background-image/mine_vip_bg.png" mode="aspectFit"></image>
 			</view>
 			<!-- VIP可点击文字层（测试阶段禁用） -->
 			<view class="vip-chip-clickable disabled">
 				<view class="vip-title-row">
 					<text class="vip-chip-title">VIP会员专享</text>
 					<view class="arrow-bg">
-						<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
+						<image class="arrow-icon" src="https://bioflex.cn/static/icon/right.png" mode="aspectFit"></image>
 					</view>
 				</view>
 				<text class="vip-chip-desc">建设中...</text>
@@ -98,15 +98,44 @@ export default {
 		}
 	},
 	mounted() {
+		// 先从本地存储加载用户信息
+		this.loadLocalUserInfo()
+		// 然后从API获取最新信息
 		this.fetchUserInfo()
 	},
 	methods: {
-		// 获取用户信息
+		// 从本地存储加载用户信息
+		loadLocalUserInfo() {
+			try {
+				const localUserInfo = uni.getStorageSync('userInfo')
+				if (localUserInfo) {
+					this.userInfo = {
+						nickname: localUserInfo.nickname || localUserInfo.nickName || '',
+						avatar: localUserInfo.avatar || localUserInfo.avatarUrl || '',
+						vipLevel: localUserInfo.vipLevel || 0,
+						signature: localUserInfo.signature || ''
+					}
+				}
+			} catch (err) {
+				console.error('读取本地用户信息失败:', err)
+			}
+		},
+
 		async fetchUserInfo() {
 			try {
 				const res = await api.user.getInfo()
-				if (res.code === 0) {
-					this.userInfo = res.data
+				if (res.code === 200 && res.data) {
+					// 更新用户信息
+					this.userInfo = {
+						nickname: res.data.nickname || res.data.nickName || this.userInfo.nickname || '',
+						avatar: res.data.avatar || res.data.avatarUrl || this.userInfo.avatar || '',
+						vipLevel: res.data.vipLevel || 0,
+						signature: res.data.signature || ''
+					}
+
+					// 同步更新本地存储
+					uni.setStorageSync('userInfo', this.userInfo)
+
 					// 更新统计数据
 					this.statsData[0].value = String(res.data.followCount || 0)
 					this.statsData[1].value = String(res.data.browseCount || 0)
@@ -115,15 +144,15 @@ export default {
 			} catch (err) {
 				console.error('获取用户信息失败:', err)
 			}
-			// 获取私人设计师头像
+
 			this.fetchTerritoryDesigners()
 		},
-		// 获取私人领地设计师
+		
 		async fetchTerritoryDesigners() {
 			try {
 				const res = await api.territory.getMyDesigners({ page: 1, pageSize: 6 })
-				if (res.code === 0 && res.data.list) {
-					this.territoryAvatars = res.data.list.map(d => d.avatar || '/static/avatar/avatar.png')
+				if (res.code === 200 && res.data.list) {
+					this.territoryAvatars = res.data.list.map(d => d.avatar || 'https://bioflex.cn/static/avatar/avatar.png')
 				}
 			} catch (err) {
 				console.error('获取私人设计师失败:', err)
@@ -179,7 +208,7 @@ export default {
 	left: 0;
 	width:100%;
 	height: 100%;
-	background-image: url('/static/background-image/mine_info_bg.png');
+	background-image: url('https://bioflex.cn/static/background-image/mine_info_bg.png');
 	background-size: contain;
 	// background-position: center 58rpx;
 	background-repeat: no-repeat;
@@ -187,7 +216,7 @@ export default {
 	pointer-events: none;
 }
 
-/* VIP背景层 - 在白色卡片后面 */
+
 .vip-chip-bg-layer {
 	position: absolute;
 	top: 0.1rem;
@@ -208,7 +237,7 @@ export default {
 	top: 4rpx;
 }
 
-/* VIP可点击文字层 - 在最上层 */
+
 .vip-chip-clickable {
 	position: absolute;
 	top: 0.1rem;

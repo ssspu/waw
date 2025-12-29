@@ -52,21 +52,21 @@ export default {
 					id: "vip",
 					title: "会员特区",
 					subtitle: "VIP精选优服务",
-					icon: "https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-2288-1.svg",
+					icon: "https://bioflex.cn/static/Frame 2288@3x.png",
 					size: "large",
 				},
 				{
 					id: "package",
 					title: "套餐优选",
 					subtitle: "套餐项目更实惠",
-					icon: "https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-2288.svg",
+					icon: "https://bioflex.cn/static/6.png",
 					size: "small",
 				},
 				{
 					id: "haircare",
 					title: "防脱护理",
 					subtitle: "头皮保养和防护",
-					icon: "https://c.animaapp.com/mi5bcgvrGbkedE/img/frame-2288-2.svg",
+					icon: "https://bioflex.cn/static/7.png",
 					size: "small",
 				},
 			],
@@ -74,7 +74,7 @@ export default {
 	},
 	methods: {
 		handleCardClick(card) {
-			// 跳转到搜索页面，执行所点击内容的搜索
+			
 			uni.navigateTo({
 				url: `/pages/main/search?tab=service&keyword=${encodeURIComponent(card.title)}`
 			})
@@ -170,7 +170,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
-	align-items: flex-start;
+	align-items: center;
 	justify-content: flex-end;
 	gap: 20rpx;
 	padding: 24rpx;
@@ -190,7 +190,7 @@ export default {
 .card-info {
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start;
+	align-items: center;
 	justify-content: flex-end;
 	gap: 10rpx;
 	width: 100%;
@@ -209,6 +209,7 @@ export default {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	width: 100%;
+	text-align: center;
 }
 
 .card-subtitle {
@@ -216,7 +217,7 @@ export default {
 	font-weight: normal;
 	color: #666666;
 	font-size: 22rpx;
-	text-align: left;
+	text-align: center;
 	line-height: 1.2;
 	white-space: nowrap;
 	overflow: hidden;
@@ -298,7 +299,7 @@ export default {
 	flex-shrink: 0;
 }
 
-/* 动画 */
+
 @keyframes fade-in {
 	0% {
 		opacity: 0;

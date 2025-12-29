@@ -3,6 +3,7 @@
 		<!-- 服务列表 -->
 		<designer-profile-section
 			:designer-id="designerId"
+			:designer-user-id="designerUserId"
 			:active-sub-tab="activeSubTab"
 			@book-service="handleBookService"
 		></designer-profile-section>
@@ -21,6 +22,10 @@ export default {
 			type: [String, Number],
 			default: null
 		},
+		designerUserId: {
+			type: String,
+			default: ''
+		},
 		activeSubTab: {
 			type: String,
 			default: 'hair'
@@ -28,7 +33,7 @@ export default {
 	},
 	methods: {
 		handleBookService(bookingData) {
-			// 向上传递事件到detail.vue
+			
 			this.$emit('book-service', bookingData)
 		}
 	}

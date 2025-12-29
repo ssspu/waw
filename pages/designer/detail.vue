@@ -1,7 +1,6 @@
 <template>
 	<page-meta :page-style="'padding-top:0px; background-color:#f2f2f2;'"></page-meta>
 	<view class="screen">
-		<!-- 状态栏占位 -->
 		<!-- <view class="status-bar" style="height: 44rpx;"></view> -->
 		
 		<!-- 头部 -->
@@ -58,6 +57,7 @@
 				<view v-if="activeTab === 'service'" class="tab-content" :key="'service'">
 					<designer-service-tab-content
 						:designer-id="designerId"
+						:designer-user-id="designerUserId"
 						:active-sub-tab="activeSubTabs.service"
 						@book-service="handleBookService"
 					></designer-service-tab-content>
@@ -67,6 +67,7 @@
 				<view v-if="activeTab === 'appointment'" class="tab-content" :key="'appointment'">
 					<designer-appointment-tab-content
 						:designer-id="designerId"
+						:designer-user-id="designerUserId"
 						:active-sub-tab="activeSubTabs.appointment"
 						:selected-service="selectedBookingData"
 						@time-selected="handleTimeSelected"
@@ -76,18 +77,18 @@
 
 				<!-- 作品tab内容 -->
 				<view v-if="activeTab === 'works'" class="tab-content" :key="'works'">
-					<designer-works-tab-content :designer-id="designerId" :active-sub-tab="activeSubTabs.works"></designer-works-tab-content>
+					<designer-works-tab-content :designer-id="designerUserId || designerId" :active-sub-tab="activeSubTabs.works"></designer-works-tab-content>
 				</view>
 
 				<!-- 点评tab内容 -->
 				<view v-if="activeTab === 'reviews'" class="tab-content" :key="'reviews'">
-					<designer-reviews-tab-content :designer-id="designerId" :active-sub-tab="activeSubTabs.reviews"></designer-reviews-tab-content>
+					<designer-reviews-tab-content :designer-id="designerUserId || designerId" :active-sub-tab="activeSubTabs.reviews"></designer-reviews-tab-content>
 				</view>
 			</view>
 
 			<!-- 底部内容（只在服务tab显示） -->
 			<view v-if="activeTab === 'service'" class="bottom-content">
-				<designer-portfolio-section :designer-id="designerId"></designer-portfolio-section>
+				<designer-portfolio-section :designer-id="designerUserId || designerId"></designer-portfolio-section>
 			</view>
 			
 			<!-- 预约按钮（只在预约tab显示） -->
@@ -134,16 +135,16 @@ export default {
 		CouponPopup
 	},
 	async onLoad(options) {
-		// 获取设计师ID
+		
 		this.designerId = options.id || '1'
 
-		// 加载设计师详情
+		
 		await this.loadDesignerDetail()
 
-		// 支持从URL参数中指定初始tab
+		
 		if (options.tab) {
 			this.activeTab = options.tab
-			// 如果是预约tab，滚动到底部
+			
 			if (options.tab === 'appointment') {
 				this.$nextTick(() => {
 					setTimeout(() => {
@@ -159,11 +160,12 @@ export default {
 	data() {
 		return {
 			designerId: '1',
+			designerUserId: '', 
 			coverImage: '',
 			activeTab: 'service',
 			showCouponPopup: false,
-			selectedBookingData: null, // 用户选择的服务数据
-			selectedTimeSlot: null, // 用户选择的时间段
+			selectedBookingData: null, 
+			selectedTimeSlot: null, 
 			activeSubTabs: {
 				service: 'hair-service',
 				appointment: 'today',
@@ -179,8 +181,8 @@ export default {
 			subTabs: {
 				service: [
 					{ id: 'hair-service', title: '美发服务' },
-					// { id: 'beauty-service', title: '美容服务' },
-					// { id: 'other-service', title: '其他服务' }
+					
+					
 				],
 				appointment: [
 					{ id: 'today', title: '今天', subtitle: '周一' },
@@ -205,41 +207,51 @@ export default {
 			designerInfo: {
 				avatar: "",
 				name: "",
-				verifyIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2110.svg",
+				verifyIcon: "",
 				role: "",
-				certIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2.svg",
-				certText: "职业认证",
-				certDot: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg",
+				certIcon: "",
+				certText: "",
+				certDot: "",
 				skills: "",
 				introduction: ""
 			},
 			serviceBadges: [],
 			statsData: [],
 			businessInfo: {
-				status: "营业中",
-				restDay: "周二休息",
-				hours: "10:00-21:00"
+				status: "",
+				restDay: "",
+				hours: ""
 			},
 			shopInfo: {
-				name: "",
-				address: "",
-				distance: ""
+				name: "NICE美发型沙...",
+				address: "武侯区天府三家B7栋...",
+				distance: "距您2.7km"
 			},
-			promotions: [
-				{ text: "满100-5" },
-				{ text: "满500-50" }
-			],
+			promotions: [],
 			rightStats: {
-				serviceIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1.svg",
+				serviceIcon: "",
 				serviceCount: "0",
-				workIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-4.svg",
+				workIcon: "",
 				workCount: "0",
-				dotIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg"
+				dotIcon: ""
+			},
+			
+			designerCategories: {
+				service: [],
+				appointment: [],
+				works: [],
+				reviews: []
 			}
 		}
 	},
 	computed: {
 		currentSubTabs() {
+			
+			const apiTabs = this.designerCategories[this.activeTab]
+			if (apiTabs && apiTabs.length) {
+				return apiTabs
+			}
+			
 			return this.subTabs[this.activeTab] || []
 		},
 		isCompactSubTabs() {
@@ -247,58 +259,116 @@ export default {
 		}
 	},
 	methods: {
-		// 加载设计师详情
+		
 		async loadDesignerDetail() {
 			try {
 				const res = await designerApi.getDetail(this.designerId)
-				if (res && res.data) {
-					const data = res.data
-					// 更新封面图片
+				console.log('Designer detail response:', res)
+				if (res && res.code === 200 && res.data) {
+					
+					const list = res.data.items || res.data.list || []
+					console.log('Total designers:', list.length)
+
+					
+					const data = list.find(item => item.id === this.designerId) || list[0]
+					console.log('Filtered designer data:', data)
+					console.log('Designer name:', data?.real_name || data?.name)
+
+					
+					if (!data || !data.id) {
+						console.error('No designer data found for id:', this.designerId)
+						uni.showToast({ title: '设计师不存在', icon: 'none' })
+						return
+					}
+
+					
 					this.coverImage = data.coverImage || data.avatar || ''
 
-					// 更新设计师基本信息
+					
+					this.designerUserId = data.user_id || ''
+
+					
 					this.designerInfo = {
-						avatar: data.avatar || data.coverImage,
-						name: data.name,
-						verifyIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2110.svg",
-						role: data.position || data.role,
-						certIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2.svg",
-						certText: "职业认证",
-						certDot: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg",
-						skills: data.specialties ? data.specialties.join('、') + ':' : '',
+						id: data.user_id || data.id || '',
+						avatar: data.avatar || data.coverImage || '',
+						name: data.real_name || data.name || '',
+						verifyIcon: data.verifyIcon || '',
+						role: data.position || data.role || '',
+						certIcon: data.certIcon || '',
+						certText: data.certification || '',
+						certDot: data.certDot || '',
+						skills: data.expertise || (data.specialties ? data.specialties.join(',') : ''),
 						introduction: data.introduction || ''
 					}
 
-					// 更新服务标签
-					if (data.tags && data.tags.length) {
-						this.serviceBadges = data.tags.map(tag => ({
-							icon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg",
-							label: tag
-						}))
-					}
 
-					// 更新统计数据
+					this.serviceBadges = ((data.service_features || data.tags) ? String(data.service_features || data.tags).split(/[,]/) : []).map(tag => ({
+						icon: '',
+						label: tag.trim()
+					}))
+
+					
 					this.statsData = [
-						{ value: String(data.appointmentCount || data.statistics?.appointmentCount || 0), label: "预约" },
-						{ value: String(data.followerCount || data.statistics?.followerCount || 0), label: "粉丝" },
-						{ value: String(data.experience || data.statistics?.experience || 0), unit: "年", label: "从业" },
-						{ value: String(data.rating || data.statistics?.rating || 0), unit: "分", label: "评分" }
+						{ value: String(data.total_appointments || data.appointmentCount || 0), label: "预约" },
+						{ value: String(data.followers || data.followerCount || 0), label: "粉丝" },
+						{ value: String(data.work_years || data.experience || 0), unit: "年", label: "从业" },
+						{ value: String(data.rating || 0), unit: "分", label: "评分" }
 					]
 
-					// 更新店铺信息
+					
 					this.shopInfo = {
-						name: data.brandName || 'NICE美发造型沙龙',
-						address: "武侯区天府三家B7栋...",
-						distance: "距您2.7km"
+						name: data.brandName || '',
+						address: data.location_desc || '',
+						distance: data.distance ? `距您${data.distance}km` : ''
 					}
 
-					// 更新右侧统计
+					
 					this.rightStats = {
-						serviceIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1.svg",
+						serviceIcon: data.serviceIcon || '',
 						serviceCount: String(data.serviceCount || 0),
-						workIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-4.svg",
+						workIcon: data.workIcon || '',
 						workCount: String(data.worksCount || 0),
-						dotIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg"
+						dotIcon: data.dotIcon || ''
+					}
+
+					
+					this.businessInfo = {
+						status: '营业中',
+						restDay: data.appointment_time || '',
+						hours: data.work_hours || ''
+					}
+
+					
+					this.promotions = (data.promotions || []).map(p => ({
+						text: typeof p === 'string' ? p : (p.label || p.name || '')
+					}))
+
+					
+					if (data.categories) {
+						if (data.categories.service) {
+							this.designerCategories.service = data.categories.service.map(cat => ({
+								id: cat.id || cat.key,
+								title: cat.name || cat.label
+							}))
+						}
+						if (data.categories.appointment) {
+							this.designerCategories.appointment = data.categories.appointment.map(cat => ({
+								id: cat.id || cat.key,
+								title: cat.name || cat.label
+							}))
+						}
+						if (data.categories.works) {
+							this.designerCategories.works = data.categories.works.map(cat => ({
+								id: cat.id || cat.key,
+								title: cat.name || cat.label
+							}))
+						}
+						if (data.categories.reviews) {
+							this.designerCategories.reviews = data.categories.reviews.map(cat => ({
+								id: cat.id || cat.key,
+								title: cat.name || cat.label
+							}))
+						}
 					}
 				}
 			} catch (error) {
@@ -331,11 +401,11 @@ export default {
 			console.log('Share clicked')
 		},
 		handleBookService(bookingData) {
-			// 保存用户选择的服务数据
+			
 			this.selectedBookingData = bookingData
-			// 切换到预约tab
+			
 			this.activeTab = 'appointment'
-			// 滚动页面以便用户看到预约内容
+			
 			this.$nextTick(() => {
 				setTimeout(() => {
 					uni.pageScrollTo({
@@ -346,25 +416,25 @@ export default {
 			})
 		},
 		handleTimeSelected(timeSlot) {
-			// 保存用户选择的时间段
+			
 			this.selectedTimeSlot = timeSlot
 		},
 		handleGoToService() {
-			// 切换到服务tab
+			
 			this.activeTab = 'service'
 		},
 		handleBooking() {
-			// 检查是否已选择服务
+			
 			if (!this.selectedBookingData) {
 				uni.showToast({ title: '请先选择服务', icon: 'none' })
 				return
 			}
-			// 检查是否已选择时间
+			
 			if (!this.selectedTimeSlot) {
 				uni.showToast({ title: '请选择预约时间', icon: 'none' })
 				return
 			}
-			// 构建完整的预约数据
+			
 			const orderData = {
 				service: this.selectedBookingData.service,
 				hairLength: this.selectedBookingData.hairLength,
@@ -375,7 +445,7 @@ export default {
 				designer: this.designerInfo,
 				shop: this.shopInfo
 			}
-			// 跳转到订单详情页
+			
 			uni.navigateTo({
 				url: '/packageOrder/pages/order/detail?data=' + encodeURIComponent(JSON.stringify(orderData))
 			})

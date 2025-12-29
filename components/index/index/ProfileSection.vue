@@ -1,57 +1,62 @@
 <template>
 	<view class="profile-section">
-		<!-- 提示卡片 -->
+		<!--  -->
 		<view class="alert-card animate-fade-in" style="animation-delay: 0ms;">
 			<view class="alert-content">
 				<view class="alert-left">
 					<view class="avatar">
 						<image class="avatar-img" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-71.svg" mode="aspectFill"></image>
 					</view>
-					<text class="alert-text">hey,快去看看你周边设计师吧！</text>
+					<text class="alert-text">hey,快去看看你的周边设计师吧</text>
 				</view>
 				<view class="close-btn" @tap="handleNearbyDesignerClick">
 					<image class="close-icon" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-6.svg" mode="aspectFit"></image>
 				</view>
 			</view>
 		</view>
-		
-		<!-- 快捷操作卡片 -->
-		<view class="quick-actions-card animate-fade-in" style="animation-delay: 100ms;">
-			<view class="quick-actions-top">
-				<view 
-					v-for="(action, index) in quickActions" 
-					:key="index" 
-					class="quick-action-item"
-					@tap="handleQuickAction(action, index)"
-				>
-					<image class="action-icon" :src="action.icon" mode="aspectFit"></image>
-					<view class="action-info">
-						<text class="action-title">{{ action.title }}</text>
-						<text class="action-subtitle">{{ action.subtitle }}</text>
-					</view>
-				</view>
-			</view>
-			<view class="quick-actions-bottom">
+	
+
+		<!--  Tab  -->
+		<view class="top-tab-section animate-fade-in" style="animation-delay: 150ms;">
+			<!--  Tab -->
+			<view class="main-tabs">
 				<view
-					v-for="(action, index) in bottomActions"
+					v-for="(tab, index) in mainTabs"
 					:key="index"
-					class="bottom-action-item"
-					:class="{ disabled: action.title === '会员' }"
-					@tap="handleBottomAction(action, index)"
+					class="main-tab-item"
+					:class="{ active: activeMainTab === tab.value }"
+					@tap="switchMainTab(tab.value)"
 				>
-					<image class="action-icon" :src="action.icon" mode="aspectFit"></image>
-					<view class="action-info">
-						<text class="action-title-small">{{ action.title }}</text>
-						<text class="action-subtitle-small">{{ action.subtitle }}</text>
-					</view>
+					<image class="main-tab-icon" :src="tab.icon" mode="aspectFit"></image>
+					<image class="main-tab-text-img" :src="tab.textIcon" mode="aspectFit"></image>
+					<text class="main-tab-subtitle">{{ tab.subtitle }}</text>
 				</view>
 			</view>
+			<!--  Tab -->
+			<scroll-view class="sub-tabs-scroll" scroll-x>
+				<view class="sub-tabs-container">
+					<view
+						v-for="(tab, index) in subTabs"
+						:key="index"
+						class="sub-tab-item"
+						:class="{ active: activeSubTab === tab.value }"
+						@tap="switchSubTab(tab.value)"
+					>
+						<image class="sub-tab-icon" :src="tab.icon" mode="aspectFit"></image>
+						<text class="sub-tab-text" :class="{ active: activeSubTab === tab.value }">{{ tab.label }}</text>
+						<text class="sub-tab-subtitle">{{ tab.subtitle }}</text>
+					</view>
+				</view>
+			</scroll-view>
 		</view>
-		
+
 		<!-- 作品集 -->
 		<view class="portfolio-card animate-fade-in" style="animation-delay: 200ms;">
 			<view class="card-header" @tap="handlePortfolioHeaderClick">
-				<text class="card-title">作品集</text>
+				<view class="title-wrapper">
+					<text class="card-title">作品集</text>
+					<view class="title-bar"></view>
+				</view>
 				<image class="more-icon" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-7.svg" mode="aspectFit"></image>
 			</view>
 			<view class="portfolio-content">
@@ -77,14 +82,17 @@
 		<!-- 设计师 -->
 		<view class="designers-card animate-fade-in" style="animation-delay: 300ms;">
 			<view class="card-header" @tap="handleDesignerSectionClick">
-				<text class="card-title">设计师</text>
+				<view class="title-wrapper">
+					<text class="card-title">设计师</text>
+					<view class="title-bar"></view>
+				</view>
 				<image class="more-icon" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-7.svg" mode="aspectFit"></image>
 			</view>
-			<scroll-view class="tabs-scroll" scroll-x>
+			<scroll-view class="designers-tabs-scroll" scroll-x>
 				<view class="tabs-container">
-					<view 
-						v-for="(tab, index) in designerTabs" 
-						:key="index" 
+					<view
+						v-for="(tab, index) in designerTabs"
+						:key="index"
 						class="tab-item"
 						:class="{ active: activeDesignerTab === index }"
 						@tap="handleDesignerTabClick(index)"
@@ -93,23 +101,16 @@
 					</view>
 				</view>
 			</scroll-view>
-			<swiper 
-				class="designers-swiper"
-				:current="designerSwiperIndex"
-				@change="handleDesignerSwiperChange"
-				:indicator-dots="false"
-				:autoplay="false"
-				:circular="false"
-			>
-				<swiper-item 
-					v-for="(slide, slideIndex) in designerSlides" 
-					:key="slideIndex"
-					class="designers-swiper-item"
-				>
-				<view class="designers-container">
-					<view 
-							v-for="(designer, index) in slide" 
-						:key="index" 
+			<scroll-view class="designers-list-scroll" scroll-x show-scrollbar="false" scroll-with-animation>
+				<view class="designers-list-container">
+					<!-- 暂无数据占位 -->
+					<view v-if="!currentDesigners || currentDesigners.length === 0" class="empty-placeholder">
+						<text class="empty-text">暂无</text>
+					</view>
+					<view
+						v-else
+						v-for="(designer, index) in currentDesigners"
+						:key="index"
 						class="designer-card"
 						@tap="handleDesignerClick(designer)"
 					>
@@ -120,45 +121,44 @@
 						<view class="designer-info">
 							<view class="designer-header">
 								<text class="designer-name">{{ designer.name }}</text>
-								<view class="designer-badge secondary">{{ designer.role }}</view>
+								<view class="designer-badge secondary">{{ designer.position }}</view>
 								<view class="designer-badge primary">{{ designer.level }}</view>
 							</view>
-							<text class="designer-title">{{ designer.title }}</text>
+							<view class="designer-title-row">
+								<text class="designer-title">{{ designer.title }}</text>
+								<text class="title-separator">|</text>
+								<text class="work-years">{{ designer.workYears }}年从业</text>
+							</view>
 							<view class="designer-footer">
 								<view class="rating-info">
 									<text class="rating-score">{{ designer.rating }}</text>
-									<text class="star">★</text>
-									<text class="review-count">({{ designer.reviews }})</text>
+									<view class="star-container">
+										<image class="star-icon" src="/static/icon/star.png" mode="aspectFit"></image>
+									</view>
+									<text class="review-count">({{ designer.appointments }})</text>
 								</view>
 								<text class="distance">{{ designer.distance }}</text>
 							</view>
 						</view>
 					</view>
 				</view>
-				</swiper-item>
-			</swiper>
-			<view class="pagination-dots">
-				<view 
-					v-for="(dot, index) in designerSlides.length" 
-					:key="index" 
-					class="dot"
-					:class="{ active: index === designerSwiperIndex }"
-					:style="{ width: index === designerSwiperIndex ? '28rpx' : '10rpx' }"
-				></view>
-			</view>
+			</scroll-view>
 		</view>
-		
+
 		<!-- 品牌馆 -->
 		<view class="brands-card animate-fade-in" style="animation-delay: 400ms;">
 			<view class="card-header" @tap="handleSectionHeaderClick('brand')">
-				<text class="card-title">品牌馆</text>
+				<view class="title-wrapper">
+					<text class="card-title">品牌馆</text>
+					<view class="title-bar"></view>
+				</view>
 				<image class="more-icon" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-7.svg" mode="aspectFit"></image>
 			</view>
 			<scroll-view class="tabs-scroll" scroll-x>
 				<view class="tabs-container">
-					<view 
-						v-for="(tab, index) in brandTabs" 
-						:key="index" 
+					<view
+						v-for="(tab, index) in brandTabs"
+						:key="index"
 						class="tab-item"
 						:class="{ active: activeBrandTab === tab }"
 						@tap="handleBrandTabClick(tab)"
@@ -169,66 +169,166 @@
 			</scroll-view>
 			<scroll-view class="brands-scroll" scroll-x show-scrollbar="false" scroll-with-animation>
 				<view class="brands-container">
-					<view 
-						v-for="(brand, index) in filteredBrands" 
-						:key="index" 
+					<!-- 暂无数据占位 -->
+					<view v-if="!filteredBrands || filteredBrands.length === 0" class="empty-placeholder">
+						<text class="empty-text">暂无</text>
+					</view>
+					<view
+						v-else
+						v-for="(brand, index) in filteredBrands"
+						:key="index"
 						class="brand-card"
+						:class="brand.brandType"
 						@tap="handleBrandClick(brand)"
 					>
-						<view class="brand-img-wrapper">
-							<view v-if="!brand.hasOverlay" class="brand-img-bg"></view>
-							<image class="brand-img" :src="brand.image" mode="aspectFill"></image>
-						</view>
-						<view class="brand-info">
-							<text class="brand-name">{{ brand.name }}</text>
-							<view class="brand-rating">
-								<text class="rating-score">{{ brand.rating }}</text>
-								<view class="stars">
-									<text v-if="brand.hasOverlay" class="star">★</text>
-									<text v-if="brand.hasOverlay" class="star">★</text>
-									<text v-if="brand.hasOverlay" class="star">★</text>
-									<text v-if="!brand.hasOverlay" class="star">★</text>
+						<template v-if="brand.brandType === ''">
+							<view class="brand-img-wrapper">
+								<view class="brand-img-bg"></view>
+								<image class="brand-img" :src="brand.image" mode="aspectFill"></image>
+							</view>
+							<view class="brand-info">
+								<text class="brand-name">{{ brand.name }}</text>
+								<view class="brand-footer">
+									<view class="brand-rating">
+										<text class="rating-score">{{ brand.rating }}</text>
+										<view class="star-container">
+											<image class="star-icon" src="/static/icon/star.png" mode="aspectFit"></image>
+										</view>
+										<text class="review-count">({{ brand.reviews }})</text>
+									</view>
 								</view>
-								<text class="review-count">({{ brand.reviews }})</text>
+								<view class="brand-address">
+									<image class="location-icon" src="https://bioflex.cn/static/icon/position.png" mode="aspectFit"></image>
+									<text class="address-text">{{ brand.address }}</text>
+									<text class="distance">{{ brand.distance }}</text>
+								</view>
 							</view>
-							<view class="brand-address">
-								<image class="location-icon" src="/static/icon/position.png" mode="aspectFit"></image>
-								<text class="address-text">{{ brand.address }}</text>
-								<text v-if="brand.distance" class="distance">{{ brand.distance }}</text>
+						</template>
+						<template v-else-if="brand.brandType === 'brand-store'">
+							<view class="brand-img-wrapper">
+								<view class="brand-img-bg brand-img-bg-dark"></view>
+								<image class="brand-img" :src="brand.image" mode="aspectFill"></image>
+								<view class="brand-tag">品牌店</view>
 							</view>
-						</view>
-						<view v-if="brand.hasOverlay" class="brand-overlay"></view>
+							<view class="brand-info">
+								<text class="brand-name">{{ brand.name }}</text>
+								<view class="brand-footer">
+									<view class="brand-rating">
+										<text class="rating-score primary">{{ brand.rating }}</text>
+										<view class="star-container">
+											<image class="star-icon" src="/static/icon/star.png" mode="aspectFit"></image>
+										</view>
+										<text class="review-count">({{ brand.reviews }})</text>
+									</view>
+								</view>
+								<view class="brand-meta">
+									<text class="meta-item">{{ brand.targetCustomer }}</text>
+									<text class="meta-divider">|</text>
+									<text class="meta-item">{{ brand.designerCount }}位设计师</text>
+								</view>
+								<view class="brand-address">
+									<image class="location-icon" src="https://bioflex.cn/static/icon/position.png" mode="aspectFit"></image>
+									<text class="address-text">{{ brand.address }}</text>
+									<text class="distance">{{ brand.distance }}</text>
+								</view>
+							</view>
+						</template>
+						<template v-else-if="brand.brandType === 'studio'">
+							<view class="brand-img-wrapper">
+								<view class="brand-img-bg brand-img-bg-light"></view>
+								<image class="brand-img" :src="brand.image" mode="aspectFill"></image>
+							</view>
+							<view class="brand-info studio-info">
+								<text class="brand-name studio-name">{{ brand.name }}</text>
+								<text class="studio-service">{{ brand.mainServices }}</text>
+								<view class="brand-footer">
+									<view class="brand-rating studio-rating">
+										<text class="rating-score">{{ brand.rating }}</text>
+										<view class="star-container">
+											<image class="star-icon" src="/static/icon/star.png" mode="aspectFit"></image>
+										</view>
+									</view>
+									<text class="distance">{{ brand.distance }}</text>
+								</view>
+							</view>
+						</template>
+						<template v-else-if="brand.brandType === 'comprehensive'">
+							<view class="brand-img-wrapper">
+								<view class="brand-img-bg"></view>
+								<image class="brand-img" :src="brand.image" mode="aspectFill"></image>
+								<view class="comprehensive-badge">
+									<text>综合店</text>
+								</view>
+							</view>
+							<view class="brand-info comprehensive-info">
+								<view class="comprehensive-header">
+									<text class="brand-name">{{ brand.name }}</text>
+									<view class="venue-type-tag">{{ brand.venueType }}</view>
+								</view>
+								<view class="comprehensive-services">
+									<text class="services-label">服务:</text>
+									<text class="services-text">{{ brand.mainServices }}</text>
+								</view>
+								<view class="brand-footer">
+									<view class="brand-rating">
+										<text class="rating-score">{{ brand.rating }}</text>
+										<view class="star-container">
+											<image class="star-icon" src="/static/icon/star.png" mode="aspectFit"></image>
+										</view>
+										<text class="review-count">({{ brand.reviews }})</text>
+									</view>
+								</view>
+								<view class="brand-address">
+									<image class="location-icon" src="https://bioflex.cn/static/icon/position.png" mode="aspectFit"></image>
+									<text class="address-text">{{ brand.address }}</text>
+									<text class="distance">{{ brand.distance }}</text>
+								</view>
+							</view>
+						</template>
 					</view>
 				</view>
 			</scroll-view>
 		</view>
-		
-		<!-- 优服务 -->
+
+		<!-- 服务 -->
 		<view class="services-section animate-fade-in" style="animation-delay: 500ms;">
 			<view class="services-header">
-				<text class="services-title" @tap="handleSectionHeaderClick('service')">优服务</text>
-				<!-- <view class="filter-btn">
-					<text class="filter-text">筛选</text>
-					<image class="filter-icon" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-5.svg" mode="aspectFit"></image>
-				</view> -->
+				<view class="title-wrapper">
+					<text class="services-title" @tap="handleSectionHeaderClick('service')">优服务</text>
+					<view class="title-bar"></view>
+				</view>
+				<view class="dropdown-wrapper" @tap="toggleServiceDropdown">
+					<text class="dropdown-text">筛选</text>
+					<image class="dropdown-arrow" :class="{ 'rotate': showServiceDropdown }" src="/static/icon/xiala.png" mode="aspectFit"></image>
+					<view class="dropdown-menu" v-if="showServiceDropdown">
+						<view
+							class="dropdown-item"
+							v-for="(tab, index) in serviceTabs"
+							:key="index"
+							:class="{ active: activeServiceTab === tab }"
+							@tap.stop="selectServiceType(tab)"
+						>
+							<text>{{ tab }}</text>
+						</view>
+					</view>
+				</view>
 			</view>
 			<scroll-view class="service-tabs-scroll" scroll-x>
-				<view class="service-tabs-container">
-					<view 
-						v-for="(tab, index) in serviceTabs" 
-						:key="index" 
-						class="service-tab-item"
-					:class="{ active: activeServiceTab === tab }"
-					@tap="handleServiceTabClick(tab)"
+				<view class="tabs-container">
+					<view
+						v-for="(tab, index) in serviceTabs"
+						:key="index"
+						class="tab-item"
+						:class="{ active: activeServiceTab === tab }"
+						@tap="handleServiceTabClick(tab)"
 					>
 						<text>{{ tab }}</text>
-					<image v-if="activeServiceTab === tab" class="tab-indicator" src="https://c.animaapp.com/mi4v97d2OSuz2g/img/vector-15.svg" mode="aspectFit"></image>
 					</view>
 				</view>
 			</scroll-view>
 			<view class="services-grid">
 				<view
-					v-for="(service, index) in filteredServices"
+					v-for="(service, index) in allServices"
 					:key="index"
 					class="service-card"
 					@tap="handleServiceCardClick(service)"
@@ -240,7 +340,7 @@
 						<view class="service-price">
 							<text class="price-symbol">¥</text>
 							<text class="price-value">{{ service.price }}</text>
-							<text class="appointment-price-tag">预约价 ¥{{ service.appointmentPrice || service.price }}</text>
+							<text class="appointment-price-tag">预约价¥{{ service.appointmentPrice || service.price }}</text>
 						</view>
 						<view class="service-footer">
 							<view class="service-designer">
@@ -254,7 +354,9 @@
 									</view>
 									<view class="designer-rating">
 										<text class="rating-score-small">{{ service.rating }}</text>
-										<text class="star-small">★</text>
+										<view class="star-container-small">
+											<image class="star-icon-small" src="/static/icon/star.png" mode="aspectFit"></image>
+										</view>
 										<text class="review-count-small">({{ service.reviews }})</text>
 									</view>
 								</view>
@@ -269,51 +371,30 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
 	data() {
 		return {
-			quickActions: [
-				{
-					icon: "https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-2284.svg",
-					title: "设计师",
-					subtitle: "发现宝藏设计师",
-				},
-				{
-					icon: "https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-2280.svg",
-					title: "优服务",
-					subtitle: "甄选特色服务",
-				},
-				{
-					icon: "https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-2278.svg",
-					title: "品牌馆",
-					subtitle: "优质线下门店",
-				},
+			loading: false,
+			//  Tab
+			mainTabs: [
+				{ label: "", value: "designer", icon: "https://bioflex.cn/static/容器@3x.png", textIcon: "https://bioflex.cn/static/设计师@3x.png", subtitle: "发现宝藏设计师" },
+				{ label: "", value: "service", icon: "https://bioflex.cn/static/容器@3x(1).png", textIcon: "https://bioflex.cn/static/优服务@3x.png", subtitle: "甄选优质服务" },
+				{ label: "", value: "brand", icon: "https://bioflex.cn/static/容器@3x(4).png", textIcon: "https://bioflex.cn/static/品牌馆@3x.png", subtitle: "优质线下门店" }
 			],
-			bottomActions: [
-				{
-					icon: "https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-2005.svg",
-					title: "预约单",
-					subtitle: "你的预约订单",
-				},
-				{
-					icon: "https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-2006.svg",
-					title: "优惠券",
-					subtitle: "更多折扣等你",
-				},
-				{
-					icon: "https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-2007.svg",
-					title: "会员",
-					subtitle: "建设中...",
-				},
-				{
-					icon: "https://c.animaapp.com/mi4v97d2OSuz2g/img/frame-2008.svg",
-					title: "入驻中",
-					subtitle: "诚邀全球设计师",
-				},
+			activeMainTab: "designer",
+			//  Tab
+			subTabs: [
+				{ label: "预约单", value: "all", icon: "https://bioflex.cn/static/calendar-schedule-line@3x.png", subtitle: "你的预约订单" },
+				{ label: "优惠券", value: "coupon", icon: "https://bioflex.cn/static/coupon-line@3x.png", subtitle: "更多折扣等你" },
+				{ label: "会员", value: "vip", icon: "https://bioflex.cn/static/vip-line@3x.png", subtitle: "VIP平台特权" },
+				{ label: "入驻中", value: "service", icon: "https://bioflex.cn/static/service-line@3x.png", subtitle: "诚邀全球设计师" }
 			],
+			activeSubTab: "all",
 			portfolioItems: [
 				{
-					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-175.png",
+					image: "https://bioflex.cn/static/组 25@3x.png",
 					overlay: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-177-1.svg",
 					gradient: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-179.svg",
 					label: "WOMAN",
@@ -321,7 +402,7 @@ export default {
 					align: "left",
 				},
 				{
-					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-176.png",
+					image: "https://bioflex.cn/static/组 26@3x.png",
 					overlay: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-178.svg",
 					gradient: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-180.svg",
 					label: "MAN",
@@ -329,824 +410,22 @@ export default {
 					align: "right",
 				},
 			],
+			// 设计师 Tab
 			designerTabs: ["首席创意", "总监店长", "人气名师", "国际导师"],
-			activeDesignerTab: 0,
-			designerSwiperIndex: 0,
-			designersByTab: {
-				0: [ // 首席创意
-				{
-					id: 13,
-					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-					name: "李天天",
-					role: "美发师",
-					level: "高级",
-						title: "创意总监｜从业十年",
-					rating: "4.8",
-					reviews: "234",
-					distance: "6.7km",
-				},
-				{
-					id: 14,
-					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "张雨辰",
-					role: "美发师",
-					level: "高级",
-						title: "创意导师｜从业八年",
-					rating: "4.8",
-					reviews: "234",
-					distance: "6.7km",
-				},
-					{
-						id: 15,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "王珊珊",
-						role: "美发师",
-						level: "特级",
-						title: "创意造型｜从业八年",
-						rating: "4.9",
-						reviews: "356",
-						distance: "5.2km",
-					},
-					{
-						id: 16,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "林一",
-						role: "美发师",
-						level: "高级",
-						title: "创意导师｜从业九年",
-						rating: "4.8",
-						reviews: "289",
-						distance: "7.1km",
-					},
-					{
-						id: 29,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "陈星",
-						role: "美发师",
-						level: "高级",
-						title: "创意设计｜从业七年",
-						rating: "4.7",
-						reviews: "198",
-						distance: "4.8km",
-					},
-					{
-						id: 30,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "李苒",
-						role: "美发师",
-						level: "特级",
-						title: "创意总监｜从业十一年",
-						rating: "4.9",
-						reviews: "445",
-						distance: "6.3km",
-					},
-					{
-						id: 31,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "孟冬",
-						role: "美发师",
-						level: "高级",
-						title: "创意造型师｜从业六年",
-						rating: "4.8",
-						reviews: "312",
-						distance: "5.7km",
-					},
-					{
-						id: 32,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "孙晓",
-						role: "美发师",
-						level: "高级",
-						title: "创意导师｜从业十年",
-						rating: "4.8",
-						reviews: "378",
-						distance: "7.5km",
-					},
-				],
-				1: [ // 总监店长
-					{
-						id: 17,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "陈曦",
-						role: "美发师",
-						level: "高级",
-						title: "店长｜从业七年",
-						rating: "4.7",
-						reviews: "198",
-						distance: "4.5km",
-					},
-					{
-						id: 18,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "赵一凡",
-						role: "美发师",
-						level: "高级",
-						title: "店长｜从业十一年",
-						rating: "4.8",
-						reviews: "412",
-						distance: "8.3km",
-					},
-					{
-						id: 19,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "韩清",
-						role: "美发师",
-						level: "高级",
-						title: "总监｜从业十年",
-						rating: "4.9",
-						reviews: "287",
-						distance: "5.8km",
-					},
-					{
-						id: 20,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "宋璇",
-						role: "美发师",
-						level: "特级",
-						title: "店长｜从业九年",
-						rating: "4.8",
-						reviews: "356",
-						distance: "6.2km",
-					},
-					{
-						id: 33,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "周成",
-						role: "美发师",
-						level: "高级",
-						title: "总监｜从业十三年",
-						rating: "4.9",
-						reviews: "523",
-						distance: "5.1km",
-					},
-					{
-						id: 34,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "郭雪",
-						role: "美发师",
-						level: "特级",
-						title: "店长｜从业十五年",
-						rating: "4.9",
-						reviews: "678",
-						distance: "7.2km",
-					},
-					{
-						id: 35,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "方野",
-						role: "美发师",
-						level: "高级",
-						title: "总监｜从业八年",
-						rating: "4.8",
-						reviews: "389",
-						distance: "6.8km",
-					},
-					{
-						id: 36,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "许静",
-						role: "美发师",
-						level: "高级",
-						title: "店长｜从业十二年",
-						rating: "4.8",
-						reviews: "456",
-						distance: "4.9km",
-					},
-				],
-				2: [ // 人气名师
-					{
-						id: 21,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "杨沐",
-						role: "美发师",
-						level: "高级",
-						title: "网红造型师｜从业六年",
-						rating: "4.9",
-						reviews: "512",
-						distance: "3.5km",
-					},
-					{
-						id: 22,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "顾明",
-						role: "美发师",
-						level: "高级",
-						title: "名师｜从业十三年",
-						rating: "4.8",
-						reviews: "445",
-						distance: "7.8km",
-					},
-					{
-						id: 23,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "陈牧",
-						role: "美发师",
-						level: "特级",
-						title: "网红导师｜从业十二年",
-						rating: "4.9",
-						reviews: "678",
-						distance: "4.2km",
-					},
-					{
-						id: 24,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "赵然",
-						role: "美发师",
-						level: "高级",
-						title: "名师｜从业十年",
-						rating: "4.7",
-						reviews: "389",
-						distance: "6.5km",
-					},
-					{
-						id: 37,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "蓝川",
-						role: "美发师",
-						level: "高级",
-						title: "网红造型师｜从业五年",
-						rating: "4.8",
-						reviews: "567",
-						distance: "3.8km",
-					},
-					{
-						id: 38,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "任熙",
-						role: "美发师",
-						level: "特级",
-						title: "名师｜从业十四年",
-						rating: "4.9",
-						reviews: "789",
-						distance: "5.6km",
-					},
-					{
-						id: 39,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "洪宇",
-						role: "美发师",
-						level: "高级",
-						title: "网红导师｜从业七年",
-						rating: "4.8",
-						reviews: "623",
-						distance: "4.7km",
-					},
-					{
-						id: 40,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "叶辰",
-						role: "美发师",
-						level: "高级",
-						title: "名师｜从业十一年",
-						rating: "4.8",
-						reviews: "534",
-						distance: "6.1km",
-					},
-				],
-				3: [ // 国际导师
-					{
-						id: 25,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "李想",
-						role: "美发师",
-						level: "特级",
-						title: "国际导师｜从业八年",
-						rating: "5.0",
-						reviews: "234",
-						distance: "9.2km",
-					},
-					{
-						id: 26,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "许澄",
-						role: "美发师",
-						level: "高级",
-						title: "国际造型师｜从业七年",
-						rating: "4.8",
-						reviews: "298",
-						distance: "8.7km",
-					},
-					{
-						id: 27,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "吴迪",
-						role: "美发师",
-						level: "高级",
-						title: "国际导师｜从业九年",
-						rating: "4.9",
-						reviews: "456",
-						distance: "7.3km",
-					},
-					{
-						id: 28,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "秦月",
-						role: "美发师",
-						level: "特级",
-						title: "国际造型导师｜从业八年",
-						rating: "4.8",
-						reviews: "367",
-						distance: "10.1km",
-					},
-					{
-						id: 41,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "许乔",
-						role: "美发师",
-						level: "特级",
-						title: "国际导师｜从业十五年",
-						rating: "5.0",
-						reviews: "892",
-						distance: "8.5km",
-					},
-					{
-						id: 42,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "秦澈",
-						role: "美发师",
-						level: "高级",
-						title: "国际造型师｜从业十年",
-						rating: "4.9",
-						reviews: "645",
-						distance: "9.8km",
-					},
-					{
-						id: 43,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "洛竹",
-						role: "美发师",
-						level: "高级",
-						title: "国际导师｜从业十一年",
-						rating: "4.8",
-						reviews: "523",
-						distance: "7.9km",
-					},
-					{
-						id: 44,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-1.png",
-						name: "沈宴",
-						role: "美发师",
-						level: "特级",
-						title: "国际造型导师｜从业十二年",
-						rating: "4.9",
-						reviews: "712",
-						distance: "10.5km",
-					},
-				],
-			},
+			activeDesignerTab: 0, // 默认显示推荐
+			designersByTab: {},
 			brandTabs: ["专业店", "品牌店", "工作室", "综合店"],
 			activeBrandTab: "专业店",
-			allBrands: {
-				"专业店": [
-				{
-						id: 1,
-					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-					name: "成都意念美发造型沙龙",
-					rating: "4.8",
-					reviews: "768",
-					address: "成都青羊区草堂路12号...",
-					distance: "7.5km",
-						category: "专业店",
-					},
-					{
-						id: 2,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "专业美发造型店",
-						rating: "4.7",
-						reviews: "520",
-						address: "成都武侯区天府大道...",
-						distance: "5.2km",
-						category: "专业店",
-					},
-					{
-						id: 3,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "专业发型设计工作室",
-						rating: "4.9",
-						reviews: "365",
-						address: "成都锦江区春熙路...",
-						distance: "3.8km",
-						category: "专业店",
-					},
-					{
-						id: 4,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "专业造型美发店",
-						rating: "4.6",
-						reviews: "288",
-						address: "成都成华区建设路...",
-						distance: "6.5km",
-						category: "专业店",
-					},
-					{
-						id: 5,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "专业剪发造型店",
-					rating: "4.8",
-						reviews: "445",
-						address: "成都高新区天府三街...",
-						distance: "4.3km",
-						category: "专业店",
-					},
-					{
-						id: 6,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "专业美发沙龙",
-						rating: "4.7",
-						reviews: "312",
-						address: "成都金牛区沙湾路...",
-						distance: "8.1km",
-						category: "专业店",
-					},
-					{
-						id: 7,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "专业造型设计店",
-						rating: "4.9",
-						reviews: "567",
-						address: "成都青羊区宽窄巷子...",
-						distance: "2.5km",
-						category: "专业店",
-					},
-					{
-						id: 8,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "专业美发工作室",
-						rating: "4.6",
-						reviews: "234",
-						address: "成都武侯区红牌楼...",
-						distance: "9.2km",
-						category: "专业店",
-					},
-				],
-				"品牌店": [
-					{
-						id: 9,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "品牌美发连锁店",
-						rating: "4.8",
-						reviews: "689",
-						address: "成都锦江区太古里...",
-						distance: "3.2km",
-						category: "品牌店",
-					},
-					{
-						id: 10,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "知名品牌美发沙龙",
-						rating: "4.9",
-						reviews: "756",
-						address: "成都武侯区科华路...",
-						distance: "4.8km",
-						category: "品牌店",
-					},
-					{
-						id: 11,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "品牌连锁造型店",
-						rating: "4.7",
-						reviews: "543",
-						address: "成都高新区金融城...",
-						distance: "5.5km",
-						category: "品牌店",
-					},
-					{
-						id: 12,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "国际品牌美发店",
-						rating: "4.8",
-						reviews: "612",
-						address: "成都青羊区骡马市...",
-						distance: "7.3km",
-						category: "品牌店",
-					},
-					{
-						id: 13,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "品牌造型设计店",
-						rating: "4.6",
-						reviews: "389",
-						address: "成都成华区SM广场...",
-						distance: "6.8km",
-						category: "品牌店",
-					},
-					{
-						id: 14,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "知名品牌美发工作室",
-						rating: "4.9",
-						reviews: "478",
-						address: "成都武侯区大悦城...",
-						distance: "5.9km",
-						category: "品牌店",
-					},
-					{
-						id: 15,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "品牌连锁美发店",
-						rating: "4.7",
-						reviews: "425",
-						address: "成都锦江区IFS...",
-						distance: "4.1km",
-						category: "品牌店",
-					},
-					{
-						id: 16,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "品牌美发造型沙龙",
-						rating: "4.8",
-						reviews: "521",
-						address: "成都高新区环球中心...",
-						distance: "8.7km",
-						category: "品牌店",
-					},
-				],
-				"工作室": [
-					{
-						id: 17,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "私人美发工作室",
-						rating: "4.9",
-						reviews: "456",
-						address: "成都青羊区浣花溪...",
-						distance: "2.8km",
-						category: "工作室",
-					},
-					{
-						id: 18,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "创意造型工作室",
-						rating: "4.7",
-						reviews: "334",
-						address: "成都武侯区桐梓林...",
-						distance: "4.5km",
-						category: "工作室",
-					},
-					{
-						id: 19,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "设计美发工作室",
-						rating: "4.8",
-						reviews: "389",
-						address: "成都锦江区九眼桥...",
-						distance: "3.6km",
-						category: "工作室",
-					},
-					{
-						id: 20,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "私人定制工作室",
-						rating: "4.9",
-						reviews: "267",
-						address: "成都高新区银泰城...",
-						distance: "5.3km",
-						category: "工作室",
-					},
-					{
-						id: 21,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "艺术造型工作室",
-						rating: "4.6",
-						reviews: "298",
-						address: "成都成华区东郊记忆...",
-						distance: "7.2km",
-						category: "工作室",
-					},
-					{
-						id: 22,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "高端美发工作室",
-						rating: "4.8",
-						reviews: "412",
-						address: "成都武侯区棕榈泉...",
-						distance: "6.4km",
-						category: "工作室",
-					},
-					{
-						id: 23,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "精品造型工作室",
-						rating: "4.7",
-						reviews: "356",
-						address: "成都青羊区金沙...",
-						distance: "8.3km",
-						category: "工作室",
-					},
-					{
-						id: 24,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "专业造型工作室",
-						rating: "4.9",
-						reviews: "523",
-						address: "成都锦江区水碾河...",
-						distance: "4.7km",
-						category: "工作室",
-					},
-				],
-				"综合店": [
-					{
-						id: 25,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "综合美发造型店",
-						rating: "4.8",
-						reviews: "678",
-						address: "成都武侯区红牌楼广场...",
-						distance: "5.6km",
-						category: "综合店",
-					},
-					{
-						id: 26,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "综合美容美发店",
-						rating: "4.7",
-						reviews: "542",
-						address: "成都锦江区万达广场...",
-						distance: "3.9km",
-						category: "综合店",
-					},
-					{
-						id: 27,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "综合造型美发店",
-						rating: "4.9",
-						reviews: "634",
-						address: "成都高新区凯德广场...",
-						distance: "6.2km",
-						category: "综合店",
-					},
-					{
-						id: 28,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "综合美发沙龙",
-						rating: "4.6",
-						reviews: "487",
-						address: "成都青羊区宽窄巷子...",
-						distance: "2.7km",
-						category: "综合店",
-					},
-					{
-						id: 29,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "综合美容美发沙龙",
-						rating: "4.8",
-						reviews: "556",
-						address: "成都武侯区来福士...",
-						distance: "4.4km",
-						category: "综合店",
-					},
-					{
-						id: 30,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "综合造型设计店",
-						rating: "4.7",
-						reviews: "423",
-						address: "成都成华区建设路...",
-						distance: "7.1km",
-						category: "综合店",
-					},
-					{
-						id: 31,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "综合美发造型中心",
-						rating: "4.9",
-						reviews: "589",
-						address: "成都锦江区春熙路...",
-						distance: "3.3km",
-						category: "综合店",
-					},
-					{
-						id: 32,
-						image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-153-2.png",
-						name: "综合美容美发中心",
-						rating: "4.8",
-						reviews: "512",
-						address: "成都高新区天府大道...",
-						distance: "5.8km",
-						category: "综合店",
-					},
-				],
-			},
+			allBrands: {},
 			serviceTabs: ["全部", "洗吹", "剪发", "烫发", "染发", "护发", "头皮", "接发"],
 			activeServiceTab: "全部",
-			allServices: [
-				{
-					id: 5,
-					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
-					title: "烫发",
-					category: "烫发",
-					description: "发型提案+染发+造型",
-					price: "799",
-					designerName: "李天天",
-					designerRole: "美发师",
-					rating: "4.8",
-					reviews: "768",
-					distance: "6.7km",
-					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
-				},
-				{
-					id: 3,
-					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
-					title: "剪发",
-					category: "剪发",
-					description: "专业剪发+造型设计",
-					price: "199",
-					designerName: "张美发",
-					designerRole: "造型师",
-					rating: "4.9",
-					reviews: "520",
-					distance: "3.2km",
-					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
-				},
-				{
-					id: 7,
-					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
-					title: "染发",
-					category: "染发",
-					description: "专业染发+护理",
-					price: "599",
-					designerName: "王染发",
-					designerRole: "染发师",
-					rating: "4.7",
-					reviews: "365",
-					distance: "5.8km",
-					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
-				},
-				{
-					id: 1,
-					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
-					title: "洗吹",
-					category: "洗吹",
-					description: "洗发+吹风造型",
-					price: "88",
-					designerName: "刘洗发",
-					designerRole: "助理",
-					rating: "4.6",
-					reviews: "288",
-					distance: "2.1km",
-					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
-				},
-				{
-					id: 9,
-					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
-					title: "护发",
-					category: "护发",
-					description: "深层护理+滋养",
-					price: "299",
-					designerName: "陈护理",
-					designerRole: "护理师",
-					rating: "4.8",
-					reviews: "156",
-					distance: "4.5km",
-					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
-				},
-				{
-					id: 11,
-					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
-					title: "头皮",
-					category: "头皮",
-					description: "头皮护理+清洁",
-					price: "399",
-					designerName: "周头皮",
-					designerRole: "护理师",
-					rating: "4.9",
-					reviews: "234",
-					distance: "6.2km",
-					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
-				},
-				{
-					id: 13,
-					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
-					title: "接发",
-					category: "接发",
-					description: "专业接发+造型",
-					price: "1299",
-					designerName: "赵接发",
-					designerRole: "接发师",
-					rating: "4.7",
-					reviews: "89",
-					distance: "7.8km",
-					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
-				},
-				{
-					id: 6,
-					image: "https://c.animaapp.com/mi4v97d2OSuz2g/img/rectangle-169-3.png",
-					title: "烫发",
-					category: "烫发",
-					description: "造型烫发+护理",
-					price: "899",
-					designerName: "孙烫发",
-					designerRole: "烫发师",
-					rating: "4.8",
-					reviews: "445",
-					distance: "3.9km",
-					avatar: "https://c.animaapp.com/mi4v97d2OSuz2g/img/ellipse-34.svg",
-				},
-			],
+			showServiceDropdown: false,
+			allServices: [],
 		}
 	},
 	computed: {
 		filteredServices() {
-			if (this.activeServiceTab === "全部") {
+			if (this.activeServiceTab === "") {
 				return this.allServices
 			}
 			return this.allServices.filter(service => service.category === this.activeServiceTab)
@@ -1154,37 +433,53 @@ export default {
 		filteredBrands() {
 			return this.allBrands[this.activeBrandTab] || []
 		},
-		designerSlides() {
-			const currentDesigners = this.designersByTab[this.activeDesignerTab] || []
-			const slides = []
-			for (let i = 0; i < currentDesigners.length; i += 2) {
-				slides.push(currentDesigners.slice(i, i + 2))
-			}
-			return slides
+		currentDesigners() {
+			return this.designersByTab[this.activeDesignerTab] || []
 		}
 	},
+	mounted() {
+		this.loadData()
+	},
+	activated() {
+		// 
+		this.loadData()
+	},
 	methods: {
+		switchMainTab(value) {
+			this.activeMainTab = value
+			//  Tab 
+			if (value === 'designer') {
+				uni.navigateTo({ url: '/pages/main/index?tab=designer' })
+			} else if (value === 'service') {
+				uni.navigateTo({ url: '/pages/main/index?tab=service' })
+			} else if (value === 'brand') {
+				uni.navigateTo({ url: '/pages/main/index?tab=brand' })
+			}
+		},
+		switchSubTab(tab) {
+			this.activeSubTab = tab
+		},
 		handleQuickAction(action, index) {
 			let url = ''
-			if (action.title === '设计师') {
+			if (action.title === '') {
 				url = '/pages/main/index?tab=designer'
-			} else if (action.title === '优服务') {
+			} else if (action.title === '') {
 				url = '/pages/main/index?tab=service'
-			} else if (action.title === '品牌馆') {
+			} else if (action.title === '') {
 				url = '/pages/main/index?tab=brand'
 			}
 			
 			if (url) {
-				console.log('准备跳转到:', url)
+				console.log(':', url)
 				uni.navigateTo({
 					url: url,
 					success: (res) => {
-						console.log('跳转成功:', res)
+						console.log(':', res)
 					},
 					fail: (err) => {
-						console.error('跳转失败:', err)
+						console.error(':', err)
 						uni.showToast({
-							title: '跳转失败: ' + (err.errMsg || '未知错误'),
+							title: ': ' + (err.errMsg || ''),
 							icon: 'none',
 							duration: 2000
 						})
@@ -1193,7 +488,7 @@ export default {
 			}
 		},
 		handleSectionHeaderClick(section) {
-			// 点击卡片标题跳转到 main 页面对应的标签
+			//  main 
 			let url = ''
 			if (section === 'designer') {
 				url = '/pages/main/index?tab=designer'
@@ -1204,16 +499,16 @@ export default {
 			}
 			
 			if (url) {
-				console.log('准备跳转到:', url)
+				console.log(':', url)
 				uni.navigateTo({
 					url: url,
 					success: (res) => {
-						console.log('跳转成功:', res)
+						console.log(':', res)
 					},
 					fail: (err) => {
-						console.error('跳转失败:', err)
+						console.error(':', err)
 						uni.showToast({
-							title: '跳转失败: ' + (err.errMsg || '未知错误'),
+							title: ': ' + (err.errMsg || ''),
 							icon: 'none',
 							duration: 2000
 						})
@@ -1222,85 +517,373 @@ export default {
 			}
 		},
 		handleServiceTabClick(tab) {
-			// 切换服务筛选项
+
 			this.activeServiceTab = tab
 		},
+		toggleServiceDropdown() {
+			this.showServiceDropdown = !this.showServiceDropdown
+		},
+		selectServiceType(tab) {
+			this.activeServiceTab = tab
+			this.showServiceDropdown = false
+		},
 		handleDesignerClick(designer) {
-			// 跳转到设计师详情页面，传递设计师ID等信息
 			uni.navigateTo({
 				url: `/pages/designer/detail?id=${designer.id || 1}&name=${encodeURIComponent(designer.name || '')}`
 			})
 		},
-		handleDesignerSwiperChange(e) {
-			this.designerSwiperIndex = e.detail.current
-		},
 		handleDesignerTabClick(index) {
 			this.activeDesignerTab = index
-			this.designerSwiperIndex = 0 // 切换 tab 时重置 swiper 索引
 		},
 		handleBrandTabClick(tab) {
-			// 切换品牌馆标签
+			// 
 			this.activeBrandTab = tab
 		},
 		handleBrandClick(brand) {
-			// 跳转到品牌详情页面，传递品牌ID等信息
+			if (!brand.id) {
+				uni.showToast({ title: '', icon: 'none' })
+				return
+			}
 			uni.navigateTo({
-				url: `/pages/brand/detail?id=${brand.id || 1}&name=${encodeURIComponent(brand.name || '')}`
+				url: `/pages/brand/detail?id=${brand.id}&name=${encodeURIComponent(brand.name || '')}`
 			})
 		},
 		handleBottomAction(action, index) {
-			// 处理底部按钮点击
-			if (action.title === '优惠券') {
+			// 
+			if (action.title === '') {
 				uni.navigateTo({
 					url: '/packageOthers/pages/coupon/index'
 				})
-			} else if (action.title === '预约单') {
-				// 跳转到我的订单页面，激活待使用tab
+			} else if (action.title === '') {
 				uni.navigateTo({
 					url: '/packageOrder/pages/order/index?tab=pending-use'
 				})
-			} else if (action.title === '会员') {
-				// 测试阶段禁用跳转
+			} else if (action.title === '') {
+				// 
 				return
-			} else if (action.title === '入驻中') {
-				// 跳转到申请入驻页面
+			} else if (action.title === '') {
+				// 
 				uni.navigateTo({
 					url: '/packageMine/pages/mine/apply-settlement'
 				})
 			}
 		},
 		handleNearbyDesignerClick() {
-			// 测试阶段跳转路径 - 跳转到main/index页的设计师tabs，滚动到附近推荐列表区域
+			//  - main/indextabs
 			uni.navigateTo({
 				url: '/pages/main/index?tab=designer&scrollTo=nearby'
 			})
 		},
 		handleDesignerSectionClick() {
-			// 点击设计师板块标题，跳转到main/index页的设计师tabs，滚动到附近推荐列表区域
+			// main/indextabs
 			uni.navigateTo({
 				url: '/pages/main/index?tab=designer&scrollTo=nearby'
 			})
 		},
 		handlePortfolioHeaderClick() {
-			// 点击作品集标题箭头，跳转到作品集首页
+			// 
 			uni.navigateTo({
 				url: '/packageOthers/pages/portfolio/index'
 			})
 		},
 		handlePortfolioItemClick(item, index) {
-			// 点击作品图片，跳转到作品集首页并选中对应分类
-			// index 0 是女士，index 1 是男士
+			// index 0 index 1 
 			const category = index === 0 ? 'women' : 'men'
 			uni.navigateTo({
 				url: `/packageOthers/pages/portfolio/index?category=${category}`
 			})
 		},
 		handleServiceCardClick(service) {
-			// 点击优服务卡片，跳转到服务订单购买页面
+			// 
 			uni.navigateTo({
 				url: `/packageOrder/pages/order/purchase?id=${service.id}`
 			})
-		}
+		},
+
+		//
+		async loadData() {
+			if (this.loading) return
+			this.loading = true
+			try {
+				await Promise.all([
+					this.loadDesigners(),
+					this.loadBrands(),
+					this.loadServices()
+				])
+			} catch (err) {
+				console.error('加载数据失败:', err)
+			} finally {
+				this.loading = false
+			}
+		},
+
+		//
+		async loadDesigners() {
+			try {
+				console.log('开始加载设计师数据...')
+				const res = await api.designer.getList({ page: 1, pageSize: 50 })
+				console.log('设计师API响应:', res)
+				if (res.code === 200) {
+					const list = res.data?.list || res.data?.items || []
+					console.log('设计师列表数据:', list.length, '条')
+					this.designersByTab = this.groupDesignersByLevel(list)
+					console.log('分组后的设计师:', this.designersByTab)
+				} else {
+					console.error('设计师API返回错误:', res.message)
+				}
+			} catch (err) {
+				console.error('加载设计师失败:', err)
+			}
+		},
+
+		// 
+		groupDesignersByLevel(designers) {
+			const groups = { 0: [], 1: [], 2: [], 3: [] }
+			//  professional_level  tab 
+			const levelMap = {
+				1: 0, //  -> 
+				2: 0,
+				3: 1,
+				4: 2,
+				5: 3,
+			}
+
+			designers.forEach(item => {
+				const level = item.professional_level || item.designerLevel || 1
+				const groupIndex = levelMap[level] !== undefined ? levelMap[level] : 0
+				const designer = this.formatDesignerData(item, level)
+				if (groups[groupIndex]) {
+					groups[groupIndex].push(designer)
+				}
+			})
+
+			// 
+			return groups
+		},
+
+		//
+		formatDesignerData(data, level = 1) {
+			const tabs = ["", "", "", ""]
+			const levelMap = {
+				1: 0, //
+				2: 0, //
+				3: 1,
+				4: 2, //
+				5: 3, //
+			}
+			const tabIndex = levelMap[level] !== undefined ? levelMap[level] : 0
+
+			// 设计师姓名
+			const name = data.real_name || data.name || '设计师'
+			// 使用 ui-avatars 生成头像
+			const avatarUrl = data.avatar || data.coverImage || data.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=DACBB1&color=645E57&size=320`
+
+			// 计算距离（假设当前在成都市中心）
+			const currentLat = 30.5729  // 成都市中心纬度
+			const currentLng = 104.067  // 成都市中心经度
+			const distance = this.calculateDistance(currentLat, currentLng, data.latitude || 0, data.longitude || 0)
+
+			return {
+				id: data.id,
+				image: avatarUrl,
+				name: name,
+				position: data.position || '',
+				level: this.getLevelText(data.professional_level),
+				levelValue: level,
+				tabIndex: tabIndex,
+				tabName: tabs[tabIndex],
+				title: data.title || '',
+				rating: String(data.rating || 0),
+				appointments: String(data.total_appointments || 0),
+				distance: distance,
+				workYears: data.work_years || 0,
+				locationDesc: data.location_desc || '',
+				expertise: data.expertise || '',
+				introduction: data.introduction || '',
+				followers: data.followers || 0
+			}
+		},
+
+		// 计算两点间的距离（km）
+		calculateDistance(lat1, lng1, lat2, lng2) {
+			if (!lat1 || !lng1 || !lat2 || !lng2) return ''
+			const R = 6371 // 地球半径（km）
+			const dLat = this.deg2rad(lat2 - lat1)
+			const dLng = this.deg2rad(lng2 - lng1)
+			const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+				Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+				Math.sin(dLng / 2) * Math.sin(dLng / 2)
+			const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+			const distance = R * c
+			return distance > 1 ? distance.toFixed(1) + 'km' : distance.toFixed(1) + 'km'
+		},
+
+		// 角度转弧度
+		deg2rad(deg) {
+			return deg * (Math.PI / 180)
+		},
+
+		//
+		getLevelText(level) {
+			const levelMap = {
+				1: '初级',
+				2: '中级',
+				3: '高级',
+				4: '资深',
+				5: '专家'
+			}
+			return levelMap[level] || ''
+		},
+
+		// 
+		async loadBrands() {
+			try {
+				const res = await api.brand.getList({ page: 1, pageSize: 50 })
+				if (res.code === 200) {
+					const list = res.data?.list || res.data?.items || []
+
+					this.allBrands = this.groupBrandsByNature(list)
+				}
+			} catch (err) {
+				console.error(':', err)
+			}
+		},
+
+		groupBrandsByNature(brands) {
+			const groups = {
+				'专业店': [],
+				'品牌店': [],
+				'工作室': [],
+				'综合店': []
+			}
+
+			const natureMap = {
+				// 专业店
+				'专业美发': '专业店',
+				// 品牌店
+				'品牌连锁': '品牌店',
+				// 工作室
+				'独立工作室': '工作室',
+				// 综合店
+				'综合美业': '综合店',
+				// 默认
+				'': '专业店'
+			}
+
+			brands.forEach(item => {
+				const businessMode = item.business_mode || ''
+				const brandType = item.brand_type || ''
+				const venueType = item.venue_type || ''
+				const mainServices = item.main_services || ''
+
+				//  +
+				const isComprehensive = (venueType.includes('综合') && mainServices.includes('美')) ||
+						(brandType === '综合' && mainServices.length > 10)
+
+				let groupKey = natureMap[businessMode] || natureMap[brandType]
+
+				if (isComprehensive) {
+					groupKey = '综合店'
+				} else if (!groupKey) {
+					groupKey = '专业店' //
+				}
+
+				const brand = this.formatBrandData(item, groupKey)
+				if (groups[groupKey]) {
+					groups[groupKey].push(brand)
+				}
+			})
+
+			//
+			return groups
+		},
+
+		//
+		formatBrandData(data, groupKey = '') {
+			// 将分组名映射为模板中的brandType
+			const brandTypeMap = {
+				'专业店': '',
+				'品牌店': 'brand-store',
+				'工作室': 'studio',
+				'综合店': 'comprehensive'
+			}
+			const brandType = brandTypeMap[groupKey] || ''
+
+			// 计算距离（假设当前在成都市中心）
+			const currentLat = 30.5729  // 成都市中心纬度
+			const currentLng = 104.067  // 成都市中心经度
+			const distance = this.calculateDistance(currentLat, currentLng, data.latitude || 0, data.longitude || 0)
+
+			return {
+				id: data.id,
+				image: data.coverImage || data.image || '',
+				name: data.brand_intro || data.name || '',
+				rating: String(data.rating || 0),
+				reviews: String(data.appointment_count || 0),
+				address: data.location_desc || '',
+				distance: distance,
+				category: data.brand_type || data.business_mode || '',
+				brandType: brandType,
+				targetCustomer: data.target_customer || '',
+				mainServices: data.main_services || '',
+				designerCount: data.designer_count || 0,
+				venueType: data.venue_type || ''
+			}
+		},
+
+		// 
+		async loadServices() {
+			try {
+				const res = await api.service.getList({ page: 1, pageSize: 20 })
+				if (res.code === 200) {
+					const list = res.data?.list || res.data?.items || []
+					this.allServices = list.map(item => this.formatServiceData(item))
+				}
+			} catch (err) {
+				console.error(':', err)
+			}
+		},
+
+		// 
+		formatServiceData(data) {
+			const image = Array.isArray(data.image_urls) && data.image_urls.length > 0
+				? data.image_urls[0]
+				: (data.coverImage || data.image || '')
+
+			// category_id
+			const categoryMap = {
+				'019400a0-0001-7000-8000-000000000011': '',
+				'019400a0-0001-7000-8000-000000000012': '',
+				'019400a0-0001-7000-8000-000000000013': '',
+				'019400a0-0001-7000-8000-000000000003': '',
+				'019400a0-0001-7000-8000-000000000021': '',
+				'019400a0-0001-7000-8000-000000000022': '',
+				'019400a0-0001-7000-8000-000000000004': '',
+				'019400a0-0001-7000-8000-000000000005': ''
+			}
+			const category = categoryMap[data.category_id] || data.category || data.categoryName || ''
+
+			// 设计师信息 - 支持多种字段名
+			const designerName = data.designerName || data.designer_name || data.designer?.name || data.designer?.real_name || '设计师'
+			const designerAvatar = data.designerAvatar || data.designer_avatar || data.designer?.avatar || ''
+			const designerRole = data.designerRole || data.designer_role || data.designer?.position || data.designer?.title || data.categoryName || '造型师'
+
+			return {
+				id: data.id,
+				image: image,
+				title: data.name || data.serviceName || '',
+				category: category,
+				description: data.detail_text || data.description || '',
+				price: String(data.fixed_price || data.price || 0),
+				appointmentPrice: String(data.fixed_ref_price || data.appointmentPrice || data.originalPrice || data.fixed_price || 0),
+				designerName: designerName,
+				designerRole: designerRole,
+				rating: String(data.rating || data.designer?.rating || 0),
+				reviews: String(data.review_count || data.reviewCount || data.soldCount || 0),
+				distance: data.distance || '',
+				avatar: designerAvatar
+			}
+		},
 	},
 }
 </script>
@@ -1317,7 +900,7 @@ export default {
 	box-sizing: border-box;
 }
 
-/* 提示卡片 */
+ 
 .alert-card {
 	width: 100%;
 	background-color: #303136;
@@ -1375,7 +958,7 @@ export default {
 	height: 56rpx;
 }
 
-/* 快捷操作卡片 */
+ 
 .quick-actions-card {
 	width: 100%;
 	background-color: #ffffff;
@@ -1458,7 +1041,109 @@ export default {
 	text-align: center;
 }
 
-/* 卡片通用样式 */
+ 
+.top-tab-section {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 16rpx;
+}
+
+.main-tabs {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	gap: 12rpx;
+}
+
+.main-tab-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 10rpx;
+	position: relative;
+	flex: 1;
+	height: 268rpx;
+	padding: 0;
+	border-radius: 12rpx;
+	background-color: #ffffff;
+}
+
+.main-tab-icon {
+	width: 128rpx;
+	height: 128rpx;
+}
+
+.main-tab-text-img {
+	width: 100rpx;
+	height: 32rpx;
+}
+
+.main-tab-subtitle {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 20rpx;
+	color: #cccccc;
+}
+
+.sub-tabs-scroll {
+	width: 100%;
+	white-space: nowrap;
+}
+
+.sub-tabs-container {
+	background-color: #ffffff;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 16rpx;
+	width: auto;
+	min-width: 100%;
+	flex-wrap: nowrap;
+	padding: 20rpx 16rpx;
+	border-radius: 12rpx;
+	box-sizing: border-box;
+}
+
+.sub-tab-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex: 1;
+	padding: 16rpx 0;
+	background-color: transparent;
+	border: none;
+	font-size: 24rpx;
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: 500;
+	color: #000000;
+	white-space: nowrap;
+}
+
+
+.sub-tab-icon {
+	width: 88rpx;
+	height: 88rpx;
+	padding: 20rpx;
+	box-sizing: border-box;
+	background: linear-gradient(180deg, #F6F6F6 0%, #FFFFFF 100%);
+	border-radius: 50%;
+}
+
+.sub-tab-text {
+	white-space: nowrap;
+	font-size: 24rpx;
+}
+
+.sub-tab-subtitle {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 20rpx;
+	color: #cccccc;
+	white-space: nowrap;
+}
+         
 .portfolio-card,
 .designers-card,
 .brands-card {
@@ -1483,6 +1168,22 @@ export default {
 	font-size: 32rpx;
 	font-weight: 700;
 	color: #000000;
+	position: relative;
+	z-index: 2;
+}
+
+.title-wrapper {
+	display: flex;
+	flex-direction: column;
+}
+
+.title-bar {
+	width: 74rpx;
+	height: 12rpx;
+	background-color: #DACBB1;
+	margin-top: -14rpx;
+	position: relative;
+	z-index: 1;
 }
 
 .more-icon {
@@ -1490,7 +1191,7 @@ export default {
 	height: 44rpx;
 }
 
-/* 作品集 */
+ 
 .portfolio-content {
 	width: 100%;
 	height: 216rpx;
@@ -1548,7 +1249,7 @@ export default {
 	color: rgba(255, 255, 255, 0.6);
 }
 
-/* Tabs */
+ 
 .tabs-scroll {
 	width: 100%;
 	white-space: nowrap;
@@ -1575,42 +1276,50 @@ export default {
 	font-weight: 600;
 }
 
-/* 设计师 */
-.designers-swiper {
+.designers-tabs-scroll {
 	width: 100%;
-	height: 480rpx;
+	white-space: nowrap;
 }
 
-.designers-swiper-item {
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-}
-
-.designers-container {
-	display: flex;
-	align-items: flex-start;
-	justify-content: space-between;
-	gap: 20rpx;
-	padding: 0 12rpx;
+.designers-list-scroll {
+	width: 100%;
+	white-space: nowrap;
 	box-sizing: border-box;
-	height: 100%;
+	-webkit-overflow-scrolling: touch;
+}
+
+.designers-list-container {
+	display: flex;
+	align-items: center;
+	gap: 20rpx;
+}
+
+.empty-placeholder {
+	width: 100%;
+	min-height: 200rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.empty-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 28rpx;
+	color: #a6a6a6;
 }
 
 .designer-card {
-	flex: 1;
-	min-width: 0;
-	max-width: calc(50% - 10rpx);
+	flex: 0 0 346rpx;
+	width: 346rpx;
 	border: 2rpx solid #f3f3f3;
 	border-radius: 8rpx;
 	overflow: hidden;
-	box-sizing: border-box;
 }
 
 .designer-img-wrapper {
 	position: relative;
 	width: 100%;
-	height: 318rpx;
+	height: 346rpx;
 }
 
 .designer-img-bg {
@@ -1618,8 +1327,7 @@ export default {
 	top: 0;
 	left: 0;
 	width: 100%;
-	height: 318rpx;
-	border-radius: 8rpx 8rpx 0 0;
+	height: 346rpx;
 	background: linear-gradient(180deg, rgba(244, 244, 244, 1) 0%);
 }
 
@@ -1628,7 +1336,7 @@ export default {
 	top: 0;
 	left: 0;
 	width: 100%;
-	height: 318rpx;
+	height: 346rpx;
 }
 
 .designer-info {
@@ -1651,9 +1359,37 @@ export default {
 	color: #000000;
 }
 
+.designer-title {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 22rpx;
+	color: #a6a6a6;
+	font-weight: 500;
+}
+
+.designer-title-row {
+	display: flex;
+	align-items: center;
+	gap: 8rpx;
+}
+
+.title-separator {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 22rpx;
+	color: #dacbb1;
+	font-weight: 500;
+}
+
+.designer-title-row .work-years {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 22rpx;
+	color: #a6a6a6;
+	font-weight: 500;
+}
+
 .designer-badge {
 	padding: 4rpx 8rpx;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	font-size: 20rpx;
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
@@ -1693,11 +1429,27 @@ export default {
 	font-family: 'PingFang_SC-Semibold', Helvetica;
 	font-size: 24rpx;
 	color: #333333;
+	font-weight: 600;
 }
 
 .star {
 	font-size: 20rpx;
 	color: #333333;
+}
+
+.star-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 4rpx;
+	background-color: #333333;
+	border-radius: 4rpx;
+}
+
+.star-icon {
+	width: 20rpx;
+	height: 20rpx;
+	filter: brightness(0) invert(1);
 }
 
 .review-count {
@@ -1713,31 +1465,36 @@ export default {
 	color: #333333;
 }
 
-.pagination-dots {
+.designer-location {
 	display: flex;
 	align-items: center;
-	gap: 6rpx;
-	justify-content: center;
-
+	gap: 8rpx;
+	margin-top: 4rpx;
 }
 
-.dot {
-	height: 10rpx;
-	border-radius: 5rpx;
-	background-color: #d9d9d9;
+.designer-location .location-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 22rpx;
+	color: #666666;
 }
 
-.dot.active {
-	background-color: #333333;
-	border-radius: 28rpx;
+.designer-location .separator {
+	font-size: 20rpx;
+	color: #cccccc;
 }
 
-/* 品牌馆 */
+.designer-location .work-years-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 22rpx;
+	color: #666666;
+}
+
+
 .brands-scroll {
 	width: 100%;
 	white-space: nowrap;
 	box-sizing: border-box;
-	/* 确保回弹效果正常 */
+	 
 	-webkit-overflow-scrolling: touch;
 }
 
@@ -1772,6 +1529,14 @@ export default {
 	background: linear-gradient(180deg, rgba(244, 244, 244, 1) 0%);
 }
 
+.brand-img-bg-dark {
+	background: linear-gradient(180deg, rgba(230, 230, 230, 1) 0%);
+}
+
+.brand-img-bg-light {
+	background: linear-gradient(180deg, rgba(250, 250, 250, 1) 0%);
+}
+
 .brand-img {
 	position: absolute;
 	top: 0;
@@ -1791,6 +1556,13 @@ export default {
 	font-family: 'PingFang_SC-Semibold', Helvetica;
 	font-size: 30rpx;
 	color: #000000;
+}
+
+.brand-footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
 }
 
 .brand-rating {
@@ -1847,7 +1619,140 @@ export default {
 	background: linear-gradient(270deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 61%, rgba(255, 255, 255, 0) 100%);
 }
 
-/* 优服务 */
+ 
+.brand-card.brand-store {
+	border: 2rpx solid #dacbb1;
+}
+
+.brand-card.brand-store .brand-tag {
+	position: absolute;
+	top: 16rpx;
+	left: 16rpx;
+	background-color: #dacbb1;
+	color: #645e57;
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 20rpx;
+	font-weight: 500;
+	padding: 4rpx 12rpx;
+	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
+}
+
+.brand-card.brand-store .rating-score.primary,
+.brand-card.brand-store .star.primary {
+	color: #dacbb1;
+}
+
+.brand-card.brand-store .brand-meta {
+	display: flex;
+	align-items: center;
+	gap: 8rpx;
+	margin-top: 4rpx;
+}
+
+.brand-card.brand-store .meta-item {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 22rpx;
+	color: #a6a6a6;
+}
+
+.brand-card.brand-store .meta-divider {
+	color: #e5e5e5;
+	font-size: 20rpx;
+}
+
+ 
+.brand-card.studio {
+	flex: 0 0 420rpx;
+	width: 420rpx;
+}
+
+.brand-card.studio .studio-info {
+	padding: 22rpx 22rpx 16rpx;
+}
+
+.brand-card.studio .studio-name {
+	font-size: 30rpx;
+}
+
+.brand-card.studio .studio-service {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 20rpx;
+	color: #a6a6a6;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.brand-card.studio .studio-rating {
+	margin-top: 4rpx;
+}
+
+ 
+.brand-card.comprehensive {
+	flex: 0 0 420rpx;
+	width: 420rpx;
+	border: 2rpx solid #333333;
+}
+
+.brand-card.comprehensive .comprehensive-badge {
+	position: absolute;
+	top: 16rpx;
+	right: 16rpx;
+	background-color: #333333;
+	color: #ffffff;
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 20rpx;
+	font-weight: 500;
+	padding: 4rpx 12rpx;
+	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
+}
+
+.brand-card.comprehensive .comprehensive-info {
+	gap: 8rpx;
+}
+
+.brand-card.comprehensive .comprehensive-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.brand-card.comprehensive .venue-type-tag {
+	background-color: #f6f6f6;
+	color: #666666;
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 20rpx;
+	padding: 4rpx 8rpx;
+	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
+}
+
+.brand-card.comprehensive .comprehensive-services {
+	display: flex;
+	align-items: center;
+	gap: 4rpx;
+}
+
+.brand-card.comprehensive .services-label {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 22rpx;
+	color: #a6a6a6;
+}
+
+.brand-card.comprehensive .services-text {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 22rpx;
+	color: #666666;
+	font-weight: 500;
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+ 
 .services-section {
 	width: 100%;
 	padding: 0 8rpx;
@@ -1859,9 +1764,63 @@ export default {
 
 .services-header {
 	display: flex;
-	align-items: flex-end;
+	align-items: center;
 	justify-content: space-between;
 	width: 100%;
+}
+
+.dropdown-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 8rpx;
+	padding: 12rpx 20rpx;
+	border-radius: 24rpx;
+	position: relative;
+}
+
+.dropdown-text {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 24rpx;
+	color: #333333;
+	font-weight: 500;
+}
+
+.dropdown-arrow {
+	width: 24rpx;
+	height: 24rpx;
+	transition: transform 0.3s ease;
+}
+
+.dropdown-arrow.rotate {
+	transform: rotate(180deg);
+}
+
+.dropdown-menu {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	margin-top: 12rpx;
+	background-color: #ffffff;
+	border-radius: 12rpx;
+	box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+	min-width: 180rpx;
+	z-index: 100;
+	overflow: hidden;
+}
+
+.dropdown-item {
+	padding: 20rpx 24rpx;
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 24rpx;
+	color: #666666;
+	white-space: nowrap;
+}
+
+.dropdown-item.active {
+	color: #333333;
+	background-color: #f6f6f6;
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-weight: 500;
 }
 
 .services-title {
@@ -1869,6 +1828,8 @@ export default {
 	font-size: 32rpx;
 	font-weight: 700;
 	color: #000000;
+	position: relative;
+	z-index: 2;
 }
 
 .filter-btn {
@@ -1954,11 +1915,14 @@ export default {
 	background-color: #ffffff;
 	overflow: hidden;
 	box-sizing: border-box;
+	height: 620rpx;
+	display: flex;
+	flex-direction: column;
 }
 
 .service-img {
-	width: 100%;
-	height: 358rpx;
+	width: 340rpx;
+	height: 340rpx;
 	border-radius: 12rpx 12rpx 0 0;
 }
 
@@ -1966,6 +1930,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 	gap: 12rpx;
+	margin-top: auto;
 	padding: 16rpx 16rpx;
 }
 
@@ -1980,9 +1945,13 @@ export default {
 	font-size: 24rpx;
 	color: #a6a6a6;
 	font-weight: 500;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .service-price {
+	font-weight: 600;
 	display: flex;
 	align-items: center;
 	gap: 6rpx;
@@ -2003,11 +1972,10 @@ export default {
 
 .appointment-price-tag {
 	font-family: 'PingFang_SC-Regular', Helvetica;
-	font-size: 20rpx;
 	background-color: #dacbb1;
+	font-size: 20rpx;
 	color: #645E57;
 	padding: 2rpx 8rpx;
-	border: 1rpx solid #dacbb1;
 	border-radius: 4rpx;
 	margin-left: 12rpx;
 }
@@ -2033,6 +2001,7 @@ export default {
 }
 
 .avatar-img-small {
+	background-color: #a6a6a6;
 	width: 100%;
 	height: 100%;
 }
@@ -2075,9 +2044,25 @@ export default {
 	color: #333333;
 }
 
+.star-container-small {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 4rpx;
+	background-color: #333333;
+	border-radius: 4rpx;
+}
+
+.star-icon-small {
+	width: 20rpx;
+	height: 20rpx;
+	filter: brightness(0) invert(1);
+}
+
 .star-small {
-	font-size: 20rpx;
-	color: #333333;
+	width: 16rpx;
+	height: 16rpx;
+	filter: brightness(0) invert(1);
 }
 
 .review-count-small {
@@ -2093,7 +2078,7 @@ export default {
 	color: #a6a6a6;
 }
 
-/* 动画 */
+
 @keyframes fade-in {
 	0% {
 		opacity: 0;

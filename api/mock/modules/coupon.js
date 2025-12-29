@@ -165,7 +165,7 @@ export const routes = {
     let list = userCoupons.filter(c => {
       if (c.status !== 'available') return false
       if (amount && c.minAmount > amount) return false
-      // 检查使用范围（简化处理）
+      // 怣查使用范围（瀮化处理）
       return true
     })
     return success(list)
@@ -238,7 +238,7 @@ export const routes = {
         '2. 每张优惠券限使用一次，不可叠加',
         '3. 优惠券不可兑换现金，不找零',
         '4. 退款时优惠券将按比例扣除',
-        '5. 最终解释权归平台所有'
+        '5. 怜终解释权归平台怉有'
       ]
     })
   },

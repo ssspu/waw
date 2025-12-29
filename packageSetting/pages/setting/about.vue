@@ -20,7 +20,7 @@
 				<view class="card-content">
 					<view class="about-intro">
 						<text class="intro-title">关于我们</text>
-						<text class="intro-text">众美是一个连接设计师和用户的服务平台，致力于为用户提供专业的设计服务和产品推荐。</text>
+						<text class="intro-text">众美是一个连接设计师和用户的服务平台，致力于为用户提供专业的设计服务和产品推荐</text>
 					</view>
 				</view>
 			</view>
@@ -39,7 +39,7 @@
 							<view class="action-button">
 								<image 
 									class="button-icon" 
-									src="/static/icon/gengduo.png" 
+									src="https://bioflex.cn/static/icon/gengduo.png" 
 									mode="aspectFit"
 								></image>
 							</view>
@@ -105,7 +105,7 @@ export default {
 	methods: {
 		handleItemClick(item) {
 			console.log('Click:', item.label)
-			// 可根据不同的项目打开对应的页面或链接
+			
 			if (item.label === '用户协议') {
 				uni.navigateTo({ url: '/packageSetting/pages/setting/agreement' })
 			}
@@ -115,7 +115,7 @@ export default {
 				title: '检查中...'
 			})
 
-			// 模拟检查更新
+			
 			setTimeout(() => {
 				uni.hideLoading()
 				uni.showToast({

@@ -95,7 +95,6 @@
 					<!-- 分隔线 -->
 					<view class="separator-line"></view>
 					
-					<!-- 服务提供者信息 -->
 					<view class="service-info">
 						<view class="service-left">
 							<!-- 头像 -->
@@ -134,7 +133,7 @@
 										<view class="star-wrapper">
 											<image 
 												class="star-icon" 
-												src="https://c.animaapp.com/mi5kx1ohxTkA7e/img/star-1.svg" 
+												src="/static/icon/star.png" 
 												mode="aspectFit"
 											></image>
 										</view>
@@ -226,16 +225,16 @@ export default {
 		return {
 			activeBrandTab: 'hair',
 			showShareModal: false,
-			avatarImage: '/static/avatar/avatar.png',
+			avatarImage: 'https://bioflex.cn/static/avatar/avatar.png',
 			brandCards: [
 				{
 					headerInfo: ['2025-05-05', '｜', '洗剪吹', '｜', '欧莱雅生化烫'],
 					price: 888,
-					name: '成都NICE造型沙龙',
+					name: '成都NICE发型沙龙',
 					type: '品牌',
-					level: '舒适',
-					role: '专业店｜2012年开业',
-					specialties: ['女士造型', '烫发设计', '短发造型'],
+					level: '舒',
+					role: '专业店｜2012年业',
+					specialties: ['女士发型', '烫发设计', '短发发型'],
 					rating: 4.8,
 					designers: 8,
 					services: 1236
@@ -243,11 +242,11 @@ export default {
 				{
 					headerInfo: ['2025-05-05', '｜', '洗剪吹', '｜', '欧莱雅生化烫'],
 					price: 888,
-					name: '成都NICE造型沙龙',
+					name: '成都NICE发型沙龙',
 					type: '品牌',
-					level: '舒适',
-					role: '专业店｜2012年开业',
-					specialties: ['女士造型', '烫发设计', '短发造型'],
+					level: '舒',
+					role: '专业店｜2012年业',
+					specialties: ['女士发型', '烫发设计', '短发发型'],
 					rating: 4.8,
 					designers: 8,
 					services: 1236
@@ -255,11 +254,11 @@ export default {
 				{
 					headerInfo: ['2025-05-05', '｜', '洗剪吹', '｜', '欧莱雅生化烫'],
 					price: 888,
-					name: '成都NICE造型沙龙',
+					name: '成都NICE发型沙龙',
 					type: '品牌',
-					level: '舒适',
-					role: '专业店｜2012年开业',
-					specialties: ['女士造型', '烫发设计', '短发造型'],
+					level: '舒',
+					role: '专业店｜2012年业',
+					specialties: ['女士发型', '烫发设计', '短发发型'],
 					rating: 4.8,
 					designers: 8,
 					services: 1236
@@ -267,11 +266,11 @@ export default {
 				{
 					headerInfo: ['2025-05-05', '｜', '洗剪吹', '｜', '欧莱雅生化烫'],
 					price: 888,
-					name: '成都NICE造型沙龙',
+					name: '成都NICE发型沙龙',
 					type: '品牌',
-					level: '舒适',
-					role: '专业店｜2012年开业',
-					specialties: ['女士造型', '烫发设计', '短发造型'],
+					level: '舒',
+					role: '专业店｜2012年业',
+					specialties: ['女士发型', '烫发设计', '短发发型'],
 					rating: 4.8,
 					designers: 8,
 					services: 1236
@@ -498,6 +497,7 @@ export default {
 	align-items: center;
 	padding: 4rpx 8rpx;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	height: auto;
 	box-sizing: border-box;
 }
@@ -535,6 +535,7 @@ export default {
 	padding: 4rpx 8rpx;
 	background-color: #f6f6f6;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	height: auto;
 	box-sizing: border-box;
 }
@@ -569,15 +570,14 @@ export default {
 	display: inline-flex;
 	align-items: center;
 	gap: 4rpx;
-	padding: 2rpx;
+	padding: 4rpx;
 	background-color: #333333;
 	border-radius: 4rpx;
 }
 
 .star-icon {
-	width: 16rpx;
-	height: 16rpx;
-	flex-shrink: 0;
+	width: 20rpx;
+	height: 20rpx;
 	filter: brightness(0) invert(1);
 }
 
@@ -647,6 +647,7 @@ export default {
 	height: 60rpx;
 	padding: 0 30rpx;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	cursor: pointer;
 	box-sizing: border-box;
 	flex-shrink: 0;

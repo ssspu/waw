@@ -5,7 +5,6 @@
 			<view class="nav-bar">
 				<view class="nav-left">
 					<view class="back-btn" @tap="handleBack">
-						<image class="back-icon" src="/static/icon/arrow-left.png" mode="aspectFit"></image>
 					</view>
 					<text class="nav-title">设计师入驻</text>
 				</view>
@@ -88,12 +87,12 @@
 					<view class="gender-group">
 						<view class="gender-item" :class="{ active: formData.gender === 'male' }" @tap="formData.gender = 'male'">
 							<text class="gender-text">男</text>
-							<image v-if="formData.gender === 'male'" class="check-icon" src="/static/icon/right-icon.png" mode="aspectFit"></image>
+							<image v-if="formData.gender === 'male'" class="check-icon" src="https://bioflex.cn/static/icon/right-icon.png" mode="aspectFit"></image>
 							<view v-else class="radio-circle"></view>
 						</view>
 						<view class="gender-item" :class="{ active: formData.gender === 'female' }" @tap="formData.gender = 'female'">
 							<text class="gender-text">女</text>
-							<image v-if="formData.gender === 'female'" class="check-icon" src="/static/icon/right-icon.png" mode="aspectFit"></image>
+							<image v-if="formData.gender === 'female'" class="check-icon" src="https://bioflex.cn/static/icon/right-icon.png" mode="aspectFit"></image>
 							<view v-else class="radio-circle"></view>
 						</view>
 					</view>
@@ -134,7 +133,7 @@
 					<text class="form-label">人脸验证</text>
 					<view class="form-right">
 						<text class="form-hint">去验证</text>
-						<image class="arrow-icon" src="/static/icon/right.png" mode="aspectFit"></image>
+						<image class="arrow-icon" src="https://bioflex.cn/static/icon/right.png" mode="aspectFit"></image>
 					</view>
 				</view>
 			</view>
@@ -222,25 +221,25 @@ export default {
 			}, 1000)
 		},
 		goFaceVerify() {
-			uni.showToast({ title: '人脸验证功能开发中', icon: 'none' })
+			uni.showToast({ title: '人脸验证功能值发中', icon: 'none' })
 		},
-		// 验证身份证号格式
+		
 		validateIdNumber(idNumber) {
 			const reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
 			return reg.test(idNumber)
 		},
-		// 验证手机号格式
+		
 		validatePhone(phone) {
 			const reg = /^1[3-9]\d{9}$/
 			return reg.test(phone)
 		},
-		// 验证邮箱格式
+		
 		validateEmail(email) {
 			const reg = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 			return reg.test(email)
 		},
 		handleNext() {
-			// 身份证照片验证
+			
 			if (!this.formData.idFrontUrl) {
 				uni.showToast({ title: '请上传身份证人像页', icon: 'none' })
 				return
@@ -249,7 +248,7 @@ export default {
 				uni.showToast({ title: '请上传身份证国徽页', icon: 'none' })
 				return
 			}
-			// 姓名验证
+			
 			if (!this.formData.name) {
 				uni.showToast({ title: '请输入姓名', icon: 'none' })
 				return
@@ -258,7 +257,7 @@ export default {
 				uni.showToast({ title: '姓名至少2个字符', icon: 'none' })
 				return
 			}
-			// 身份证号验证
+			
 			if (!this.formData.idNumber) {
 				uni.showToast({ title: '请输入身份证号', icon: 'none' })
 				return
@@ -267,7 +266,7 @@ export default {
 				uni.showToast({ title: '身份证号格式不正确', icon: 'none' })
 				return
 			}
-			// 邮箱验证
+			
 			if (!this.formData.email) {
 				uni.showToast({ title: '请输入邮箱', icon: 'none' })
 				return
@@ -276,7 +275,7 @@ export default {
 				uni.showToast({ title: '邮箱格式不正确', icon: 'none' })
 				return
 			}
-			// 手机号验证
+			
 			if (!this.formData.phone) {
 				uni.showToast({ title: '请输入手机号', icon: 'none' })
 				return
@@ -285,7 +284,7 @@ export default {
 				uni.showToast({ title: '手机号格式不正确', icon: 'none' })
 				return
 			}
-			// 验证码验证
+			
 			if (!this.formData.verifyCode) {
 				uni.showToast({ title: '请输入验证码', icon: 'none' })
 				return

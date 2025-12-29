@@ -1,7 +1,7 @@
 <template>
 	<view class="login-page">
 		<!-- 背景图片 -->
-		<image class="bg-image" src="/static/background-image/register.png" mode="aspectFill"></image>
+		<image class="bg-image" src="https://bioflex.cn/static/background-image/register.png" mode="aspectFill"></image>
 		
 		<!-- 自定义导航栏 -->
 		<view class="custom-navbar" >
@@ -101,6 +101,9 @@
 
 <script>
 import { getUserAgreement, getPrivacyPolicy } from '@/data/agreements.js'
+import api from '@/api'
+import { setToken, setRefreshToken } from '@/api/request.js'
+import { BUSINESS_CODE } from '@/api/config.js'
 
 export default {
 	data() {
@@ -147,7 +150,7 @@ export default {
 		toggleAgreement() {
 			this.isAgreed = !this.isAgreed
 		},
-		handleLogin() {
+		async handleLogin() {
 			if (!this.phone) {
 				uni.showToast({ title: '请输入手机号码', icon: 'none' })
 				return
@@ -160,10 +163,43 @@ export default {
 				uni.showToast({ title: '请先同意用户协议', icon: 'none' })
 				return
 			}
-			// 登录成功后跳转首页
-			uni.reLaunch({
-				url: '/pages/index/index'
-			})
+
+			try {
+				const res = await api.auth.loginByPassword({
+					phone: this.phone,
+					password: this.password
+				})
+
+				if (res.code === BUSINESS_CODE.SUCCESS && res.data) {
+
+					if (res.data.token) {
+						setToken(res.data.token)
+					}
+					if (res.data.refreshToken) {
+						setRefreshToken(res.data.refreshToken)
+					}
+
+					// 保存用户信息到本地存储
+					if (res.data.userInfo || res.data.user) {
+						const userInfo = res.data.userInfo || res.data.user
+						uni.setStorageSync('userInfo', userInfo)
+					} else if (res.data.nickname || res.data.avatar) {
+						uni.setStorageSync('userInfo', {
+							nickname: res.data.nickname || '',
+							avatar: res.data.avatar || '',
+							phone: res.data.phone || this.phone
+						})
+					}
+
+					uni.showToast({ title: '登录成功', icon: 'success' })
+					setTimeout(() => {
+						uni.reLaunch({ url: '/pages/index/index' })
+					}, 1500)
+				}
+			} catch (err) {
+				console.error('登录失败:', err)
+				uni.showToast({ title: err.message || '登录失败', icon: 'none' })
+			}
 		},
 		goToRegister() {
 			uni.navigateTo({
@@ -448,7 +484,7 @@ export default {
 	border-radius: 100rpx;
 }
 
-// 协议弹窗
+
 .agreement-modal {
 	position: fixed;
 	top: 0;

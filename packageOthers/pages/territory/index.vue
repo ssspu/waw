@@ -118,7 +118,7 @@
 										<view class="star-wrapper">
 											<image 
 												class="star-icon" 
-												src="https://c.animaapp.com/mi5kx1ohxTkA7e/img/star-1.svg" 
+												src="/static/icon/star.png" 
 												mode="aspectFit"
 											></image>
 										</view>
@@ -219,7 +219,7 @@ export default {
 						activeTopTab: 'designer',
 			activeSubTab: 'hairstylist',
 			activeBrandTab: 'hair',
-			avatarImage: '/static/avatar/avatar.png',
+			avatarImage: 'https://bioflex.cn/static/avatar/avatar.png',
 			designerSubTabs: [
 				{ id: 'hairstylist', label: '美发师' },
 				{ id: 'beautician', label: '美容师' },
@@ -245,24 +245,24 @@ export default {
 		this.fetchTerritoryBrands()
 	},
 	methods: {
-		// 获取私人领地设计师数据
+		
 		async fetchTerritoryDesigners() {
 			try {
 				const res = await api.territory.getMyDesigners({
 					page: 1,
 					pageSize: 20,
-					category: this.activeSubTab // 根据子tab筛选分类
+					category: this.activeSubTab 
 				})
-				if (res.code === 0 && res.data) {
+				if (res.code === 200 && res.data) {
 					const list = res.data.list || res.data || []
 					this.designerList = list.map(item => ({
 						id: item.id,
 						name: item.name || '',
-						avatar: item.avatar || '/static/avatar/avatar.png',
+						avatar: item.avatar || 'https://bioflex.cn/static/avatar/avatar.png',
 						role: item.role || '美发师',
 						level: item.level || '高级',
 						position: item.position || '',
-						specialties: item.specialties || ['造型', '美发'],
+						specialties: item.specialties || ['发型', '美发'],
 						rating: item.rating || 4.8,
 						serviceCount: item.serviceCount || 0,
 						worksCount: item.worksCount || 0,
@@ -276,11 +276,11 @@ export default {
 				console.error('获取私人领地设计师失败:', err)
 			}
 		},
-		// 删除设计师
+		
 		async handleDeleteDesigner(designer) {
 			try {
 				const res = await api.territory.removeDesigner(designer.id)
-				if (res.code === 0) {
+				if (res.code === 200) {
 					this.designerList = this.designerList.filter(d => d.id !== designer.id)
 					uni.showToast({ title: '删除成功', icon: 'success' })
 				}
@@ -289,7 +289,7 @@ export default {
 				uni.showToast({ title: '删除失败', icon: 'none' })
 			}
 		},
-		// 获取私人领地品牌馆数据
+		
 		async fetchTerritoryBrands() {
 			if (this.loading) return
 			this.loading = true
@@ -297,9 +297,9 @@ export default {
 				const res = await api.territory.getMyBrands({
 					page: 1,
 					pageSize: 20,
-					category: this.activeBrandTab // 根据子tab筛选分类
+					category: this.activeBrandTab 
 				})
-				if (res.code === 0 && res.data) {
+				if (res.code === 200 && res.data) {
 					const list = res.data.list || res.data || []
 					this.brandCards = list.map(item => ({
 						id: item.id,
@@ -315,7 +315,7 @@ export default {
 						type: '品牌',
 						level: item.level || '舒适',
 						role: item.typeDesc || '专业店',
-						specialties: item.specialties || ['造型', '美发'],
+						specialties: item.specialties || ['发型', '美发'],
 						rating: item.rating || 4.8,
 						designers: item.designerCount || 0,
 						services: item.serviceCount || 0,
@@ -339,11 +339,11 @@ export default {
 		},
 		handleSubTabChange(tabId) {
 			this.activeSubTab = tabId
-			this.fetchTerritoryDesigners() // 切换子tab时重新获取数据
+			this.fetchTerritoryDesigners() 
 		},
 		handleBrandTabChange(tabId) {
 			this.activeBrandTab = tabId
-			this.fetchTerritoryBrands() // 切换子tab时重新获取数据
+			this.fetchTerritoryBrands() 
 		},
 		handlePromote() {
 			this.showShareModal = true
@@ -356,13 +356,18 @@ export default {
 			this.showShareModal = false
 		},
 		handleBookAgain() {
-			// 跳转到品牌馆详情页
+			
+			const currentBrand = this.brandCards && this.brandCards[0]
+			if (!currentBrand || !currentBrand.id) {
+				uni.showToast({ title: '请先选择品牌馆', icon: 'none' })
+				return
+			}
 			uni.navigateTo({
-				url: '/pages/brand/detail?id=1'
+				url: `/pages/brand/detail?id=${currentBrand.id}&name=${encodeURIComponent(currentBrand.name || '')}`
 			})
 		},
 		handleBrandCardClick(card) {
-			// 点击品牌馆卡片,跳转到品牌详情页
+			
 			uni.navigateTo({
 				url: `/pages/brand/detail?id=${card.id}&name=${encodeURIComponent(card.name || '')}`
 			})
@@ -468,7 +473,7 @@ export default {
 	}
 }
 
-/* 子tabs行样式 */
+
 .top-nav-fixed .sub-nav {
 	display: flex;
 	align-items: center;
@@ -668,6 +673,7 @@ export default {
 	align-items: center;
 	padding: 4rpx 8rpx;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	height: auto;
 	box-sizing: border-box;
 }
@@ -705,6 +711,7 @@ export default {
 	padding: 4rpx 8rpx;
 	background-color: #f6f6f6;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	height: auto;
 	box-sizing: border-box;
 }
@@ -739,15 +746,14 @@ export default {
 	display: inline-flex;
 	align-items: center;
 	gap: 4rpx;
-	padding: 2rpx;
+	padding: 4rpx;
 	background-color: #333333;
 	border-radius: 4rpx;
 }
 
 .star-icon {
-	width: 16rpx;
-	height: 16rpx;
-	flex-shrink: 0;
+	width: 20rpx;
+	height: 20rpx;
 	filter: brightness(0) invert(1);
 }
 
@@ -816,6 +822,7 @@ export default {
 	height: 60rpx;
 	padding: 0 30rpx;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	cursor: pointer;
 	box-sizing: border-box;
 	flex-shrink: 0;
@@ -845,7 +852,7 @@ export default {
 	}
 }
 
-// 分享弹窗样式
+
 .share-modal-overlay {
 	position: fixed;
 	top: 0;

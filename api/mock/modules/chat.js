@@ -13,7 +13,7 @@ const conversations = [
     targetType: 'designer',
     targetId: 'designer_001',
     targetName: '李设计师',
-    targetAvatar: '/static/avatar/designer1.png',
+    targetAvatar: 'https://bioflex.cn/static/avatar/designer1.png',
     lastMessage: {
       type: 'text',
       content: '好的，那我们约明天下午3点',
@@ -29,8 +29,8 @@ const conversations = [
     id: 'conv_002',
     targetType: 'designer',
     targetId: 'designer_002',
-    targetName: '王造型师',
-    targetAvatar: '/static/avatar/designer2.png',
+    targetName: '王发型师',
+    targetAvatar: 'https://bioflex.cn/static/avatar/designer2.png',
     lastMessage: {
       type: 'image',
       content: '[图片]',
@@ -47,7 +47,7 @@ const conversations = [
     targetType: 'brand',
     targetId: 'brand_001',
     targetName: '潮流发型屋',
-    targetAvatar: '/static/avatar/brand1.png',
+    targetAvatar: 'https://bioflex.cn/static/avatar/brand1.png',
     lastMessage: {
       type: 'service',
       content: '[服务卡片] 精致剪发套餐',
@@ -64,7 +64,7 @@ const conversations = [
     targetType: 'user',
     targetId: 'user_002',
     targetName: '小明',
-    targetAvatar: '/static/avatar/user2.png',
+    targetAvatar: 'https://bioflex.cn/static/avatar/user2.png',
     lastMessage: {
       type: 'text',
       content: '谢谢推荐！',
@@ -86,10 +86,10 @@ const messages = {
       conversationId: 'conv_001',
       senderId: 'designer_001',
       senderName: '李设计师',
-      senderAvatar: '/static/avatar/designer1.png',
+      senderAvatar: 'https://bioflex.cn/static/avatar/designer1.png',
       isSelf: false,
       type: 'text',
-      content: '您好，有什么可以帮您的吗？',
+      content: '您好，有么可以帮您的吗？',
       createdAt: '2024-01-15 14:00:00',
       isRead: true,
       isDeleted: false
@@ -99,7 +99,7 @@ const messages = {
       conversationId: 'conv_001',
       senderId: 'user_001',
       senderName: '我',
-      senderAvatar: '/static/avatar/avatar.png',
+      senderAvatar: 'https://bioflex.cn/static/avatar/avatar.png',
       isSelf: true,
       type: 'text',
       content: '我想预约明天的剪发服务',
@@ -112,7 +112,7 @@ const messages = {
       conversationId: 'conv_001',
       senderId: 'designer_001',
       senderName: '李设计师',
-      senderAvatar: '/static/avatar/designer1.png',
+      senderAvatar: 'https://bioflex.cn/static/avatar/designer1.png',
       isSelf: false,
       type: 'text',
       content: '好的，请问您方便几点呢？',
@@ -125,7 +125,7 @@ const messages = {
       conversationId: 'conv_001',
       senderId: 'user_001',
       senderName: '我',
-      senderAvatar: '/static/avatar/avatar.png',
+      senderAvatar: 'https://bioflex.cn/static/avatar/avatar.png',
       isSelf: true,
       type: 'text',
       content: '下午3点可以吗？',
@@ -138,7 +138,7 @@ const messages = {
       conversationId: 'conv_001',
       senderId: 'designer_001',
       senderName: '李设计师',
-      senderAvatar: '/static/avatar/designer1.png',
+      senderAvatar: 'https://bioflex.cn/static/avatar/designer1.png',
       isSelf: false,
       type: 'text',
       content: '好的，那我们约明天下午3点',
@@ -153,7 +153,7 @@ const messages = {
       conversationId: 'conv_002',
       senderId: 'user_001',
       senderName: '我',
-      senderAvatar: '/static/avatar/avatar.png',
+      senderAvatar: 'https://bioflex.cn/static/avatar/avatar.png',
       isSelf: true,
       type: 'text',
       content: '请问这个发型适合我吗？',
@@ -166,10 +166,10 @@ const messages = {
       conversationId: 'conv_002',
       senderId: 'user_001',
       senderName: '我',
-      senderAvatar: '/static/avatar/avatar.png',
+      senderAvatar: 'https://bioflex.cn/static/avatar/avatar.png',
       isSelf: true,
       type: 'image',
-      content: '/static/temp/hairstyle1.jpg',
+      content: 'https://bioflex.cn/static/temp/hairstyle1.jpg',
       createdAt: '2024-01-14 16:01:00',
       isRead: true,
       isDeleted: false
@@ -178,11 +178,11 @@ const messages = {
       id: 'msg_012',
       conversationId: 'conv_002',
       senderId: 'designer_002',
-      senderName: '王造型师',
-      senderAvatar: '/static/avatar/designer2.png',
+      senderName: '王发型师',
+      senderAvatar: 'https://bioflex.cn/static/avatar/designer2.png',
       isSelf: false,
       type: 'text',
-      content: '这款发型很适合您的脸型，不过需要稍微调整一下刘海的长度',
+      content: '这款发型很合您的脸型，不过要稍微调整下刘海的长度',
       createdAt: '2024-01-14 16:15:00',
       isRead: true,
       isDeleted: false
@@ -191,11 +191,11 @@ const messages = {
       id: 'msg_013',
       conversationId: 'conv_002',
       senderId: 'designer_002',
-      senderName: '王造型师',
-      senderAvatar: '/static/avatar/designer2.png',
+      senderName: '王发型师',
+      senderAvatar: 'https://bioflex.cn/static/avatar/designer2.png',
       isSelf: false,
       type: 'image',
-      content: '/static/temp/hairstyle2.jpg',
+      content: 'https://bioflex.cn/static/temp/hairstyle2.jpg',
       createdAt: '2024-01-14 16:20:00',
       isRead: true,
       isDeleted: false
@@ -207,7 +207,7 @@ const messages = {
       conversationId: 'conv_003',
       senderId: 'brand_001',
       senderName: '潮流发型屋',
-      senderAvatar: '/static/avatar/brand1.png',
+      senderAvatar: 'https://bioflex.cn/static/avatar/brand1.png',
       isSelf: false,
       type: 'text',
       content: '感谢您关注我们店铺！现在有新客优惠活动',
@@ -220,14 +220,14 @@ const messages = {
       conversationId: 'conv_003',
       senderId: 'brand_001',
       senderName: '潮流发型屋',
-      senderAvatar: '/static/avatar/brand1.png',
+      senderAvatar: 'https://bioflex.cn/static/avatar/brand1.png',
       isSelf: false,
       type: 'service',
       content: '精致剪发套餐',
       extra: {
         serviceId: 'service_001',
         serviceName: '精致剪发套餐',
-        serviceImage: '/static/service/cut1.jpg',
+        serviceImage: 'https://bioflex.cn/static/service/cut1.jpg',
         price: 128,
         originalPrice: 198
       },
@@ -289,7 +289,7 @@ export const routes = {
       targetType,
       targetId,
       targetName: targetType === 'designer' ? '设计师' : targetType === 'brand' ? '品牌馆' : '用户',
-      targetAvatar: '/static/avatar/default.png',
+      targetAvatar: 'https://bioflex.cn/static/avatar/default.png',
       lastMessage: null,
       unreadCount: 0,
       isPinned: false,
@@ -306,12 +306,12 @@ export const routes = {
   'GET /api/chat/conversations/:conversationId/messages': (params) => {
     const { conversationId, page = 1, pageSize = 20 } = params
     const msgList = messages[conversationId] || []
-    // 按时间倒序
+    // 按时间序
     const sorted = [...msgList].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
     return success(paginate(sorted, page, pageSize))
   },
 
-  // 发送消息
+  // 发消息
   'POST /api/chat/conversations/:conversationId/messages': (params) => {
     const { conversationId, type = 'text', content, extra } = params
     if (!content) {
@@ -328,7 +328,7 @@ export const routes = {
       conversationId,
       senderId: 'user_001',
       senderName: '我',
-      senderAvatar: '/static/avatar/avatar.png',
+      senderAvatar: 'https://bioflex.cn/static/avatar/avatar.png',
       isSelf: true,
       type,
       content,
@@ -343,7 +343,7 @@ export const routes = {
     }
     messages[conversationId].push(newMsg)
 
-    // 更新会话最后消息
+    // 更新会话后消息
     conv.lastMessage = {
       type,
       content: type === 'image' ? '[图片]' : type === 'service' ? '[服务卡片]' : content,
@@ -351,7 +351,7 @@ export const routes = {
     }
     conv.updatedAt = newMsg.createdAt
 
-    return success(newMsg, '发送成功')
+    return success(newMsg, '发成功')
   },
 
   // 标记会话已读
@@ -361,7 +361,7 @@ export const routes = {
       return error('会话不存在')
     }
     conv.unreadCount = 0
-    // 标记所有消息已读
+    // 标记有消息已读
     const msgList = messages[params.conversationId] || []
     msgList.forEach(msg => {
       if (!msg.isSelf) msg.isRead = true
@@ -369,7 +369,7 @@ export const routes = {
     return success(null, '已标记为已读')
   },
 
-  // 标记所有会话已读
+  // 标记有会话已读
   'PUT /api/chat/conversations/read-all': () => {
     conversations.forEach(conv => {
       conv.unreadCount = 0
@@ -423,13 +423,13 @@ export const routes = {
     if (!msg.isSelf) {
       return error('只能撤回自己的消息')
     }
-    // 检查是否超过2分钟（mock中不做真实时间校验）
+    // 查是否超过2分钟（mock中不做真实时间校验）
     msg.isDeleted = true
-    msg.content = '你撤回了一条消息'
+    msg.content = '你撤回了条消息'
     return success(null, '撤回成功')
   },
 
-  // 获取未读消息总数
+  // 获取未读消息数
   'GET /api/chat/unread-count': () => {
     const total = conversations.reduce((sum, conv) => sum + conv.unreadCount, 0)
     return success({ count: total })
@@ -462,7 +462,7 @@ export const routes = {
       return error('会话不存在')
     }
     conv.isMuted = params.mute !== false
-    return success(null, conv.isMuted ? '已开启免打扰' : '已关闭免打扰')
+    return success(null, conv.isMuted ? '已启免打扰' : '已关闭免打扰')
   },
 
   // 举报
@@ -489,7 +489,7 @@ export const routes = {
       targetType,
       targetId,
       targetName: '被拉黑用户',
-      targetAvatar: '/static/avatar/default.png',
+      targetAvatar: 'https://bioflex.cn/static/avatar/default.png',
       createdAt: formatNow()
     })
     return success(null, '已加入黑名单')
@@ -512,7 +512,7 @@ export const routes = {
     return success(paginate(blockList, page, pageSize))
   },
 
-  // 发送服务卡片消息
+  // 发服务卡片消息
   'POST /api/chat/conversations/:conversationId/service-card': (params) => {
     const { conversationId, serviceId } = params
     if (!serviceId) {
@@ -529,14 +529,14 @@ export const routes = {
       conversationId,
       senderId: 'user_001',
       senderName: '我',
-      senderAvatar: '/static/avatar/avatar.png',
+      senderAvatar: 'https://bioflex.cn/static/avatar/avatar.png',
       isSelf: true,
       type: 'service',
       content: '服务卡片',
       extra: {
         serviceId,
         serviceName: '精致剪发套餐',
-        serviceImage: '/static/service/cut1.jpg',
+        serviceImage: 'https://bioflex.cn/static/service/cut1.jpg',
         price: 128
       },
       createdAt: formatNow(),
@@ -556,10 +556,9 @@ export const routes = {
     }
     conv.updatedAt = newMsg.createdAt
 
-    return success(newMsg, '发送成功')
+    return success(newMsg, '发成功')
   },
 
-  // 发送预约卡片消息
   'POST /api/chat/conversations/:conversationId/appointment-card': (params) => {
     const { conversationId, orderId } = params
     if (!orderId) {
@@ -576,7 +575,7 @@ export const routes = {
       conversationId,
       senderId: 'user_001',
       senderName: '我',
-      senderAvatar: '/static/avatar/avatar.png',
+      senderAvatar: 'https://bioflex.cn/static/avatar/avatar.png',
       isSelf: true,
       type: 'appointment',
       content: '预约卡片',
@@ -603,7 +602,7 @@ export const routes = {
     }
     conv.updatedAt = newMsg.createdAt
 
-    return success(newMsg, '发送成功')
+    return success(newMsg, '发成功')
   }
 }
 

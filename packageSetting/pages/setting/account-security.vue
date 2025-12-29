@@ -17,7 +17,7 @@
 							<view class="action-button">
 								<image 
 									class="button-icon" 
-									src="/static/icon/gengduo.png" 
+									src="https://bioflex.cn/static/icon/gengduo.png" 
 									mode="aspectFit"
 								></image>
 							</view>
@@ -43,7 +43,7 @@ export default {
 		methods: {
 			handleItemClick(item) {
 				console.log('Edit:', item.label)
-				// 根据不同的安全设置项打开对应的页面
+				
 				if (item.label === '修改手机号码') {
 					this.navigateToEditPhone()
 				} else if (item.label === '修改登录密码') {

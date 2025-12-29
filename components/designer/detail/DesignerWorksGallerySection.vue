@@ -82,7 +82,7 @@
 			
 			<!-- 空数据状态 -->
 			<view v-if="!loading && galleryImages.length === 0" class="empty-state">
-				<image class="empty-icon" src="/static/icon/empty-works.png" mode="aspectFit"></image>
+				<image class="empty-icon" src="https://bioflex.cn/static/icon/empty-works.png" mode="aspectFit"></image>
 				<text class="empty-text">暂无作品内容</text>
 			</view>
 
@@ -136,14 +136,14 @@ export default {
 			hairVolume: 'less',
 			hairQuality: 'soft',
 			hairThickness: 'fine',
-			// 脸型选项
+			
 			faceTypes: [
-				{ id: 'oval', icon: '/static/icon/face-oval.png', activeIcon: '/static/icon/face-oval-active.png' },
-				{ id: 'circle', icon: '/static/icon/face-circle.png', activeIcon: '/static/icon/face-circle-active.png' },
-				{ id: 'square', icon: '/static/icon/face-square.png', activeIcon: '/static/icon/face-square-active.png' },
-				{ id: 'diamond', icon: '/static/icon/face-diamond.png', activeIcon: '/static/icon/face-diamond-active.png' },
-				{ id: 'triangle', icon: '/static/icon/face-triangle.png', activeIcon: '/static/icon/face-triangle-active.png' },
-				{ id: 'rounded-rect', icon: '/static/icon/face-rounded-rect.png', activeIcon: '/static/icon/face-rounded-rect-active.png' }
+				{ id: 'oval', icon: 'https://bioflex.cn/static/icon/face-oval.png', activeIcon: 'https://bioflex.cn/static/icon/face-oval-active.png' },
+				{ id: 'circle', icon: 'https://bioflex.cn/static/icon/face-circle.png', activeIcon: 'https://bioflex.cn/static/icon/face-circle-active.png' },
+				{ id: 'square', icon: 'https://bioflex.cn/static/icon/face-square.png', activeIcon: 'https://bioflex.cn/static/icon/face-square-active.png' },
+				{ id: 'diamond', icon: 'https://bioflex.cn/static/icon/face-diamond.png', activeIcon: 'https://bioflex.cn/static/icon/face-diamond-active.png' },
+				{ id: 'triangle', icon: 'https://bioflex.cn/static/icon/face-triangle.png', activeIcon: 'https://bioflex.cn/static/icon/face-triangle-active.png' },
+				{ id: 'rounded-rect', icon: 'https://bioflex.cn/static/icon/face-rounded-rect.png', activeIcon: 'https://bioflex.cn/static/icon/face-rounded-rect-active.png' }
 			],
 			hairAttributes: [
 				{
@@ -192,7 +192,7 @@ export default {
 		this.scrollHeight = systemInfo.windowHeight
 	},
 	methods: {
-		// 获取设计师作品
+		
 		async fetchWorks() {
 			if (!this.designerId || this.loading) return
 			this.loading = true
@@ -202,7 +202,7 @@ export default {
 					page: 1,
 					pageSize: 20
 				})
-				if (res.code === 0) {
+				if (res.code === 200) {
 					const data = res.data
 					const list = data.list || data.records || []
 					this.galleryImages = list.map(w => ({
@@ -342,6 +342,7 @@ export default {
 	&.active {
 		background-color: #333333;
 		border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	}
 }
 
@@ -387,7 +388,7 @@ export default {
 	cursor: pointer;
 }
 
-/* 空数据和加载状态 */
+
 .empty-state {
 	display: flex;
 	flex-direction: column;

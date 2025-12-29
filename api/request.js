@@ -1,7 +1,6 @@
 /**
  * 请求中间层
- * 统一处理所有 HTTP 请求，包含拦截器、错误处理、token 管理等
- * 支持 Mock 模式，在开发环境下使用本地模拟数据
+ * 支持 Mock 模式，在发环境下使用本地模拟数据
  */
 
 import { config, HTTP_STATUS, BUSINESS_CODE, WHITE_LIST, HEADERS } from './config.js'
@@ -48,7 +47,7 @@ const clearToken = () => {
 }
 
 /**
- * 检查是否是白名单接口
+ * 查是否是白名单接口
  */
 const isWhiteList = (url) => {
   return WHITE_LIST.some(path => url.includes(path))
@@ -60,15 +59,23 @@ const isWhiteList = (url) => {
  * @returns {Object} - 处理后的请求配置
  */
 const requestInterceptor = (options) => {
-  // 添加基础 URL
+  // 添加基 URL
   if (!options.url.startsWith('http')) {
     options.url = config.baseUrl + options.url
   }
 
-  // 设置默认请求头
-  options.header = {
-    ...HEADERS,
-    ...options.header
+  // 设置默认请求头 (GET 请求不设置 Content-Type)
+  if (options.method !== 'GET') {
+    options.header = {
+      ...HEADERS,
+      ...options.header
+    }
+  } else {
+    // GET 请求只设置 Accept，避免 Content-Type 引起的问题
+    options.header = {
+      'Accept': 'application/json',
+      ...options.header
+    }
   }
 
   // 添加 token (非白名单接口)
@@ -76,6 +83,22 @@ const requestInterceptor = (options) => {
     const token = getToken()
     if (token) {
       options.header['Authorization'] = `Bearer ${token}`
+      // 调试：打印token信息（仅显示前20字符）
+      if (config.debug) {
+        console.log('🔑 Token attached:', token.substring(0, 20) + '...')
+        // 解析JWT payload查看用户信息
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]))
+          console.log('👤 Token payload:', payload)
+        } catch (e) {
+          console.warn('⚠️ Failed to parse token payload')
+        }
+      }
+    } else {
+      // 调试：没有token的警告
+      if (config.debug) {
+        console.warn('⚠️ No token found for protected route:', options.url)
+      }
     }
   }
 
@@ -89,7 +112,7 @@ const requestInterceptor = (options) => {
 
   // 调试模式打印请求信息
   if (config.debug) {
-    console.log('🚀 Request:', {
+    console.log('📤 Request:', {
       url: options.url,
       method: options.method,
       data: options.data,
@@ -118,23 +141,51 @@ const responseInterceptor = (response, options) => {
     })
   }
 
-  // HTTP 状态码处理
+  // HTTP 状码处理
   if (statusCode === HTTP_STATUS.SUCCESS || statusCode === HTTP_STATUS.CREATED) {
-    // 业务状态码处理
-    if (data.code === BUSINESS_CODE.SUCCESS) {
-      return Promise.resolve(data)
+    // 兼容两种响应格式:
+    // 1. { code: 0, data: {...}, message: '' } - 包装格式
+    // 2. { token, refreshToken, ... } - 直接数据格式
+
+    // 如果有 code 字段，按业务状码处理
+    if (typeof data.code !== 'undefined') {
+      if (data.code === BUSINESS_CODE.SUCCESS) {
+        return Promise.resolve(data)
+      }
+
+      // Token 过期处理
+      if (data.code === BUSINESS_CODE.TOKEN_EXPIRED || data.code === BUSINESS_CODE.TOKEN_INVALID) {
+        return handleTokenExpired(options)
+      }
+
+      // 设计师未关联门店
+      if (data.code === BUSINESS_CODE.DESIGNER_NO_SHOP) {
+        uni.showToast({
+          title: '该设计师暂未关联门店，无法预约',
+          icon: 'none',
+          duration: 3000
+        })
+        return Promise.reject({
+          code: data.code,
+          message: data.message || '设计师未关联门店',
+          data: data.data
+        })
+      }
+
+      // 其他业务错误
+      return Promise.reject({
+        code: data.code,
+        message: data.message || '请求失败',
+        data: data.data
+      })
     }
 
-    // Token 过期处理
-    if (data.code === BUSINESS_CODE.TOKEN_EXPIRED || data.code === BUSINESS_CODE.TOKEN_INVALID) {
-      return handleTokenExpired(options)
-    }
-
-    // 其他业务错误
-    return Promise.reject({
-      code: data.code,
-      message: data.message || '请求失败',
-      data: data.data
+    // 没有 code 字段，说明后端直接返回数据（如登录接口）
+    // 包装成统格式返回
+    return Promise.resolve({
+      code: 0,
+      data: data,
+      message: 'success'
     })
   }
 
@@ -281,7 +332,7 @@ const request = (options) => {
  * @returns {Promise} - 模拟响应
  */
 const handleMockRequest = async (options) => {
-  // 显示 loading (可选)
+  // 显示 loading (可)
   if (options.showLoading !== false) {
     uni.showLoading({
       title: options.loadingText || '加载中...',
@@ -333,7 +384,7 @@ const handleMockRequest = async (options) => {
  */
 const handleRealRequest = (options) => {
   return new Promise((resolve, reject) => {
-    // 显示 loading (可选)
+    // 显示 loading (可)
     if (options.showLoading !== false) {
       uni.showLoading({
         title: options.loadingText || '加载中...',

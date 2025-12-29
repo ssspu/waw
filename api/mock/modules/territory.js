@@ -4,14 +4,14 @@
 
 import { success, error, paginate } from '../utils.js'
 
-// 我的设计师列表（私人领地）- 包含所有分类
+// 我的设计师列表（私人领地）- 包含怉有分类
 const myDesigners = [
   // ========== 美发师 hairstylist ==========
   {
     id: '1',
     designerId: '1',
     name: '李天天',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     role: '美发师',
     level: '高级',
     position: '店长｜从业12年',
@@ -29,7 +29,7 @@ const myDesigners = [
     id: '2',
     designerId: '2',
     name: '张小雨',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     role: '美发师',
     level: '资深',
     position: '总监｜从业10年',
@@ -47,7 +47,7 @@ const myDesigners = [
     id: '3',
     designerId: '3',
     name: '王大明',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     role: '美发师',
     level: '高级',
     position: '首席｜从业8年',
@@ -66,7 +66,7 @@ const myDesigners = [
     id: '4',
     designerId: '4',
     name: '刘美美',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     role: '美容师',
     level: '高级',
     position: '主管｜从业9年',
@@ -84,10 +84,10 @@ const myDesigners = [
     id: '5',
     designerId: '5',
     name: '陈晓晓',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     role: '美容师',
     level: '资深',
-    position: '技术总监｜从业15年',
+    position: '怊术总监｜从业15年',
     specialties: ['问题肌肤', '祛斑祛痘', '美白'],
     rating: 4.8,
     category: 'beautician',
@@ -103,7 +103,7 @@ const myDesigners = [
     id: '6',
     designerId: '6',
     name: '赵艺琳',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     role: '化妆师',
     level: '资深',
     position: '首席化妆师｜从业11年',
@@ -121,7 +121,7 @@ const myDesigners = [
     id: '7',
     designerId: '7',
     name: '孙梦瑶',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     role: '化妆师',
     level: '高级',
     position: '化妆师｜从业6年',
@@ -140,7 +140,7 @@ const myDesigners = [
     id: '8',
     designerId: '8',
     name: '周小琴',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     role: '美甲师',
     level: '高级',
     position: '美甲主管｜从业7年',
@@ -158,7 +158,7 @@ const myDesigners = [
     id: '9',
     designerId: '9',
     name: '吴婷婷',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     role: '美甲师',
     level: '资深',
     position: '首席美甲师｜从业10年',
@@ -177,7 +177,7 @@ const myDesigners = [
     id: '10',
     designerId: '10',
     name: '郑丽娜',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     role: '美体师',
     level: '高级',
     position: '美体主管｜从业8年',
@@ -195,10 +195,10 @@ const myDesigners = [
     id: '11',
     designerId: '11',
     name: '冯雅雅',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     role: '美体师',
     level: '资深',
-    position: '技术总监｜从业12年',
+    position: '怊术总监｜从业12年',
     specialties: ['产后修复', '纤体瘦身', '肩颈理疗'],
     rating: 4.9,
     category: 'body',
@@ -211,14 +211,14 @@ const myDesigners = [
   }
 ]
 
-// 我的品牌馆列表（私人领地）- 包含所有分类
+// 我的品牌馆列表（私人领地）- 包含怉有分类
 const myBrands = [
   // ========== 美发 hair ==========
   {
     id: '1',
     brandId: '1',
     name: '金龙大好人美发沙龙',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     type: '品牌',
     level: '舒适',
     shopType: '专业店',
@@ -242,7 +242,7 @@ const myBrands = [
     id: '2',
     brandId: '2',
     name: '成都NICE造型沙龙',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     type: '品牌',
     level: '精品',
     shopType: '连锁店',
@@ -266,8 +266,8 @@ const myBrands = [
   {
     id: '3',
     brandId: '3',
-    name: '悦颜美容会所',
-    avatar: '/static/avatar/avatar.png',
+    name: '悦颜美容会怉',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     type: '品牌',
     level: '高端',
     shopType: '旗舰店',
@@ -291,7 +291,7 @@ const myBrands = [
     id: '4',
     brandId: '4',
     name: '美丽人生SPA馆',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     type: '品牌',
     level: '精品',
     shopType: '精品店',
@@ -316,7 +316,7 @@ const myBrands = [
     id: '5',
     brandId: '5',
     name: '艺琳造型工作室',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     type: '品牌',
     level: '高端',
     shopType: '工作室',
@@ -340,7 +340,7 @@ const myBrands = [
     id: '6',
     brandId: '6',
     name: '潮流彩妆馆',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     type: '品牌',
     level: '舒适',
     shopType: '专业店',
@@ -365,7 +365,7 @@ const myBrands = [
     id: '7',
     brandId: '7',
     name: '指尖艺术美甲店',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     type: '品牌',
     level: '精品',
     shopType: '精品店',
@@ -389,12 +389,12 @@ const myBrands = [
     id: '8',
     brandId: '8',
     name: '美甲小屋',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     type: '品牌',
     level: '舒适',
     shopType: '社区店',
     openYear: '2020',
-    specialties: ['基础美甲', '美甲护理', '卸甲'],
+    specialties: ['基瀡美甲', '美甲护理', '卸甲'],
     rating: 4.5,
     category: 'nail',
     designerCount: 3,
@@ -402,7 +402,7 @@ const myBrands = [
     lastServiceTime: '2025-11-21 14:30',
     lastService: {
       date: '2025-11-21',
-      serviceName: '基础美甲',
+      serviceName: '基瀡美甲',
       productName: '甲油胶',
       price: 128
     },
@@ -413,8 +413,8 @@ const myBrands = [
   {
     id: '9',
     brandId: '9',
-    name: '御尚SPA养生会所',
-    avatar: '/static/avatar/avatar.png',
+    name: '御尚SPA养生会怉',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     type: '品牌',
     level: '高端',
     shopType: '旗舰店',
@@ -438,7 +438,7 @@ const myBrands = [
     id: '10',
     brandId: '10',
     name: '轻盈纤体中心',
-    avatar: '/static/avatar/avatar.png',
+    avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     type: '品牌',
     level: '精品',
     shopType: '专业店',
@@ -467,7 +467,7 @@ const serviceRecords = [
     type: 'designer',
     targetId: '1',
     targetName: '李天天',
-    targetAvatar: '/static/avatar/avatar.png',
+    targetAvatar: 'https://bioflex.cn/static/avatar/avatar.png',
     brandId: '1',
     brandName: '金龙大好人美发沙龙',
     serviceName: '精致剪发',
@@ -481,7 +481,7 @@ const serviceRecords = [
     type: 'designer',
     targetId: '2',
     targetName: '张小雨',
-    targetAvatar: '/static/avatar/avatar.png',
+    targetAvatar: 'https://bioflex.cn/static/avatar/avatar.png',
     brandId: '1',
     brandName: '金龙大好人美发沙龙',
     serviceName: '时尚烫发',
@@ -495,7 +495,7 @@ const serviceRecords = [
     type: 'brand',
     targetId: '1',
     targetName: '金龙大好人美发沙龙',
-    targetAvatar: '/static/avatar/avatar.png',
+    targetAvatar: 'https://bioflex.cn/static/avatar/avatar.png',
     brandId: '1',
     brandName: '金龙大好人美发沙龙',
     serviceName: '个性染发',
@@ -530,7 +530,7 @@ export const routes = {
     if (params.category) {
       list = list.filter(d => d.category === params.category)
     }
-    // 按最近服务时间倒序
+    // 按怜近服务时间倒序
     list.sort((a, b) => new Date(b.lastServiceTime) - new Date(a.lastServiceTime))
     return success(paginate(list, params.page, params.pageSize))
   },
@@ -557,7 +557,7 @@ export const routes = {
     if (params.category) {
       list = list.filter(b => b.category === params.category)
     }
-    // 按最近服务时间倒序
+    // 按怜近服务时间倒序
     list.sort((a, b) => new Date(b.lastServiceTime) - new Date(a.lastServiceTime))
     return success(paginate(list, params.page, params.pageSize))
   },
@@ -585,7 +585,7 @@ export const routes = {
       list = list.filter(r => r.type === params.type)
     }
     if (params.category) {
-      // 根据分类过滤（简化处理）
+      // 根据分类过滤（瀮化处理）
     }
     // 按服务时间倒序
     list.sort((a, b) => new Date(b.serviceTime) - new Date(a.serviceTime))

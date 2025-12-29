@@ -21,7 +21,7 @@
 <script>
 export default {
 	props: {
-		// 当前激活的 tab: 'service' | 'message' | 'mine'
+		
 		active: {
 			type: String,
 			default: 'service'
@@ -32,22 +32,22 @@ export default {
 			navigationItems: [
 				{
 					key: 'service',
-					icon: '/static/icon/service.png',
-					activeIcon: '/static/icon/service-active.png',
+					icon: 'https://bioflex.cn/static/icon/service.png',
+					activeIcon: 'https://bioflex.cn/static/icon/service-active.png',
 					label: '服务',
 					path: '/pages/index/index'
 				},
 				{
 					key: 'message',
-					icon: '/static/icon/message.png',
-					activeIcon: '/static/icon/message-active.png',
+					icon: 'https://bioflex.cn/static/icon/message.png',
+					activeIcon: 'https://bioflex.cn/static/icon/message-active.png',
 					label: '消息',
 					path: '/pages/message/index'
 				},
 				{
 					key: 'mine',
-					icon: '/static/icon/mine.png',
-					activeIcon: '/static/icon/mine-active.png',
+					icon: 'https://bioflex.cn/static/icon/mine.png',
+					activeIcon: 'https://bioflex.cn/static/icon/mine-active.png',
 					label: '我的',
 					path: '/pages/mine/index'
 				}
@@ -61,10 +61,10 @@ export default {
 	},
 	methods: {
 		handleNavClick(item) {
-			// 如果点击的是当前页面，不跳转
+			
 			if (item.key === this.activeTab) return
 			
-			// 使用 redirectTo 避免页面堆栈过多
+			
 			uni.redirectTo({ url: item.path })
 		}
 	}

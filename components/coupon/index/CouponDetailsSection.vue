@@ -97,16 +97,16 @@ export default {
 		}
 	},
 	methods: {
-		// 获取优惠券列表
+		
 		async fetchCoupons() {
 			if (this.loading) return
 			this.loading = true
 			try {
-				// 根据tab获取不同状态的优惠券
+				
 				const statusMap = {
 					'service': 'available',
 					'product': 'available',
-					'ended': 'used' // 包含已使用和已过期
+					'ended': 'used' 
 				}
 				const status = statusMap[this.activeTab] || 'available'
 
@@ -116,9 +116,9 @@ export default {
 					pageSize: this.pageSize
 				})
 
-				if (res.code === 0) {
+				if (res.code === 200) {
 					const list = (res.data.list || []).map(coupon => this.transformCoupon(coupon))
-					// 根据activeTab过滤
+					
 					let filtered = list
 					if (this.activeTab === 'service') {
 						filtered = list.filter(c => c.useScope === 'all' || c.useScope === 'service')
@@ -134,9 +134,9 @@ export default {
 				this.loading = false
 			}
 		},
-		// 转换优惠券数据格式
+		
 		transformCoupon(coupon) {
-			// 计算显示金额和要求
+			
 			let amount = ''
 			let requirement = ''
 			if (coupon.type === 'cash' || coupon.type === 'full_reduction') {
@@ -144,10 +144,10 @@ export default {
 				requirement = coupon.minAmount > 0 ? `满${coupon.minAmount}元使用` : '无门槛'
 			} else if (coupon.type === 'discount') {
 				amount = String(Math.round((100 - coupon.value) / 10))
-				requirement = coupon.maxDiscount ? `最高减${coupon.maxDiscount}元` : '无上限'
+				requirement = coupon.maxDiscount ? `怜高减${coupon.maxDiscount}元` : '无上限'
 			}
 
-			// 状态映射
+			
 			let status = null
 			let type = 'service'
 			if (coupon.status === 'used') {
@@ -173,7 +173,7 @@ export default {
 				rawCoupon: coupon
 			}
 		},
-		// 获取使用范围文本
+		
 		getScopeText(coupon) {
 			if (coupon.useScope === 'all') {
 				return '全场通用'
@@ -187,7 +187,7 @@ export default {
 			return ''
 		},
 		handleUse(coupon) {
-			// 跳转到首页或服务列表使用优惠券
+			
 			uni.switchTab({
 				url: '/pages/index/index'
 			})
@@ -247,7 +247,7 @@ export default {
 	min-height: 160rpx;
 }
 
-// 已结束状态的优惠券高度稍高
+
 .ended-coupon .coupon-info {
 	min-height: 182rpx;
 }
@@ -410,6 +410,7 @@ export default {
 	padding: 16rpx 30rpx;
 	background-color: #333333;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	cursor: pointer;
 	box-sizing: border-box;
 }
@@ -430,6 +431,7 @@ export default {
 	padding: 16rpx 30rpx;
 	background-color: #a6a6a6;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	box-sizing: border-box;
 }
 

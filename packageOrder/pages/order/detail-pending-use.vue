@@ -38,7 +38,7 @@
 				<view class="product-section">
 					<image 
 						class="product-image" 
-						src="/static/icon/rectangle-169.png" 
+						src="https://bioflex.cn/static/icon/rectangle-169.png" 
 						mode="aspectFill"
 					></image>
 					<view class="product-info">
@@ -108,11 +108,11 @@
 				<!-- 操作按钮 -->
 				<view class="info-actions">
 					<view class="info-action-btn" @tap="handleModifyTime">
-						<image class="info-action-icon" src="/static/icon/clock.png" mode="aspectFit"></image>
+						<image class="info-action-icon" src="https://bioflex.cn/static/icon/clock.png" mode="aspectFit"></image>
 						<text class="info-action-text">修改时间</text>
 					</view>
 					<view class="info-action-btn refund" @tap="handleRefund">
-						<image class="info-action-icon" src="/static/icon/refund.png" mode="aspectFit"></image>
+						<image class="info-action-icon" src="https://bioflex.cn/static/icon/refund.png" mode="aspectFit"></image>
 						<text class="info-action-text refund">申请退款</text>
 					</view>
 				</view>
@@ -130,7 +130,7 @@
 		<view class="qrcode-modal" v-if="showQrcodeModal" @tap="handleCloseQrcodeModal">
 			<view class="qrcode-modal-content" @tap.stop>
 				<view class="qrcode-modal-header">
-					<text class="qrcode-modal-title">核销二维码</text>
+					<text class="qrcode-modal-title">核途二维码</text>
 					<view class="qrcode-close-btn" @tap="handleCloseQrcodeModal">
 						<text class="qrcode-close-icon">×</text>
 					</view>
@@ -139,11 +139,11 @@
 					<view class="qrcode-container">
 						<image
 							class="qrcode-image"
-							src="/static/icon/qrcode-demo.png"
+							src="https://bioflex.cn/static/icon/qrcode-demo.png"
 							mode="aspectFit"
 						></image>
 					</view>
-					<text class="qrcode-tip">请向服务人员出示此二维码完成核销</text>
+					<text class="qrcode-tip">请向服务人员出示此二维码完成核途</text>
 					<view class="qrcode-info-list">
 						<view class="qrcode-info-row">
 							<text class="qrcode-info-label">订单编号：</text>
@@ -234,7 +234,7 @@
 					</view>
 
 					<!-- 提示信息 -->
-					<text class="notice-text">预约当天服务需要提前60分钟</text>
+					<text class="notice-text">预约当天服务逜要提前60分钟</text>
 
 					<!-- 确认按钮 -->
 					<view class="confirm-btn-container">
@@ -277,9 +277,9 @@ export default {
 		}
 	},
 	onLoad(options) {
-		// 可以从 options 中获取订单ID等信息
+		
 		if (options.orderId) {
-			// 根据订单ID加载订单详情
+			
 		}
 	},
 	methods: {
@@ -301,7 +301,7 @@ export default {
 			this.showQrcodeModal = false
 		},
 		handleModifyTime() {
-			// 打开修改时间弹窗
+			
 			this.showModifyTimeModal = true
 		},
 		handleCloseModifyTimeModal() {
@@ -312,45 +312,45 @@ export default {
 			if (period === 'morning') {
 				const slot = this.morningSlots[index]
 				if (slot.status === 'booked') {
-					return // 已预约的不能选择
+					return 
 				}
-				// 重置所有上午时间段的选择状态
+				
 				this.morningSlots.forEach((s) => {
 					if (s.status === 'selected') {
 						s.status = 'available'
 					}
 				})
-				// 重置所有下午时间段的选择状态
+				
 				this.afternoonSlots.forEach((s) => {
 					if (s.status === 'selected') {
 						s.status = 'available'
 					}
 				})
-				// 设置当前选择
+				
 				slot.status = 'selected'
 				selectedSlot = { period: 'morning', time: slot.time }
 			} else if (period === 'afternoon') {
 				const slot = this.afternoonSlots[index]
 				if (slot.status === 'booked') {
-					return // 已预约的不能选择
+					return 
 				}
-				// 重置所有上午时间段的选择状态
+				
 				this.morningSlots.forEach((s) => {
 					if (s.status === 'selected') {
 						s.status = 'available'
 					}
 				})
-				// 重置所有下午时间段的选择状态
+				
 				this.afternoonSlots.forEach((s) => {
 					if (s.status === 'selected') {
 						s.status = 'available'
 					}
 				})
-				// 设置当前选择
+				
 				slot.status = 'selected'
 				selectedSlot = { period: 'afternoon', time: slot.time }
 			}
-			// 保存选择的时间
+			
 			if (selectedSlot) {
 				this.selectedTimeSlot = selectedSlot
 			}
@@ -363,7 +363,7 @@ export default {
 				})
 				return
 			}
-			// 确认修改时间
+			
 			uni.showToast({
 				title: '修改成功，等待商家确认',
 				icon: 'success',
@@ -371,8 +371,8 @@ export default {
 			})
 			this.showModifyTimeModal = false
 
-			// 这里可以调用API更新订单时间，订单状态变为待确认
-			// 例如：
+			
+			
 			// uni.request({
 			//   url: '/api/order/modifyTime',
 			//   data: {
@@ -381,11 +381,11 @@ export default {
 			//     period: this.selectedTimeSlot.period
 			//   },
 			//   success: (res) => {
-			//     // API调用成功后返回订单列表
+			
 			//   }
 			// })
 
-			// 延迟跳转到订单列表，让用户看到成功提示
+			
 			setTimeout(() => {
 				uni.navigateBack({
 					delta: 1
@@ -393,13 +393,13 @@ export default {
 			}, 2000)
 		},
 		handleRefund() {
-			// 申请退款 - 跳转到退款页面
+			
 			uni.navigateTo({
 				url: '/packageOrder/pages/order/refund?orderId=' + this.orderInfo.orderNumber
 			})
 		},
 		handleComplete() {
-			// 订单完成逻辑
+			
 			uni.showToast({
 				title: '订单已完成',
 				icon: 'success'
@@ -837,7 +837,7 @@ export default {
 	color: #ffffff;
 }
 
-/* 二维码弹窗 */
+
 .qrcode-modal {
 	position: fixed;
 	top: 0;
@@ -965,7 +965,7 @@ export default {
 	cursor: pointer;
 }
 
-/* 修改时间弹窗 */
+
 .modify-time-modal {
 	position: fixed;
 	top: 0;

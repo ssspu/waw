@@ -49,7 +49,7 @@
 									<view class="stats-rating">
 										<text class="stats-rating-score">{{ designer.rating }}</text>
 										<view class="star-container">
-											<image class="star-small" src="https://c.animaapp.com/mi4wi1dxPPrFZt/img/star-1.svg" mode="aspectFit"></image>
+											<image class="star-small" src="/static/icon/star.png" mode="aspectFit"></image>
 										</view>
 									</view>
 									<view class="stats-info">
@@ -104,7 +104,7 @@
 								<view class="stats-rating">
 									<text class="stats-rating-score">{{ store.rating }}</text>
 									<view class="star-container-small">
-										<image class="star-small" src="https://c.animaapp.com/mi5cgxi6ndVkfo/img/star-1.svg" mode="aspectFit"></image>
+										<image class="star-small" src="/static/icon/star.png" mode="aspectFit"></image>
 									</view>
 								</view>
 								<view class="store-stats-info">
@@ -168,12 +168,12 @@ export default {
 					page: this.page,
 					pageSize: this.pageSize
 				})
-				if (res.code === 0) {
-					// 更新tab计数
+				if (res.code === 200) {
+					
 					this.tabs[0].count = res.data.designerCount || 0
 					this.tabs[1].count = res.data.brandCount || 0
 
-					// 分离设计师和商家数据
+					
 					const list = res.data.list || res.data.records || []
 					this.designerList = list.filter(item => item.type === 'designer').map(item => ({
 						id: item.id,
@@ -213,7 +213,7 @@ export default {
 		async handleUnfollow(designer) {
 			try {
 				const res = await api.user.batchUnfollow({ ids: [designer.id], type: 'designer' })
-				if (res.code === 0) {
+				if (res.code === 200) {
 					this.designerList = this.designerList.filter(d => d.id !== designer.id)
 					this.tabs[0].count = this.designerList.length
 					uni.showToast({ title: '已取消关注', icon: 'success' })
@@ -225,7 +225,7 @@ export default {
 		async handleUnfollowStore(store) {
 			try {
 				const res = await api.user.batchUnfollow({ ids: [store.id], type: 'brand' })
-				if (res.code === 0) {
+				if (res.code === 200) {
 					this.storeList = this.storeList.filter(s => s.id !== store.id)
 					this.tabs[1].count = this.storeList.length
 					uni.showToast({ title: '已取消关注', icon: 'success' })
@@ -262,7 +262,7 @@ export default {
 		},
 		handleStorePromotion(store) {
 			if (store.promotionStatus === 'apply') {
-				// 更新状态为申请中
+				
 				store.promotionStatus = 'pending'
 				uni.showToast({
 					title: '申请已发送',
@@ -422,6 +422,7 @@ export default {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 }
 
 .unfollow-link {
@@ -460,6 +461,7 @@ export default {
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-weight: normal;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 }
 
 .nearby-bottom-row {
@@ -536,7 +538,7 @@ export default {
 .star-container {
 	display: flex;
 	align-items: center;
-	gap: 4rpx;
+	justify-content: center;
 	padding: 4rpx;
 	background-color: #333333;
 	border-radius: 4rpx;

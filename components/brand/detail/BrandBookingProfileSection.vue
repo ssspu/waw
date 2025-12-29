@@ -90,40 +90,40 @@ export default {
 			if (period === 'morning') {
 				const slot = this.morningSlots[index]
 				if (slot.status === 'booked') {
-					return // 已预约的不能选择
+					return 
 				}
-				// 重置所有上午时间段的选择状态
+				
 				this.morningSlots.forEach((s, i) => {
 					if (s.status === 'selected') {
 						s.status = 'available'
 						s.label = null
 					}
 				})
-				// 重置所有下午时间段的选择状态
+				
 				this.afternoonSlots.forEach((s) => {
 					s.status = 'available'
 				})
-				// 设置当前选择
+				
 				slot.status = 'selected'
 			} else if (period === 'afternoon') {
 				const slot = this.afternoonSlots[index]
 				if (slot.status === 'booked') {
-					return // 已预约的不能选择
+					return 
 				}
-				// 重置所有上午时间段的选择状态
+				
 				this.morningSlots.forEach((s) => {
 					if (s.status === 'selected') {
 						s.status = 'available'
 						s.label = null
 					}
 				})
-				// 重置所有下午时间段的选择状态
+				
 				this.afternoonSlots.forEach((s, i) => {
 					if (s.status === 'selected') {
 						s.status = 'available'
 					}
 				})
-				// 设置当前选择
+				
 				slot.status = 'selected'
 			}
 		}

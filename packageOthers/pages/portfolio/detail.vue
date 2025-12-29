@@ -14,7 +14,7 @@
 						<image
 							v-if="designerInfo.verified"
 							class="verified-icon"
-							src="/static/icon/verified.png"
+							src="https://bioflex.cn/static/icon/verified.png"
 							mode="aspectFit"
 						></image>
 					</view>
@@ -22,9 +22,9 @@
 						<text class="tag-text">{{ designerInfo.title }}</text>
 						<text class="tag-divider">|</text>
 						<view class="certification-tag" @tap.stop="handleCertClick">
-							<image class="cert-icon" src="/static/icon/certification.png" mode="aspectFit"></image>
+							<image class="cert-icon" src="https://bioflex.cn/static/icon/certification.png" mode="aspectFit"></image>
 							<text class="cert-text">职业认证</text>
-							<image class="cert-arrow" src="/static/icon/right.png" mode="aspectFit"></image>
+							<image class="cert-arrow" src="https://bioflex.cn/static/icon/right.png" mode="aspectFit"></image>
 						</view>
 					</view>
 				</view>
@@ -76,7 +76,7 @@
 					<view class="interaction-item" @tap="handleLike">
 						<image
 							class="interaction-icon"
-							:src="isLiked ? '/static/icon/thumb-up-fill.png' : '/static/icon/thumb-up-line@2x.png'"
+							:src="isLiked ? 'https://bioflex.cn/static/icon/thumb-up-fill.png' : 'https://bioflex.cn/static/icon/thumb-up-line@2x.png'"
 							mode="aspectFit"
 						></image>
 						<text class="interaction-count" :class="{ 'liked': isLiked }">{{ workDetail.likes }}</text>
@@ -84,7 +84,7 @@
 					<view class="interaction-item" @tap="handleOpenComment">
 						<image
 							class="interaction-icon"
-							src="/static/icon/chat-1-line@2x.png"
+							src="https://bioflex.cn/static/icon/chat-1-line@2x.png"
 							mode="aspectFit"
 						></image>
 						<text class="interaction-count">{{ workDetail.comments }}</text>
@@ -92,7 +92,7 @@
 					<view class="interaction-item" @tap="handleShare">
 						<image
 							class="interaction-icon"
-							src="/static/icon/share-forward-line@2x.png"
+							src="https://bioflex.cn/static/icon/share-forward-line@2x.png"
 							mode="aspectFit"
 						></image>
 						<text class="interaction-count">{{ workDetail.shares }}</text>
@@ -102,7 +102,7 @@
 					<view class="favorite-item" @tap="handleFavorite">
 						<image
 							class="favorite-icon"
-							:src="isFavorited ? '/static/icon/star-fill.png' : '/static/icon/star.png'"
+							:src="isFavorited ? 'https://bioflex.cn/static/icon/star-fill.png' : 'https://bioflex.cn/static/icon/star.png'"
 							mode="aspectFit"
 						></image>
 					</view>
@@ -164,7 +164,7 @@ const isLiked = ref(false)
 const isFavorited = ref(false)
 const currentImageIndex = ref(0)
 const commentTotal = ref(0)
-const userAvatar = ref('/static/avatar/avatar.png')
+const userAvatar = ref('https://bioflex.cn/static/avatar/avatar.png')
 const workId = ref('')
 
 const designerInfo = ref({
@@ -186,11 +186,11 @@ const workDetail = ref({
 
 const commentList = ref([])
 
-// 获取作品详情
+
 const fetchWorkDetail = async (id) => {
 	try {
 		const res = await portfolioApi.getDetail(id)
-		if (res.code === 0 && res.data) {
+		if (res.code === 200 && res.data) {
 			const data = res.data
 			workDetail.value = {
 				id: data.id,
@@ -204,7 +204,7 @@ const fetchWorkDetail = async (id) => {
 			isFavorited.value = data.isFavorited || false
 			commentTotal.value = data.comments || 0
 
-			// 设置设计师信息
+			
 			designerInfo.value = {
 				id: data.designerId,
 				avatar: data.designerAvatar,
@@ -213,7 +213,7 @@ const fetchWorkDetail = async (id) => {
 				verified: true
 			}
 
-			// 获取评论列表
+			
 			fetchComments(id)
 		}
 	} catch (e) {
@@ -221,11 +221,11 @@ const fetchWorkDetail = async (id) => {
 	}
 }
 
-// 获取评论列表
+
 const fetchComments = async (id) => {
 	try {
 		const res = await portfolioApi.getComments(id, { page: 1, pageSize: 10 })
-		if (res.code === 0) {
+		if (res.code === 200) {
 			const comments = res.data.list || res.data.records || []
 			commentList.value = comments.map(item => ({
 				id: item.id,
@@ -241,7 +241,7 @@ const fetchComments = async (id) => {
 }
 
 onMounted(() => {
-	// 获取状态栏高度
+	
 	const pages = getCurrentPages()
 	const currentPage = pages[pages.length - 1]
 	const options = currentPage.options || {}
@@ -270,7 +270,7 @@ const handleCertClick = () => {
 
 const handleMessage = () => {
 	uni.showToast({
-		title: '私信功能开发中',
+		title: '私信功能值发中',
 		icon: 'none'
 	})
 }
@@ -296,7 +296,7 @@ const handlePreviewImage = (index) => {
 
 const handleOpenComment = () => {
 	uni.showToast({
-		title: '评论功能开发中',
+		title: '评论功能值发中',
 		icon: 'none'
 	})
 }
@@ -305,13 +305,13 @@ const handleLike = async () => {
 	try {
 		if (isLiked.value) {
 			const res = await portfolioApi.unlike(workId.value)
-			if (res.code === 0) {
+			if (res.code === 200) {
 				isLiked.value = false
 				workDetail.value.likes = res.data.likes
 			}
 		} else {
 			const res = await portfolioApi.like(workId.value)
-			if (res.code === 0) {
+			if (res.code === 200) {
 				isLiked.value = true
 				workDetail.value.likes = res.data.likes
 			}
@@ -330,7 +330,7 @@ const handleShare = async () => {
 		})
 	} catch (e) {
 		uni.showToast({
-			title: '分享功能开发中',
+			title: '分享功能值发中',
 			icon: 'none'
 		})
 	}
@@ -340,7 +340,7 @@ const handleFavorite = async () => {
 	try {
 		if (isFavorited.value) {
 			const res = await portfolioApi.unfavorite(workId.value)
-			if (res.code === 0) {
+			if (res.code === 200) {
 				isFavorited.value = false
 				uni.showToast({
 					title: '已取消收藏',
@@ -349,7 +349,7 @@ const handleFavorite = async () => {
 			}
 		} else {
 			const res = await portfolioApi.favorite(workId.value)
-			if (res.code === 0) {
+			if (res.code === 200) {
 				isFavorited.value = true
 				uni.showToast({
 					title: '收藏成功',
@@ -425,7 +425,7 @@ const handleSend = () => {
 	background-color: #000000;
 }
 
-/* 设计师信息区域 */
+
 .designer-section {
 	display: flex;
 	align-items: center;
@@ -565,7 +565,7 @@ const handleSend = () => {
 	color: #333333;
 }
 
-/* 作品内容区域 */
+
 .content-scroll {
 	flex: 1;
 	padding-bottom: 40rpx;
@@ -606,7 +606,7 @@ const handleSend = () => {
 	}
 }
 
-/* 互动数据区域 */
+
 .interaction-section {
 	display: flex;
 	align-items: center;
@@ -658,7 +658,7 @@ const handleSend = () => {
 	height: 44rpx;
 }
 
-/* 评论区域 */
+
 .comment-section {
 	background-color: #ffffff;
 	padding: 24rpx 30rpx;
@@ -756,7 +756,7 @@ const handleSend = () => {
 	line-height: 1.5;
 }
 
-/* 底部操作栏 */
+
 .footer-bar {
 	position: fixed;
 	bottom: 0;

@@ -1,6 +1,6 @@
 /**
  * 认证模块 API
- * 包含登录、注册、验证码、密码重置等接口
+ * 包含登录注册验证码密码重置等接口
  */
 
 import { post, get } from '../request.js'
@@ -9,7 +9,7 @@ const AUTH_PREFIX = '/auth'
 
 export default {
   /**
-   * 发送验证码
+   * 发验证码
    * @param {Object} data - { phone: 手机号, type: 类型(login/register/reset) }
    */
   sendCode(data) {
@@ -41,14 +41,6 @@ export default {
   },
 
   /**
-   * 苹果一键登录
-   * @param {Object} data - { identityToken, authorizationCode }
-   */
-  loginByApple(data) {
-    return post(`${AUTH_PREFIX}/login/apple`, data)
-  },
-
-  /**
    * 用户注册
    * @param {Object} data - { phone, code, password, confirmPassword, inviteCode? }
    */
@@ -73,17 +65,24 @@ export default {
   },
 
   /**
-   * 退出登录
    */
   logout() {
     return post(`${AUTH_PREFIX}/logout`)
   },
 
   /**
-   * 检查手机号是否已注册
+   * 查手机号是否已注册
    * @param {string} phone - 手机号
    */
   checkPhone(phone) {
     return get(`${AUTH_PREFIX}/check-phone`, { phone })
+  },
+
+  /**
+   * 绑定微信
+   * @param {Object} data - { code: 微信授权码 }
+   */
+  bindWechat(data) {
+    return post(`${AUTH_PREFIX}/bindWechat`, data)
   }
 }

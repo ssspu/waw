@@ -43,7 +43,7 @@ export default {
 			]
 		}
 	}
-	// tabs 现在只作为状态指示器，不支持点击切换
+	
 }
 </script>
 

@@ -62,7 +62,7 @@
 								<view class="star-wrapper">
 									<image 
 										class="star-icon" 
-										src="https://c.animaapp.com/mi5ng54v4eM3X6/img/star-1.svg" 
+										src="/static/icon/star.png" 
 										mode="aspectFit"
 									></image>
 								</view>
@@ -116,9 +116,9 @@ export default {
 				{ text: "高级", bgColor: "#dacbb1", textColor: "#645e57" },
 			],
 			skillTags: [
-				{ text: "女士造型" },
+				{ text: "女士发型" },
 				{ text: "烫发设计" },
-				{ text: "短发造型" },
+				{ text: "短发发型" },
 			],
 		}
 	},
@@ -255,6 +255,7 @@ export default {
 	align-items: center;
 	padding: 4rpx 8rpx;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	height: auto;
 	box-sizing: border-box;
 }
@@ -292,6 +293,7 @@ export default {
 	padding: 4rpx 8rpx;
 	background-color: #f6f6f6;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	height: auto;
 	box-sizing: border-box;
 }
@@ -326,15 +328,14 @@ export default {
 	display: inline-flex;
 	align-items: center;
 	gap: 4rpx;
-	padding: 2rpx;
+	padding: 4rpx;
 	background-color: #333333;
 	border-radius: 4rpx;
 }
 
 .star-icon {
-	width: 16rpx;
-	height: 16rpx;
-	flex-shrink: 0;
+	width: 20rpx;
+	height: 20rpx;
 	filter: brightness(0) invert(1);
 }
 
@@ -401,6 +402,7 @@ export default {
 	height: 60rpx;
 	padding: 16rpx 30rpx;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	cursor: pointer;
 	box-sizing: border-box;
 }

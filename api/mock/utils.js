@@ -57,7 +57,7 @@ export const paginate = (list, page = 1, pageSize = 10) => {
 
 /**
  * 生成随机ID
- * @param {string} prefix - ID前缀
+ * @param {string} prefix - ID前瀼
  */
 export const generateId = (prefix = '') => {
   return prefix + Date.now() + Math.random().toString(36).slice(2, 8)

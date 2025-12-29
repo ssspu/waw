@@ -81,7 +81,7 @@
 								<view class="star-badge">
 									<image
 										class="star-icon"
-										src="https://c.animaapp.com/mifnbli6udxphC/img/star-1.svg"
+										src="/static/icon/star.png"
 										mode="aspectFit"
 									></image>
 								</view>
@@ -159,7 +159,7 @@
 					<image
 						class="chevron-icon"
 						:class="{ 'rotated': showMoreImages }"
-						src="/static/icon/down.png"
+						src="https://bioflex.cn/static/icon/down.png"
 						mode="aspectFit"
 					></image>
 				</view>
@@ -228,7 +228,7 @@
 											v-for="i in Math.floor(review.rating)" 
 											:key="i" 
 											class="star-icon" 
-											src="https://c.animaapp.com/mi5d4lp0csJxnR/img/star-1.svg" 
+											src="/static/icon/star.png" 
 											mode="aspectFit"
 										></image>
 									</view>
@@ -316,7 +316,7 @@
 									<text class="recommend-rating">{{ service.rating }}</text>
 									<image 
 										class="recommend-star" 
-										src="https://c.animaapp.com/mifnbli6udxphC/img/star-1.svg" 
+										src="/static/icon/star.png" 
 										mode="aspectFit"
 									></image>
 									<text class="recommend-review-count">({{ service.reviewCount }})</text>
@@ -366,7 +366,7 @@ export default {
 		}
 	},
 	computed: {
-		// 价格
+		
 		price() {
 			return this.serviceData.price || 0
 		},
@@ -379,54 +379,54 @@ export default {
 		serviceTitle() {
 			return this.serviceData.fullTitle || this.serviceData.name || ''
 		},
-		// 优惠券
+		
 		coupons() {
 			return this.serviceData.coupons || []
 		},
-		// 设计师信息
+		
 		designer() {
 			return this.serviceData.designer || {}
 		},
-		// 服务内容
+		
 		serviceItems() {
 			return this.serviceData.serviceItems || []
 		},
-		// 温馨提示
+		
 		warmTips() {
 			return this.serviceData.warmTips || []
 		},
-		// 图文详情
+		
 		allImages() {
 			return this.serviceData.detailImages || []
 		},
-		// 评价标签
+		
 		reviewTags() {
 			return this.localReviewTags.length > 0 ? this.localReviewTags : (this.serviceData.reviewTags || [])
 		},
-		// 评价列表
+		
 		reviews() {
 			return this.serviceData.reviews || []
 		},
-		// 问答
+		
 		questions() {
 			return this.serviceData.questions || []
 		},
 		questionCount() {
 			return this.serviceData.questionCount || 0
 		},
-		// 推荐服务
+		
 		recommendedServices() {
 			return this.serviceData.recommendedServices || []
 		},
-		// 显示图片
+		
 		displayImages() {
 			return this.showMoreImages ? this.allImages : this.allImages.slice(0, 2)
 		},
-		// 评价总数
+		
 		totalReviewCount() {
 			return this.reviews.length || this.reviewTags.reduce((sum, tag) => sum + parseInt(tag.count || 0), 0)
 		},
-		// 显示的评价
+		
 		displayedReviews() {
 			return this.reviews.slice(0, 10)
 		}
@@ -456,7 +456,7 @@ export default {
 			this.showMoreImages = !this.showMoreImages
 		},
 		handleViewAllReviews() {
-			console.log('查看所有点评')
+			console.log('查看怉有点评')
 		},
 		selectTag(index) {
 			this.localReviewTags.forEach((tag, i) => {
@@ -490,7 +490,7 @@ export default {
 			})
 		},
 		handleViewAllQuestions() {
-			console.log('查看所有问题')
+			console.log('查看怉有问题')
 		},
 		handleServiceClick(service) {
 			uni.navigateTo({
@@ -549,7 +549,7 @@ export default {
 	padding: 26rpx;
 }
 
-// 价格卡片
+
 .price-card {
 	transform: translateY(-32rpx);
 	animation: fadeIn 0.5s ease-out forwards;
@@ -597,6 +597,7 @@ export default {
 	color: #645E57;
 	padding: 2rpx 8rpx;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	margin-left: 12rpx;
 }
 
@@ -651,6 +652,7 @@ export default {
 	padding: 0rpx 12rpx 8rpx 12rpx;
 	background-color: #f6f6f6;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 }
 
 .coupon-text {
@@ -687,7 +689,7 @@ export default {
 	color: #666666;
 }
 
-// 预约优惠卡片
+
 .appointment-card {
 	transform: translateY(-32rpx);
 	animation: fadeIn 0.5s ease-out forwards;
@@ -756,7 +758,7 @@ export default {
 	font-weight: 400;
 }
 
-// 设计师信息卡片
+
 .designer-card {
 	transform: translateY(-32rpx);
 	animation: fadeIn 0.5s ease-out forwards;
@@ -811,6 +813,7 @@ export default {
 	padding: 0 8rpx;
 	background-color: #dacbb1;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	height: 40rpx;
 	line-height: 40rpx;
 	display: inline-flex;
@@ -857,13 +860,12 @@ export default {
 }
 
 .star-badge {
-	display: flex;
+	display: inline-flex;
 	align-items: center;
-	gap: 4rpx;
-	padding: 2rpx;
+	justify-content: center;
+	padding: 4rpx;
 	background-color: #333333;
 	border-radius: 4rpx;
-	border: 2rpx solid rgba(255, 255, 255, 0.2);
 }
 
 .star-icon {
@@ -925,7 +927,7 @@ export default {
 	color: #666666;
 }
 
-// 服务内容卡片
+
 .service-content-card {
 	transform: translateY(-32rpx);
 	animation: fadeIn 0.5s ease-out forwards;
@@ -985,7 +987,7 @@ export default {
 }
 
 
-// 温馨提示卡片
+
 .tips-card {
 	transform: translateY(-32rpx);
 	animation: fadeIn 0.5s ease-out forwards;
@@ -1007,7 +1009,7 @@ export default {
 	color: #666666;
 }
 
-// 图文详情卡片
+
 .detail-images-card {
 	transform: translateY(-32rpx);
 	animation: fadeIn 0.5s ease-out forwards;
@@ -1047,7 +1049,7 @@ export default {
 	width: 100%;
 	overflow: hidden;
 	transition: max-height 0.3s ease-in-out;
-	max-height: 1392rpx; /* 2张图片的高度 + gap */
+	max-height: 1392rpx; 
 }
 
 .images-container.expanded {
@@ -1079,31 +1081,10 @@ export default {
 	transform: rotate(180deg);
 }
 
-// 服务须知卡片
-/*
-.service-notice-card {
-	transform: translateY(-32rpx);
-	animation: fadeIn 0.5s ease-out forwards;
-	animation-delay: 400ms;
-}
 
-.notice-list {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 20rpx;
-	width: 100%;
-}
 
-.notice-text {
-	font-family: 'PingFang_SC-Regular', Helvetica;
-	font-size: 24rpx;
-	font-weight: 400;
-	color: #666666;
-}
-*/
 
-// 顾客点评卡片
+
 .reviews-card {
 	width: calc(100% + 30rpx);
 	background-color: #ffffff;
@@ -1163,6 +1144,7 @@ export default {
 	gap: 8rpx;
 	padding: 8rpx 20rpx;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	background-color: #f5f5f5;
 }
 
@@ -1254,8 +1236,9 @@ export default {
 }
 
 .star-small {
-	width: 100%;
-	height: 100%;
+	width: 16rpx;
+	height: 16rpx;
+	filter: brightness(0) invert(1);
 }
 
 .review-text {
@@ -1319,7 +1302,7 @@ export default {
 	background: linear-gradient(270deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 61%, rgba(255, 255, 255, 0) 100%);
 }
 
-// 问TA卡片
+
 .question-card {
 	transform: translateY(-32rpx);
 	animation: fadeIn 0.5s ease-out forwards;
@@ -1380,7 +1363,7 @@ export default {
 	color: #333333;
 }
 
-// 为您推荐
+
 .recommend-header {
 	display: flex;
 	align-items: center;

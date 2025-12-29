@@ -20,7 +20,7 @@
 					<view class="agreement-content" v-if="expandedList[index]">
 						<text class="content-text">{{ agreement.content }}</text>
 					</view>
-					<!-- 分割线（最后一项不显示） -->
+					<!-- 分割线（怜后一项不显示） -->
 					<view v-if="index < agreements.length - 1" class="divider"></view>
 				</view>
 			</view>
@@ -34,23 +34,23 @@ import { agreementsData } from '@/data/agreements.js'
 export default {
 	data() {
 		return {
-			// 折叠状态列表，默认全部折叠
+			
 			expandedList: [false, false, false, false],
-			// 从数据文件引入协议数据
+			
 			agreements: agreementsData
 		}
 	},
 	onLoad() {
-		// TODO: 从后端获取协议内容
+		
 		// this.fetchAgreements()
 	},
 	methods: {
-		// 切换折叠状态
+		
 		toggleAgreement(index) {
 			this.$set(this.expandedList, index, !this.expandedList[index])
 		}
 		// fetchAgreements() {
-		// 	// 调用后端接口获取协议内容
+		
 		// }
 	}
 }
@@ -67,7 +67,7 @@ export default {
 	box-sizing: border-box;
 }
 
-// 悬浮标题栏
+
 .fixed-header {
 	position: fixed;
 	top: 0;
@@ -77,7 +77,7 @@ export default {
 	background-color: #f2f2f2;
 }
 
-// 占位区域（与悬浮标题栏高度一致）
+
 .header-placeholder {
 	height: 180rpx;
 }
@@ -91,7 +91,7 @@ export default {
 	box-sizing: border-box;
 }
 
-// 协议列表容器
+
 .agreement-list {
 	width: 100%;
 	background-color: #ffffff;
@@ -104,7 +104,7 @@ export default {
 	box-sizing: border-box;
 }
 
-// 可点击的折叠头部
+
 .agreement-header {
 	display: flex;
 	align-items: center;
@@ -121,7 +121,7 @@ export default {
 	flex: 1;
 }
 
-// 箭头图标
+
 .arrow-icon {
 	width: 32rpx;
 	height: 32rpx;
@@ -149,7 +149,7 @@ export default {
 	white-space: pre-wrap;
 }
 
-// 分割线
+
 .divider {
 	height: 1rpx;
 	background-color: #eeeeee;

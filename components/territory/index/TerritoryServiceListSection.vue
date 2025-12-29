@@ -16,7 +16,6 @@
 			<!-- 分隔线 -->
 			<view class="separator-line"></view>
 			
-			<!-- 服务提供者信息 -->
 			<view class="service-info">
 				<view class="service-left">
 					<!-- 头像 -->
@@ -60,7 +59,7 @@
 								<view class="star-wrapper">
 									<image
 										class="star-icon"
-										src="https://c.animaapp.com/mi5kx1ohxTkA7e/img/star-1.svg"
+										src="/static/icon/star.png"
 										mode="aspectFit"
 									></image>
 								</view>
@@ -110,31 +109,31 @@
 				<view class="share-grid">
 					<view class="share-item" @tap="handleShare('wechat')">
 						<view class="share-icon">
-							<image class="share-icon-img" src="/static/icon/weixin.png" mode="aspectFit"></image>
+							<image class="share-icon-img" src="https://bioflex.cn/static/icon/weixin.png" mode="aspectFit"></image>
 						</view>
 						<text class="share-label">微信</text>
 					</view>
 					<view class="share-item" @tap="handleShare('moments')">
 						<view class="share-icon">
-							<image class="share-icon-img" src="/static/icon/shejiaotubiao-42.png" mode="aspectFit"></image>
+							<image class="share-icon-img" src="https://bioflex.cn/static/icon/shejiaotubiao-42.png" mode="aspectFit"></image>
 						</view>
 						<text class="share-label">朋友圈</text>
 					</view>
 					<view class="share-item" @tap="handleShare('weibo')">
 						<view class="share-icon">
-							<image class="share-icon-img" src="/static/icon/iconfontzhizuobiaozhunbduan36.png" mode="aspectFit"></image>
+							<image class="share-icon-img" src="https://bioflex.cn/static/icon/iconfontzhizuobiaozhunbduan36.png" mode="aspectFit"></image>
 						</view>
 						<text class="share-label">微博</text>
 					</view>
 					<view class="share-item" @tap="handleShare('link')">
 						<view class="share-icon">
-							<image class="share-icon-img" src="/static/icon/lianjie.png" mode="aspectFit"></image>
+							<image class="share-icon-img" src="https://bioflex.cn/static/icon/lianjie.png" mode="aspectFit"></image>
 						</view>
 						<text class="share-label">复制链接</text>
 					</view>
 					<view class="share-item" @tap="handleShare('qrcode')">
 						<view class="share-icon">
-							<image class="share-icon-img" src="/static/icon/saoyisao.png" mode="aspectFit"></image>
+							<image class="share-icon-img" src="https://bioflex.cn/static/icon/saoyisao.png" mode="aspectFit"></image>
 						</view>
 						<text class="share-label">服务二维码</text>
 					</view>
@@ -172,7 +171,7 @@ export default {
 		},
 		avatarSrc: {
 			type: String,
-			default: '/static/avatar/avatar.png'
+			default: 'https://bioflex.cn/static/avatar/avatar.png'
 		},
 		designer: {
 			type: Object,
@@ -187,7 +186,7 @@ export default {
 		}
 	},
 	computed: {
-		// 头部信息（最近服务记录）
+		
 		headerInfo() {
 			const d = this.designer
 			if (d.lastServiceDate && d.lastServiceName) {
@@ -196,51 +195,51 @@ export default {
 					{ text: "｜" },
 					{ text: d.lastServiceName || '' },
 					{ text: "｜" },
-					{ text: d.lastProductName || '造型服务' },
+					{ text: d.lastProductName || '发型服务' },
 				]
 			}
 			return [
 				{ text: "暂无服务记录" }
 			]
 		},
-		// 擅长技能
+		
 		specialties() {
 			const skills = this.designer.specialties || []
 			return skills.map(s => ({ label: s }))
 		},
-		// 设计师姓名
+		
 		designerName() {
 			return this.designer.name || '设计师'
 		},
-		// 设计师角色
+		
 		designerRole() {
 			return this.designer.role || '美发师'
 		},
-		// 设计师等级
+		
 		designerLevel() {
 			return this.designer.level || '高级'
 		},
-		// 设计师职位
+		
 		designerPosition() {
 			return this.designer.position || ''
 		},
-		// 评分
+		
 		rating() {
 			return this.designer.rating || 0
 		},
-		// 服务数
+		
 		serviceCount() {
 			return this.designer.serviceCount || 0
 		},
-		// 作品数
+		
 		worksCount() {
 			return this.designer.worksCount || 0
 		},
-		// 最近服务价格
+		
 		lastServicePrice() {
 			return this.designer.lastServicePrice || 0
 		},
-		// 头像
+		
 		avatar() {
 			return this.designer.avatar || this.avatarSrc
 		}
@@ -273,7 +272,7 @@ export default {
 			this.showDeleteConfirm = false
 		},
 		handleBookAgain() {
-			// 跳转到设计师详情页
+			
 			const designerId = this.designer.id || this.designer.designerId
 			if (designerId) {
 				uni.navigateTo({
@@ -404,6 +403,7 @@ export default {
 	align-items: center;
 	padding: 4rpx 8rpx;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	height: auto;
 	box-sizing: border-box;
 }
@@ -441,6 +441,7 @@ export default {
 	padding: 4rpx 8rpx;
 	background-color: #f6f6f6;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	height: auto;
 	box-sizing: border-box;
 }
@@ -475,15 +476,14 @@ export default {
 	display: inline-flex;
 	align-items: center;
 	gap: 4rpx;
-	padding: 2rpx;
+	padding: 4rpx;
 	background-color: #333333;
 	border-radius: 4rpx;
 }
 
 .star-icon {
-	width: 16rpx;
-	height: 16rpx;
-	flex-shrink: 0;
+	width: 20rpx;
+	height: 20rpx;
 	filter: brightness(0) invert(1);
 }
 
@@ -553,6 +553,7 @@ export default {
 	height: 60rpx;
 	padding: 0 30rpx;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	cursor: pointer;
 	box-sizing: border-box;
 	flex-shrink: 0;
@@ -668,6 +669,7 @@ export default {
 	left: 0;
 	background-color: #ffffff;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	border: 1rpx solid #e5e5e5;
 	min-width: 100rpx;
 	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
@@ -744,6 +746,7 @@ export default {
 	min-width: 200rpx;
 	height: 60rpx;
 	border-radius: 4rpx;
+	filter: brightness(0) invert(1);
 	cursor: pointer;
 	box-sizing: border-box;
 }
