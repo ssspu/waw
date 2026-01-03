@@ -842,7 +842,6 @@ const handleItemClick = (item) => {
 	&.active {
 		background-color: #333333;
 		border-radius: 4rpx;
-	filter: brightness(0) invert(1);
 	}
 }
 

@@ -34,10 +34,11 @@
 			>
 				<image
 					class="nav-icon"
-					:src="localFavorited ? 'https://bioflex.cn/static/icon/favorite-active.png' : 'https://c.animaapp.com/mifnbli6udxphC/img/frame-6.svg'"
+					:class="{ 'is-favorited': localFavorited }"
+					src="https://c.animaapp.com/mifnbli6udxphC/img/frame-6.svg"
 					mode="aspectFit"
 				></image>
-				<text class="nav-label">{{ localFavorited ? '已收藏' : '收藏' }}</text>
+				<text class="nav-label">收藏</text>
 			</view>
 
 			<!-- 立即预定按钮 -->
@@ -122,16 +123,17 @@ export default {
 				this.$emit('favorite-change', this.localFavorited)
 			} catch (err) {
 				console.error('收藏操作失败:', err)
+				// 409 表示已收藏，更新状态
+				if (err.code === 409) {
+					this.localFavorited = true
+					this.$emit('favorite-change', true)
+				}
 			}
 		},
 		handleBooking() {
 			if (this.designerId) {
 				uni.navigateTo({
-					url: `/pages/designer/booking?id=${this.designerId}`
-				})
-			} else {
-				uni.navigateTo({
-					url: '/pages/designer/booking'
+					url: `/pages/designer/detail?id=${this.designerId}`
 				})
 			}
 		}
@@ -188,7 +190,7 @@ export default {
 }
 
 .nav-icon.is-favorited {
-	filter: invert(79%) sepia(65%) saturate(1000%) hue-rotate(359deg) brightness(103%) contrast(106%);
+	filter: invert(83%) sepia(60%) saturate(1000%) hue-rotate(360deg) brightness(105%) contrast(105%);
 }
 
 .nav-label {
@@ -200,16 +202,16 @@ export default {
 }
 
 .booking-btn {
-	height: 84rpx;
+	height: 72rpx;
 	flex: 1;
+	max-width: 400rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	gap: 8rpx;
-	padding: 16rpx 30rpx;
+	padding: 0 24rpx;
 	background-color: #333333;
 	border-radius: 4rpx;
-	filter: brightness(0) invert(1);
 	transition: opacity 0.3s;
 }
 

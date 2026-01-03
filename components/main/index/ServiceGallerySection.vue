@@ -1,5 +1,5 @@
 <template>
-	<view id="service-gallery-section" class="service-gallery-section">
+	<view id="service-gallery-section" class="service-gallery-section animate-fade-in" style="animation-delay: 500ms;">
 		<!-- 附近推荐标题 -->
 		<view v-if="showNearbyHeader" class="nearby-header">
 			<view class="title-wrapper">
@@ -80,6 +80,7 @@
 
 <script>
 import api from '@/api'
+import { calculateDistance, getCurrentLocation } from '@/utils/location.js'
 
 export default {
 	props: {
@@ -98,32 +99,58 @@ export default {
 	},
 	data() {
 		return {
-			
 			serviceCards: [],
-			loading: false
+			loading: false,
+			userLatitude: null,
+			userLongitude: null
 		}
 	},
 	mounted() {
+		this.getUserLocation()
 		this.fetchServices()
 	},
 	methods: {
+		async getUserLocation() {
+			try {
+				const location = await getCurrentLocation()
+				if (location) {
+					this.userLatitude = location.latitude
+					this.userLongitude = location.longitude
+					// 如果已经加载了数据，更新距离
+					if (this.serviceCards.length > 0) {
+						this.fetchServices()
+					}
+				}
+			} catch (err) {
+				console.error('获取位置失败:', err)
+			}
+		},
 		
 		async fetchServices() {
 			if (this.loading) return
 			this.loading = true
 			try {
 				const res = await api.service.getList({ pageSize: 50 })
-				console.log('API响应:', JSON.stringify(res, null, 2))
 				if (res && res.code === 200 && res.data) {
-					
 					const list = res.data.items || res.data.list || res.data.records || []
-					console.log('服务列表数量:', list.length)
-					
+
 					this.serviceCards = list.map(service => {
-						
 						const image = Array.isArray(service.image_urls) && service.image_urls.length > 0
 							? service.image_urls[0]
 							: (service.image || '')
+
+						// 计算距离
+						let distance = ''
+						if (this.userLatitude && this.userLongitude && service.latitude && service.longitude) {
+							distance = calculateDistance(this.userLatitude, this.userLongitude, service.latitude, service.longitude)
+						} else {
+							distance = service.distance || '2.5km'
+						}
+
+						// 从 skus 数组获取价格
+						const firstSku = Array.isArray(service.skus) && service.skus.length > 0 ? service.skus[0] : {}
+						const skuSellPrice = firstSku.sell_price || firstSku.price || ''
+						const skuRefPrice = firstSku.ref_price || ''
 
 						return {
 							id: service.id,
@@ -131,19 +158,19 @@ export default {
 							image: image,
 							title: service.name,
 							description: service.detail_text || service.description || '',
-							price: String(service.fixed_price || service.price || 0),
-							appointmentPrice: String(service.fixed_ref_price || service.appointmentPrice || service.fixed_price || 0),
+							// price 为原价（ref_price），appointmentPrice 为销售价（sell_price）
+							price: String(skuRefPrice || service.fixed_ref_price || skuSellPrice || service.fixed_price || 0),
+							appointmentPrice: String(skuSellPrice || service.fixed_price || skuRefPrice || service.fixed_ref_price || 0),
 							stylist: {
-								name: service.designerName || '',
+								name: service.designer_name || '',
 								role: '设计师',
-								avatar: service.designerAvatar || ''
+								avatar: ''
 							},
 							rating: String(service.rating || 0),
 							reviews: String(service.review_count || service.reviewCount || 0),
-							distance: service.distance || ''
+							distance: distance
 						}
 					})
-					console.log('转换后服务数量:', this.serviceCards.length)
 				}
 			} catch (err) {
 				console.error('获取服务列表失败:', err)
@@ -388,8 +415,10 @@ export default {
 
 .stylist-name-row {
 	display: flex;
-	align-items: flex-start;
+	align-items: baseline;
 	gap: 8rpx;
+	flex-wrap: nowrap;
+	white-space: nowrap;
 }
 
 .stylist-name {
@@ -397,11 +426,13 @@ export default {
 	font-weight: 500;
 	color: #333333;
 	font-size: 22rpx;
+	flex-shrink: 0;
 }
 
 .stylist-role {
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-weight: normal;
+	white-space: nowrap;
 	color: #a6a6a6;
 	font-size: 22rpx;
 }
@@ -445,7 +476,9 @@ export default {
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-weight: normal;
 	color: #a6a6a6;
-	font-size: 22rpx;
+	font-size: 20rpx;
+	white-space: nowrap;
+	flex-shrink: 0;
 }
 
 

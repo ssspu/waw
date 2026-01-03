@@ -13,11 +13,21 @@
 			</view>
 		</view>
 		
+		<!-- 加载状态 -->
+		<view v-if="loading" class="loading-state">
+			<text class="loading-text">加载中...</text>
+		</view>
+
+		<!-- 空状态 -->
+		<view v-else-if="services.length === 0" class="empty-state">
+			<text class="empty-text">暂无服务</text>
+		</view>
+
 		<!-- 服务列表 -->
-		<view class="services-list">
-			<view 
-				v-for="service in services" 
-				:key="service.id" 
+		<view v-else class="services-list">
+			<view
+				v-for="service in services"
+				:key="service.id"
 				class="service-card"
 			>
 				<view class="service-content" :class="{ 'has-options': isExpanded(service.id) }">
@@ -641,6 +651,40 @@ export default {
 
 .profile-section {
 	animation: fade-in 1s ease forwards;
+}
+
+.loading-state {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 60rpx 0;
+	width: 100%;
+	background-color: #ffffff;
+	border-radius: 12rpx;
+}
+
+.loading-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 26rpx;
+	color: #a6a6a6;
+}
+
+.empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 80rpx 40rpx;
+	width: 100%;
+	background-color: #ffffff;
+	border-radius: 12rpx;
+	box-sizing: border-box;
+}
+
+.empty-text {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 28rpx;
+	color: #a6a6a6;
 }
 </style>
 

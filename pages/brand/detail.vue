@@ -110,6 +110,7 @@ import BrandReviewsTabContent from '../../components/brand/detail/BrandReviewsTa
 import BrandPortfolioSection from '../../components/brand/detail/BrandPortfolioSection.vue'
 import CouponPopup from '../../components/popup/CouponPopup.vue'
 import api from '@/api'
+import { calculateDistance } from '@/utils/location.js'
 
 export default {
 	components: {
@@ -228,7 +229,9 @@ export default {
 				appointment: [],
 				works: [],
 				reviews: []
-			}
+			},
+			userLatitude: null,
+			userLongitude: null
 		}
 	},
 	computed: {
@@ -250,15 +253,15 @@ export default {
 		
 		async getUserLocation() {
 			try {
-				
 				const location = await this.getLocation()
 				if (location) {
-					
+					this.userLatitude = location.latitude
+					this.userLongitude = location.longitude
+					this.updateDistance()
 					await this.fetchNearbyStores(location.latitude, location.longitude)
 				}
 			} catch (err) {
 				console.error('获取位置失败:', err)
-				
 				this.fetchNearbyStores(31.2304, 121.4737)
 			}
 		},
@@ -388,18 +391,21 @@ export default {
 					})) : []
 
 					
+					// 计算从业年限（如果后端没给 experience 字段，则根据成立日期计算）
+					const currentYear = new Date().getFullYear()
+					const establishedYear = data.established_date ? new Date(data.established_date).getFullYear() : currentYear
+					const experienceYears = data.experience || (currentYear - establishedYear)
+
 					this.statsData = [
 						{ value: String(data.appointment_count || data.appointmentCount || 0), label: '预约' },
 						{ value: String(data.followers || data.followerCount || 0), label: '粉丝' },
-						{ value: String(data.chain_count || 0), unit: '家', label: '门店' },
+						{ value: String(experienceYears || 0), unit: '年', label: '从业' },
 						{ value: String(data.rating || 0), unit: '分', label: '评分' }
 					]
 
-					
-					let establishedYear = ''
+					let establishedText = ''
 					if (data.established_date) {
-						const year = new Date(data.established_date).getFullYear()
-						establishedYear = `${year}年入驻`
+						establishedText = `${establishedYear}年入驻`
 					}
 
 					
@@ -419,6 +425,8 @@ export default {
 						latitude: data.latitude,
 						longitude: data.longitude
 					}
+					
+					this.updateDistance()
 
 					
 					this.promotions = (data.promotions || []).map(p => ({
@@ -502,6 +510,17 @@ export default {
 		handleClaimCoupon(coupon) {
 			console.log('Claim coupon:', coupon)
 			uni.showToast({ title: '领取成功', icon: 'success' })
+		},
+		updateDistance() {
+			if (this.userLatitude && this.userLongitude && this.shopInfo.latitude && this.shopInfo.longitude) {
+				const distance = calculateDistance(
+					this.userLatitude, 
+					this.userLongitude, 
+					this.shopInfo.latitude, 
+					this.shopInfo.longitude
+				)
+				this.shopInfo.distance = distance
+			}
 		}
 	}
 }

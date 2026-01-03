@@ -174,15 +174,11 @@ export default {
 			if (this.loading) return
 			this.loading = true
 			try {
-				// 获取设计师列表
-				const res = await designerApi.getList({ page: 1, pageSize: 50 })
-				console.log('Designer list response:', res)
+				// 获取设计师列表，传入 shop_id 查询该门店的设计师
+				const res = await designerApi.getList({ page: 1, pageSize: 50, shop_id: this.brandId })
+				console.log('Designer list response for brand:', this.brandId, res)
 				if (res.code === 200 && res.data) {
 					const allList = res.data.items || res.data.list || res.data.records || []
-
-					// 根据 shop_id 筛选属于该门店的设计师
-					const list = allList.filter(designer => designer.shop_id === this.brandId)
-					console.log('Filtered designers for brand:', this.brandId, list)
 
 					// 获取等级文本
 					const getLevelText = (level) => {
@@ -205,7 +201,7 @@ export default {
 						return 'hairstylist'
 					}
 
-					this.stylistData = list.map(designer => ({
+					this.stylistData = allList.map(designer => ({
 						id: designer.id,
 						name: designer.real_name || designer.name || '未知',
 						image: designer.avatar || '',
@@ -250,15 +246,15 @@ export default {
 
 <style scoped lang="scss">
 .stylist-section {
+	margin: 12rpx;
 	display: flex;
 	flex-direction: column;
 	gap: 20rpx;
-	width: 100%;
-	// padding: 0 20rpx;
 	box-sizing: border-box;
 }
 
 .category-nav {
+	margin-left: 12rpx;
 	display: flex;
 	align-items: center;
 	gap: 16rpx;

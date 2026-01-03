@@ -127,10 +127,10 @@
 					<!-- 分隔线 -->
 					<view class="separator-line"></view>
 
-					<!-- 瀮介 -->
+					<!-- 简介 -->
 					<view class="setting-item-wrapper">
 						<view class="setting-item" @tap="handleBioClick">
-							<text class="setting-label">瀮介</text>
+							<text class="setting-label">简介</text>
 							<view class="setting-right">
 								<text class="right-text bio-placeholder">{{ userInfo.bio }}</text>
 								<view class="action-button">
@@ -147,17 +147,17 @@
 			</view>
 		</view>
 
-		<!-- 瀮介编辑弹窗 -->
+		<!-- 简介编辑弹窗 -->
 		<view class="bio-modal" v-if="showBioModal" @tap="closeBioModal">
 			<view class="bio-modal-content" @tap.stop>
 				<view class="bio-modal-header">
-					<text class="bio-modal-title">修改瀮介</text>
+					<text class="bio-modal-title">修改简介</text>
 					<text class="bio-modal-close" @tap="closeBioModal">×</text>
 				</view>
 				<textarea
 					class="bio-textarea"
 					v-model="tempBio"
-					placeholder="请输入1-30字瀮介"
+					placeholder="请输入1-30字简介"
 					maxlength="30"
 					:focus="showBioModal"
 				></textarea>

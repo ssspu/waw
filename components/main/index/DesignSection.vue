@@ -160,32 +160,23 @@
 								</view>
 							</view>
 							<view class="nearby-stats">
-								<view class="stats-rating">
-									<text class="stats-rating-score">{{ stylist.rating }}</text>
-									<view class="star-container">
-										<image class="star-small" src="/static/icon/star.png" mode="aspectFit"></image>
+								<view class="stats-left">
+									<view class="stats-rating">
+										<text class="stats-rating-score">{{ stylist.rating }}</text>
+										<view class="star-container">
+											<image class="star-small" src="/static/icon/star.png" mode="aspectFit"></image>
+										</view>
 									</view>
-								</view>
-								<view class="stats-info">
-									<view class="stats-item">
-										<text class="stats-label">服务</text>
-										<text class="stats-value">{{ stylist.services }}</text>
-									</view>
-									<text class="stats-divider">｜</text>
-									<view class="stats-item">
-										<text class="stats-label">作品</text>
-										<text class="stats-value">{{ stylist.works }}</text>
-									</view>
-								</view>
-							</view>
-							<view class="nearby-footer">
-								<view class="nearby-tags">
-									<view 
-										v-for="(tag, idx) in stylist.tags" 
-										:key="idx" 
-										class="tag-badge"
-									>
-										{{ tag }}
+									<view class="stats-info">
+										<view class="stats-item">
+											<text class="stats-label">服务</text>
+											<text class="stats-value">{{ stylist.services }}</text>
+										</view>
+										<text class="stats-divider">｜</text>
+										<view class="stats-item">
+											<text class="stats-label">作品</text>
+											<text class="stats-value">{{ stylist.works }}</text>
+										</view>
 									</view>
 								</view>
 								<text class="nearby-distance">{{ stylist.distance }}</text>
@@ -200,6 +191,7 @@
 
 <script>
 import { designerApi } from '@/api'
+import { calculateDistance, getCurrentLocation } from '@/utils/location.js'
 
 export default {
 	data() {
@@ -255,9 +247,12 @@ export default {
 				{ label: "我的关注", value: "follow" }
 			],
 			activeNearbyTab: "nearby",
+			userLatitude: null,
+			userLongitude: null
 		}
 	},
 	async created() {
+		await this.getUserLocation()
 		await this.loadDesigners()
 	},
 	computed: {
@@ -331,13 +326,35 @@ export default {
 				services: String(d.serviceCount),
 				works: String(d.worksCount),
 				tags: d.tags || [],
-				distance: '2.5km'
+				distance: d.distance
 			}))
 		}
 	},
 	methods: {
+		async getUserLocation() {
+			try {
+				const location = await getCurrentLocation()
+				if (location) {
+					this.userLatitude = location.latitude
+					this.userLongitude = location.longitude
+					// 如果已经加载了数据，更新距离
+					if (this.designers.length > 0) {
+						this.designers = this.designers.map(d => {
+							const originalData = d._originalData
+							if (originalData) {
+								return this.formatDesignerData(originalData)
+							}
+							return d
+						})
+					}
+				}
+			} catch (err) {
+				console.error('获取位置失败:', err)
+			}
+		},
 		
 		getLevelText(level) {
+			const levelNum = Number(level)
 			const levelMap = {
 				1: '初级',
 				2: '中级',
@@ -345,11 +362,20 @@ export default {
 				4: '导师',
 				5: '名师'
 			}
-			return levelMap[level] || '普'
+			return levelMap[levelNum] || '初级'
 		},
 		
 		formatDesignerData(data) {
 			const level = data.professional_level || data.designerLevel || 1
+			
+			// 计算距离
+			let distance = ''
+			if (this.userLatitude && this.userLongitude && data.latitude && data.longitude) {
+				distance = calculateDistance(this.userLatitude, this.userLongitude, data.latitude, data.longitude)
+			} else {
+				distance = data.distance ? `${data.distance}km` : '2.5km'
+			}
+
 			return {
 				id: data.id,
 				avatar: data.avatar || data.coverImage || '',
@@ -361,8 +387,10 @@ export default {
 				rating: data.rating || 0,
 				serviceCount: data.total_appointments || 0,
 				worksCount: data.worksCount || 0,
+				distance: distance,
 				specialties: data.expertise ? data.expertise.split(/[,]/).map(s => s.trim()) : [],
-				tags: data.service_features ? String(data.service_features).split(/[,]/).map(t => t.trim()) : []
+				tags: data.service_features ? String(data.service_features).split(/[,]/).map(t => t.trim()) : [],
+				_originalData: data // 保存原始数据以便更新距离
 			}
 		},
 		
@@ -430,6 +458,10 @@ export default {
 		},
 		switchNearbyTab(value) {
 			this.activeNearbyTab = value
+		},
+		
+		deg2rad(deg) {
+			return deg * (Math.PI / 180)
 		},
 	}
 }
@@ -656,8 +688,7 @@ export default {
 
 .ranking-swiper {
 	width: 100%;
-	height: 520rpx;
-	min-height: 520rpx;
+	height: 600rpx;
 }
 
 .ranking-swiper-item {
@@ -734,7 +765,6 @@ export default {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
 	border-radius: 4rpx;
-	filter: brightness(0) invert(1);
 	white-space: nowrap;
 }
 
@@ -977,7 +1007,6 @@ export default {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
 	border-radius: 4rpx;
-	filter: brightness(0) invert(1);
 }
 
 .nearby-role {
@@ -1010,13 +1039,22 @@ export default {
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-weight: normal;
 	border-radius: 4rpx;
-	filter: brightness(0) invert(1);
 }
 
 .nearby-stats {
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.stats-left {
+	display: flex;
+	align-items: center;
 	gap: 16rpx;
+	flex: 1;
+	min-width: 0;
 }
 
 .stats-rating {
@@ -1080,42 +1118,13 @@ export default {
 	color: #a6a6a6;
 }
 
-.nearby-footer {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	width: 100%;
-	box-sizing: border-box;
-}
-
-.nearby-tags {
-	display: flex;
-	align-items: center;
-	gap: 6rpx;
-	flex-wrap: wrap;
-	flex: 1;
-	min-width: 0;
-}
-
-.tag-badge {
-	height: auto;
-	padding: 4rpx 8rpx;
-	background-color: #ffffff;
-	color: #a6a6a6;
-	font-size: 20rpx;
-	font-family: 'PingFang_SC-Regular', Helvetica;
-	font-weight: normal;
-	border-radius: 4rpx;
-	border: 2rpx solid #a6a6a6;
-}
-
 .nearby-distance {
 	font-size: 22rpx;
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-weight: normal;
 	color: #a6a6a6;
 	white-space: nowrap;
-	margin-left: 16rpx;
+	flex-shrink: 0;
 }
 </style>
 

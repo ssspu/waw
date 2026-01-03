@@ -4,111 +4,113 @@
 			<text class="loading-text">加载中...</text>
 		</view>
 
-		<!-- 品牌介绍标签页内容 -->
-		<template v-else-if="activeTab === 'designer'">
-			<image
-				class="profile-image"
-				:src="brand && brand.coverImage ? brand.coverImage : 'https://bioflex.cn/static/background-image/brand-cover.png'"
-				mode="aspectFill"
-			></image>
+		<template v-else>
+			<!-- 品牌介绍内容 -->
+			<view id="designer" class="section-container">
+				<image
+					class="profile-image"
+					:src="brand && brand.coverImage ? brand.coverImage : 'https://bioflex.cn/static/background-image/brand-cover.png'"
+					mode="aspectFill"
+				></image>
 
-			<view class="card overview-card">
-				<view class="card-content">
-					<text class="card-title">品牌介绍</text>
+				<view class="card overview-card">
+					<view class="card-content">
+						<text class="card-title">品牌介绍</text>
 
-					<view class="overview-list">
-						<view
-							v-for="(item, index) in overviewItems"
-							:key="index"
-							class="overview-item"
-						>
-							<view class="overview-row">
-								<text class="overview-label">{{ item.label }}</text>
-								<view class="overview-value-wrapper">
-									<view class="overview-value-group">
-										<text class="overview-value">{{ item.value }}</text>
-										<text v-if="item.extra" class="overview-extra">{{ item.extra }}</text>
+						<view class="overview-list">
+							<view
+								v-for="(item, index) in overviewItems"
+								:key="index"
+								class="overview-item"
+							>
+								<view class="overview-row">
+									<text class="overview-label">{{ item.label }}</text>
+									<view class="overview-value-wrapper">
+										<view class="overview-value-group">
+											<text class="overview-value">{{ item.value }}</text>
+											<text v-if="item.extra" class="overview-extra">{{ item.extra }}</text>
+										</view>
+										<image
+											v-if="item.hasPhone"
+											class="phone-icon"
+											src="https://c.animaapp.com/mi5eklbiAEaKLJ/img/phone.svg"
+											mode="aspectFit"
+										></image>
 									</view>
-									<image
-										v-if="item.hasPhone"
-										class="phone-icon"
-										src="https://c.animaapp.com/mi5eklbiAEaKLJ/img/phone.svg"
-										mode="aspectFit"
-									></image>
 								</view>
+								<view class="separator-line"></view>
 							</view>
-							<view class="separator-line"></view>
-						</view>
 
-						<view class="overview-item personal-intro">
-							<text class="overview-label">品牌介绍</text>
-							<text class="personal-intro-text">
-								{{ brand && brand.introduction ? brand.introduction : '暂无介绍' }}
-							</text>
+							<view class="overview-item personal-intro">
+								<text class="overview-label">品牌介绍</text>
+								<text class="personal-intro-text">
+									{{ brand && brand.introduction ? brand.introduction : '暂无介绍' }}
+								</text>
+							</view>
 						</view>
 					</view>
 				</view>
 			</view>
-		</template>
 
-		<!-- 服务特色标签页内容 -->
-		<template v-else-if="activeTab === 'service'">
-			<view class="card service-card">
-				<view class="card-content">
-					<text class="card-title">服务特色</text>
-					
-					<view class="badges-container">
-						<view 
-							v-for="(feature, index) in serviceFeatures" 
-							:key="index"
-							class="feature-badge"
-						>
-							<text class="badge-text">{{ feature }}</text>
+			<!-- 服务特色内容 -->
+			<view id="service" class="section-container">
+				<view class="card service-card">
+					<view class="card-content">
+						<text class="card-title">服务特色</text>
+						
+						<view class="badges-container">
+							<view 
+								v-for="(feature, index) in serviceFeatures" 
+								:key="index"
+								class="feature-badge"
+							>
+								<text class="badge-text">{{ feature }}</text>
+							</view>
 						</view>
-					</view>
-					
-					<text class="section-label">其他</text>
-					
-					<view class="badges-container">
-						<view 
-							v-for="(feature, index) in otherFeatures" 
-							:key="index"
-							class="feature-badge"
-						>
-							<text class="badge-text">{{ feature }}</text>
+						
+						<text class="section-label">其他</text>
+						
+						<view class="badges-container">
+							<view 
+								v-for="(feature, index) in otherFeatures" 
+								:key="index"
+								class="feature-badge"
+							>
+								<text class="badge-text">{{ feature }}</text>
+							</view>
 						</view>
 					</view>
 				</view>
 			</view>
-		</template>
-		
-		<!-- 环境设施标签页内容 -->
-		<template v-if="activeTab === 'environment'">
-			<view class="card environment-card">
-				<view class="card-content">
-					<text class="card-title">环境设施</text>
-					
-					<text class="section-label">环境设施</text>
-					
-					<view class="badges-container">
-						<view 
-							v-for="(facility, index) in environmentFacilities" 
-							:key="index"
-							class="feature-badge"
-						>
-							<text class="badge-text">{{ facility }}</text>
+			
+			<!-- 环境设施内容 -->
+			<view id="environment" class="section-container">
+				<view class="card environment-card">
+					<view class="card-content">
+						<text class="card-title">环境设施</text>
+						
+						<text class="section-label">环境设施</text>
+						
+						<view class="badges-container">
+							<view 
+								v-for="(facility, index) in environmentFacilities" 
+								:key="index"
+								class="feature-badge"
+							>
+								<text class="badge-text">{{ facility }}</text>
+							</view>
 						</view>
-					</view>
-					
-					<text class="section-label">通用设施</text>
-					
-					<view class="badges-container">
-						<view 
-							v-for="(facility, index) in generalFacilities" 
-							:key="index"
-							class="feature-badge"
-						>
-							<text class="badge-text">{{ facility }}</text>
+						
+						<text class="section-label">通用设施</text>
+						
+						<view class="badges-container">
+							<view 
+								v-for="(facility, index) in generalFacilities" 
+								:key="index"
+								class="feature-badge"
+							>
+								<text class="badge-text">{{ facility }}</text>
+							</view>
 						</view>
 					</view>
 				</view>
@@ -248,6 +250,15 @@ export default {
 	position: relative;
 	padding: 0 20rpx 48rpx;
 	box-sizing: border-box;
+}
+
+.section-container {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 24rpx;
+	margin-bottom: 24rpx;
 }
 
 .profile-image {

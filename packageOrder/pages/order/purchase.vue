@@ -87,9 +87,11 @@ export default {
 		},
 		handleFavoriteChange(isFavorited) {
 			this.isFavorited = isFavorited
+			this.serviceData.isFavorited = isFavorited
 		},
 		handleFooterFavoriteChange(isFavorited) {
 			this.isFavorited = isFavorited
+			this.serviceData.isFavorited = isFavorited
 			if (this.$refs.profileSection) {
 				this.$refs.profileSection.isFavorited = isFavorited
 			}
@@ -105,15 +107,18 @@ export default {
 					// 头部图片 - 支持 image_urls 数组或单个图片
 					this.headerImages = service.image_urls || service.images || [service.cover || service.image]
 
-					// 计算价格 - 优先使用第一个 SKU 的价格，否则使用固定价格
-					const firstSku = service.skus && service.skus.length > 0 ? service.skus[0] : null
-					const price = firstSku ? parseFloat(firstSku.sell_price) : parseFloat(service.fixed_price) || 0
-					const refPrice = firstSku ? parseFloat(firstSku.ref_price) : parseFloat(service.fixed_ref_price) || price
+					// 计算价格 - 优先使用固定价格 fixed_price 和 fixed_ref_price，其次从 skus 获取
+					const firstSku = Array.isArray(service.skus) && service.skus.length > 0 ? service.skus[0] : {}
+					const skuSellPrice = parseFloat(firstSku.sell_price) || 0
+					const skuRefPrice = parseFloat(firstSku.ref_price) || 0
+
+					const price = skuRefPrice || parseFloat(service.fixed_ref_price) || 0
+					const appointmentPrice = skuSellPrice || parseFloat(service.fixed_price) || price
 
 					// 将 SKUs 转换为服务项目列表
 					const serviceItems = (service.skus || []).map(sku => ({
 						name: sku.sku_name || sku.name || '',
-						quantity: `¥${sku.sell_price}`
+						quantity: `*${sku.quantity || sku.count || 1}`
 					}))
 
 					// 温馨提示 - 从 notice_text 生成数组
@@ -131,12 +136,95 @@ export default {
 						warmTips.push(`预计服务时长：${service.duration_min}分钟`)
 					}
 
+					// 获取设计师信息 - 通过 designer_id 直接获取详情
+					let designerInfo = null
+					const designerId = service.designer_id || service.user_id
+					const levelMap = { 1: '初级', 2: '中级', 3: '高级', 4: '导师', 5: '名师' }
+					const pricingMode = service.pricing_mode || 1
+
+					try {
+						if (designerId) {
+							// 直接通过 designer_id 获取设计师详情
+							const designerRes = await api.designer.getDetail(designerId)
+							console.log('设计师详情响应:', designerRes)
+							if (designerRes.code === 200 && designerRes.data) {
+								const data = designerRes.data
+								designerInfo = {
+									id: data.id,
+									name: data.real_name || data.name || '',
+									avatar: data.avatar || '',
+									badge: data.title || data.position || '',
+									role: data.position || '设计师',
+									rating: data.rating || 5.0,
+									serviceCount: data.total_appointments || 0,
+									worksCount: data.followers || 0,
+									level: levelMap[pricingMode] || '初级',
+									workYears: data.work_years || 0
+								}
+							}
+						}
+					} catch (err) {
+						console.error('获取设计师详情失败:', err)
+					}
+
+					// 如果没有获取到，回退到从列表匹配
+					if (!designerInfo && !designerId) {
+						try {
+							const designerRes = await api.designer.getList({ page: 1, pageSize: 50 })
+							console.log('设计师列表响应:', designerRes)
+							let designerList = []
+							if (designerRes.code === 200 && designerRes.data) {
+								designerList = designerRes.data.list || designerRes.data.items || designerRes.data || []
+							} else if (designerRes.list) {
+								designerList = designerRes.list
+							} else if (Array.isArray(designerRes)) {
+								designerList = designerRes
+							}
+
+							if (designerList.length > 0) {
+								const matchedDesigner = designerList[0]
+								designerInfo = {
+									id: matchedDesigner.id,
+									name: matchedDesigner.real_name || matchedDesigner.name || '',
+									avatar: matchedDesigner.avatar || '',
+									badge: matchedDesigner.title || matchedDesigner.position || '',
+									role: matchedDesigner.position || '设计师',
+									rating: matchedDesigner.rating || 5.0,
+									serviceCount: matchedDesigner.total_appointments || 0,
+									worksCount: matchedDesigner.followers || 0,
+									level: levelMap[pricingMode] || '初级',
+									workYears: matchedDesigner.work_years || 0
+								}
+							}
+						} catch (err) {
+							console.error('获取设计师列表失败:', err)
+						}
+					}
+
+					// 如果没有从设计师列表匹配到，使用服务详情中的数据
+					if (!designerInfo && (service.designer_name || service.designer)) {
+						const pricingMode = service.pricing_mode || 1
+						const levelMap = { 1: '初级', 2: '中级', 3: '高级', 4: '导师', 5: '名师' }
+						designerInfo = {
+							id: service.user_id || service.designer_id || (service.designer && service.designer.id) || '',
+							name: service.designer_name || (service.designer && service.designer.name) || '',
+							avatar: service.designer_avatar || (service.designer && service.designer.avatar) || '',
+							badge: service.designer_badge || (service.designer && (service.designer.badge || service.designer.level)) || '',
+							role: service.designer_role || (service.designer && (service.designer.role || service.designer.title)) || '设计师',
+							rating: service.designer_rating || (service.designer && service.designer.rating) || service.rating || 5.0,
+							serviceCount: service.designer_service_count || (service.designer && service.designer.serviceCount) || 0,
+							worksCount: service.designer_works_count || (service.designer && service.designer.worksCount) || 0,
+							level: levelMap[pricingMode] || '初级',
+							workYears: service.designer_work_years || (service.designer && service.designer.workYears) || 0
+						}
+					}
+
 					this.serviceData = {
 						id: service.id,
 						name: service.name || service.title || '',
 						fullTitle: service.fullTitle || service.name || service.title || '',
 						price: price,
-						appointmentPrice: refPrice,
+						appointmentPrice: appointmentPrice,
 						soldCount: service.sold_count || service.soldCount || service.sales || 0,
 						isFavorited: service.isFavorited || service.is_favorited || false,
 						rating: service.rating || 5.0,
@@ -149,17 +237,8 @@ export default {
 							text: c.text || c.title || c.name || ''
 						})),
 
-						// 设计师信息 - 支持新的扁平化字段和嵌套对象
-						designer: (service.designer_name || service.designer) ? {
-							id: service.user_id || service.designer_id || (service.designer && service.designer.id) || '',
-							name: service.designer_name || (service.designer && service.designer.name) || '',
-							avatar: service.designer_avatar || (service.designer && service.designer.avatar) || '',
-							badge: service.designer_badge || (service.designer && (service.designer.badge || service.designer.level)) || '',
-							role: service.designer_role || (service.designer && (service.designer.role || service.designer.title)) || '设计师',
-							rating: service.designer_rating || (service.designer && service.designer.rating) || service.rating || 5.0,
-							serviceCount: service.designer_service_count || (service.designer && service.designer.serviceCount) || 0,
-							worksCount: service.designer_works_count || (service.designer && service.designer.worksCount) || 0
-						} : null,
+						// 设计师信息 - 从设计师列表接口获取
+						designer: designerInfo,
 
 						// 服务项目 - 从 SKUs 生成
 						serviceItems: serviceItems,
@@ -208,6 +287,20 @@ export default {
 						}))
 					}
 					this.isFavorited = service.isFavorited || service.is_favorited || false
+
+					// 检查收藏状态 - 通过用户收藏列表
+					try {
+						const favoriteRes = await api.user.getFavorites({ type: 'service', page: 1, pageSize: 100 })
+						if (favoriteRes.code === 200 && favoriteRes.data) {
+							const favoriteList = favoriteRes.data.list || favoriteRes.data.items || favoriteRes.data || []
+							const isFavorited = favoriteList.some(item => item.id === serviceId || item.service_id === serviceId)
+							this.isFavorited = isFavorited
+							this.serviceData.isFavorited = isFavorited
+						}
+					} catch (err) {
+						// 如果未登录或接口出错，保持默认状态
+						console.log('检查收藏状态失败:', err)
+					}
 				}
 			} catch (err) {
 				console.error('获取服务详情失败:', err)

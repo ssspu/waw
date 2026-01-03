@@ -34,13 +34,13 @@
 			></designer-tab-switcher>
 			
 			<!-- 子标签切换（根据当前tab显示） -->
-			<view 
-				v-if="currentSubTabs.length" 
-				:class="['sub-tabs-section', { 'compact-sub-tabs': isCompactSubTabs, 'appointment-sub-tabs': activeTab === 'appointment' }]"
+			<view
+				v-if="currentSubTabs.length"
+				class="sub-tabs-section"
 			>
-				<view 
-					v-for="(subTab, index) in currentSubTabs" 
-					:key="index" 
+				<view
+					v-for="(subTab, index) in currentSubTabs"
+					:key="index"
 					class="sub-tab-item"
 					:class="{ active: activeSubTabs[activeTab] === subTab.id }"
 					@tap="handleSubTabClick(subTab.id)"
@@ -112,6 +112,7 @@
 
 <script>
 import { designerApi } from '@/api'
+import { serviceApi } from '@/api'
 import DesignerDetailHeader from '../../components/designer/detail/DesignerDetailHeader.vue'
 import DesignerInfoCard from '../../components/designer/detail/DesignerInfoCard.vue'
 import DesignerTabSwitcher from '../../components/designer/detail/DesignerTabSwitcher.vue'
@@ -140,6 +141,8 @@ export default {
 
 		
 		await this.loadDesignerDetail()
+		
+		this.getUserLocation()
 
 		
 		if (options.tab) {
@@ -241,7 +244,9 @@ export default {
 				appointment: [],
 				works: [],
 				reviews: []
-			}
+			},
+			userLatitude: null,
+			userLongitude: null
 		}
 	},
 	computed: {
@@ -253,47 +258,43 @@ export default {
 			}
 			
 			return this.subTabs[this.activeTab] || []
-		},
-		isCompactSubTabs() {
-			return ['appointment', 'works', 'reviews'].includes(this.activeTab)
 		}
 	},
 	methods: {
-		
+
 		async loadDesignerDetail() {
 			try {
+				// 调用真实接口获取设计师详情
 				const res = await designerApi.getDetail(this.designerId)
-				console.log('Designer detail response:', res)
-				if (res && res.code === 200 && res.data) {
-					
-					const list = res.data.items || res.data.list || []
-					console.log('Total designers:', list.length)
 
-					
-					const data = list.find(item => item.id === this.designerId) || list[0]
-					console.log('Filtered designer data:', data)
-					console.log('Designer name:', data?.real_name || data?.name)
+				if (res.code === 200 && res.data) {
+					const allList = res.data.items || res.data.list || res.data.records || []
+					const data = allList.find(d => d.id === this.designerId || d.user_id === this.designerId) || allList[0]
 
-					
-					if (!data || !data.id) {
-						console.error('No designer data found for id:', this.designerId)
+					if (!data) {
 						uni.showToast({ title: '设计师不存在', icon: 'none' })
 						return
 					}
 
-					
-					this.coverImage = data.coverImage || data.avatar || ''
-
-					
+					this.coverImage = data.cover_image || data.avatar || ''
 					this.designerUserId = data.user_id || ''
 
-					
+					const level = data.professional_level || 1
+					const levelMap = {
+						1: '初级',
+						2: '中级',
+						3: '高级',
+						4: '导师',
+						5: '名师'
+					}
+
 					this.designerInfo = {
 						id: data.user_id || data.id || '',
 						avatar: data.avatar || data.coverImage || '',
 						name: data.real_name || data.name || '',
 						verifyIcon: data.verifyIcon || '',
 						role: data.position || data.role || '',
+						level: levelMap[level] || '设计师',
 						certIcon: data.certIcon || '',
 						certText: data.certification || '',
 						certDot: data.certDot || '',
@@ -301,13 +302,11 @@ export default {
 						introduction: data.introduction || ''
 					}
 
-
 					this.serviceBadges = ((data.service_features || data.tags) ? String(data.service_features || data.tags).split(/[,]/) : []).map(tag => ({
 						icon: '',
 						label: tag.trim()
 					}))
 
-					
 					this.statsData = [
 						{ value: String(data.total_appointments || data.appointmentCount || 0), label: "预约" },
 						{ value: String(data.followers || data.followerCount || 0), label: "粉丝" },
@@ -315,64 +314,46 @@ export default {
 						{ value: String(data.rating || 0), unit: "分", label: "评分" }
 					]
 
-					
 					this.shopInfo = {
-						name: data.brandName || '',
-						address: data.location_desc || '',
-						distance: data.distance ? `距您${data.distance}km` : ''
+						name: data.brand_name || data.brandName || 'NICE美发沙龙',
+						address: data.location_desc || data.address || '待完善',
+						distance: '正在获取位置...',
+						latitude: data.latitude || null,
+						longitude: data.longitude || null,
+						phone: data.contact_phone || data.phone || '',
+						image: data.shop_image || data.coverImage || ''
 					}
 
-					
+					if (this.userLatitude && this.userLongitude) {
+						this.updateDistance()
+					}
+
 					this.rightStats = {
 						serviceIcon: data.serviceIcon || '',
-						serviceCount: String(data.serviceCount || 0),
+						serviceCount: String(data.service_count || data.serviceCount || 0),
 						workIcon: data.workIcon || '',
-						workCount: String(data.worksCount || 0),
+						workCount: String(data.works_count || data.worksCount || 0),
 						dotIcon: data.dotIcon || ''
 					}
 
-					
 					this.businessInfo = {
 						status: '营业中',
 						restDay: data.appointment_time || '',
 						hours: data.work_hours || ''
 					}
 
-					
 					this.promotions = (data.promotions || []).map(p => ({
 						text: typeof p === 'string' ? p : (p.label || p.name || '')
 					}))
 
-					
-					if (data.categories) {
-						if (data.categories.service) {
-							this.designerCategories.service = data.categories.service.map(cat => ({
-								id: cat.id || cat.key,
-								title: cat.name || cat.label
-							}))
-						}
-						if (data.categories.appointment) {
-							this.designerCategories.appointment = data.categories.appointment.map(cat => ({
-								id: cat.id || cat.key,
-								title: cat.name || cat.label
-							}))
-						}
-						if (data.categories.works) {
-							this.designerCategories.works = data.categories.works.map(cat => ({
-								id: cat.id || cat.key,
-								title: cat.name || cat.label
-							}))
-						}
-						if (data.categories.reviews) {
-							this.designerCategories.reviews = data.categories.reviews.map(cat => ({
-								id: cat.id || cat.key,
-								title: cat.name || cat.label
-							}))
-						}
-					}
+					// 获取服务分类列表
+					this.loadServiceCategories()
+				} else {
+					uni.showToast({ title: '获取设计师信息失败', icon: 'none' })
 				}
-			} catch (error) {
-				console.error('加载设计师详情失败:', error)
+			} catch (err) {
+				console.error('获取设计师详情失败:', err)
+				uni.showToast({ title: '网络错误', icon: 'none' })
 			}
 		},
 		handleTabChange(tabId) {
@@ -392,10 +373,23 @@ export default {
 			console.log('Follow clicked')
 		},
 		handlePhone() {
-			console.log('Phone clicked')
+			if (this.shopInfo.phone) {
+				uni.makePhoneCall({ phoneNumber: this.shopInfo.phone })
+			} else {
+				uni.showToast({ title: '暂无联系电话', icon: 'none' })
+			}
 		},
 		handleNavigation() {
-			console.log('Navigation clicked')
+			if (this.shopInfo.latitude && this.shopInfo.longitude) {
+				uni.openLocation({
+					latitude: Number(this.shopInfo.latitude),
+					longitude: Number(this.shopInfo.longitude),
+					name: this.shopInfo.name,
+					address: this.shopInfo.address
+				})
+			} else {
+				uni.showToast({ title: '暂无位置信息', icon: 'none' })
+			}
 		},
 		handleShare() {
 			console.log('Share clicked')
@@ -453,6 +447,70 @@ export default {
 		handleClaimCoupon(coupon) {
 			console.log('Claim coupon:', coupon)
 			uni.showToast({ title: '领取成功', icon: 'success' })
+		},
+		
+		async getUserLocation() {
+			try {
+				const res = await new Promise((resolve, reject) => {
+					uni.getLocation({
+						type: 'gcj02',
+						success: resolve,
+						fail: reject
+					})
+				})
+				this.userLatitude = res.latitude
+				this.userLongitude = res.longitude
+				this.updateDistance()
+			} catch (err) {
+				console.error('获取位置失败:', err)
+			}
+		},
+		
+		updateDistance() {
+			if (this.userLatitude && this.userLongitude && this.shopInfo.latitude && this.shopInfo.longitude) {
+				const distance = this.calculateDistance(
+					this.userLatitude, 
+					this.userLongitude, 
+					this.shopInfo.latitude, 
+					this.shopInfo.longitude
+				)
+				this.shopInfo.distance = distance
+			}
+		},
+		
+		calculateDistance(lat1, lng1, lat2, lng2) {
+			if (!lat1 || !lng1 || !lat2 || !lng2) return ''
+			const R = 6371 // 地球半径（km）
+			const dLat = (lat2 - lat1) * Math.PI / 180
+			const dLng = (lng2 - lng1) * Math.PI / 180
+			const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+				Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+				Math.sin(dLng / 2) * Math.sin(dLng / 2)
+			const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+			const distance = R * c
+			return `距您${distance.toFixed(1)}km`
+		},
+
+		async loadServiceCategories() {
+			try {
+				const res = await serviceApi.getCategories()
+				if (res.code === 200 && res.data) {
+					const categories = res.data.items || res.data.list || res.data || []
+					// 转换为子标签格式，添加"全部"选项
+					const tabs = [
+						{ id: 'all', title: '全部' },
+						...categories.map(cat => ({
+							id: cat.id,
+							title: cat.name
+						}))
+					]
+					this.$set(this.designerCategories, 'service', tabs)
+					// 默认选中"全部"
+					this.$set(this.activeSubTabs, 'service', 'all')
+				}
+			} catch (err) {
+				console.error('获取服务分类失败:', err)
+			}
 		}
 	}
 }
@@ -498,7 +556,7 @@ export default {
 .tabs-wrapper {
 	width: 100vw;
 	margin-left: calc(-12rpx - 1px);
-	background-color: #ffffff;
+	background-color: #f2f2f2;
 	border-radius: 16rpx;
 	margin-top: -4rpx;
 	overflow: hidden;
@@ -507,70 +565,36 @@ export default {
 }
 
 .sub-tabs-section {
+	background-color: #f2f2f2;
+	margin-left: 12rpx;
 	display: flex;
 	align-items: center;
-	justify-content: flex-start;
-	gap: 24rpx;
-	flex-wrap: nowrap;
-	padding: 12rpx 20rpx;
-	width: 100%;
-	box-sizing: border-box;
-	border-top: 2rpx solid #f5f5f5;
-	margin-top: 0;
-	overflow-x: auto;
-	scrollbar-width: none;
-}
-
-.sub-tabs-section::-webkit-scrollbar {
-	display: none;
-}
-
-.sub-tabs-section.appointment-sub-tabs {
-	overflow: hidden;
-	gap: 8rpx;
+	gap: 16rpx;
+	flex-wrap: wrap;
 	padding: 12rpx 0;
-	justify-content: space-between;
-}
-
-.sub-tabs-section.compact-sub-tabs:not(.appointment-sub-tabs) {
-	overflow: hidden;
-	gap: 8rpx;
-	padding: 12rpx 30rpx;
-	justify-content: flex-start;
+	width: calc(100% - 12rpx);
+	box-sizing: border-box;
 }
 
 .sub-tab-item {
-	font-size: 28rpx;
-	text-align: center;
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 500;
+	height: auto;
+	padding: 8rpx 20rpx;
+	border-radius: 4rpx;
+	background-color: #ffffff;
 	color: #a6a6a6;
+	font-size: 26rpx;
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: normal;
 	cursor: pointer;
-	padding: 10rpx 16rpx;
-	position: relative;
-	margin: 10rpx 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
-	min-width: 90rpx;
+	min-width: auto;
 
-	.compact-sub-tabs:not(.appointment-sub-tabs) & {
-		flex: 0 0 auto;
-		min-width: auto;
-		padding: 6rpx 8rpx;
-	}
-
-	.appointment-sub-tabs & {
-		flex: 1;
-		min-width: auto;
-		padding: 6rpx 4rpx;
-	}
-	
 	&.active {
-		font-family: 'PingFang_SC-Semibold', Helvetica;
-		font-weight: normal;
-		color: #333333;
+		background-color: #333333;
+		color: #ffffff;
 	}
 }
 

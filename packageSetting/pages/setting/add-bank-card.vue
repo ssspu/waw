@@ -37,12 +37,12 @@
 					</view>
 					<view class="separator-line"></view>
 					<view class="form-row">
-						<text class="row-label">值户行地倝</text>
+						<text class="row-label">值户行地址</text>
 						<input 
 							class="row-input" 
 							v-model="formData.bankAddress" 
 							type="text" 
-							placeholder="请输入值户行地倝" 
+							placeholder="请输入值户行地址" 
 							maxlength="100"
 						/>
 					</view>
@@ -84,7 +84,7 @@ export default {
 				return
 			}
 			if (!this.formData.bankAddress || !this.formData.bankAddress.trim()) {
-				uni.showToast({ title: '请输入值户行地倝', icon: 'none' })
+				uni.showToast({ title: '请输入值户行地址', icon: 'none' })
 				return
 			}
 

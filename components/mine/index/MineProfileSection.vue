@@ -208,7 +208,7 @@ export default {
 	flex-direction: column;
 	align-items: center;
 	gap: 16rpx;
-	width: 710rpx;
+	width: 690rpx;
 	margin-bottom: 26rpx;
 	box-sizing: border-box;
 }
@@ -228,7 +228,6 @@ export default {
 	align-items: flex-start;
 	gap: 20rpx;
 	padding: 24rpx 20rpx;
-	box-sizing: border-box;
 }
 
 .card-header {
@@ -272,6 +271,9 @@ export default {
 	padding: 0 10rpx;
 	width: 100%;
 	box-sizing: border-box;
+}
+.order-nav {
+	padding: 0;
 }
 
 .order-item, .asset-item, .settlement-item {

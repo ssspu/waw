@@ -1,21 +1,5 @@
 <template>
 	<view class="profile-section">
-		<view class="nav-card">
-
-			<!-- 分类标签 -->
-			<view class="category-nav">
-				<view
-					v-for="category in availableCategories"
-					:key="category.id"
-					class="category-btn"
-					:class="{ active: selectedCategory === category.id }"
-					@tap="selectCategory(category.id)"
-				>	
-					<text>{{ category.label }}</text>
-				</view>
-			</view>
-		</view>
-
 		<!-- 空数据状态 -->
 		<view v-if="!loading && services.length === 0" class="empty-state">
 			<image class="empty-icon" src="https://bioflex.cn/static/icon/empty-service.png" mode="aspectFit"></image>
@@ -60,7 +44,7 @@
 								<text class="price-symbol">¥</text>
 								<text class="price-value">{{ service.price }}</text>
 							</view>
-							<view class="discount-badge">
+							<view v-if="service.discount" class="discount-badge">
 								<text class="discount-text">{{ service.discount }}</text>
 							</view>
 							
@@ -96,20 +80,23 @@
 					<!-- 品牌选项 -->
 					<view class="brand-options">
 						<view 
-							v-for="brand in brandOptions" 
+							v-for="brand in getFilteredBrandOptions(service)" 
 							:key="brand.id" 
 							class="brand-item"
 							@tap="selectBrand(service.id, brand.id)"
 						>
 							<view class="brand-info">
-								<view class="brand-radio" :class="{ checked: getSelectedBrand(service.id) === brand.id }">
-									<image v-if="getSelectedBrand(service.id) === brand.id" class="check-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg" mode="aspectFit"></image>
+								<view class="brand-radio" :class="{ checked: getSelectedBrand(service, brand.id) }">
+									<image v-if="getSelectedBrand(service, brand.id)" class="check-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1891.svg" mode="aspectFit"></image>
 								</view>
 								<text class="brand-name">{{ brand.name }}</text>
 							</view>
 							<view class="brand-price">
-								<text class="price-symbol">¥</text>
-								<text class="price-value">{{ brand.price }}</text>
+								<text v-if="brand.appointmentPrice" class="brand-appointment-price">预约价¥{{ brand.appointmentPrice }}</text>
+								<view class="price-row">
+									<text class="price-symbol">¥</text>
+									<text class="price-value">{{ brand.price }}</text>
+								</view>
 							</view>
 						</view>
 					</view>
@@ -139,25 +126,17 @@ export default {
 		},
 		activeSubTab: {
 			type: String,
-			default: 'hair-service'
+			default: 'all'
 		}
 	},
 	data() {
 		return {
 			loading: false,
-			serviceType: 'hair-service', 
+			serviceType: 'hair-service',
 			selectedSecondary: 'hairstylist',
 			secondaryTabs: [
 				{ id: 'hairstylist', label: '美发师' },
 				{ id: 'beautician', label: '美容师' }
-			],
-			selectedCategory: "wash-cut-blow",
-			selectedHairLength: "short",
-			categories: [
-				{ id: 'wash-cut-blow', label: '洗剪吹', count: 5 },
-				{ id: 'perm', label: '烫发', count: 3 },
-				{ id: 'dye', label: '染发', count: 4 },
-				{ id: 'care', label: '护理', count: 2 }
 			],
 			services: [],
 			expandedServices: [],
@@ -175,12 +154,6 @@ export default {
 			],
 		}
 	},
-	computed: {
-		
-		availableCategories() {
-			return this.categories.filter(cat => cat.count > 0)
-		}
-	},
 	watch: {
 		designerUserId: {
 			immediate: true,
@@ -193,44 +166,74 @@ export default {
 		activeSubTab: {
 			immediate: true,
 			handler(newVal) {
-				
-				this.serviceType = newVal
 				if (this.designerUserId) {
 					this.fetchServices()
 				}
 			}
-		},
-		selectedCategory() {
-			if (this.designerUserId) {
-				this.fetchServices()
-			}
 		}
 	},
 	methods: {
-		
+
 		async fetchServices() {
 			if (!this.designerUserId || this.loading) return
 			this.loading = true
 			try {
-				
-				const res = await api.service.getList({
+				// 构建请求参数
+				const params = {
 					page: 1,
 					pageSize: 50
-				})
+				}
+				// 如果选择了分类且是有效的 UUID 格式，传入 categoryId
+				// 后端 categoryId 需要 UUID 格式，不是字符串如 "hair-service"
+				if (this.activeSubTab && this.activeSubTab !== 'all') {
+					const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+					if (uuidRegex.test(this.activeSubTab)) {
+						params.categoryId = this.activeSubTab
+					}
+					// 如果不是 UUID 格式（如 "hair-service"），则不传 categoryId，返回全部服务
+				}
+
+				const res = await api.service.getList(params)
 				if (res.code === 200) {
 					const data = res.data
-					
+
 					const allList = data.items || data.list || data.records || []
 
-					
+					// 过滤该设计师的服务
 					const list = allList.filter(s => s.user_id === this.designerUserId)
 
 					
 					this.services = list.map(s => {
-						
+
 						const image = Array.isArray(s.image_urls) && s.image_urls.length > 0
 							? s.image_urls[0]
 							: (s.image || '')
+
+						// 从 skus 数组获取价格
+						const firstSku = Array.isArray(s.skus) && s.skus.length > 0 ? s.skus[0] : {}
+						const skuSellPrice = Number(firstSku.sell_price) || 0
+						const skuRefPrice = Number(firstSku.ref_price) || 0
+
+						const fixedPrice = skuSellPrice || Number(s.fixed_price) || 0
+						const refPrice = skuRefPrice || Number(s.fixed_ref_price) || 0
+						let discountText = s.discount || ''
+						
+						if (fixedPrice > 0 && refPrice > fixedPrice) {
+							const discountPercent = Math.round((1 - fixedPrice / refPrice) * 100)
+							discountText = `预约优惠${discountPercent}%`
+						}
+
+						// 优先取 brand_options，其次取 skus，最后取默认值
+						let brandOptions = s.brand_options
+						if (!brandOptions && s.skus && s.skus.length > 0) {
+							brandOptions = s.skus.map(sku => ({
+								id: sku.id,
+								name: sku.sku_name || sku.name,
+								price: sku.ref_price || sku.price,
+								appointmentPrice: sku.sell_price || sku.price,
+								hairLength: sku.hair_length || ''
+							}))
+						}
 
 						return {
 							id: s.id,
@@ -238,9 +241,15 @@ export default {
 							description: s.detail_text || s.description || '',
 							estimatedTime: s.duration_min ? `${s.duration_min}分钟` : '1小时',
 							salesCount: String(s.sold_count || s.soldCount || 0),
-							price: String(s.fixed_price || s.price || 0),
-							discount: s.discount || '',
-							image: image
+							price: String(refPrice || s.fixed_ref_price || s.price || 0),
+							fixedPrice: fixedPrice,
+							discount: discountText,
+							image: image,
+							brandOptions: brandOptions || [
+								{ id: 'brand1', name: '施华蔻', price: '388', appointmentPrice: '288' },
+								{ id: 'brand2', name: '欧莱雅', price: '488', appointmentPrice: '388' },
+								{ id: 'brand3', name: '卡诗', price: '588', appointmentPrice: '488' }
+							]
 						}
 					})
 
@@ -265,14 +274,19 @@ export default {
 				this.loading = false
 			}
 		},
+		getFilteredBrandOptions(service) {
+			const selectedLength = this.getSelectedHairLength(service.id)
+			// 如果品牌选项带有 hairLength 标识，则进行过滤
+			const filtered = service.brandOptions.filter(opt => {
+				// 如果选项没有设置长度标识，或者长度标识匹配，则显示
+				return !opt.hairLength || opt.hairLength === selectedLength
+			})
+			
+			// 如果过滤后没有内容，显示该长度下的所有内容（兜底）
+			return filtered.length > 0 ? filtered : service.brandOptions
+		},
 		selectSecondary(id) {
 			this.selectedSecondary = id
-		},
-		selectCategory(id) {
-			this.selectedCategory = id
-		},
-		selectHairLength(id) {
-			this.selectedHairLength = id
 		},
 		toggleExpand(serviceId) {
 			
@@ -285,8 +299,11 @@ export default {
 				if (!this.selectedHairLengths[serviceId]) {
 					this.$set(this.selectedHairLengths, serviceId, 'short')
 				}
-				if (!this.selectedBrands[serviceId] && this.brandOptions && this.brandOptions.length > 0) {
-					this.$set(this.selectedBrands, serviceId, this.brandOptions[0].id)
+				if (!this.selectedBrands[serviceId]) {
+					const service = this.services.find(s => s.id === serviceId)
+					if (service && service.brandOptions && service.brandOptions.length > 0) {
+						this.$set(this.selectedBrands, serviceId, service.brandOptions[0].id)
+					}
 				}
 			}
 		},
@@ -303,17 +320,17 @@ export default {
 		selectBrand(serviceId, brandId) {
 			this.$set(this.selectedBrands, serviceId, brandId)
 		},
-		getSelectedBrand(serviceId) {
-			return this.selectedBrands[serviceId] || (this.brandOptions && this.brandOptions.length > 0 ? this.brandOptions[0].id : null)
+		getSelectedBrand(service, brandId) {
+			return this.selectedBrands[service.id] === brandId
 		},
 		handleBook(service) {
 			
 			const selectedHairLengthId = this.getSelectedHairLength(service.id)
 			const selectedHairLength = this.hairLengthOptions.find(opt => opt.id === selectedHairLengthId)
 
-			
-			const selectedBrandId = this.getSelectedBrand(service.id)
-			const selectedBrand = this.brandOptions.find(opt => opt.id === selectedBrandId)
+			// 获取选中的品牌
+			const selectedBrandId = this.selectedBrands[service.id]
+			const selectedBrand = service.brandOptions.find(opt => opt.id === selectedBrandId)
 
 			
 			const bookingData = {
@@ -323,11 +340,12 @@ export default {
 					description: service.description,
 					estimatedTime: service.estimatedTime,
 					image: service.image,
-					discount: service.discount
+					discount: service.discount,
+					fixedPrice: service.fixedPrice
 				},
 				hairLength: selectedHairLength,
 				brand: selectedBrand,
-				price: selectedBrand ? selectedBrand.price : service.price
+				price: selectedBrand ? selectedBrand.price : service.fixedPrice
 			}
 
 			
@@ -351,14 +369,6 @@ export default {
 	box-sizing: border-box;
 }
 
-.nav-card {
-	width: 100%;
-	border-radius: 0 0 12rpx 12rpx;
-	box-sizing: border-box;
-	border-top: 2rpx solid #f3f3f3;
-	margin-bottom: 5rpx;
-}
-
 .secondary-nav {
 	display: flex;
 	align-items: center;
@@ -375,35 +385,11 @@ export default {
 	color: #a6a6a6;
 	font-size: 26rpx;
 	cursor: pointer;
-	
+
 	&.active {
 		font-family: 'PingFang_SC-Semibold', Helvetica;
 		color: #000000;
 	}
-}
-
-.category-nav {
-
-	display: inline-flex;
-	align-items: center;
-	gap: 12rpx;
-	flex-wrap: wrap;
-}
-
-.category-btn {
-	height: auto;
-	padding: 8rpx 20rpx;
-	border-radius: 4rpx;
-	background-color: #ffffff;
-	color: #a6a6a6;
-	font-size: 26rpx;
-	font-family: 'PingFang_SC-Regular', Helvetica;
-	font-weight: normal;
-}
-
-.category-btn.active {
-	background-color: #333333;
-	color: #ffffff;
 }
 
 .services-list {
@@ -416,7 +402,7 @@ export default {
 .service-card {
 	width: 100%;
 	background-color: #ffffff;
-	border-radius: 12rpx;
+	border-radius: 16rpx;
 	border: 0;
 	box-shadow: none;
 	box-sizing: border-box;
@@ -542,7 +528,7 @@ export default {
 .price-container {
 	display: inline-flex;
 	align-items: flex-end;
-	justify-content: center;
+	justify-content: flex-end;
 	gap: 6rpx;
 }
 
@@ -568,7 +554,7 @@ export default {
 	gap: 8rpx;
 	background-color: #ffffff;
 	border-radius: 4rpx;
-	padding: 4rpx 8rpx;
+	margin-top: -16rpx;
 }
 
 .discount-text {
@@ -615,7 +601,7 @@ export default {
 .options-icon {
 	width: 40rpx;
 	height: 40rpx;
-	
+	filter: brightness(0) invert(1);
 }
 
 .options-section {
@@ -727,9 +713,16 @@ export default {
 }
 
 .brand-price {
-	display: inline-flex;
-	align-items: baseline;
-	gap: 4rpx;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 12rpx;
+	
+	.price-row {
+		display: flex;
+		align-items: baseline;
+		gap: 4rpx;
+	}
 	
 	.price-symbol {
 		font-size: 26rpx;
@@ -739,7 +732,18 @@ export default {
 	.price-value {
 		font-size: 32rpx;
 		color: #333333;
+		font-family: 'FZChaoCuHei-M10T-Regular', Helvetica;
 	}
+}
+
+.brand-appointment-price {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	background-color: #dacbb1;
+	font-size: 20rpx;
+	color: #645E57;
+	padding: 2rpx 8rpx;
+	border-radius: 4rpx;
+	white-space: nowrap;
 }
 
 .book-btn-large {

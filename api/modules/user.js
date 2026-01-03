@@ -1,6 +1,6 @@
 /**
  * 用户模块 API
- * 包含用户信息、资产、收藏、关注、地倝等接口
+ * 包含用户信息、资产、收藏、关注、地址等接口
  */
 
 import { post, get, put, del, upload } from '../request.js'
@@ -144,19 +144,19 @@ export default {
     return del(`${USER_PREFIX}/browse-records`)
   },
 
-  // ============ 地倝管理 ============
+  // ============ 地址管理 ============
 
   /**
-   * 获取地倝列表
+   * 获取地址列表
    */
   getAddressList() {
     return get(`${USER_PREFIX}/address`)
   },
 
-  // 注意: 后端暂无单独获取地倝详情接口，请从列表中筛选
+  // 注意: 后端暂无单独获取地址详情接口，请从列表中筛选
 
   /**
-   * 新增地倝
+   * 新增地址
    * @param {Object} data - { name, phone, province, city, district, detail, isDefault? }
    */
   addAddress(data) {
@@ -164,23 +164,23 @@ export default {
   },
 
   /**
-   * 更新地倝
-   * @param {string} addressId - 地倝ID
-   * @param {Object} data - 地倝数据
+   * 更新地址
+   * @param {string} addressId - 地址ID
+   * @param {Object} data - 地址数据
    */
   updateAddress(addressId, data) {
     return put(`${USER_PREFIX}/address/${addressId}`, data)
   },
 
   /**
-   * 删除地倝
-   * @param {string} addressId - 地倝ID
+   * 删除地址
+   * @param {string} addressId - 地址ID
    */
   deleteAddress(addressId) {
     return del(`${USER_PREFIX}/address/${addressId}`)
   },
 
-  // 注意: 后端暂无设置默认地倝接口，请通过 updateAddress 设置 isDefault 字段
+  // 注意: 后端暂无设置默认地址接口，请通过 updateAddress 设置 isDefault 字段
 
   // ============ 银行卡管理 ============
 

@@ -36,7 +36,7 @@
 							<text class="divider">｜</text>
 							<view class="cert-badge">
 								<image class="cert-icon" src="/static/icon/zhiye.png" mode="aspectFit"></image>
-								<text class="cert-text">职业认证</text>
+								<text class="cert-text">{{ designerInfo.level || '职业认证' }}</text>
 							</view>
 						</view>
 					</view>
@@ -106,7 +106,7 @@
 					</view>
 					
 					<view class="business-card shop-card">
-						<view class="shop-bg"></view>
+						<view class="shop-bg" :style="{ backgroundImage: `url(${shopInfo.image})` }" @tap="handleNavigation"></view>
 						<view class="business-content">
 							<text class="shop-name">{{ shopInfo.name }}</text>
 							<text class="shop-address">{{ shopInfo.address }}</text>
@@ -126,13 +126,16 @@
 				<view class="promotions" @tap="handleCouponClick">
 					<image class="promo-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-5.svg" mode="aspectFit"></image>
 					<view class="promo-badges">
-						<view 
-							v-for="(promo, index) in promotions" 
-							:key="index" 
-							class="promo-badge"
-						>
-							{{ promo.text }}
-						</view>
+						<block v-if="promotions && promotions.length > 0">
+							<view 
+								v-for="(promo, index) in promotions" 
+								:key="index" 
+								class="promo-badge"
+							>
+								{{ promo.text }}
+							</view>
+						</block>
+						<view v-else class="promo-badge no-promo">暂无</view>
 					</view>
 				</view>
 			</view>
@@ -141,13 +144,13 @@
 			<view class="right-stats">
 				<view class="stats-badge">
 					<view class="stat-group">
-						<image class="stat-icon" :src="rightStats.serviceIcon" mode="aspectFit"></image>
+						<image class="stat-icon pic-icon" src="/static/icon/pic.png" mode="aspectFit"></image>
 						<text class="stat-count">({{ rightStats.serviceCount }})</text>
 						<image class="stat-dot" :src="rightStats.dotIcon" mode="aspectFit"></image>
 					</view>
 					<text class="stat-divider">｜</text>
 					<view class="stat-group">
-						<image class="stat-icon" :src="rightStats.workIcon" mode="aspectFit"></image>
+						<image class="stat-icon" src="/static/icon/vidio.png" mode="aspectFit"></image>
 						<text class="stat-count">({{ rightStats.workCount }})</text>
 						<image class="stat-dot" src="https://bioflex.cn/static/icons/arrow-right.svg" mode="aspectFit"></image>
 					</view>
@@ -166,7 +169,7 @@ export default {
 				avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-153.png",
 				name: "朱龙",
 				verifyIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2110.svg",
-				role: "术监",
+				role: "总	监",
 				certIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2.svg",
 				certText: "职业认证",
 				certDot: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg",
@@ -314,9 +317,9 @@ export default {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background-image: url('https://bioflex.cn/static/background-image/designer-card-bg.png');
-	background-size: contain;
-	background-position: center 58rpx;
+	background-image: url('@/static/icon/background.png');
+	background-size: 100% auto;
+	background-position: left 58rpx;
 	background-repeat: no-repeat;
 	z-index: 3;
 	pointer-events: none;
@@ -484,8 +487,9 @@ export default {
 
 .intro-row {
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	gap: 12rpx;
+	position: relative;
 }
 
 .skill-text {
@@ -501,7 +505,7 @@ export default {
 	font-weight: normal;
 	color: #666666;
 	font-size: 24rpx;
-	line-height: 42rpx;
+	line-height: 54rpx;
 	flex: 1;
 }
 
@@ -510,8 +514,11 @@ export default {
 	align-items: center;
 	gap: 2rpx;
 	cursor: pointer;
-	margin-left: auto;
+	position: absolute;
+	right: 0;
+	bottom: 0;
 	flex-shrink: 0;
+	background-color: transparent;
 }
 
 .more-text {
@@ -858,8 +865,13 @@ export default {
 }
 
 .stat-icon {
-	width: 36rpx;
-	height: 36rpx;
+	width: 30rpx;
+	height: 26rpx;
+}
+
+.pic-icon {
+	width: 26rpx;
+	height: 22rpx;
 }
 
 .stat-count {

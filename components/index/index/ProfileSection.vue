@@ -358,10 +358,10 @@
 											<image class="star-icon-small" src="/static/icon/star.png" mode="aspectFit"></image>
 										</view>
 										<text class="review-count-small">({{ service.reviews }})</text>
+										<text class="service-distance">{{ service.distance }}</text>
 									</view>
 								</view>
 							</view>
-							<text class="service-distance">{{ service.distance }}</text>
 						</view>
 					</view>
 				</view>
@@ -372,19 +372,21 @@
 
 <script>
 import api from '@/api'
+import { calculateDistance, getCurrentLocation } from '@/utils/location.js'
 
 export default {
 	data() {
 		return {
 			loading: false,
-			//  Tab
+			userLatitude: null,
+			userLongitude: null,
+			// ... existing data ...
 			mainTabs: [
 				{ label: "", value: "designer", icon: "https://bioflex.cn/static/容器@3x.png", textIcon: "https://bioflex.cn/static/设计师@3x.png", subtitle: "发现宝藏设计师" },
 				{ label: "", value: "service", icon: "https://bioflex.cn/static/容器@3x(1).png", textIcon: "https://bioflex.cn/static/优服务@3x.png", subtitle: "甄选优质服务" },
 				{ label: "", value: "brand", icon: "https://bioflex.cn/static/容器@3x(4).png", textIcon: "https://bioflex.cn/static/品牌馆@3x.png", subtitle: "优质线下门店" }
 			],
 			activeMainTab: "designer",
-			//  Tab
 			subTabs: [
 				{ label: "预约单", value: "all", icon: "https://bioflex.cn/static/calendar-schedule-line@3x.png", subtitle: "你的预约订单" },
 				{ label: "优惠券", value: "coupon", icon: "https://bioflex.cn/static/coupon-line@3x.png", subtitle: "更多折扣等你" },
@@ -410,9 +412,8 @@ export default {
 					align: "right",
 				},
 			],
-			// 设计师 Tab
 			designerTabs: ["首席创意", "总监店长", "人气名师", "国际导师"],
-			activeDesignerTab: 0, // 默认显示推荐
+			activeDesignerTab: 0,
 			designersByTab: {},
 			brandTabs: ["专业店", "品牌店", "工作室", "综合店"],
 			activeBrandTab: "专业店",
@@ -438,13 +439,29 @@ export default {
 		}
 	},
 	mounted() {
+		this.getUserLocation()
 		this.loadData()
 	},
 	activated() {
-		// 
+		this.getUserLocation()
 		this.loadData()
 	},
 	methods: {
+		async getUserLocation() {
+			try {
+				const location = await getCurrentLocation()
+				if (location) {
+					this.userLatitude = location.latitude
+					this.userLongitude = location.longitude
+					// 如果已经加载了数据，更新距离
+					if (Object.keys(this.designersByTab).length > 0 || Object.keys(this.allBrands).length > 0 || this.allServices.length > 0) {
+						this.loadData()
+					}
+				}
+			} catch (err) {
+				console.error('获取位置失败:', err)
+			}
+		},
 		switchMainTab(value) {
 			this.activeMainTab = value
 			//  Tab 
@@ -678,10 +695,13 @@ export default {
 			// 使用 ui-avatars 生成头像
 			const avatarUrl = data.avatar || data.coverImage || data.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=DACBB1&color=645E57&size=320`
 
-			// 计算距离（假设当前在成都市中心）
-			const currentLat = 30.5729  // 成都市中心纬度
-			const currentLng = 104.067  // 成都市中心经度
-			const distance = this.calculateDistance(currentLat, currentLng, data.latitude || 0, data.longitude || 0)
+			// 计算距离
+			let distance = ''
+			if (this.userLatitude && this.userLongitude && data.latitude && data.longitude) {
+				distance = calculateDistance(this.userLatitude, this.userLongitude, data.latitude, data.longitude)
+			} else {
+				distance = data.distance || ''
+			}
 
 			return {
 				id: data.id,
@@ -725,6 +745,7 @@ export default {
 
 		//
 		getLevelText(level) {
+			const levelNum = Number(level)
 			const levelMap = {
 				1: '初级',
 				2: '中级',
@@ -732,7 +753,7 @@ export default {
 				4: '资深',
 				5: '专家'
 			}
-			return levelMap[level] || ''
+			return levelMap[levelNum] || ''
 		},
 
 		// 
@@ -809,10 +830,13 @@ export default {
 			}
 			const brandType = brandTypeMap[groupKey] || ''
 
-			// 计算距离（假设当前在成都市中心）
-			const currentLat = 30.5729  // 成都市中心纬度
-			const currentLng = 104.067  // 成都市中心经度
-			const distance = this.calculateDistance(currentLat, currentLng, data.latitude || 0, data.longitude || 0)
+			// 计算距离
+			let distance = ''
+			if (this.userLatitude && this.userLongitude && data.latitude && data.longitude) {
+				distance = calculateDistance(this.userLatitude, this.userLongitude, data.latitude, data.longitude)
+			} else {
+				distance = data.distance || ''
+			}
 
 			return {
 				id: data.id,
@@ -844,7 +868,7 @@ export default {
 			}
 		},
 
-		// 
+		//
 		formatServiceData(data) {
 			const image = Array.isArray(data.image_urls) && data.image_urls.length > 0
 				? data.image_urls[0]
@@ -863,6 +887,11 @@ export default {
 			}
 			const category = categoryMap[data.category_id] || data.category || data.categoryName || ''
 
+			// 从 skus 数组获取价格
+			const firstSku = Array.isArray(data.skus) && data.skus.length > 0 ? data.skus[0] : {}
+			const skuSellPrice = firstSku.sell_price || firstSku.price || ''
+			const skuRefPrice = firstSku.ref_price || ''
+
 			// 设计师信息 - 支持多种字段名
 			const designerName = data.designerName || data.designer_name || data.designer?.name || data.designer?.real_name || '设计师'
 			const designerAvatar = data.designerAvatar || data.designer_avatar || data.designer?.avatar || ''
@@ -874,13 +903,17 @@ export default {
 				title: data.name || data.serviceName || '',
 				category: category,
 				description: data.detail_text || data.description || '',
-				price: String(data.fixed_price || data.price || 0),
-				appointmentPrice: String(data.fixed_ref_price || data.appointmentPrice || data.originalPrice || data.fixed_price || 0),
+				// price 为原价（ref_price），appointmentPrice 为销售价（sell_price）
+				// 优先从 skus 获取，其次用 fixed_price/fixed_ref_price
+				price: String(skuRefPrice || data.fixed_ref_price || skuSellPrice || data.fixed_price || 0),
+				appointmentPrice: String(skuSellPrice || data.fixed_price || skuRefPrice || data.fixed_ref_price || 0),
 				designerName: designerName,
 				designerRole: designerRole,
 				rating: String(data.rating || data.designer?.rating || 0),
 				reviews: String(data.review_count || data.reviewCount || data.soldCount || 0),
-				distance: data.distance || '',
+				distance: (this.userLatitude && this.userLongitude && data.latitude && data.longitude)
+					? calculateDistance(this.userLatitude, this.userLongitude, data.latitude, data.longitude)
+					: (data.distance || ''),
 				avatar: designerAvatar
 			}
 		},
@@ -1982,7 +2015,7 @@ export default {
 
 .service-footer {
 	display: flex;
-	align-items: flex-end;
+	align-items: center;
 	justify-content: space-between;
 	width: 100%;
 }
@@ -1990,14 +2023,15 @@ export default {
 .service-designer {
 	display: flex;
 	align-items: center;
-	gap: 12rpx;
+	gap: 10rpx;
 }
 
 .service-avatar {
-	width: 52rpx;
-	height: 52rpx;
+	width: 44rpx;
+	height: 44rpx;
 	border-radius: 50%;
 	overflow: hidden;
+	flex-shrink: 0;
 }
 
 .avatar-img-small {
@@ -2014,9 +2048,8 @@ export default {
 
 .designer-name-row {
 	display: flex;
-	flex-direction: row;
 	align-items: baseline;
-	gap: 8rpx;
+	gap: 6rpx;
 }
 
 .designer-name-small {
@@ -2042,26 +2075,21 @@ export default {
 	font-family: 'PingFang_SC-Semibold', Helvetica;
 	font-size: 24rpx;
 	color: #333333;
+	font-weight: 600;
 }
 
 .star-container-small {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 4rpx;
+	padding: 3rpx;
 	background-color: #333333;
 	border-radius: 4rpx;
 }
 
 .star-icon-small {
-	width: 20rpx;
-	height: 20rpx;
-	filter: brightness(0) invert(1);
-}
-
-.star-small {
-	width: 16rpx;
-	height: 16rpx;
+	width: 18rpx;
+	height: 18rpx;
 	filter: brightness(0) invert(1);
 }
 
@@ -2076,6 +2104,8 @@ export default {
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-size: 22rpx;
 	color: #a6a6a6;
+	flex-shrink: 0;
+	margin-left: 8rpx;
 }
 
 

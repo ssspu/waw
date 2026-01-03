@@ -36,18 +36,18 @@
 					</view>
 					<view class="separator-line"></view>
 					<view class="form-row">
-						<text class="row-label">详细地倝</text>
+						<text class="row-label">详细地址</text>
 						<input
 							class="row-input"
 							v-model="detailAddress"
 							type="text"
-							placeholder="详细地倝"
+							placeholder="详细地址"
 							maxlength="60"
 						/>
 					</view>
 					<view class="separator-line"></view>
 					<view class="form-row switch-row">
-						<text class="row-label">设为默认地倝</text>
+						<text class="row-label">设为默认地址</text>
 						<switch
 							class="default-switch"
 							:checked="isDefault"
@@ -59,7 +59,7 @@
 			</view>
 
 			<view class="delete-card">
-				<button class="delete-btn" @tap="handleDelete">删除收货地倝</button>
+				<button class="delete-btn" @tap="handleDelete">删除收货地址</button>
 			</view>
 
 			<view class="submit-btn-group">
@@ -109,8 +109,8 @@ export default {
 		},
 		handleDelete() {
 			uni.showModal({
-				title: '删除收货地倝',
-				content: '确定要删除该地倝吗？',
+				title: '删除收货地址',
+				content: '确定要删除该地址吗？',
 				success: (res) => {
 					if (res.confirm) {
 						uni.showToast({ title: '已删除', icon: 'success' })
@@ -133,7 +133,7 @@ export default {
 				return
 			}
 			if (!this.detailAddress.trim()) {
-				uni.showToast({ title: '请输入详细地倝', icon: 'none' })
+				uni.showToast({ title: '请输入详细地址', icon: 'none' })
 				return
 			}
 			uni.showLoading({ title: '保存中...' })

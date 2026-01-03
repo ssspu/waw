@@ -67,14 +67,14 @@
 				<view class="form-divider"></view>
 				
 				<view class="form-item">
-					<text class="form-label">经营地倝</text>
-					<input class="form-input" v-model="formData.address" placeholder="请输入经营地倝" />
+					<text class="form-label">经营地址</text>
+					<input class="form-input" v-model="formData.address" placeholder="请输入经营地址" />
 				</view>
 				<view class="form-divider"></view>
 				
 				<view class="form-item">
 					<text class="form-label">门牌号码</text>
-					<input class="form-input" v-model="formData.doorNumber" placeholder="详细地倝" />
+					<input class="form-input" v-model="formData.doorNumber" placeholder="详细地址" />
 				</view>
 				<view class="form-divider"></view>
 				
@@ -247,7 +247,7 @@ export default {
 				return
 			}
 			if (!this.formData.address) {
-				uni.showToast({ title: '请输入经营地倝', icon: 'none' })
+				uni.showToast({ title: '请输入经营地址', icon: 'none' })
 				return
 			}
 			if (!this.formData.doorNumber) {

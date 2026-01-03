@@ -25,7 +25,7 @@
 					</view>
 					<view class="separator-line"></view>
 					<view class="form-row">
-						<text class="row-label">值户行地倝</text>
+						<text class="row-label">值户行地址</text>
 						<text class="row-value-placeholder">{{ card.bankAddress }}</text>
 					</view>
 				</view>

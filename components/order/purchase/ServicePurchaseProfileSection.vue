@@ -30,7 +30,8 @@
 					<view class="favorite-btn" @tap="handleFavorite">
 						<image
 							class="favorite-icon"
-							src="https://c.animaapp.com/mifnbli6udxphC/img/frame-2142.svg"
+							:class="{ 'is-favorited': isFavorited }"
+							src="https://c.animaapp.com/mifnbli6udxphC/img/frame-6.svg"
 							mode="aspectFit"
 						></image>
 						<text class="favorite-text">收藏</text>
@@ -68,12 +69,17 @@
 					<view class="designer-details">
 						<view class="designer-name-row">
 							<text class="designer-name">{{ designer.name }}</text>
+							<view v-if="designer.level" class="designer-level-badge">
+								<text class="level-text">{{ designer.level }}</text>
+							</view>
 							<view v-if="designer.badge" class="designer-badge">
 								<text class="badge-text">{{ designer.badge }}</text>
 							</view>
 						</view>
 						<view class="designer-meta">
 							<text class="designer-role">{{ designer.role }}</text>
+							<text class="meta-divider">｜</text>
+							<text class="designer-work-years">从业{{ designer.workYears || 6 }}年</text>
 						</view>
 						<view class="designer-stats">
 							<view class="rating-info">
@@ -332,6 +338,8 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
 	name: 'ServicePurchaseProfileSection',
 	props: {
@@ -342,6 +350,7 @@ export default {
 	},
 	data() {
 		return {
+			isFavorited: false,
 			showMoreImages: false,
 			reviewScrollLeft: 0,
 			lastReviewScrollLeft: 0,
@@ -356,6 +365,12 @@ export default {
 		}
 	},
 	watch: {
+		'serviceData.isFavorited': {
+			immediate: true,
+			handler(val) {
+				this.isFavorited = val || false
+			}
+		},
 		'serviceData.reviewTags': {
 			immediate: true,
 			handler(newTags) {
@@ -432,13 +447,34 @@ export default {
 		}
 	},
 	methods: {
-		handleFavorite() {
-			this.isFavorited = !this.isFavorited
-			this.$emit('favorite-change', this.isFavorited)
-			uni.showToast({
-				title: this.isFavorited ? '收藏成功' : '取消收藏',
-				icon: 'none'
-			})
+		async handleFavorite() {
+			const serviceId = this.serviceData.id
+			if (!serviceId) return
+			try {
+				if (this.isFavorited) {
+					await api.service.unfavorite(serviceId)
+					this.isFavorited = false
+					uni.showToast({
+						title: '已取消收藏',
+						icon: 'success'
+					})
+				} else {
+					await api.service.favorite(serviceId)
+					this.isFavorited = true
+					uni.showToast({
+						title: '已收藏',
+						icon: 'success'
+					})
+				}
+				this.$emit('favorite-change', this.isFavorited)
+			} catch (err) {
+				console.error('收藏操作失败:', err)
+				// 409 表示已收藏，更新状态
+				if (err.code === 409) {
+					this.isFavorited = true
+					this.$emit('favorite-change', true)
+				}
+			}
 		},
 		handleViewAppointment() {
 			uni.navigateTo({
@@ -446,11 +482,7 @@ export default {
 			})
 		},
 		handleEnterStore() {
-			if (this.designer && this.designer.id) {
-				uni.navigateTo({
-					url: `/pages/designer/detail?id=${this.designer.id}`
-				})
-			}
+			uni.navigateBack()
 		},
 		handleViewMore() {
 			this.showMoreImages = !this.showMoreImages
@@ -547,6 +579,7 @@ export default {
 	align-items: flex-start;
 	gap: 20rpx;
 	padding: 26rpx;
+	box-sizing: border-box;
 }
 
 
@@ -573,7 +606,7 @@ export default {
 
 .price-row {
 	display: flex;
-	align-items: flex-end;
+	align-items: center;
 }
 
 .currency-symbol {
@@ -597,7 +630,6 @@ export default {
 	color: #645E57;
 	padding: 2rpx 8rpx;
 	border-radius: 4rpx;
-	filter: brightness(0) invert(1);
 	margin-left: 12rpx;
 }
 
@@ -679,7 +711,7 @@ export default {
 }
 
 .favorite-icon.is-favorited {
-	filter: invert(79%) sepia(65%) saturate(1000%) hue-rotate(359deg) brightness(103%) contrast(106%);
+	filter: invert(83%) sepia(60%) saturate(1000%) hue-rotate(360deg) brightness(105%) contrast(105%);
 }
 
 .favorite-text {
@@ -766,17 +798,16 @@ export default {
 }
 
 .designer-content {
-	height: 130rpx;
+	min-height: 130rpx;
 	gap: 14rpx;
 	padding: 20rpx;
 }
 
 .designer-info-row {
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	gap: 16rpx;
 	width: 100%;
-	// padding-bottom: 12rpx;
 }
 
 .designer-avatar {
@@ -794,6 +825,7 @@ export default {
 	align-items: flex-start;
 	gap: 6rpx;
 	flex: 1;
+	min-width: 0;
 }
 
 .designer-name-row {
@@ -807,6 +839,23 @@ export default {
 	font-size: 28rpx;
 	font-weight: 500;
 	color: #000000;
+}
+
+.designer-level-badge {
+	display: inline-flex;
+	align-items: center;
+	padding: 4rpx 10rpx;
+	background-color: #dacbb1;
+	border-radius: 6rpx;
+	height: 24rpx;
+	margin-left: 8rpx;
+}
+
+.level-text {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-weight: 500;
+	color: #645E57;
+	font-size: 20rpx;
 }
 
 .designer-badge {
@@ -830,10 +879,21 @@ export default {
 .designer-meta {
 	display: flex;
 	align-items: center;
-	gap: 12rpx;
 }
 
 .designer-role {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 22rpx;
+	font-weight: 500;
+	color: #a6a6a6;
+}
+
+.meta-divider {
+	font-size: 22rpx;
+	color: #a6a6a6;
+}
+
+.designer-work-years {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-size: 22rpx;
 	font-weight: 500;
@@ -908,16 +968,14 @@ export default {
 }
 
 .enter-store-btn {
-	height: 30rpx;
 	padding: 16rpx 28rpx;
-	position: relative;
-	top: 30rpx;
 	background-color: #ffffff;
 	border: 2rpx solid #e0e0e0;
 	border-radius: 6rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	flex-shrink: 0;
 }
 
 .enter-store-text {

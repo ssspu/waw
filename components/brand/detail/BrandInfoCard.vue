@@ -51,7 +51,7 @@
 					</view>
 					<view class="intro-row">
 						<view class="skill-badge2">品牌简介</view>
-						<text class="intro-text">{{ designerInfo.introduction }}</text>
+						<text class="intro-text">一家多年美发造型经验的美发店，多名高级设计师{{ designerInfo.introduction }}</text>
 						<view class="more-btn" @tap="handleMoreClick">
 							<text class="more-text">更多</text>
 							<image class="more-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-8.svg" mode="aspectFit"></image>
@@ -92,12 +92,9 @@
 						<view class="business-content">
 							<view class="business-status">
 								<text class="status-text">{{ businessInfo.status }}</text>
-								<text class="status-note">{{ businessInfo.restDay }}</text>
 							</view>
 							<text class="business-time">{{ businessInfo.hours }}</text>
-							<view class="business-meta" v-if="businessInfo.establishedDate">
-								<text class="established-text">{{ businessInfo.establishedDate }}</text>
-							</view>
+
 							<view class="business-more" @tap="handleMoreClick">
 								<text class="more-text">更多</text>
 								<image class="more-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-8.svg" mode="aspectFit"></image>
@@ -130,13 +127,14 @@
 				<view class="promotions" @tap="handleCouponClick">
 					<image class="promo-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-5.svg" mode="aspectFit"></image>
 					<view class="promo-badges">
-						<view 
-							v-for="(promo, index) in promotions" 
-							:key="index" 
+						<view
+							v-for="(promo, index) in promotions"
+							:key="index"
 							class="promo-badge"
 						>
 							{{ promo.text }}
 						</view>
+						<text v-if="!promotions || promotions.length === 0" class="promo-empty">暂无</text>
 					</view>
 				</view>
 			</view>
@@ -145,13 +143,13 @@
 			<view class="right-stats">
 				<view class="stats-badge">
 					<view class="stat-group">
-						<image class="stat-icon" :src="rightStats.serviceIcon" mode="aspectFit"></image>
+						<image class="stat-icon pic-icon" src="/static/icon/pic.png" mode="aspectFit"></image>
 						<text class="stat-count">({{ rightStats.serviceCount }})</text>
 						<image class="stat-dot" :src="rightStats.dotIcon" mode="aspectFit"></image>
 					</view>
 					<text class="stat-divider">｜</text>
 					<view class="stat-group">
-						<image class="stat-icon" :src="rightStats.workIcon" mode="aspectFit"></image>
+						<image class="stat-icon" src="/static/icon/vidio.png" mode="aspectFit"></image>
 						<text class="stat-count">({{ rightStats.workCount }})</text>
 						<image class="stat-dot" src="https://bioflex.cn/static/icons/arrow-right.svg" mode="aspectFit"></image>
 					</view>
@@ -493,8 +491,9 @@ export default {
 
 .intro-row {
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	gap: 12rpx;
+	position: relative;
 }
 .skill-text {
 	font-family: 'PingFang_SC-Regular', Helvetica;
@@ -518,8 +517,11 @@ export default {
 	align-items: center;
 	gap: 2rpx;
 	cursor: pointer;
-	margin-left: auto;
+	position: absolute;
+	right: 0;
+	bottom: 0;
 	flex-shrink: 0;
+	background-color: transparent;
 }
 
 .more-text {
@@ -767,6 +769,9 @@ export default {
 	font-size: 22rpx;
 	position: relative;
 	z-index: 2;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .shop-distance {
@@ -848,6 +853,13 @@ export default {
 	font-size: 22rpx;
 }
 
+.promo-empty {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: normal;
+	color: #a6a6a6;
+	font-size: 22rpx;
+}
+
 .right-stats {
 	position: absolute;
 	top: 30rpx;
@@ -880,8 +892,13 @@ export default {
 }
 
 .stat-icon {
-	width: 36rpx;
-	height: 36rpx;
+	width: 30rpx;
+	height: 26rpx;
+}
+
+.pic-icon {
+	width: 26rpx;
+	height: 22rpx;
 }
 
 .stat-count {

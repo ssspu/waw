@@ -110,7 +110,7 @@
 					</view>
 					
 					<!-- 标签 -->
-					<view class="store-tag">{{ store.tag }}</view>
+					<view class="store-tag">舒适</view>
 						</view>
 					</view>
 				</swiper-item>
@@ -159,7 +159,7 @@
 				<view class="store-details">
 					<view class="store-header">
 						<text class="store-name">{{ store.name }}</text>
-						<view class="store-tag-badge">{{ store.tag }}</view>
+						<view class="store-tag-badge">舒适</view>
 					</view>
 					<text class="store-type">{{ store.type }}</text>
 					<view class="store-stats-row">
@@ -201,6 +201,7 @@
 
 <script>
 import api from '@/api'
+import { calculateDistance, getCurrentLocation } from '@/utils/location.js'
 
 export default {
 	data() {
@@ -252,12 +253,11 @@ export default {
 			},
 			
 			activeCategory: '品牌馆',
-			
 			activeBrandType: '',
-			
 			allBrands: [],
-			
 			loading: false,
+			userLatitude: null,
+			userLongitude: null
 		}
 	},
 	computed: {
@@ -271,20 +271,33 @@ export default {
 		}
 	},
 	mounted() {
+		this.getUserLocation()
 		this.fetchAllTabsData()
 	},
 	methods: {
+		async getUserLocation() {
+			try {
+				const location = await getCurrentLocation()
+				if (location) {
+					this.userLatitude = location.latitude
+					this.userLongitude = location.longitude
+					// 如果已经加载了数据，更新距离
+					if (this.allBrands.length > 0) {
+						this.classifyBrandsByTab(this.allBrands)
+					}
+				}
+			} catch (err) {
+				console.error('获取位置失败:', err)
+			}
+		},
 		
 		async fetchAllTabsData() {
-			
 			try {
 				const res = await api.brand.getList({ page: 1, pageSize: 50 })
 				if (res.code === 200) {
 					const list = res.data?.items || []
-					
 					this.allBrands = list
 					if (list.length > 0) {
-						
 						this.classifyBrandsByTab(list)
 					}
 				}
@@ -294,7 +307,6 @@ export default {
 		},
 		
 		classifyBrandsByTab(list) {
-			
 			let filteredList = list
 			if (this.activeBrandType) {
 				filteredList = list.filter(b => {
@@ -310,28 +322,37 @@ export default {
 				})
 			}
 
-			
 			const finalList = filteredList.length > 0 ? filteredList : list
 
-			
-			const starList = [...finalList].sort((a, b) => (b.rating || 0) - (a.rating || 0))
-			this.nearbyStoresMap.star = starList.map(b => this.transformBrand(b))
-			this.storeSlides.star = this.groupIntoSlides(starList.map(b => this.transformBrandForSlide(b)))
+			// 转换并计算距离
+			const transformedList = finalList.map(b => {
+				const item = this.transformBrand(b)
+				if (this.userLatitude && this.userLongitude && b.latitude && b.longitude) {
+					item.distance = calculateDistance(this.userLatitude, this.userLongitude, b.latitude, b.longitude)
+				}
+				if (!item.distance) {
+					item.distance = '2.5km'
+				}
+				return item
+			})
 
-			
-			const popularList = [...finalList].sort((a, b) => (b.appointment_count || 0) - (a.appointment_count || 0))
-			this.nearbyStoresMap.popular = popularList.map(b => this.transformBrand(b))
-			this.storeSlides.popular = this.groupIntoSlides(popularList.map(b => this.transformBrandForSlide(b)))
+			// 星级店
+			this.nearbyStoresMap.star = [...transformedList].sort((a, b) => (Number(b.rating) || 0) - (Number(a.rating) || 0))
+			this.storeSlides.star = this.groupIntoSlides(this.nearbyStoresMap.star.map(item => this.transformBrandForSlide(item)))
 
-			
-			const menList = finalList.filter(b => {
-				const target = (b.target_customer || '').toLowerCase()
+			// 人气店
+			this.nearbyStoresMap.popular = [...transformedList].sort((a, b) => (parseInt(b.services) || 0) - (parseInt(a.services) || 0))
+			this.storeSlides.popular = this.groupIntoSlides(this.nearbyStoresMap.popular.map(item => this.transformBrandForSlide(item)))
+
+			// 男士店
+			const menList = transformedList.filter(item => {
+				const target = (item.targetCustomer || '').toLowerCase()
 				return target.includes('男士') || target.includes('男') || target.includes('男发')
 			})
 			
-			const finalMenList = menList.length > 0 ? menList : [...finalList].sort((a, b) => (b.appointment_count || 0) - (a.appointment_count || 0))
-			this.nearbyStoresMap.men = finalMenList.map(b => this.transformBrand(b))
-			this.storeSlides.men = this.groupIntoSlides(finalMenList.map(b => this.transformBrandForSlide(b)))
+			const finalMenList = menList.length > 0 ? menList : [...transformedList].sort((a, b) => (parseInt(b.services) || 0) - (parseInt(a.services) || 0))
+			this.nearbyStoresMap.men = finalMenList
+			this.storeSlides.men = this.groupIntoSlides(finalMenList.map(item => this.transformBrandForSlide(item)))
 		},
 		
 		groupIntoSlides(transformedList) {
@@ -341,72 +362,66 @@ export default {
 			}
 			return slideGroups
 		},
-		handleCategoryClick(item) {
-			
-			if (this.activeBrandType === item.brandType) {
-				
-				this.activeBrandType = ''
-				this.activeCategory = '品牌馆'
-			} else {
-				
-				this.activeBrandType = item.brandType
-				this.activeCategory = item.title
-			}
-			
-			if (this.allBrands.length > 0) {
-				this.classifyBrandsByTab(this.allBrands)
-			}
-		},
 		
 		transformBrand(b) {
-			
 			const defaultImage = 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png'
-			
+
 			let establishedYear = ''
 			if (b.established_date) {
 				const year = new Date(b.established_date).getFullYear()
 				establishedYear = `${year}年`
 			}
-			
+
 			const amenities = b.service_features ? b.service_features.split(/[,]/) : (b.tags || ['代客泊车', '免费茶点', '共享工位', '7天无忧'])
-			
-			const level = b.brand_type || b.business_mode || '专业店'
+			const firstAmenity = amenities[0] || '舒适'
+
+			// 将 business_mode 映射到 categoryItems 中的四个类型
+			const businessModeMap = {
+				'单店经营': '专业店',
+				'专业店': '专业店',
+				'连锁经营': '品牌店',
+				'品牌直营': '品牌店',
+				'工作室': '工作室',
+				'商场店': '综合店',
+				'街边店': '综合店',
+				'写字楼店': '综合店',
+				'创意园': '综合店'
+			}
+			const level = businessModeMap[b.business_mode] || b.brand_type || '专业店'
+
 			return {
 				id: b.id,
 				image: b.avatar || b.coverImage || defaultImage,
 				name: b.brand_intro || b.name || '未知品牌',
-				type: `${level}｜${establishedYear || '2012年'}就业`,
+				type: `${level}｜${establishedYear || '2012年'}开业`,
 				rating: String(b.rating || 4.8),
 				designers: `${b.designer_count || 0}人`,
 				services: String(b.appointment_count || 0),
 				amenities: amenities,
-				distance: b.distance || '',
-				tag: level, 
-				targetCustomer: b.target_customer || '', 
-				venueType: b.venue_type || '', 
-				chainCount: b.chain_count || 0 
+				distance: b.distance || '2.5km',
+				tag: level,
+				storeTag: firstAmenity,
+				targetCustomer: b.target_customer || '',
+				venueType: b.venue_type || '',
+				chainCount: b.chain_count || 0,
+				latitude: b.latitude,
+				longitude: b.longitude
 			}
 		},
 		
-		transformBrandForSlide(b) {
-			const baseData = this.transformBrand(b)
-			
-			const amenities = b.service_features ? b.service_features.split(/[,]/) : (b.tags || ['代客泊车', '免费茶点'])
+		transformBrandForSlide(item) {
 			return {
-				...baseData,
-				image: b.coverImage || b.avatar || 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png',
+				...item,
+				image: item.image || 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-220-2.png',
 				overlay: 'https://c.animaapp.com/mi5cgxi6ndVkfo/img/rectangle-221.svg',
-				amenities: amenities.slice(0, 2), 
+				amenities: item.amenities.slice(0, 2), 
 			}
 		},
 		handleCategoryClick(item) {
-			
 			if (this.activeBrandType === item.brandType) {
-				
 				this.activeBrandType = ''
 				this.activeCategory = '品牌馆'
 			} else {
-				
 				this.activeBrandType = item.brandType
 				this.activeCategory = item.title
 			}
@@ -431,7 +446,6 @@ export default {
 			this.storeSwiperIndex = e.detail.current
 		},
 		handleStoreClick(store) {
-			
 			if (!store.id) {
 				uni.showToast({ title: '品牌信息不完整', icon: 'none' })
 				return
@@ -715,8 +729,8 @@ export default {
 }
 
 .star-icon {
-	width: 20rpx;
-	height: 20rpx;
+	width: 16rpx;
+	height: 16rpx;
 	filter: brightness(0) invert(1);
 }
 
@@ -981,7 +995,7 @@ export default {
 	height: 151.04rpx;
 	background-size: cover;
 	background-position: center;
-	border-radius: 8rpx;
+	border-radius: 50% 50% 2% 50%;
 	flex-shrink: 0;
 }
 
@@ -1078,6 +1092,10 @@ export default {
 	font-weight: 500;
 	color: #666666;
 	font-size: 24rpx;
+}
+
+.store-stats-row .stat-divider {
+	color: #a6a6a6;
 }
 
 .amenity-badge-outline {

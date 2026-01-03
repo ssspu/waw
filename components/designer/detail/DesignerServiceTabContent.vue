@@ -28,12 +28,17 @@ export default {
 		},
 		activeSubTab: {
 			type: String,
-			default: 'hair'
+			default: 'all'
+		}
+	},
+	watch: {
+		activeSubTab(newVal) {
+			// 当分类切换时，重新加载服务列表
+			this.$emit('refresh-services', newVal)
 		}
 	},
 	methods: {
 		handleBookService(bookingData) {
-			
 			this.$emit('book-service', bookingData)
 		}
 	}

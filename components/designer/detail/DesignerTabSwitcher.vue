@@ -43,16 +43,13 @@ export default {
 <style scoped lang="scss">
 .tabs-card {
 	width: 100%;
-margin-top: 0;
-	background-color: transparent;
+	margin-top: 0;
+	background-color: #ffffff;
 	border-radius: 0;
 	border: 0;
 	box-shadow: none;
-padding: 20rpx 0rpx 0rpx 0rpx;
+	padding: 20rpx 0rpx 0rpx 0rpx;
 	box-sizing: border-box;
-	// margin-left: -20rpx;
-	// background-color: #fcc;
-	
 }
 
 .tabs-header {

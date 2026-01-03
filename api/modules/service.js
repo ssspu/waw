@@ -30,9 +30,10 @@ export default {
 
   /**
    * 获取服务分类
+   * @returns {Array} 分类列表 [{ id, name, icon, sort_order }]
    */
   getCategories() {
-    return get(`${SERVICE_PREFIX}/categories`)
+    return get('/category/list')
   },
 
   /**

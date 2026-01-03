@@ -35,14 +35,28 @@ const formatDesignerId = (id) => {
 export default {
   /**
    * 获取设计师列表
-   * @param {Object} params - { page, pageSize, keyword?, categoryId?, sortBy?, level?, designer_id? }
+   * @param {Object} params - 查询参数
+   * @param {string} [params.shop_id] - 门店ID（UUID格式）。不传：查询个人设计师；传入：查询该门店旗下设计师
+   * @param {number} [params.professional_level] - 专业等级筛选（1-10）
+   * @param {number} [params.min_rating] - 最低评分筛选（0-5）
+   * @param {number} [params.page=1] - 页码
+   * @param {number} [params.pageSize=10] - 每页数量，最大100
    */
   getList(params = {}) {
-    return get(`${DESIGNER_PREFIX}/list`, {
+    const queryParams = {
       page: Number(params.page) || 1,
-      pageSize: Number(params.pageSize) || 10,
-      ...params
-    })
+      pageSize: Math.min(Number(params.pageSize) || 10, 100)
+    }
+    if (params.shop_id) {
+      queryParams.shop_id = params.shop_id
+    }
+    if (params.professional_level) {
+      queryParams.professional_level = Number(params.professional_level)
+    }
+    if (params.min_rating !== undefined && params.min_rating !== null) {
+      queryParams.min_rating = Number(params.min_rating)
+    }
+    return get(`${DESIGNER_PREFIX}/list`, queryParams)
   },
 
   /**

@@ -41,14 +41,14 @@
 		
 		<!-- 主内容区域 -->
 		<scroll-view class="main-content" scroll-y>
-			<!-- 怉属行业卡片 -->
+			<!-- 体验行业卡片 -->
 			<view class="card">
 				<view class="card-title-row">
-					<text class="card-title">怉属行业</text>
+					<text class="card-title">体验行业</text>
 				</view>
 				
 				<view class="form-item clickable" @tap="selectIndustry">
-					<text class="form-label">怉属行业</text>
+					<text class="form-label">体验行业</text>
 					<view class="form-right">
 						<text class="form-value" :class="{ placeholder: !formData.industry }">
 							{{ formData.industry || '去选择' }}

@@ -19,9 +19,9 @@
 									<text class="item-title">设计师入驻</text>
 									<text class="item-desc">自由美业设计师，打造个人IP品牌</text>
 								</view>
-								<image 
-									class="arrow-icon" 
-									src="https://bioflex.cn/static/icon/vector-4.svg" 
+								<image
+									class="arrow-icon"
+									src="/static/icon/back.png"
 									mode="aspectFit"
 								></image>
 							</view>
@@ -40,9 +40,9 @@
 									<text class="item-title">实体门店入驻</text>
 									<text class="item-desc">美业线下实体门店，线上线下经营双驱动</text>
 								</view>
-								<image 
-									class="arrow-icon" 
-									src="https://bioflex.cn/static/icon/vector-4.svg" 
+								<image
+									class="arrow-icon"
+									src="/static/icon/back.png"
 									mode="aspectFit"
 								></image>
 							</view>
@@ -291,6 +291,7 @@ export default {
 	width: 28rpx;
 	height: 28rpx;
 	flex-shrink: 0;
+	transform: rotate(180deg);
 }
 
 .divider {

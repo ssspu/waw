@@ -139,7 +139,8 @@
 			</view>
 		</view>
 		
-		<!-- 问TA卡片 -->
+		<!-- 问TA卡片 - 暂时隐藏 -->
+		<!--
 		<view class="qa-card">
 			<view class="card-header">
 				<text class="card-title">问TA</text>
@@ -148,12 +149,12 @@
 					<image class="chevron-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-8.svg" mode="aspectFit"></image>
 				</view>
 			</view>
-			
-			<!-- 问题列表 -->
+
+			问题列表
 			<view class="questions-list">
-				<view 
-					v-for="(question, index) in questions" 
-					:key="index" 
+				<view
+					v-for="(question, index) in questions"
+					:key="index"
 					class="question-item"
 					@tap="handleQuestionClick(question)"
 				>
@@ -164,6 +165,7 @@
 				</view>
 			</view>
 		</view>
+		-->
 		
 		<!-- 入驻按钮 -->
 		<view class="join-btn" @tap="handleJoin">
@@ -396,7 +398,9 @@ export default {
 			console.log('Question clicked:', question)
 		},
 		handleJoin() {
-			console.log('Join clicked')
+			uni.navigateTo({
+				url: '/packageMine/pages/mine/apply-settlement'
+			})
 		},
 		handleReviewScroll(e) {
 			const scrollLeft = e.detail.scrollLeft || 0
@@ -511,14 +515,14 @@ export default {
 	width: 100%;
 	align-items: stretch;
 	gap: 16rpx;
-	padding: 0 12rpx;
+	padding: 0;
 	box-sizing: border-box;
 }
 
 .info-card {
 	width: 100%;
 	background-color: #ffffff;
-	border-radius: 12rpx;
+	border-radius: 16rpx;
 	border: 0;
 	box-shadow: none;
 	box-sizing: border-box;
@@ -694,15 +698,13 @@ export default {
 }
 
 .reviews-card {
-	width: calc(100% + 24rpx);
+	width: 100%;
 	background-color: #ffffff;
-	border-radius: 12rpx;
+	border-radius: 16rpx;
 	border: 0;
 	box-shadow: none;
 	box-sizing: border-box;
 	overflow: hidden;
-	margin-left: -12rpx;
-	margin-right: -12rpx;
 	align-self: stretch;
 }
 
@@ -962,7 +964,7 @@ export default {
 .qa-card {
 	width: 100%;
 	background-color: #ffffff;
-	border-radius: 12rpx;
+	border-radius: 16rpx;
 	border: 0;
 	box-shadow: none;
 	box-sizing: border-box;
@@ -1033,7 +1035,7 @@ export default {
 	gap: 8rpx;
 	padding: 16rpx 30rpx;
 	background-color: #ffffff;
-	border-radius: 4rpx;
+	border-radius: 16rpx;
 	box-sizing: border-box;
 }
 

@@ -1,14 +1,14 @@
 <template>
 	<view class="setting-detail-page">
 		<view class="main-content">
-		<!-- 地倝列表 -->
+		<!-- 地址列表 -->
 		<view 
 			v-for="(address, index) in addresses" 
 			:key="index"
 			class="address-card"
 		>
 			<view class="card-content">
-				<!-- 地倝头部 -->
+				<!-- 地址头部 -->
 				<view class="address-header">
 					<view class="address-check">
 						<view 
@@ -26,7 +26,7 @@
 					<view class="address-info">
 						<view class="info-top">
 							<text class="address-name">{{ address.name }} {{ address.phone }}</text>
-							<text v-if="address.isDefault" class="default-tag">默认地倝</text>
+							<text v-if="address.isDefault" class="default-tag">默认地址</text>
 						</view>
 						<text class="address-title">{{ address.province }}{{ address.city }}{{ address.district }}</text>
 						<text class="address-detail">{{ address.detail }}</text>
@@ -46,9 +46,9 @@
 			</view>
 		</view>
 
-			<!-- 新增地倝按钮 -->
+			<!-- 新增地址按钮 -->
 			<view class="add-address-btn" @tap="handleAddAddress">
-				<text class="add-text">新增地倝</text>
+				<text class="add-text">新增地址</text>
 			</view>
 		</view>
 	</view>
@@ -67,7 +67,7 @@ export default {
 					province: '四川省',
 					city: '成都市',
 					district: '武侯区',
-					title: '默认地倝',
+					title: '默认地址',
 					detail: '软件园b7栋613号武侯区软件园b7栋613号'
 				},
 				{
@@ -78,7 +78,7 @@ export default {
 					province: '四川省',
 					city: '成都市',
 					district: '武侯区',
-					title: '默认地倝',
+					title: '默认地址',
 					detail: '软件园b7栋613号武侯区软件园b7栋613号'
 				}
 			]
@@ -90,8 +90,8 @@ export default {
 		},
 		handleDeleteAddress(address) {
 			uni.showModal({
-				title: '删除地倝',
-				content: '确定要删除这个地倝吗？',
+				title: '删除地址',
+				content: '确定要删除这个地址吗？',
 				success: (res) => {
 					if (res.confirm) {
 						console.log('Delete address:', address.id)

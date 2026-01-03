@@ -400,6 +400,7 @@
 import ServiceGallerySection from '../../components/main/index/ServiceGallerySection.vue'
 import NearbyStoreItem from '../../components/common/NearbyStoreItem.vue'
 import api from '@/api'
+import { calculateDistance, getCurrentLocation } from '@/utils/location.js'
 
 export default {
 	name: 'SearchPage',
@@ -494,7 +495,9 @@ export default {
 				designerStar: '',
 				merchantDiamond: '',
 				storeType: ''
-			}
+			},
+			userLatitude: null,
+			userLongitude: null
 		}
 	},
 	computed: {
@@ -570,6 +573,7 @@ export default {
 		}
 
 		
+		this.getUserLocation()
 		this.loadData()
 	},
 	onShow() {
@@ -598,6 +602,21 @@ export default {
 		}).exec()
 	},
 	methods: {
+		async getUserLocation() {
+			try {
+				const location = await getCurrentLocation()
+				if (location) {
+					this.userLatitude = location.latitude
+					this.userLongitude = location.longitude
+					// 如果已经加载了数据，更新距离
+					if (this.nearbyStylistsData.length > 0 || this.brandRecords.length > 0) {
+						this.loadData()
+					}
+				}
+			} catch (err) {
+				console.error('获取位置失败:', err)
+			}
+		},
 		
 		async loadFilterOptions() {
 			try {
@@ -869,7 +888,9 @@ export default {
 				services: String(data.total_appointments || data.appointmentCount || 0),
 				works: String(data.worksCount || 0),
 				tags: data.tags || [],
-				distance: data.distance ? `距您${data.distance}km` : ''
+				distance: (this.userLatitude && this.userLongitude && data.latitude && data.longitude) 
+					? calculateDistance(this.userLatitude, this.userLongitude, data.latitude, data.longitude) 
+					: (data.distance ? `距您${data.distance}km` : '')
 			}
 		},
 
@@ -885,7 +906,9 @@ export default {
 				rating: String(data.rating || 0),
 				designers: `${data.designer_count || 0}人`,
 				services: String(data.appointment_count || 0),
-				distance: data.distance ? `距您${data.distance}km` : '',
+				distance: (this.userLatitude && this.userLongitude && data.latitude && data.longitude) 
+					? calculateDistance(this.userLatitude, this.userLongitude, data.latitude, data.longitude) 
+					: (data.distance ? `距您${data.distance}km` : ''),
 				amenities: data.service_features ? data.service_features.split(/[,]/) : (data.tags || []),
 				image: data.avatar || data.coverImage || data.image || ''
 			}
@@ -1719,7 +1742,6 @@ export default {
 	font-family: 'PingFang_SC-Medium', Helvetica;
 	font-weight: 500;
 	border-radius: 4rpx;
-	filter: brightness(0) invert(1);
 }
 
 .nearby-role {
@@ -1752,7 +1774,6 @@ export default {
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-weight: normal;
 	border-radius: 4rpx;
-	filter: brightness(0) invert(1);
 }
 
 .nearby-stats {

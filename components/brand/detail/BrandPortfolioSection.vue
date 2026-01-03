@@ -67,10 +67,10 @@
 		</view>
 		
 		<!-- 顾客点评卡片 -->
-		<view class="reviews-card">
+		<view class="reviews-card" @tap="handleViewMoreReviews">
 			<view class="card-header">
 				<text class="card-title">顾客点评</text>
-				<view class="more-btn" @tap="handleViewMoreReviews">
+				<view class="more-btn" @tap.stop="handleViewMoreReviews">
 					<text class="more-text">{{ totalReviewCount }}条点评</text>
 					<image class="chevron-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-8.svg" mode="aspectFit"></image>
 				</view>
@@ -675,15 +675,13 @@ export default {
 }
 
 .reviews-card {
-	width: calc(100% + 24rpx);
+	width: 100%;
 	background-color: #ffffff;
-	border-radius: 12rpx;
+	border-radius: 16rpx;
 	border: 0;
 	box-shadow: none;
 	box-sizing: border-box;
 	overflow: hidden;
-	margin-left: -12rpx;
-	margin-right: -12rpx;
 	align-self: stretch;
 }
 

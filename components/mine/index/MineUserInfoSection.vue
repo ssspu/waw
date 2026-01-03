@@ -191,14 +191,15 @@ export default {
 	box-sizing: border-box;
 	display: flex;
 	justify-content: center;
+	align-items: center;
 }
 
 .user-card {
-	width: 710rpx;
-	padding: 40rpx 20rpx 36rpx;
+	width: 690rpx;
+	padding: 40rpx 30rpx 36rpx;
 	position: relative;
 	box-sizing: border-box;
-	margin-top: -60rpx;
+	margin: -60rpx auto 0;
 }
 
 .user-card::before {
@@ -392,14 +393,14 @@ export default {
 }
 
 .territory-card {
-	margin-top: 36rpx;
+	margin: 10rpx auto 0;
 	background: #f7f7f7;
 	border-radius: 24rpx;
 	padding: 28rpx 20rpx;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	width: 100%;
+	width: 610rpx;
 	box-sizing: border-box;
 	overflow: hidden;
 }

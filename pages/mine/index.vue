@@ -8,11 +8,11 @@
 			></image>
 			<view class="hero-toolbar" :style="{ paddingTop: statusBarHeight + 'px' }">
 				<view class="toolbar-btns">
-					<view class="toolbar-btn" @tap="handleOnlineService">
-						<image class="toolbar-icon" src="https://bioflex.cn/static/icon/online-service.png" mode="aspectFit"></image>
+					<view class="toolbar-btn kefu-btn" @tap="handleOnlineService">
+						<image class="toolbar-icon kefu-icon" src="/static/icon/kefu.png" mode="aspectFit"></image>
 					</view>
-					<view class="toolbar-btn" @tap="handleNotice">
-						<image class="toolbar-icon" src="https://bioflex.cn/static/icon/notice.png" mode="aspectFit"></image>
+					<view class="toolbar-btn notice-btn" @tap="handleNotice">
+						<image class="toolbar-icon notice-icon" src="https://bioflex.cn/static/icon/notice.png" mode="aspectFit"></image>
 					</view>
 				</view>
 			</view>
@@ -101,15 +101,30 @@ export default {
 }
 
 .toolbar-btn {
-	width: 60rpx;
-	height: 60rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
 }
 
-.toolbar-icon {
+.kefu-btn {
+	width: 60rpx;
+	height: 60rpx;
+	background-color: rgba(0, 0, 0, 0.3);
+	border-radius: 50%;
+}
+
+.kefu-icon {
+	width: 36rpx;
+	height: 36rpx;
+}
+
+.notice-btn {
+	width: 60rpx;
+	height: 60rpx;
+}
+
+.notice-icon {
 	width: 70rpx;
 	height: 70rpx;
 }
