@@ -4,7 +4,7 @@
 
 import { success, error, paginate } from '../utils.js'
 
-// 我的设计师列表（私人领地）- 包含怉有分类
+// 我的设计师列表（私人领地）- 包含所有分类
 const myDesigners = [
   // ========== 美发师 hairstylist ==========
   {
@@ -87,7 +87,7 @@ const myDesigners = [
     avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     role: '美容师',
     level: '资深',
-    position: '怊术总监｜从业15年',
+    position: '技术总监｜从业15年',
     specialties: ['问题肌肤', '祛斑祛痘', '美白'],
     rating: 4.8,
     category: 'beautician',
@@ -198,7 +198,7 @@ const myDesigners = [
     avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     role: '美体师',
     level: '资深',
-    position: '怊术总监｜从业12年',
+    position: '技术总监｜从业12年',
     specialties: ['产后修复', '纤体瘦身', '肩颈理疗'],
     rating: 4.9,
     category: 'body',
@@ -211,7 +211,7 @@ const myDesigners = [
   }
 ]
 
-// 我的品牌馆列表（私人领地）- 包含怉有分类
+// 我的品牌馆列表（私人领地）- 包含所有分类
 const myBrands = [
   // ========== 美发 hair ==========
   {
@@ -266,7 +266,7 @@ const myBrands = [
   {
     id: '3',
     brandId: '3',
-    name: '悦颜美容会怉',
+    name: '悦颜美容会所',
     avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     type: '品牌',
     level: '高端',
@@ -413,7 +413,7 @@ const myBrands = [
   {
     id: '9',
     brandId: '9',
-    name: '御尚SPA养生会怉',
+    name: '御尚SPA养生会所',
     avatar: 'https://bioflex.cn/static/avatar/avatar.png',
     type: '品牌',
     level: '高端',

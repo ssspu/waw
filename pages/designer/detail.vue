@@ -32,21 +32,32 @@
 				:tabs="tabs"
 				@tab-change="handleTabChange"
 			></designer-tab-switcher>
-			
+
 			<!-- 子标签切换（根据当前tab显示） -->
 			<view
 				v-if="currentSubTabs.length"
 				class="sub-tabs-section"
 			>
-				<view
-					v-for="(subTab, index) in currentSubTabs"
-					:key="index"
-					class="sub-tab-item"
-					:class="{ active: activeSubTabs[activeTab] === subTab.id }"
-					@tap="handleSubTabClick(subTab.id)"
-				>
-					<text class="sub-tab-title">{{ subTab.title }}</text>
-					<text v-if="subTab.subtitle" class="sub-tab-subtitle">{{ subTab.subtitle }}</text>
+				<view class="sub-tabs-left">
+					<view
+						v-for="(subTab, index) in currentSubTabs"
+						:key="index"
+						class="sub-tab-item"
+						:class="{ active: activeSubTabs[activeTab] === subTab.id }"
+						@tap="handleSubTabClick(subTab.id)"
+					>
+						<text class="sub-tab-title">{{ subTab.title }}</text>
+						<text v-if="subTab.subtitle" class="sub-tab-subtitle">{{ subTab.subtitle }}</text>
+					</view>
+				</view>
+				<view v-if="activeTab === 'works'" class="filter-btn" @tap="handleWorksFilter">
+					<text class="filter-text">筛选</text>
+					<image
+						class="filter-arrow"
+						:class="{ rotate: showWorksFilter }"
+						src="https://bioflex.cn/static/icon/down.png"
+						mode="aspectFit"
+					></image>
 				</view>
 			</view>
 		</view>
@@ -77,7 +88,7 @@
 
 				<!-- 作品tab内容 -->
 				<view v-if="activeTab === 'works'" class="tab-content" :key="'works'">
-					<designer-works-tab-content :designer-id="designerUserId || designerId" :active-sub-tab="activeSubTabs.works"></designer-works-tab-content>
+					<designer-works-tab-content :designer-id="designerUserId || designerId" :active-sub-tab="activeSubTabs.works" :show-filter="showWorksFilter" @update:showFilter="showWorksFilter = $event"></designer-works-tab-content>
 				</view>
 
 				<!-- 点评tab内容 -->
@@ -88,7 +99,7 @@
 
 			<!-- 底部内容（只在服务tab显示） -->
 			<view v-if="activeTab === 'service'" class="bottom-content">
-				<designer-portfolio-section :designer-id="designerUserId || designerId"></designer-portfolio-section>
+				<designer-portfolio-section :designer-id="designerUserId || designerId" @go-to-reviews="handleGoToReviews"></designer-portfolio-section>
 			</view>
 			
 			<!-- 预约按钮（只在预约tab显示） -->
@@ -136,12 +147,14 @@ export default {
 		CouponPopup
 	},
 	async onLoad(options) {
-		
+
 		this.designerId = options.id || '1'
 
-		
+		// 生成预约日期数据
+		this.generateAppointmentDates()
+
 		await this.loadDesignerDetail()
-		
+
 		this.getUserLocation()
 
 		
@@ -167,8 +180,9 @@ export default {
 			coverImage: '',
 			activeTab: 'service',
 			showCouponPopup: false,
-			selectedBookingData: null, 
-			selectedTimeSlot: null, 
+			selectedBookingData: null,
+			selectedTimeSlot: null,
+			showWorksFilter: false,
 			activeSubTabs: {
 				service: 'hair-service',
 				appointment: 'today',
@@ -187,15 +201,7 @@ export default {
 					
 					
 				],
-				appointment: [
-					{ id: 'today', title: '今天', subtitle: '周一' },
-					{ id: 'tomorrow', title: '明天', subtitle: '周二' },
-					{ id: '1205', title: '12.05', subtitle: '周三' },
-					{ id: '1206', title: '12.06', subtitle: '周四' },
-					{ id: '1207', title: '12.07', subtitle: '周五' },
-					{ id: '1208', title: '12.08', subtitle: '周六' },
-					{ id: '1209', title: '12.09', subtitle: '周日' }
-				],
+				appointment: [],
 				works: [
 					{ id: 'female', title: '女士' },
 					{ id: 'male', title: '男士' },
@@ -288,6 +294,12 @@ export default {
 						5: '名师'
 					}
 
+					// 清理 skills 中的引号和中括号
+					let skillsText = data.expertise || (data.specialties ? data.specialties.join(',') : '')
+					if (typeof skillsText === 'string') {
+						skillsText = skillsText.replace(/[\[\]"']/g, '')
+					}
+
 					this.designerInfo = {
 						id: data.user_id || data.id || '',
 						avatar: data.avatar || data.coverImage || '',
@@ -298,7 +310,7 @@ export default {
 						certIcon: data.certIcon || '',
 						certText: data.certification || '',
 						certDot: data.certDot || '',
-						skills: data.expertise || (data.specialties ? data.specialties.join(',') : ''),
+						skills: skillsText,
 						introduction: data.introduction || ''
 					}
 
@@ -306,6 +318,7 @@ export default {
 						icon: '',
 						label: tag.trim()
 					}))
+					this.serviceBadges.push({ icon: '', label: '免费WiFi' }, { icon: '', label: '停车便利' }, { icon: '', label: '环境优雅' }, { icon: '', label: '预约优先' })
 
 					this.statsData = [
 						{ value: String(data.total_appointments || data.appointmentCount || 0), label: "预约" },
@@ -369,8 +382,31 @@ export default {
 		handleMoreInfo() {
 			uni.navigateTo({ url: `/pages/designer/info?id=${this.designerId}` })
 		},
-		handleFollow() {
-			console.log('Follow clicked')
+		async handleFollow() {
+			console.log('handleFollow called, designerInfo.id:', this.designerInfo.id)
+			if (!this.designerInfo.id) {
+				uni.showToast({ title: '设计师信息加载中', icon: 'none' })
+				return
+			}
+			try {
+				console.log('Calling designerApi.follow with id:', this.designerInfo.id)
+				const res = await designerApi.follow(this.designerInfo.id)
+				console.log('Follow response:', res)
+				if (res.code === 200) {
+					uni.showToast({ title: '关注成功', icon: 'success' })
+				} else if (res.code === 409) {
+					uni.showToast({ title: '已关注', icon: 'none' })
+				} else {
+					uni.showToast({ title: res.message || '关注失败', icon: 'none' })
+				}
+			} catch (err) {
+				console.error('关注失败:', err)
+				if (err.code === 409 || (err.response && err.response.status === 409)) {
+					uni.showToast({ title: '已关注', icon: 'none' })
+				} else {
+					uni.showToast({ title: '关注失败', icon: 'none' })
+				}
+			}
 		},
 		handlePhone() {
 			if (this.shopInfo.phone) {
@@ -414,8 +450,11 @@ export default {
 			this.selectedTimeSlot = timeSlot
 		},
 		handleGoToService() {
-			
+
 			this.activeTab = 'service'
+		},
+		handleGoToReviews() {
+			this.activeTab = 'reviews'
 		},
 		handleBooking() {
 			
@@ -436,12 +475,16 @@ export default {
 				price: this.selectedBookingData.price,
 				timeSlot: this.selectedTimeSlot,
 				date: this.activeSubTabs.appointment,
+				// 获取完整的日期信息（包含 date 字段如 2026-01-17）
+				dateInfo: this.subTabs.appointment.find(d => d.id === this.activeSubTabs.appointment),
 				designer: this.designerInfo,
 				shop: this.shopInfo
 			}
-			
+
+			// 使用本地存储传递复杂数据，避免 URL 编码问题
+			uni.setStorageSync('pendingOrderData', orderData)
 			uni.navigateTo({
-				url: '/packageOrder/pages/order/detail?data=' + encodeURIComponent(JSON.stringify(orderData))
+				url: '/packageOrder/pages/order/detail'
 			})
 		},
 		handleClaimCoupon(coupon) {
@@ -511,6 +554,49 @@ export default {
 			} catch (err) {
 				console.error('获取服务分类失败:', err)
 			}
+		},
+		handleWorksFilter() {
+			this.showWorksFilter = !this.showWorksFilter
+		},
+		// 生成未来7天的日期数据
+		generateAppointmentDates() {
+			const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+			const dates = []
+			const today = new Date()
+
+			for (let i = 0; i < 7; i++) {
+				const date = new Date(today)
+				date.setDate(today.getDate() + i)
+
+				const month = date.getMonth() + 1
+				const day = date.getDate()
+				const weekDay = weekDays[date.getDay()]
+
+				let title = ''
+				let id = ''
+
+				if (i === 0) {
+					title = '今天'
+					id = 'today'
+				} else if (i === 1) {
+					title = '明天'
+					id = 'tomorrow'
+				} else {
+					title = `${month}.${day < 10 ? '0' + day : day}`
+					id = `${month}${day < 10 ? '0' + day : day}`
+				}
+
+				dates.push({
+					id: id,
+					title: title,
+					subtitle: weekDay,
+					date: `${date.getFullYear()}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`
+				})
+			}
+
+			this.subTabs.appointment = dates
+			// 默认选中今天
+			this.$set(this.activeSubTabs, 'appointment', 'today')
 		}
 	}
 }
@@ -538,14 +624,13 @@ export default {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	gap: 16rpx;
 	padding: 0 12rpx 80rpx;
 	padding-bottom: calc(220rpx + constant(safe-area-inset-bottom, 0));
 	padding-bottom: calc(220rpx + env(safe-area-inset-bottom, 0));
 	box-sizing: border-box;
 	margin-top: -200rpx;
 	z-index: 5;
-	
+
 	&.no-bottom-padding {
 		padding-bottom: 20rpx;
 	}
@@ -566,23 +651,60 @@ export default {
 
 .sub-tabs-section {
 	background-color: #f2f2f2;
-	margin-left: 12rpx;
+	margin-left: 18rpx;
 	display: flex;
 	align-items: center;
-	gap: 16rpx;
-	flex-wrap: wrap;
-	padding: 12rpx 0;
+	justify-content: space-between;
+	padding: 12rpx 12rpx 12rpx 0;
 	width: calc(100% - 12rpx);
 	box-sizing: border-box;
 }
 
+.sub-tabs-left {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
+	flex-wrap: nowrap;
+	overflow-x: auto;
+	flex: 1;
+	-webkit-overflow-scrolling: touch;
+	&::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+.filter-btn {
+	display: flex;
+	align-items: center;
+	gap: 8rpx;
+	padding: 8rpx 0;
+	flex-shrink: 0;
+}
+
+.filter-text {
+	font-family: 'PingFang SC';
+	font-size: 24rpx;
+	font-weight: 500;
+	color: #333333;
+}
+
+.filter-arrow {
+	width: 24rpx;
+	height: 24rpx;
+	transition: transform 0.3s ease;
+}
+
+.filter-arrow.rotate {
+	transform: rotate(180deg);
+}
+
 .sub-tab-item {
 	height: auto;
-	padding: 8rpx 20rpx;
+	padding: 6rpx 16rpx;
 	border-radius: 4rpx;
 	background-color: #ffffff;
 	color: #a6a6a6;
-	font-size: 26rpx;
+	font-size: 24rpx;
 	font-family: 'PingFang_SC-Regular', Helvetica;
 	font-weight: normal;
 	cursor: pointer;
@@ -590,7 +712,7 @@ export default {
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
-	min-width: auto;
+	flex-shrink: 0;
 
 	&.active {
 		background-color: #333333;
@@ -604,10 +726,10 @@ export default {
 }
 
 .sub-tab-subtitle {
-	font-size: 22rpx;
-	line-height: 28rpx;
+	font-size: 20rpx;
+	line-height: 24rpx;
 	color: #a6a6a6;
-	
+
 	.sub-tab-item.active & {
 		color: #333333;
 		font-weight: 500;

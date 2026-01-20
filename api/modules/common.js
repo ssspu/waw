@@ -167,7 +167,7 @@ export default {
   },
 
   /**
-   * 获取怉有排行榜数据（一次性返回三个榜单）
+   * 获取所有排行榜数据（一次性返回三个榜单）
    */
   getAllRanking() {
     return get(`${COMMON_PREFIX}/ranking/all`)

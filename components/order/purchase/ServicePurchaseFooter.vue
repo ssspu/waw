@@ -49,11 +49,6 @@
 				<text class="booking-text">立即预定</text>
 			</view>
 		</view>
-
-		<!-- 底部指示器 -->
-		<view class="bottom-indicator">
-			<!-- <view class="indicator-bar"></view> -->
-		</view>
 	</view>
 </template>
 
@@ -225,25 +220,6 @@ export default {
 	font-weight: 400;
 	color: #ffffff;
 	line-height: normal;
-}
-
-.bottom-indicator {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	height: 68rpx;
-	align-items: center;
-	justify-content: flex-end;
-	gap: 20rpx;
-	padding: 0 240rpx 16rpx;
-	background-color: #ffffff;
-}
-
-.indicator-bar {
-	width: 268rpx;
-	height: 10rpx;
-	background-color: #000000;
-	border-radius: 200rpx;
 }
 
 @keyframes fadeIn {

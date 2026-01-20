@@ -43,12 +43,23 @@
 				</view>
 			</view>
 			
+			<!-- 邀请码输入框 -->
+			<view class="invite-code-section">
+				<text class="invite-code-label">邀请码</text>
+				<input
+					class="invite-code-input"
+					v-model="inviteCode"
+					placeholder="请输入邀请码"
+					maxlength="10"
+				/>
+			</view>
+
 			<!-- 企业商户链接 -->
 			<view class="enterprise-link" @tap="handleEnterpriseLink">
 				<text class="link-text">我是企业商户,如何入驻</text>
-				<image 
-					class="link-arrow" 
-					src="https://bioflex.cn/static/icon/vector-4.svg" 
+				<image
+					class="link-arrow"
+					src="https://bioflex.cn/static/icon/vector-4.svg"
 					mode="aspectFit"
 				></image>
 			</view>
@@ -65,17 +76,22 @@
 export default {
 	data() {
 		return {
-					}
+			inviteCode: ''
+		}
 	},
 	onLoad() {
-		},
+	},
 	methods: {
-				handleEnterpriseLink() {
+		handleEnterpriseLink() {
 			uni.navigateTo({
 				url: '/packageMine/pages/mine/store-settlement'
 			})
 		},
 		handleApplyNow() {
+			if (!this.inviteCode.trim()) {
+				uni.showToast({ title: '请输入邀请码', icon: 'none' })
+				return
+			}
 			uni.navigateTo({
 				url: '/packageSettlement/pages/designer-settlement/identity'
 			})
@@ -147,7 +163,7 @@ export default {
 
 .main-content {
 	flex: 1;
-	padding: 24rpx;
+	padding: 12rpx;
 	display: flex;
 	flex-direction: column;
 	gap: 24rpx;
@@ -155,9 +171,17 @@ export default {
 	padding-bottom: 120rpx;
 }
 
+.header-section {
+	display: flex;
+	flex-direction: column;
+	gap: 12rpx;
+	padding: 24rpx;
+	background-color: #ffffff;
+}
+
 .main-title {
 	font-family: 'PingFang_SC-Semibold', Helvetica;
-	font-size: 40rpx;
+	font-size: 32rpx;
 	font-weight: normal;
 	color: #000000;
 }
@@ -248,6 +272,31 @@ export default {
 .link-arrow {
 	width: 16rpx;
 	height: 24rpx;
+}
+
+.invite-code-section {
+	background-color: #ffffff;
+	border-radius: 12rpx;
+	padding: 30rpx;
+	display: flex;
+	flex-direction: column;
+	gap: 16rpx;
+}
+
+.invite-code-label {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 28rpx;
+	color: #000000;
+}
+
+.invite-code-input {
+	width: 100%;
+	height: 88rpx;
+	border: 2rpx solid #e0e0e0;
+	border-radius: 8rpx;
+	padding: 0 24rpx;
+	font-size: 28rpx;
+	box-sizing: border-box;
 }
 
 .footer-button {

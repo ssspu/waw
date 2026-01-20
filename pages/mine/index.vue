@@ -44,13 +44,17 @@ export default {
 		}
 	},
 	onLoad() {
-		
+
 		this.statusBarHeight = uni.getStorageSync('statusBarHeight') || 44
+	},
+	onShow() {
+		// 页面显示时刷新用户信息
+		uni.$emit('refreshMineUserInfo')
 	},
 	methods: {
 		handleOnlineService() {
 			console.log('Online service button clicked')
-			uni.navigateTo({ url: '/packageMine/pages/mine/customer-service' })
+			uni.navigateTo({ url: '/packageSetting/pages/setting/feedback' })
 		},
 		handleNotice() {
 			console.log('Notice button clicked')
@@ -154,15 +158,17 @@ export default {
 
 .main-content {
 	position: relative;
-	margin-top: 20rpx;
+	margin-top: -40rpx;
 	width: 100%;
-	padding: 0 30rpx 160rpx;
+	padding: 40rpx 20rpx 160rpx;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	gap: 20rpx;
 	box-sizing: border-box;
 	z-index: 2;
+	background-color: #f5f5f5;
+	border-radius: 20rpx 20rpx 0 0;
 }
 </style>
 

@@ -1,6 +1,6 @@
 <template>
 	<view class="works-tab-content">
-		<designer-works-gallery-section :designer-id="designerId" :active-sub-tab="activeSubTab"></designer-works-gallery-section>
+		<designer-works-gallery-section :designer-id="designerId" :active-sub-tab="activeSubTab" :show-filter="showFilter" @update:showFilter="$emit('update:showFilter', $event)"></designer-works-gallery-section>
 	</view>
 </template>
 
@@ -19,6 +19,10 @@ export default {
 		designerId: {
 			type: [String, Number],
 			default: null
+		},
+		showFilter: {
+			type: Boolean,
+			default: true
 		}
 	}
 }

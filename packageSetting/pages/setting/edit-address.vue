@@ -26,7 +26,7 @@
 					</view>
 					<view class="separator-line"></view>
 					<view class="form-row region-row" @tap="handleChooseRegion">
-						<text class="row-label">怉在地</text>
+						<text class="row-label">所在地</text>
 						<view class="region-input">
 							<text :class="['region-text', { placeholder: !regionDisplay }]">
 								{{ regionDisplay || '请选择' }}

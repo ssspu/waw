@@ -39,7 +39,7 @@
 						v-for="(tab, index) in subTabs"
 						:key="index"
 						class="sub-tab-item"
-						:class="{ active: activeSubTab === tab.value }"
+						:class="{ active: activeSubTab === tab.value, disabled: tab.value === 'vip' }"
 						@tap="switchSubTab(tab.value)"
 					>
 						<image class="sub-tab-icon" :src="tab.icon" mode="aspectFit"></image>
@@ -358,10 +358,10 @@
 											<image class="star-icon-small" src="/static/icon/star.png" mode="aspectFit"></image>
 										</view>
 										<text class="review-count-small">({{ service.reviews }})</text>
-										<text class="service-distance">{{ service.distance }}</text>
 									</view>
 								</view>
 							</view>
+							<text class="service-distance">{{ service.distance }}</text>
 						</view>
 					</view>
 				</view>
@@ -474,7 +474,28 @@ export default {
 			}
 		},
 		switchSubTab(tab) {
+			// 会员 tab 不可点击
+			if (tab === 'vip') {
+				return
+			}
 			this.activeSubTab = tab
+			// 根据不同 tab 跳转到对应页面
+			if (tab === 'all') {
+				// 预约单 - 跳转到订单页面的待使用 tab
+				uni.navigateTo({
+					url: '/packageOrder/pages/order/index?tab=pending-use'
+				})
+			} else if (tab === 'coupon') {
+				// 优惠券
+				uni.navigateTo({
+					url: '/packageOthers/pages/coupon/index'
+				})
+			} else if (tab === 'service') {
+				// 入驻中
+				uni.navigateTo({
+					url: '/packageMine/pages/mine/apply-settlement'
+				})
+			}
 		},
 		handleQuickAction(action, index) {
 			let url = ''
@@ -1155,6 +1176,10 @@ export default {
 	white-space: nowrap;
 }
 
+.sub-tab-item.disabled {
+	opacity: 0.4;
+	pointer-events: none;
+}
 
 .sub-tab-icon {
 	width: 88rpx;
@@ -2015,7 +2040,7 @@ export default {
 
 .service-footer {
 	display: flex;
-	align-items: center;
+	align-items: flex-end;
 	justify-content: space-between;
 	width: 100%;
 }

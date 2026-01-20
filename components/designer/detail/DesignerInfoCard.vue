@@ -109,7 +109,7 @@
 						<view class="shop-bg" :style="{ backgroundImage: `url(${shopInfo.image})` }" @tap="handleNavigation"></view>
 						<view class="business-content">
 							<text class="shop-name">{{ shopInfo.name }}</text>
-							<text class="shop-address">{{ shopInfo.address }}</text>
+							<text class="shop-address">{{ shopInfo.address && shopInfo.address.length > 10 ? shopInfo.address.slice(0, 10) + '...' : shopInfo.address }}</text>
 							<text class="shop-distance">{{ shopInfo.distance }}</text>
 						</view>
 						<view class="nav-btn" @tap="handleNavigation">
@@ -254,7 +254,7 @@ export default {
 .follow-btn {
 	position: absolute;
 	top: 108rpx;
-	right: 0;
+	right: 12rpx;
 	width: 200rpx;
 	height: 100rpx;
 	z-index: 2;
@@ -299,6 +299,7 @@ export default {
 	width: 100%;
 	height: auto;
 	object-fit: cover;
+	pointer-events: none;
 }
 
 .designer-card {
@@ -791,7 +792,7 @@ export default {
 	width: 100%;
 	height: 0;
 	border-top: 2rpx dashed #e5e5e5;
-	margin: 20rpx 0;
+	margin: 40rpx 0 20rpx;
 	position: relative;
 	z-index: 4;
 }

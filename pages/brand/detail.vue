@@ -2,13 +2,12 @@
 	<view class="screen">
 		<!-- 状态栏占位 -->
 		<!-- <view class="status-bar" style="height: 44rpx;"></view> -->
-		
+
 		<!-- 头部 -->
 		<brand-detail-header :cover-image="coverImage" :brand-name="designerInfo.name"></brand-detail-header>
-		
-		<!-- 主内容区域 -->
-		<view class="main-content" :class="{ 'reviews-fullwidth': activeTab === 'reviews', 'no-bottom-padding': activeTab === 'works' || activeTab === 'service' }">
-			<!-- 品牌信息卡片 -->
+
+		<!-- 品牌信息卡片 -->
+		<view class="info-card-container">
 			<brand-info-card
 				:designer-info="designerInfo"
 				:service-badges="serviceBadges"
@@ -24,7 +23,10 @@
 				@share="handleShare"
 				@coupon-click="showCouponPopup = true"
 			></brand-info-card>
-			
+		</view>
+
+		<!-- 主内容区域 -->
+		<view class="main-content" :class="{ 'reviews-fullwidth': activeTab === 'reviews', 'no-bottom-padding': activeTab === 'works' || activeTab === 'service' }">
 		<!-- Tab切换 -->
 		<view class="tabs-wrapper">
 			<brand-tab-switcher
@@ -32,27 +34,38 @@
 				:tabs="tabs"
 				@tab-change="handleTabChange"
 			></brand-tab-switcher>
-			
+
 			<!-- 子标签切换（根据当前tab显示） -->
-			<view 
-				v-if="currentSubTabs.length" 
-				:class="['sub-tabs-section', { 'compact-sub-tabs': isCompactSubTabs }]"
+			<view
+				v-if="currentSubTabs.length"
+				class="sub-tabs-section"
 			>
-				<view 
-					v-for="(subTab, index) in currentSubTabs" 
-					:key="index" 
-					class="sub-tab-item"
-					:class="{ active: activeSubTabs[activeTab] === subTab.id }"
-					@tap="handleSubTabClick(subTab.id)"
-				>
-					<text class="sub-tab-title">{{ subTab.title }}</text>
-					<text v-if="subTab.subtitle" class="sub-tab-subtitle">{{ subTab.subtitle }}</text>
+				<view class="sub-tabs-left">
+					<view
+						v-for="(subTab, index) in currentSubTabs"
+						:key="index"
+						class="sub-tab-item"
+						:class="{ active: activeSubTabs[activeTab] === subTab.id }"
+						@tap="handleSubTabClick(subTab.id)"
+					>
+						<text class="sub-tab-title">{{ subTab.title }}</text>
+						<text v-if="subTab.subtitle" class="sub-tab-subtitle">{{ subTab.subtitle }}</text>
+					</view>
+				</view>
+				<view v-if="activeTab === 'works'" class="filter-btn" @tap="handleWorksFilter">
+					<text class="filter-text">筛选</text>
+					<image
+						class="filter-arrow"
+						:class="{ rotate: showWorksFilter }"
+						src="https://bioflex.cn/static/icon/down.png"
+						mode="aspectFit"
+					></image>
 				</view>
 			</view>
 		</view>
 		
 			<!-- Tab内容 -->
-			<view class="tab-content-wrapper">
+			<view class="tab-content-wrapper" :class="{ 'with-gap': activeTab === 'works' || activeTab === 'reviews' || activeTab === 'service' }">
 				<!-- 设计师tab内容 -->
 				<view v-if="activeTab === 'service'" class="tab-content" :key="'service'">
 					<brand-designer-tab-content :active-sub-tab="activeSubTabs.service" :brand-id="brandId"></brand-designer-tab-content>
@@ -65,7 +78,7 @@
 
 				<!-- 作品tab内容 -->
 				<view v-if="activeTab === 'works'" class="tab-content" :key="'works'">
-					<brand-works-tab-content :active-sub-tab="activeSubTabs.works" :brand-id="brandId"></brand-works-tab-content>
+					<brand-works-tab-content :active-sub-tab="activeSubTabs.works" :brand-id="brandId" :show-filter="showWorksFilter" @update:showFilter="showWorksFilter = $event"></brand-works-tab-content>
 				</view>
 
 				<!-- 点评tab内容 -->
@@ -76,7 +89,7 @@
 			
 			<!-- 底部内容（在设计师和服务tab显示） -->
 			<view v-if="activeTab === 'service' || activeTab === 'appointment'" class="bottom-content">
-				<brand-portfolio-section></brand-portfolio-section>
+				<brand-portfolio-section :designer-info="topDesigner" @view-reviews="handleViewReviews"></brand-portfolio-section>
 			</view>
 			
 			<!-- 预约按钮（暂时隐藏） -->
@@ -146,6 +159,7 @@ export default {
 			coverImage: '',
 			activeTab: 'service',
 			showCouponPopup: false,
+			showWorksFilter: false,
 			loading: false,
 			isFollowed: false,
 			activeSubTabs: {
@@ -231,7 +245,8 @@ export default {
 				reviews: []
 			},
 			userLatitude: null,
-			userLongitude: null
+			userLongitude: null,
+			topDesigner: null
 		}
 	},
 	computed: {
@@ -362,10 +377,23 @@ export default {
 						return
 					}
 
-					
+
 					this.coverImage = data.logo || data.coverImage || data.avatar || ''
 
-					
+					// 将 business_mode 映射到四种店铺类型
+					const businessModeMap = {
+						'单店经营': '专业店',
+						'专业店': '专业店',
+						'连锁经营': '品牌店',
+						'品牌直营': '品牌店',
+						'工作室': '工作室',
+						'商场店': '综合店',
+						'街边店': '综合店',
+						'写字楼店': '综合店',
+						'创意园': '综合店'
+					}
+					const shopType = businessModeMap[data.business_mode] || data.brand_type || '专业店'
+
 					this.designerInfo = {
 						avatar: data.logo || data.avatar || '',
 						name: data.brand_intro || data.name || '未知品牌',
@@ -374,7 +402,7 @@ export default {
 						certIcon: data.certIcon || '',
 						certText: data.certification || '',
 						certDot: data.certDot || '',
-						skills: data.main_services || data.nature || '',
+						skills: shopType,
 						introduction: data.brand_intro || data.introduction || '',
 						userId: data.user_id || '',
 						brandType: data.brand_type || '',
@@ -389,6 +417,8 @@ export default {
 						icon: '',
 						label: tag.trim()
 					})) : []
+					// 添加假数据
+					this.serviceBadges.push({ icon: '', label: '免费WiFi' }, { icon: '', label: '停车便利' }, { icon: '', label: '环境优雅' })
 
 					
 					// 计算从业年限（如果后端没给 experience 字段，则根据成立日期计算）
@@ -444,6 +474,9 @@ export default {
 
 					
 					this.isFollowed = data.isFollowed || false
+
+					// 获取品牌下的设计师列表，取第一个作为展示
+					this.fetchTopDesigner()
 				}
 			} catch (err) {
 				console.error('获取品牌详情失败:', err)
@@ -511,6 +544,36 @@ export default {
 			console.log('Claim coupon:', coupon)
 			uni.showToast({ title: '领取成功', icon: 'success' })
 		},
+		handleViewReviews() {
+			this.activeTab = 'reviews'
+		},
+		handleWorksFilter() {
+			this.showWorksFilter = !this.showWorksFilter
+		},
+		async fetchTopDesigner() {
+			try {
+				const res = await api.designer.getList({ brand_id: this.brandId, page: 1, pageSize: 1 })
+				if (res.code === 200 && res.data) {
+					const list = res.data.items || res.data.list || []
+					if (list.length > 0) {
+						const d = list[0]
+						this.topDesigner = {
+							id: d.id,
+							name: d.real_name || d.name || '',
+							avatar: d.avatar || '',
+							level: d.level || '高级',
+							role: d.position || '设计师',
+							rating: d.rating || 5.0,
+							serviceCount: d.total_appointments || 0,
+							worksCount: d.followers || 0,
+							workYears: d.work_years || 6
+						}
+					}
+				}
+			} catch (err) {
+				console.error('获取设计师失败:', err)
+			}
+		},
 		updateDistance() {
 			if (this.userLatitude && this.userLongitude && this.shopInfo.latitude && this.shopInfo.longitude) {
 				const distance = calculateDistance(
@@ -542,27 +605,43 @@ export default {
 	height: 44rpx;
 }
 
+.info-card-container {
+	position: relative;
+	width: 100%;
+	box-sizing: border-box;
+	margin-top: -200rpx;
+	z-index: 5;
+}
+
 .main-content {
 	position: relative;
 	width: 100%;
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	gap: 16rpx;
 	padding: 0 12rpx 80rpx;
 	padding-bottom: calc(220rpx + constant(safe-area-inset-bottom, 0));
 	padding-bottom: calc(220rpx + env(safe-area-inset-bottom, 0));
 	box-sizing: border-box;
-	margin-top: -200rpx;
+	margin-top: 0;
 	z-index: 5;
-	
+
 	&.no-bottom-padding {
 		padding-bottom: 20rpx;
 	}
 }
 
 
-
+.sub-tabs-left {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 24rpx;
+	flex-wrap: nowrap;
+	overflow-x: auto;
+	scrollbar-width: none;
+}
 .tabs-wrapper {
 	width: 100vw;
 	margin-left: calc(-12rpx - 1px);
@@ -589,55 +668,48 @@ export default {
 	scrollbar-width: none;
 }
 
-.sub-tabs-section::-webkit-scrollbar {
-	display: none;
+.filter-btn {
+	display: flex;
+	align-items: center;
+	gap: 8rpx;
+	padding: 8rpx 0;
+	flex-shrink: 0;
 }
 
-.sub-tabs-section.appointment-sub-tabs {
-	overflow: hidden;
-	gap: 8rpx;
-	padding: 12rpx 0;
-	justify-content: space-between;
+.filter-text {
+	font-family: 'PingFang SC';
+	font-size: 24rpx;
+	font-weight: 500;
+	color: #333333;
 }
 
-.sub-tabs-section.compact-sub-tabs:not(.appointment-sub-tabs) {
-	overflow: hidden;
-	gap: 8rpx;
-	padding: 12rpx 30rpx;
-	justify-content: flex-start;
+.filter-arrow {
+	width: 24rpx;
+	height: 24rpx;
+	transition: transform 0.3s ease;
+}
+
+.filter-arrow.rotate {
+	transform: rotate(180deg);
 }
 
 .sub-tab-item {
-	font-size: 28rpx;
-	text-align: center;
-	font-family: 'PingFang_SC-Medium', Helvetica;
-	font-weight: 500;
+	height: auto;
+	padding: 8rpx 20rpx;
+	border-radius: 4rpx;
+	background-color: #ffffff;
 	color: #a6a6a6;
+	font-size: 26rpx;
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-weight: normal;
 	cursor: pointer;
-	padding: 10rpx 16rpx;
-	position: relative;
-	margin: 10rpx 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
-	min-width: 90rpx;
+	min-width: auto;
 
-	.compact-sub-tabs:not(.appointment-sub-tabs) & {
-		flex: 0 0 auto;
-		min-width: auto;
-		padding: 6rpx 8rpx;
-	}
-
-	.appointment-sub-tabs & {
-		flex: 1;
-		min-width: auto;
-		padding: 6rpx 4rpx;
-	}
-	
 	&.active {
-		font-family: 'PingFang_SC-Semibold', Helvetica;
-		font-weight: normal;
 		color: #333333;
 	}
 }
@@ -651,7 +723,7 @@ export default {
 	font-size: 22rpx;
 	line-height: 28rpx;
 	color: #a6a6a6;
-	
+
 	.sub-tab-item.active & {
 		color: #333333;
 		font-weight: 500;
@@ -662,6 +734,7 @@ export default {
 	position: relative;
 	width: 100%;
 	min-height: 200rpx;
+
 }
 
 .tab-content {
@@ -682,6 +755,7 @@ export default {
 
 .bottom-content {
 	width: 100%;
+	margin-top: 12rpx;
 }
 
 .booking-footer {

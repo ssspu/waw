@@ -169,12 +169,12 @@ export default {
 					pageSize: this.pageSize
 				})
 				if (res.code === 200) {
-					
+
 					this.tabs[0].count = res.data.designerCount || 0
 					this.tabs[1].count = res.data.brandCount || 0
 
-					
-					const list = res.data.list || res.data.records || []
+
+					const list = res.data.items || res.data.list || res.data.records || []
 					this.designerList = list.filter(item => item.type === 'designer').map(item => ({
 						id: item.id,
 						name: item.name,

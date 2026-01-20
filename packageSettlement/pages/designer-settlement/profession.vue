@@ -5,7 +5,6 @@
 			<view class="nav-bar">
 				<view class="nav-left">
 					<view class="back-btn" @tap="handleBack">
-						<image class="back-icon" src="https://bioflex.cn/static/back.png" mode="aspectFit"></image>
 					</view>
 					<text class="nav-title">设计师入驻</text>
 				</view>
@@ -85,7 +84,7 @@
 								<view class="upload-circle">
 									<text class="plus-icon">+</text>
 								</view>
-								<text class="upload-text">上传国家劳动怊能证</text>
+								<text class="upload-text">上传国家劳动技能证</text>
 							</view>
 						</view>
 					</view>
@@ -198,9 +197,9 @@ export default {
 		},
 		selectLevel() {
 			uni.showActionSheet({
-				itemList: ['初级', '中级', '高级', '怊师', '高级怊师'],
+				itemList: ['初级', '中级', '高级', '技师', '高级技师'],
 				success: (res) => {
-					const levels = ['初级', '中级', '高级', '怊师', '高级怊师']
+					const levels = ['初级', '中级', '高级', '技师', '高级技师']
 					this.formData.level = levels[res.tapIndex]
 				}
 			})
@@ -261,7 +260,6 @@ export default {
 
 .header {
 	background-color: #ffffff;
-	padding-top: 88rpx;
 }
 
 .nav-bar {

@@ -208,7 +208,7 @@ export default {
 	flex-direction: column;
 	align-items: center;
 	gap: 16rpx;
-	width: 690rpx;
+	width: 710rpx;
 	margin-bottom: 26rpx;
 	box-sizing: border-box;
 }

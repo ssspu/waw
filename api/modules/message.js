@@ -45,7 +45,7 @@ export default {
   },
 
   /**
-   * 标记怉有消息为已读
+   * 标记所有消息为已读
    */
   markAllAsRead() {
     return put(`${MESSAGE_PREFIX}/read-all`)
@@ -68,7 +68,7 @@ export default {
   },
 
   /**
-   * 清空怉有消息
+   * 清空所有消息
    * @param {Object} params - { type?: 消息类型，不传则清空全部 }
    */
   clearAll(params = {}) {

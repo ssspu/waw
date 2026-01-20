@@ -263,6 +263,7 @@ export default {
 	align-items: center;
 	gap: 12rpx;
 	flex-wrap: wrap;
+	margin-top: 12rpx;
 }
 
 .category-btn {
@@ -679,6 +680,7 @@ export default {
 	background-color: #ffffff;
 	border-radius: 12rpx;
 	box-sizing: border-box;
+	margin-bottom: 12rpx;
 }
 
 .empty-text {

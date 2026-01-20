@@ -58,7 +58,7 @@
 		</view>
 
 		<!-- 设计师信息卡片 -->
-		<view v-if="designer && designer.id" class="designer-card card-item full-width">
+		<view class="designer-card card-item full-width">
 			<view class="card-content designer-content">
 				<view class="designer-info-row">
 					<image
@@ -172,15 +172,20 @@
 			</view>
 		</view>
 
-		<!-- 服务须知卡片 -->
+		<!-- 服务须知卡片 - 暂时注释 -->
 		<!-- <view class="service-notice-card card-item">
 			<view class="card-content">
 				<text class="section-title">服务须知</text>
 				<view class="notice-list">
-					<text 
-						v-for="(item, index) in serviceNotices" 
-						:key="index" 
+					<text
+						v-for="(item, index) in serviceNotices"
+						:key="index"
 						class="notice-text"
+					>{{ item }}</text>
+				</view>
+			</view>
+		</view> -->
+
 		<!-- 顾客点评卡片 -->
 		<view v-if="reviews.length > 0" class="reviews-card card-item">
 			<view class="card-header">
@@ -400,7 +405,17 @@ export default {
 		},
 		
 		designer() {
-			return this.serviceData.designer || {}
+			return this.serviceData.designer || {
+				id: 'default',
+				name: '设计师',
+				avatar: '',
+				level: '高级',
+				role: '设计师',
+				workYears: 6,
+				rating: 5.0,
+				serviceCount: 0,
+				worksCount: 0
+			}
 		},
 		
 		serviceItems() {
@@ -482,13 +497,23 @@ export default {
 			})
 		},
 		handleEnterStore() {
-			uni.navigateBack()
+			const designerId = this.designer.id
+			if (designerId && designerId !== 'default') {
+				uni.navigateTo({
+					url: `/pages/designer/detail?id=${designerId}`
+				})
+			} else {
+				uni.showToast({
+					title: '暂无设计师信息',
+					icon: 'none'
+				})
+			}
 		},
 		handleViewMore() {
 			this.showMoreImages = !this.showMoreImages
 		},
 		handleViewAllReviews() {
-			console.log('查看怉有点评')
+			console.log('查看所有点评')
 		},
 		selectTag(index) {
 			this.localReviewTags.forEach((tag, i) => {
@@ -522,7 +547,7 @@ export default {
 			})
 		},
 		handleViewAllQuestions() {
-			console.log('查看怉有问题')
+			console.log('查看所有问题')
 		},
 		handleServiceClick(service) {
 			uni.navigateTo({

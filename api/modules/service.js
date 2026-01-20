@@ -69,5 +69,5 @@ export default {
   }
 
   // 注意: 后端暂无服务评价接口 /service/${serviceId}/reviews
-  // 如逜获取评价请使用订单评价接口
+  // 如需获取评价请使用订单评价接口
 }

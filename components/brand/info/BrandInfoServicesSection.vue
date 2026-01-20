@@ -245,38 +245,34 @@ export default {
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	align-items: center;
-	gap: 24rpx;
-	position: relative;
-	padding: 0 20rpx 48rpx;
+	height: 100%;
 	box-sizing: border-box;
 }
 
 .section-container {
 	width: 100%;
+	padding: 0 12rpx;
+	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	gap: 24rpx;
-	margin-bottom: 24rpx;
+	gap: 20rpx;
 }
 
 .profile-image {
 	position: relative;
-	width: calc(100% + 40rpx);
-	max-width: calc(100% + 40rpx);
-	margin: 0 -20rpx 12rpx;
-	height: 360rpx;
+	width: calc(100% + 48rpx);
+	margin-left: -24rpx;
+	height: 480rpx;
 	object-fit: cover;
 	border-radius: 0;
 }
 
 .card {
 	width: 100%;
-	max-width: 726rpx;
 	background-color: #ffffff;
-	border-radius: 10rpx;
-	box-shadow: 0 12rpx 30rpx rgba(0, 0, 0, 0.04);
+	border-radius: 16rpx;
+	box-shadow: none;
+	margin-bottom: 20rpx;
 }
 
 .card-content {
@@ -284,7 +280,7 @@ export default {
 	flex-direction: column;
 	align-items: flex-start;
 	gap: 24rpx;
-	padding: 34rpx 32rpx;
+	padding: 32rpx;
 }
 
 .card-title {

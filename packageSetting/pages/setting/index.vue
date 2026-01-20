@@ -53,16 +53,12 @@
 				</view>
 			</view>
 		</view>
-		
-		<!-- 底部指示器
-		<view class="footer-indicator">
-			<view class="indicator-bar"></view>
-		</view> -->
 	</view>
 </template>
 
 <script>
 import api from '@/api'
+import { clearToken } from '@/api/request.js'
 
 export default {
 	data() {
@@ -72,14 +68,6 @@ export default {
 				{
 					items: [
 						{ label: "个人信息" },
-					],
-				},
-				{
-					items: [
-						{ label: "账号安全" },
-						
-						
-						
 					],
 				},
 				{
@@ -170,7 +158,6 @@ export default {
 		navigateToDetailPage(label) {
 			const routeMap = {
 				'个人信息': '/packageSetting/pages/setting/personal-info',
-				'账号安全': '/packageSetting/pages/setting/account-security',
 				'申请认证': '/packageSetting/pages/setting/apply-certification',
 				'地址管理': '/packageSetting/pages/setting/address-management',
 				'支付设置': '/packageSetting/pages/setting/payment-settings',
@@ -238,9 +225,15 @@ export default {
 				content: '确定要退出登录吗？',
 				success: (res) => {
 					if (res.confirm) {
-						console.log('Logout')
-						
-						uni.reLaunch({ url: '/pages/index/index' })
+						// 清除token
+						clearToken()
+						// 清除用户信息
+						uni.removeStorageSync('userInfo')
+
+						uni.showToast({ title: '已退出登录', icon: 'success' })
+						setTimeout(() => {
+							uni.reLaunch({ url: '/pages/index/index' })
+						}, 1000)
 					}
 				}
 			})
@@ -449,17 +442,6 @@ export default {
 	font-size: 28rpx;
 }
 
-.footer-indicator {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	align-items: center;
-	justify-content: flex-end;
-	gap: 20rpx;
-	padding: 16rpx 240rpx;
-	flex-shrink: 0;
-	box-sizing: border-box;
-}
 
 .indicator-bar {
 	width: 268rpx;

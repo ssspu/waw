@@ -147,7 +147,7 @@ export default {
 			],
 			filterTags: [
 				{ label: "全部", count: null, filter: 'all' },
-				{ label: "怊术很好", count: 0, filter: 'skill' },
+				{ label: "技术很好", count: 0, filter: 'skill' },
 				{ label: "效果满意", count: 0, filter: 'effect' },
 				{ label: "服务态度", count: 0, filter: 'service' }
 			],
@@ -550,6 +550,12 @@ export default {
 	color: #666666;
 	font-size: 24rpx;
 	line-height: 36rpx;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	word-break: break-all;
 }
 
 .review-images {

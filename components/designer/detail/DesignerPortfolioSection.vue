@@ -67,7 +67,7 @@
 		</view>
 		
 		<!-- 顾客点评卡片 -->
-		<view class="reviews-card">
+		<view class="reviews-card" @tap="handleViewMoreReviews">
 			<view class="card-header">
 				<text class="card-title">顾客点评</text>
 				<view class="more-btn" @tap="handleViewMoreReviews">
@@ -386,10 +386,7 @@ export default {
 			})
 		},
 		handleViewMoreReviews() {
-			
-			uni.navigateTo({
-				url: '/pages/designer/reviews'
-			})
+			this.$emit('go-to-reviews')
 		},
 		handleViewMoreQA() {
 			console.log('View more QA')

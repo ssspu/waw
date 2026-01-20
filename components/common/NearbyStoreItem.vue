@@ -5,7 +5,7 @@
 			<view class="store-header">
 				<view class="store-title-row">
 					<text class="store-name">{{ store.name }}</text>
-					<view v-if="store.tag" class="store-tag-badge">{{ store.tag }}</view>
+					<view class="store-tag-badge">舒适</view>
 				</view>
 				<text v-if="store.extraAction" class="store-action">{{ store.extraAction }}</text>
 			</view>
@@ -28,16 +28,18 @@
 						<text class="stat-value">{{ store.services }}</text>
 					</view>
 				</view>
-				<text class="store-distance">{{ store.distance }}</text>
 			</view>
-			<view class="amenities" v-if="store.amenities && store.amenities.length">
-				<view 
-					v-for="(amenity, idx) in store.amenities" 
-					:key="idx" 
-					class="amenity-badge-outline"
-				>
-					{{ amenity }}
+			<view class="amenities-row">
+				<view class="amenities" v-if="store.amenities && store.amenities.length">
+					<view
+						v-for="(amenity, idx) in store.amenities"
+						:key="idx"
+						class="amenity-badge-outline"
+					>
+						{{ amenity }}
+					</view>
 				</view>
+				<text class="store-distance">{{ store.distance }}</text>
 			</view>
 		</view>
 	</view>
@@ -199,11 +201,19 @@ export default {
 	white-space: nowrap;
 }
 
+.amenities-row {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	width: 100%;
+}
+
 .amenities {
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
 	gap: 8rpx;
+	flex: 1;
 }
 
 .amenity-badge-outline {

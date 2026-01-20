@@ -246,15 +246,15 @@ export default {
 
 <style scoped lang="scss">
 .stylist-section {
-	margin: 12rpx;
 	display: flex;
 	flex-direction: column;
-	gap: 20rpx;
+	gap: 12rpx;
 	box-sizing: border-box;
+	margin-top: 12rpx;
+	width: 100%;
 }
 
 .category-nav {
-	margin-left: 12rpx;
 	display: flex;
 	align-items: center;
 	gap: 16rpx;
@@ -278,18 +278,26 @@ export default {
 }
 
 .stylist-list {
+	width: 100vw;
+	margin-left: -12rpx;
 	display: flex;
 	flex-direction: column;
-	gap: 20rpx;
+	gap: 12rpx;
 }
 
 .stylist-card {
+	width: 100%;
 	background-color: #ffffff;
-	border-radius: 12rpx;
+	border-radius: 0;
+	border: 0;
+	box-shadow: none;
+	box-sizing: border-box;
 	overflow: hidden;
 }
 
 .card-content {
+	box-sizing: border-box;
+	width: 100%;
 	display: flex;
 	padding: 24rpx;
 	gap: 20rpx;
@@ -566,6 +574,7 @@ export default {
 	background-color: #ffffff;
 	border-radius: 12rpx;
 	box-sizing: border-box;
+	margin-bottom: 12rpx;
 }
 
 .empty-text {

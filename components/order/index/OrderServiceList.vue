@@ -410,21 +410,34 @@ export default {
 			}
 			const config = statusConfig[order.status] || statusConfig['PENDING_PAYMENT']
 
-			// 使用后端返回的 payment_expire_time 计算剩余支付时间
+			// 使用后端返回的 payment_expire_time 计算剩余支付时间，如果没有则用 create_time + 15分钟
 			let remainingTime = null
-			const expireTime = order.payment_expire_time || order.paymentExpireTime
-			if (order.status === 'PENDING_PAYMENT' && expireTime) {
-				const expireTimestamp = new Date(expireTime).getTime()
-				const remaining = Math.max(0, expireTimestamp - Date.now())
+			let expireTime = order.payment_expire_time || order.paymentExpireTime
+			let isExpired = false
+			if (order.status === 'PENDING_PAYMENT') {
+				if (!expireTime) {
+					const createTime = order.create_time || order.createTime
+					if (createTime) {
+						expireTime = new Date(new Date(createTime).getTime() + 15 * 60 * 1000).toISOString()
+					}
+				}
+				if (expireTime) {
+					const expireTimestamp = new Date(expireTime).getTime()
+					const remaining = Math.max(0, expireTimestamp - Date.now())
 
-				if (remaining <= 0) {
-					remainingTime = '00:00'
-				} else {
-					const minutes = Math.floor(remaining / 60000)
-					const seconds = Math.floor((remaining % 60000) / 1000)
-					remainingTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+					if (remaining <= 0) {
+						remainingTime = '00:00'
+						isExpired = true
+					} else {
+						const minutes = Math.floor(remaining / 60000)
+						const seconds = Math.floor((remaining % 60000) / 1000)
+						remainingTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+					}
 				}
 			}
+
+			// 如果待付款订单已过期，直接显示为已取消
+			const finalConfig = isExpired ? statusConfig['CANCELLED'] : config
 
 			// 兼容 snake_case 和 camelCase 字段名
 			const serviceName = order.service_name || order.serviceName || '待加载...'
@@ -440,8 +453,8 @@ export default {
 			return {
 				id: order.id,
 				orderNumber: orderNo,
-				status: config.text,
-				statusColor: config.color,
+				status: finalConfig.text,
+				statusColor: finalConfig.color,
 				remainingTime,
 				serviceName: serviceName,
 				serviceDetails: order.service_details || order.serviceDetails || '服务详情',
@@ -457,8 +470,8 @@ export default {
 				price: String(payAmount),
 				quantity: 'x1',
 				hasIcon: order.status === 'PENDING_USE',
-				primaryButton: config.primaryButton,
-				tab: config.tab,
+				primaryButton: finalConfig.primaryButton,
+				tab: finalConfig.tab,
 				rawData: order
 			}
 		},
@@ -476,7 +489,14 @@ export default {
 
 				this.serviceOrders.forEach(order => {
 					if (order.status === '待付款' && order.rawData) {
-						const expireTime = order.rawData.payment_expire_time || order.rawData.paymentExpireTime
+						let expireTime = order.rawData.payment_expire_time || order.rawData.paymentExpireTime
+						// 如果没有过期时间，使用创建时间 + 15分钟
+						if (!expireTime) {
+							const createTime = order.rawData.create_time || order.rawData.createTime
+							if (createTime) {
+								expireTime = new Date(new Date(createTime).getTime() + 15 * 60 * 1000).toISOString()
+							}
+						}
 						if (!expireTime) return
 
 						const expireTimestamp = new Date(expireTime).getTime()

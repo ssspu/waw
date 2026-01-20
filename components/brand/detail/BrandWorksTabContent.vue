@@ -1,6 +1,6 @@
 <template>
 	<view class="works-tab-content">
-		<brand-works-gallery-section :brand-id="brandId"></brand-works-gallery-section>
+		<brand-works-gallery-section :brand-id="brandId" :show-filter="showFilter" @update:showFilter="$emit('update:showFilter', $event)"></brand-works-gallery-section>
 	</view>
 </template>
 
@@ -19,6 +19,10 @@ export default {
 		brandId: {
 			type: [String, Number],
 			default: null
+		},
+		showFilter: {
+			type: Boolean,
+			default: false
 		}
 	}
 }

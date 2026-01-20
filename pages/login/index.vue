@@ -21,19 +21,52 @@
 		<view class="logo-section">
 			<image
 				class="logo-decoration"
-				src="https://c.animaapp.com/mifddcuil9hjK2/img/group-19.png"
+				src="/static/icon/logo.png"
 				mode="aspectFit"
 			></image>
-			<text class="brand-name">WAW style</text>
+			<text class="brand-name">WAW TrendHub</text>
 		</view>
 
 		<!-- 按钮区域 -->
 		<view class="button-section">
+			<!-- 一键登录获取手机号 -->
 			<button class="primary-btn wx-btn" open-type="getPhoneNumber" @getphonenumber="handleGetPhoneNumber">
-				<text class="primary-btn-text">一键登录</text>
+				<text class="primary-btn-text">手机号一键登录</text>
 			</button>
-			<view class="secondary-btn" @tap="goToPasswordLogin">
-				<text class="secondary-btn-text">帐号密码登录</text>
+		</view>
+
+		<!-- 用户信息弹窗（获取头像昵称） -->
+		<view class="userinfo-modal" v-if="showUserInfoModal" @tap.stop>
+			<view class="userinfo-modal-content" @tap.stop>
+				<view class="userinfo-modal-header">
+					<text class="userinfo-modal-title">完善个人信息</text>
+				</view>
+				<view class="userinfo-form">
+					<!-- 头像选择 -->
+					<view class="avatar-row">
+						<text class="form-label">头像</text>
+						<button class="avatar-btn" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
+							<image class="avatar-img" :src="tempUserInfo.avatar || 'https://bioflex.cn/static/avatar/avatar.png'" mode="aspectFill"></image>
+							<text class="avatar-tip">点击选择</text>
+						</button>
+					</view>
+					<!-- 昵称输入 -->
+					<view class="nickname-row">
+						<text class="form-label">昵称</text>
+						<input
+							type="nickname"
+							class="nickname-input"
+							v-model="tempUserInfo.nickname"
+							placeholder="请输入昵称"
+							@blur="onNicknameBlur"
+						/>
+					</view>
+				</view>
+				<view class="userinfo-modal-footer">
+					<view class="userinfo-btn userinfo-btn-confirm" @tap="confirmUserInfo">
+						<text class="userinfo-btn-text">确定</text>
+					</view>
+				</view>
 			</view>
 		</view>
 
@@ -87,15 +120,23 @@ import { BUSINESS_CODE } from '@/api/config.js'
 export default {
 	data() {
 		return {
-			isAgreed: true,
-						showModal: false,
+			isAgreed: false,
+			showModal: false,
 			currentAgreement: {
 				title: '',
 				content: ''
 			},
 			hasScrolledToBottom: false,
 			modalCountdown: 10,
-			modalTimer: null
+			modalTimer: null,
+			// 用户信息弹窗
+			showUserInfoModal: false,
+			tempUserInfo: {
+				avatar: '',
+				nickname: ''
+			},
+			// 登录时缓存的数据
+			pendingLoginData: null
 		}
 	},
 	computed: {
@@ -151,8 +192,35 @@ export default {
 			const encryptedData = e.detail.encryptedData
 			const iv = e.detail.iv
 
-			// 获取用户信息和登录
-			this.doWechatLogin(phoneCode, encryptedData, iv)
+			// 缓存登录数据，显示用户信息弹窗
+			this.pendingLoginData = { phoneCode, encryptedData, iv }
+			this.tempUserInfo = { avatar: '', nickname: '' }
+			this.showUserInfoModal = true
+		},
+		// 选择头像回调
+		onChooseAvatar(e) {
+			console.log('选择头像:', e.detail.avatarUrl)
+			this.tempUserInfo.avatar = e.detail.avatarUrl
+		},
+		// 昵称输入完成
+		onNicknameBlur(e) {
+			console.log('输入昵称:', e.detail.value)
+			this.tempUserInfo.nickname = e.detail.value
+		},
+		// 确认用户信息并登录
+		async confirmUserInfo() {
+			console.log('确认用户信息:', this.tempUserInfo)
+			if (!this.pendingLoginData) {
+				uni.showToast({ title: '登录信息已过期', icon: 'none' })
+				this.showUserInfoModal = false
+				return
+			}
+
+			const { phoneCode, encryptedData, iv } = this.pendingLoginData
+			this.showUserInfoModal = false
+
+			// 执行登录
+			await this.doWechatLogin(phoneCode, encryptedData, iv)
 		},
 		// 执行微信登录
 		async doWechatLogin(phoneCode, encryptedData, iv) {
@@ -174,12 +242,17 @@ export default {
 					return
 				}
 
+				// 使用用户选择的头像和昵称
+				const wxUserInfo = this.tempUserInfo || {}
+
 				// 调用后端登录接口
 				const res = await api.auth.loginByWechat({
 					code: loginRes.code,
 					phoneCode: phoneCode,
 					encryptedData: encryptedData,
-					iv: iv
+					iv: iv,
+					nickname: wxUserInfo.nickname || '',
+					avatar: wxUserInfo.avatar || ''
 				})
 
 				uni.hideLoading()
@@ -193,17 +266,13 @@ export default {
 					}
 
 					// 保存用户信息到本地存储
-					if (res.data.userInfo || res.data.user) {
-						const userInfo = res.data.userInfo || res.data.user
-						uni.setStorageSync('userInfo', userInfo)
-					} else if (res.data.nickname || res.data.avatar) {
-						// 如果直接返回在data根级别
-						uni.setStorageSync('userInfo', {
-							nickname: res.data.nickname || '',
-							avatar: res.data.avatar || '',
-							phone: res.data.phone || ''
-						})
-					}
+					// 优先使用用户选择的微信头像和昵称，其次使用后端返回的数据
+					const userInfo = res.data.userInfo || res.data.user || {}
+					uni.setStorageSync('userInfo', {
+						nickname: wxUserInfo.nickname || userInfo.nickname || userInfo.nickName || '',
+						avatar: wxUserInfo.avatar || userInfo.avatar || userInfo.avatarUrl || '',
+						phone: userInfo.phone || res.data.phone || ''
+					})
 
 					uni.showToast({ title: '登录成功', icon: 'success' })
 					setTimeout(() => {
@@ -217,86 +286,6 @@ export default {
 				console.error('微信登录失败:', err)
 				uni.showToast({ title: '登录失败', icon: 'none' })
 			}
-		},
-		handleQuickLogin() {
-			if (!this.isAgreed) {
-				uni.showToast({
-					title: '请先同意用户协议',
-					icon: 'none'
-				})
-				return
-			}
-
-			// 先获取用户信息（头像、昵称）
-			uni.getUserProfile({
-				desc: '用于完善用户资料',
-				success: (profileRes) => {
-					const userInfo = profileRes.userInfo
-					// 再获取微信登录code
-					uni.login({
-						provider: 'weixin',
-						success: async (loginRes) => {
-							if (loginRes.code) {
-								try {
-									const res = await api.auth.loginByWechat({
-										code: loginRes.code,
-										nickName: userInfo.nickName,
-										avatarUrl: userInfo.avatarUrl,
-										gender: userInfo.gender
-									})
-
-									if (res.code === BUSINESS_CODE.SUCCESS && res.data) {
-										if (res.data.token) {
-											setToken(res.data.token)
-										}
-										if (res.data.refreshToken) {
-											setRefreshToken(res.data.refreshToken)
-										}
-
-										// 保存用户信息到本地存储
-										if (res.data.userInfo || res.data.user) {
-											const savedUserInfo = res.data.userInfo || res.data.user
-											uni.setStorageSync('userInfo', savedUserInfo)
-										} else {
-											// 使用微信返回的用户信息
-											uni.setStorageSync('userInfo', {
-												nickname: res.data.nickname || userInfo.nickName || '',
-												avatar: res.data.avatar || userInfo.avatarUrl || '',
-												phone: res.data.phone || ''
-											})
-										}
-
-										uni.showToast({ title: '登录成功', icon: 'success' })
-										setTimeout(() => {
-											uni.reLaunch({ url: '/pages/index/index' })
-										}, 1500)
-									} else {
-										uni.showToast({ title: res.message || '登录失败', icon: 'none' })
-									}
-								} catch (err) {
-									console.error('微信登录失败:', err)
-									uni.showToast({ title: err.message || '登录失败', icon: 'none' })
-								}
-							} else {
-								uni.showToast({ title: '获取微信授权失败', icon: 'none' })
-							}
-						},
-						fail: (err) => {
-							console.error('uni.login 失败:', err)
-							uni.showToast({ title: '微信登录失败', icon: 'none' })
-						}
-					})
-				},
-				fail: (err) => {
-					console.error('获取用户信息失败:', err)
-					uni.showToast({ title: '请授权获取用户信息', icon: 'none' })
-				}
-			})
-		},
-		goToPasswordLogin() {
-			uni.navigateTo({
-				url: '/pages/login/password'
-			})
 		},
 		openUserAgreement() {
 			const agreement = getUserAgreement()
@@ -456,7 +445,7 @@ export default {
 	align-items: center;
 	justify-content: center;
 	transition: background-color 0.3s;
-	
+
 	&:active {
 		background-color: #5d48e1;
 	}
@@ -479,28 +468,6 @@ export default {
 	font-family: 'Inter', Helvetica;
 	font-weight: 600;
 	color: #ffffff;
-	font-size: 28rpx;
-}
-
-.secondary-btn {
-	width: 100%;
-	height: 108rpx;
-	background-color: #efecff;
-	border-radius: 54rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	transition: background-color 0.3s;
-	
-	&:active {
-		background-color: #e5e0ff;
-	}
-}
-
-.secondary-btn-text {
-	font-family: 'Inter', Helvetica;
-	font-weight: 600;
-	color: #6d58f1;
 	font-size: 28rpx;
 }
 
@@ -675,5 +642,115 @@ export default {
 	font-weight: 500;
 	color: #ffffff;
 	font-size: 26rpx;
+}
+
+// 用户信息弹窗样式
+.userinfo-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.userinfo-modal-content {
+	width: 600rpx;
+	background-color: #ffffff;
+	border-radius: 16rpx;
+	padding: 40rpx;
+	box-sizing: border-box;
+}
+
+.userinfo-modal-header {
+	text-align: center;
+	margin-bottom: 40rpx;
+}
+
+.userinfo-modal-title {
+	font-size: 32rpx;
+	font-weight: 500;
+	color: #333333;
+}
+
+.userinfo-form {
+	display: flex;
+	flex-direction: column;
+	gap: 30rpx;
+}
+
+.avatar-row, .nickname-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.form-label {
+	font-size: 28rpx;
+	color: #333333;
+}
+
+.avatar-btn {
+	display: flex;
+	align-items: center;
+	gap: 16rpx;
+	background: transparent;
+	padding: 0;
+	margin: 0;
+	border: none;
+
+	&::after {
+		border: none;
+	}
+}
+
+.avatar-img {
+	width: 80rpx;
+	height: 80rpx;
+	border-radius: 50%;
+	background-color: #f0f0f0;
+}
+
+.avatar-tip {
+	font-size: 24rpx;
+	color: #999999;
+}
+
+.nickname-input {
+	flex: 1;
+	text-align: right;
+	font-size: 28rpx;
+	color: #333333;
+	padding: 16rpx;
+	background-color: #f5f5f5;
+	border-radius: 8rpx;
+	margin-left: 20rpx;
+}
+
+.userinfo-modal-footer {
+	margin-top: 40rpx;
+}
+
+.userinfo-btn {
+	width: 100%;
+	height: 80rpx;
+	border-radius: 40rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.userinfo-btn-confirm {
+	background-color: #6d58f1;
+}
+
+.userinfo-btn-text {
+	font-size: 28rpx;
+	font-weight: 500;
+	color: #ffffff;
 }
 </style>

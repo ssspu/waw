@@ -255,7 +255,7 @@ export default {
 
 .section-block {
 	width: 100%;
-	padding: 0 24rpx;
+	padding: 0 12rpx;
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;

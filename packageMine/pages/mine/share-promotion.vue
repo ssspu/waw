@@ -64,11 +64,6 @@
 				<text class="share-text">分享链接</text>
 			</view>
 		</view>
-
-		<!-- 底部指示器 -->
-		<!-- <view class="footer-indicator">
-			<view class="indicator-bar"></view>
-		</view> -->
 	</view>
 </template>
 
@@ -257,17 +252,7 @@ export default {
 	color: #ffffff;
 }
 
-.footer-indicator {
-	position: fixed;
-	left: 0;
-	bottom: 0;
-	width: 100%;
-	height: 20rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	z-index: 10;
-}
+
 
 .indicator-bar {
 	width: 268rpx;

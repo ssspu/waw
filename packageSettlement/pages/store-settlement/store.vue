@@ -1,16 +1,7 @@
 <template>
 	<view class="screen">
 		<!-- 头部导航 -->
-		<view class="header" >
-			<view class="nav-bar">
-				<view class="nav-left">
-					<view class="back-btn" @tap="handleBack">
-						<image class="back-icon" src="https://bioflex.cn/static/back.png" mode="aspectFit"></image>
-					</view>
-					<text class="nav-title">实体门店入驻</text>
-				</view>
-				<view class="nav-right"></view>
-			</view>
+		<view class="header" >	
 			
 			<!-- 步骤导航 -->
 			<view class="steps-container">
@@ -62,7 +53,7 @@
 				
 				<view class="form-item">
 					<text class="form-label">店铺名称</text>
-					<input class="form-input" v-model="formData.storeName" placeholder="逜与门脸牌匾一致" />
+					<input class="form-input" v-model="formData.storeName" placeholder="与门脸牌匾一致" />
 				</view>
 				<view class="form-divider"></view>
 				
@@ -80,7 +71,7 @@
 				
 				<view class="form-item">
 					<text class="form-label">省市编号</text>
-					<input class="form-input" v-model="formData.cityCode" placeholder="请输入怉在城市编号" />
+					<input class="form-input" v-model="formData.cityCode" placeholder="请输入所在城市编号" />
 				</view>
 				<view class="form-divider"></view>
 				
@@ -95,7 +86,7 @@
 			<view class="card">
 				<view class="card-header">
 					<text class="card-title">门店图片</text>
-					<text class="card-desc">逜拍出完整门匾、内部环境、前台</text>
+					<text class="card-desc">需拍出完整门匾、内部环境、前台</text>
 				</view>
 				
 				<view class="upload-row">
@@ -285,16 +276,8 @@ export default {
 
 .header {
 	background-color: #ffffff;
-	padding-top: 88rpx;
 }
 
-.nav-bar {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 0 32rpx;
-	height: 88rpx;
-}
 
 .nav-right {
 	width: 44rpx;

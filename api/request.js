@@ -47,6 +47,35 @@ const clearToken = () => {
 }
 
 /**
+ * 检查是否已登录
+ * @returns {boolean} - 是否已登录
+ */
+const isLoggedIn = () => {
+  return !!getToken()
+}
+
+/**
+ * 检查登录状态，未登录则跳转登录页
+ * @param {Object} options - 配置选项
+ * @param {string} options.tip - 提示文字
+ * @param {boolean} options.redirect - 是否跳转登录页，默认true
+ * @returns {boolean} - 是否已登录
+ */
+const checkLogin = (options = {}) => {
+  const { tip = '请先登录', redirect = true } = options
+  const loggedIn = isLoggedIn()
+
+  if (!loggedIn && redirect) {
+    uni.showToast({ title: tip, icon: 'none' })
+    setTimeout(() => {
+      uni.navigateTo({ url: '/pages/login/index' })
+    }, 1000)
+  }
+
+  return loggedIn
+}
+
+/**
  * 查是否是白名单接口
  */
 const isWhiteList = (url) => {
@@ -267,7 +296,7 @@ const handleLogout = () => {
   })
   setTimeout(() => {
     uni.reLaunch({
-      url: '/pages/login/index'
+      url: '/pages/index/index'
     })
   }, 1500)
 }
@@ -277,12 +306,24 @@ const handleLogout = () => {
  */
 const handleHttpError = (statusCode, data) => {
   let message = '网络请求失败'
+  let showToast = true
 
   switch (statusCode) {
     case HTTP_STATUS.UNAUTHORIZED:
-      message = '未授权，请登录'
-      handleLogout()
-      break
+      // 未登录状态下收到401，只提示不报错
+      message = '请先登录'
+      uni.showToast({
+        title: message,
+        icon: 'none',
+        duration: 1500
+      })
+      // 返回一个静默的reject，不触发控制台错误
+      return Promise.resolve({
+        code: 401,
+        message,
+        data: null,
+        needLogin: true
+      })
     case HTTP_STATUS.FORBIDDEN:
       message = '拒绝访问'
       break
@@ -296,11 +337,13 @@ const handleHttpError = (statusCode, data) => {
       message = data?.message || `请求失败(${statusCode})`
   }
 
-  uni.showToast({
-    title: message,
-    icon: 'none',
-    duration: 2000
-  })
+  if (showToast) {
+    uni.showToast({
+      title: message,
+      icon: 'none',
+      duration: 2000
+    })
+  }
 
   return Promise.reject({
     code: statusCode,
@@ -491,11 +534,29 @@ const upload = (url, filePath, formData = {}, options = {}) => {
       })
     }
 
+    // 获取文件扩展名，用于设置正确的Content-Type
+    const getFileExtension = (path) => {
+      const match = path.match(/\.(\w+)(\?|$)/)
+      return match ? match[1].toLowerCase() : 'png'
+    }
+
+    const ext = getFileExtension(filePath)
+    const mimeTypes = {
+      jpg: 'image/jpeg',
+      jpeg: 'image/jpeg',
+      png: 'image/png',
+      gif: 'image/gif',
+      webp: 'image/webp'
+    }
+
     uni.uploadFile({
       url: config.baseUrl + url,
       filePath,
       name: options.name || 'file',
-      formData,
+      formData: {
+        ...formData,
+        filename: `upload.${ext}`
+      },
       header: {
         'Authorization': token ? `Bearer ${token}` : ''
       },
@@ -539,7 +600,9 @@ export default {
   getToken,
   setToken,
   clearToken,
-  setRefreshToken
+  setRefreshToken,
+  isLoggedIn,
+  checkLogin
 }
 
 export {
@@ -552,5 +615,7 @@ export {
   getToken,
   setToken,
   clearToken,
-  setRefreshToken
+  setRefreshToken,
+  isLoggedIn,
+  checkLogin
 }

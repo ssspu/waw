@@ -234,7 +234,7 @@
 					</view>
 
 					<!-- 提示信息 -->
-					<text class="notice-text">预约当天服务逜要提前60分钟</text>
+					<text class="notice-text">预约当天服务需要提前60分钟</text>
 
 					<!-- 确认按钮 -->
 					<view class="confirm-btn-container">
@@ -252,7 +252,8 @@
 export default {
 	data() {
 		return {
-						showQrcodeModal: false,
+			orderId: '',  // 订单ID（UUID格式）
+			showQrcodeModal: false,
 			showModifyTimeModal: false,
 			selectedTimeSlot: null,
 			orderInfo: {
@@ -277,9 +278,9 @@ export default {
 		}
 	},
 	onLoad(options) {
-		
 		if (options.orderId) {
-			
+			this.orderId = options.orderId
+			// TODO: 根据 orderId 获取订单详情
 		}
 	},
 	methods: {
@@ -393,9 +394,12 @@ export default {
 			}, 2000)
 		},
 		handleRefund() {
-			
+			if (!this.orderId) {
+				uni.showToast({ title: '订单信息不完整', icon: 'none' })
+				return
+			}
 			uni.navigateTo({
-				url: '/packageOrder/pages/order/refund?orderId=' + this.orderInfo.orderNumber
+				url: '/packageOrder/pages/order/refund?orderId=' + this.orderId
 			})
 		},
 		handleComplete() {

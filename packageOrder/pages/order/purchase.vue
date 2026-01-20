@@ -136,7 +136,7 @@ export default {
 						warmTips.push(`预计服务时长：${service.duration_min}分钟`)
 					}
 
-					// 获取设计师信息 - 通过 designer_id 直接获取详情
+					// 获取设计师信息 - 通过 designer_id 从列表中筛选
 					let designerInfo = null
 					const designerId = service.designer_id || service.user_id
 					const levelMap = { 1: '初级', 2: '中级', 3: '高级', 4: '导师', 5: '名师' }
@@ -144,22 +144,26 @@ export default {
 
 					try {
 						if (designerId) {
-							// 直接通过 designer_id 获取设计师详情
+							// getDetail 返回的是列表，需要从中筛选
 							const designerRes = await api.designer.getDetail(designerId)
-							console.log('设计师详情响应:', designerRes)
+							console.log('设计师列表响应:', designerRes)
 							if (designerRes.code === 200 && designerRes.data) {
-								const data = designerRes.data
-								designerInfo = {
-									id: data.id,
-									name: data.real_name || data.name || '',
-									avatar: data.avatar || '',
-									badge: data.title || data.position || '',
-									role: data.position || '设计师',
-									rating: data.rating || 5.0,
-									serviceCount: data.total_appointments || 0,
-									worksCount: data.followers || 0,
-									level: levelMap[pricingMode] || '初级',
-									workYears: data.work_years || 0
+								const designerList = designerRes.data.list || designerRes.data.items || designerRes.data || []
+								// 根据 designer_id 匹配对应的设计师
+								const matchedDesigner = designerList.find(d => d.id === designerId)
+								if (matchedDesigner) {
+									designerInfo = {
+										id: matchedDesigner.id,
+										name: matchedDesigner.real_name || matchedDesigner.name || '',
+										avatar: matchedDesigner.avatar || '',
+										badge: matchedDesigner.title || matchedDesigner.position || '',
+										role: matchedDesigner.position || '设计师',
+										rating: matchedDesigner.rating || 5.0,
+										serviceCount: matchedDesigner.total_appointments || 0,
+										worksCount: matchedDesigner.followers || 0,
+										level: levelMap[pricingMode] || '初级',
+										workYears: matchedDesigner.work_years || 0
+									}
 								}
 							}
 						}
@@ -167,56 +171,28 @@ export default {
 						console.error('获取设计师详情失败:', err)
 					}
 
-					// 如果没有获取到，回退到从列表匹配
-					if (!designerInfo && !designerId) {
-						try {
-							const designerRes = await api.designer.getList({ page: 1, pageSize: 50 })
-							console.log('设计师列表响应:', designerRes)
-							let designerList = []
-							if (designerRes.code === 200 && designerRes.data) {
-								designerList = designerRes.data.list || designerRes.data.items || designerRes.data || []
-							} else if (designerRes.list) {
-								designerList = designerRes.list
-							} else if (Array.isArray(designerRes)) {
-								designerList = designerRes
-							}
-
-							if (designerList.length > 0) {
-								const matchedDesigner = designerList[0]
-								designerInfo = {
-									id: matchedDesigner.id,
-									name: matchedDesigner.real_name || matchedDesigner.name || '',
-									avatar: matchedDesigner.avatar || '',
-									badge: matchedDesigner.title || matchedDesigner.position || '',
-									role: matchedDesigner.position || '设计师',
-									rating: matchedDesigner.rating || 5.0,
-									serviceCount: matchedDesigner.total_appointments || 0,
-									worksCount: matchedDesigner.followers || 0,
-									level: levelMap[pricingMode] || '初级',
-									workYears: matchedDesigner.work_years || 0
-								}
-							}
-						} catch (err) {
-							console.error('获取设计师列表失败:', err)
+					// 如果没有获取到设计师信息，使用服务详情中的数据
+					if (!designerInfo) {
+						designerInfo = {
+							id: service.designer_id || service.user_id || '',
+							name: service.designer_name || '',
+							avatar: service.designer_avatar || '',
+							badge: '',
+							role: '设计师',
+							rating: service.rating || 5.0,
+							serviceCount: 0,
+							worksCount: 0,
+							level: levelMap[pricingMode] || '初级',
+							workYears: 0
 						}
 					}
 
-					// 如果没有从设计师列表匹配到，使用服务详情中的数据
-					if (!designerInfo && (service.designer_name || service.designer)) {
-						const pricingMode = service.pricing_mode || 1
-						const levelMap = { 1: '初级', 2: '中级', 3: '高级', 4: '导师', 5: '名师' }
-						designerInfo = {
-							id: service.user_id || service.designer_id || (service.designer && service.designer.id) || '',
-							name: service.designer_name || (service.designer && service.designer.name) || '',
-							avatar: service.designer_avatar || (service.designer && service.designer.avatar) || '',
-							badge: service.designer_badge || (service.designer && (service.designer.badge || service.designer.level)) || '',
-							role: service.designer_role || (service.designer && (service.designer.role || service.designer.title)) || '设计师',
-							rating: service.designer_rating || (service.designer && service.designer.rating) || service.rating || 5.0,
-							serviceCount: service.designer_service_count || (service.designer && service.designer.serviceCount) || 0,
-							worksCount: service.designer_works_count || (service.designer && service.designer.worksCount) || 0,
-							level: levelMap[pricingMode] || '初级',
-							workYears: service.designer_work_years || (service.designer && service.designer.workYears) || 0
-						}
+					// 确保设计师名字使用服务数据中的 designer_name
+					if (!designerInfo.name && service.designer_name) {
+						designerInfo.name = service.designer_name
+					}
+					if (!designerInfo.id && service.designer_id) {
+						designerInfo.id = service.designer_id
 					}
 
 					this.serviceData = {

@@ -65,7 +65,8 @@
 				</view>
 			</view>
 		</view>
-		
+
+
 		<!-- 顾客点评卡片 -->
 		<view class="reviews-card" @tap="handleViewMoreReviews">
 			<view class="card-header">
@@ -124,7 +125,7 @@
 										></image>
 									</view>
 								</view>
-								<text class="review-text">{{ review.content }}</text>
+								<text class="review-text">{{ truncateText(review.content, 17) }}</text>
 								<view class="review-author">
 									<view class="author-avatar" :style="{ backgroundImage: `url(${review.avatar})` }"></view>
 									<text class="author-name">{{ review.author }}</text>
@@ -138,9 +139,9 @@
 				<view class="scroll-fade-right" :class="{ 'visible': showReviewRightFade, 'fading': reviewFadeOut && showReviewRightFade }"></view>
 			</view>
 		</view>
-		
-		<!-- 问TA卡片 -->
-		<view class="qa-card">
+
+		<!-- 问TA卡片 - 暂时注释 -->
+		<!-- <view class="qa-card">
 			<view class="card-header">
 				<text class="card-title">问TA</text>
 				<view class="more-btn" @tap="handleViewMoreQA">
@@ -148,12 +149,11 @@
 					<image class="chevron-icon" src="https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-8.svg" mode="aspectFit"></image>
 				</view>
 			</view>
-			
-			<!-- 问题列表 -->
+
 			<view class="questions-list">
-				<view 
-					v-for="(question, index) in questions" 
-					:key="index" 
+				<view
+					v-for="(question, index) in questions"
+					:key="index"
 					class="question-item"
 					@tap="handleQuestionClick(question)"
 				>
@@ -163,8 +163,8 @@
 					<text class="question-text">{{ question }}</text>
 				</view>
 			</view>
-		</view>
-		
+		</view> -->
+
 		<!-- 入驻按钮 -->
 		<view class="join-btn" @tap="handleJoin">
 			<text class="join-text">设计师/商家 立即入驻 展示你的项目</text>
@@ -177,6 +177,12 @@
 
 <script>
 export default {
+	props: {
+		designerInfo: {
+			type: Object,
+			default: () => null
+		}
+	},
 	data() {
 		return {
 			activeNavTab: 0,
@@ -368,6 +374,11 @@ export default {
 		}
 	},
 	methods: {
+		truncateText(text, maxLength) {
+			if (!text) return ''
+			if (text.length <= maxLength) return text
+			return text.substring(0, maxLength) + '...'
+		},
 		switchNav(index) {
 			this.activeNavTab = index
 		},
@@ -377,10 +388,8 @@ export default {
 			})
 		},
 		handleViewMoreReviews() {
-			
-			uni.navigateTo({
-				url: '/pages/brand/reviews'
-			})
+			// 通知父组件切换到点评tab
+			this.$emit('view-reviews')
 		},
 		handleViewMoreQA() {
 			console.log('View more QA')
@@ -389,7 +398,16 @@ export default {
 			console.log('Question clicked:', question)
 		},
 		handleJoin() {
-			console.log('Join clicked')
+			uni.navigateTo({
+				url: '/packageMine/pages/mine/apply-settlement'
+			})
+		},
+		handleDesignerClick() {
+			if (this.designerInfo && this.designerInfo.id) {
+				uni.navigateTo({
+					url: `/pages/designer/detail?id=${this.designerInfo.id}`
+				})
+			}
 		},
 		handleReviewScroll(e) {
 			const scrollLeft = e.detail.scrollLeft || 0
@@ -492,7 +510,7 @@ export default {
 	width: 100%;
 	align-items: stretch;
 	gap: 16rpx;
-	padding: 0 12rpx;
+	padding: 0;
 	box-sizing: border-box;
 }
 
@@ -672,6 +690,161 @@ export default {
 	color: #666666;
 	font-size: 22rpx;
 	text-align: center;
+}
+
+.designer-card {
+	width: 100%;
+	background-color: #ffffff;
+	border-radius: 12rpx;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+
+.designer-avatar {
+	width: 120rpx;
+	height: 120rpx;
+	border-radius: 8rpx;
+	flex-shrink: 0;
+	background-color: #f2f2f2;
+}
+
+.designer-details {
+	display: flex;
+	flex-direction: column;
+	gap: 6rpx;
+	flex: 1;
+	min-width: 0;
+}
+
+.designer-name-row {
+	display: flex;
+	align-items: center;
+	gap: 8rpx;
+}
+
+.designer-name {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 28rpx;
+	font-weight: 500;
+	color: #000000;
+}
+
+.designer-level-badge {
+	display: inline-flex;
+	align-items: center;
+	padding: 4rpx 10rpx;
+	background-color: #dacbb1;
+	border-radius: 6rpx;
+}
+
+.level-text {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-weight: 500;
+	color: #645E57;
+	font-size: 20rpx;
+}
+
+.designer-meta {
+	display: flex;
+	align-items: center;
+}
+
+.designer-role {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 22rpx;
+	font-weight: 500;
+	color: #a6a6a6;
+}
+
+.meta-divider {
+	font-size: 22rpx;
+	color: #a6a6a6;
+}
+
+.designer-work-years {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 22rpx;
+	font-weight: 500;
+	color: #a6a6a6;
+}
+
+.designer-stats {
+	display: flex;
+	align-items: center;
+	gap: 16rpx;
+}
+
+.rating-info {
+	display: flex;
+	align-items: center;
+	gap: 6rpx;
+}
+
+.rating-value {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 24rpx;
+	color: #333333;
+}
+
+.star-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 4rpx;
+	background-color: #333333;
+	border-radius: 4rpx;
+}
+
+.star-icon-small {
+	width: 20rpx;
+	height: 20rpx;
+	filter: brightness(0) invert(1);
+}
+
+.stats-row {
+	display: flex;
+	align-items: center;
+	gap: 4rpx;
+}
+
+.stat-item {
+	display: flex;
+	align-items: flex-end;
+	gap: 4rpx;
+}
+
+.stat-label {
+	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-size: 22rpx;
+	color: #a6a6a6;
+}
+
+.stat-value {
+	font-family: 'PingFang_SC-Medium', Helvetica;
+	font-size: 24rpx;
+	font-weight: 500;
+	color: #666666;
+}
+
+.stat-divider {
+	font-size: 24rpx;
+	color: #a6a6a6;
+}
+
+.enter-store-btn {
+	padding: 16rpx 20rpx;
+	background-color: #ffffff;
+	border: 2rpx solid #e0e0e0;
+	border-radius: 6rpx;
+	flex-shrink: 0;
+}
+
+.enter-store-text {
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+	font-size: 22rpx;
+	font-weight: 500;
+	color: #666666;
 }
 
 .reviews-card {

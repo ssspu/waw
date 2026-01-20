@@ -5,7 +5,6 @@
 			<view class="nav-bar">
 				<view class="nav-left">
 					<view class="back-btn" @tap="handleBack">
-						<image class="back-icon" src="https://bioflex.cn/static/back.png" mode="aspectFit"></image>
 					</view>
 					<text class="nav-title">设计师入驻</text>
 				</view>
@@ -152,7 +151,6 @@ export default {
 
 .header {
 	background-color: #ffffff;
-	padding-top: 88rpx;
 }
 
 .nav-bar {

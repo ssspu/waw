@@ -45,10 +45,9 @@ export default {
 	width: 100%;
 	margin-top: 0;
 	background-color: #ffffff;
-	border-radius: 0;
+	border-radius: 12rpx;
 	border: 0;
 	box-shadow: none;
-	padding: 20rpx 0rpx 0rpx 0rpx;
 	box-sizing: border-box;
 }
 
@@ -66,13 +65,13 @@ export default {
 .tab-item {
 	display: inline-flex;
 	flex-direction: column;
-align-items: center;
+	align-items: center;
 	justify-content: flex-start;
 	gap: 0;
 	width: 25%;
 	position: relative;
 	cursor: pointer;
-	padding-bottom: 12rpx;
+	padding: 10rpx 0;
 }
 
 .tab-label {

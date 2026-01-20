@@ -211,11 +211,6 @@
 				</view>
 			</view>
 		</view>
-		
-		<!-- 底部指示器 -->
-		<view class="footer-indicator">
-			<!-- <view class="indicator-bar"></view> -->
-		</view>
 	</view>
 </template>
 
@@ -771,17 +766,7 @@ export default {
 	font-size: 28rpx;
 }
 
-.footer-indicator {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	align-items: center;
-	justify-content: flex-end;
-	gap: 20rpx;
-	padding: 16rpx 240rpx;
-	flex-shrink: 0;
-	box-sizing: border-box;
-}
+
 
 .indicator-bar {
 	width: 268rpx;

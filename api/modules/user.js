@@ -28,7 +28,7 @@ export default {
    * @param {string} filePath - 图片路径
    */
   uploadAvatar(filePath) {
-    return upload(`${USER_PREFIX}/avatar`, filePath)
+    return upload(`${USER_PREFIX}/avatar`, filePath, {}, { name: 'file' })
   },
 
   /**

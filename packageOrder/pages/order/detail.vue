@@ -196,8 +196,10 @@ export default {
 		return {
 			countdown: '15:00',
 			countdownTimer: null,
+			countdownSeconds: 15 * 60,  // 倒计时总秒数（15分钟）
 			isTimeout: false,
 			paymentExpireTime: null,  // 后端返回的支付过期时间
+			localExpireTime: null,    // 本地计算的过期时间（用于未创建订单时）
 			showCancelModal: false,
 			showCouponPopup: false,
 			selectedCoupon: null,
@@ -245,26 +247,36 @@ export default {
 		}
 	},
 	onLoad(options) {
-		
-		
-		if (options.data) {
+		// 优先从本地存储读取订单数据
+		const pendingOrderData = uni.getStorageSync('pendingOrderData')
+		if (pendingOrderData) {
+			this.parseOrderData(pendingOrderData)
+			// 读取后清除，避免重复使用
+			uni.removeStorageSync('pendingOrderData')
+		} else if (options.data) {
+			// 兼容旧的 URL 参数方式
 			try {
-				const orderData = JSON.parse(decodeURIComponent(options.data))
+				let dataStr = options.data
+				try {
+					dataStr = decodeURIComponent(dataStr)
+				} catch (e) {
+					console.warn('decodeURIComponent failed, using raw data')
+				}
+				const orderData = JSON.parse(dataStr)
 				this.parseOrderData(orderData)
 			} catch (e) {
 				console.error('解析订单数据失败:', e)
+				uni.showToast({ title: '订单数据解析失败', icon: 'none' })
 			}
 		}
-		
+
 		if (options.orderId) {
 			this.fetchOrderDetail(options.orderId)
 		}
 		this.startCountdown()
-		
+
 		this.orderInfo.orderNumber = this.generateOrderNumber()
-		
 		this.orderInfo.createTime = this.formatDateTime(new Date())
-		
 		this.fetchAvailableCoupons()
 	},
 	onShow() {
@@ -280,21 +292,31 @@ export default {
 	},
 	methods: {
 		/**
-		 * 启动倒计时 - 使用后端返回的 payment_expire_time
+		 * 启动倒计时
+		 * 优先使用后端返回的 payment_expire_time，否则使用本地计算的过期时间
 		 */
 		startCountdown() {
 			if (this.countdownTimer) {
 				clearInterval(this.countdownTimer)
 			}
 
+			// 如果没有任何过期时间，初始化本地过期时间（15分钟后）
+			if (!this.paymentExpireTime && !this.localExpireTime) {
+				this.localExpireTime = Date.now() + this.countdownSeconds * 1000
+			}
+
 			const updateCountdown = () => {
-				if (!this.paymentExpireTime) {
+				// 优先使用后端过期时间，否则使用本地过期时间
+				const expireTime = this.paymentExpireTime
+					? new Date(this.paymentExpireTime).getTime()
+					: this.localExpireTime
+
+				if (!expireTime) {
 					this.countdown = '15:00'
 					return
 				}
 
-				const expireTimestamp = new Date(this.paymentExpireTime).getTime()
-				const remaining = Math.max(0, expireTimestamp - Date.now())
+				const remaining = Math.max(0, expireTime - Date.now())
 
 				if (remaining <= 0) {
 					this.countdown = '00:00'
@@ -608,27 +630,37 @@ export default {
 
 				// 构建预约时间
 				let appointmentTime = ''
-				if (data.date && data.timeSlot) {
-					let targetDate = new Date()
+				if (data.timeSlot) {
+					let dateStr = ''
 
-					if (data.date === 'today') {
-						// 今天，不需要修改日期
+					// 优先使用 dateInfo 中的完整日期
+					if (data.dateInfo && data.dateInfo.date) {
+						dateStr = data.dateInfo.date  // 格式: 2026-01-17
+					} else if (data.date === 'today') {
+						const today = new Date()
+						dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
 					} else if (data.date === 'tomorrow') {
-						targetDate.setDate(targetDate.getDate() + 1)
+						const tomorrow = new Date()
+						tomorrow.setDate(tomorrow.getDate() + 1)
+						dateStr = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`
 					} else if (data.date) {
-						// 尝试解析日期字符串
-						targetDate = new Date(data.date)
+						// 兼容旧格式，尝试解析
+						const today = new Date()
+						const year = today.getFullYear()
+						const dateId = String(data.date)
+						if (dateId.length >= 3) {
+							const month = dateId.slice(0, -2)
+							const day = dateId.slice(-2)
+							dateStr = `${year}-${month.padStart(2, '0')}-${day}`
+						}
 					}
 
-					// 设置时间
-					const timeParts = data.timeSlot.time.split(':')
-					targetDate.setHours(parseInt(timeParts[0]) || 0)
-					targetDate.setMinutes(parseInt(timeParts[1]) || 0)
-					targetDate.setSeconds(0)
-					targetDate.setMilliseconds(0)
-
-					// 使用带时区的ISO格式 (toISOString 自动带Z表示UTC时区)
-					appointmentTime = targetDate.toISOString()
+					if (dateStr) {
+						// 构建完整的日期时间字符串，使用本地时间
+						const timeStr = data.timeSlot.time || '10:00'
+						appointmentTime = `${dateStr}T${timeStr}:00`
+						console.log('预约时间（本地）:', appointmentTime)
+					}
 				}
 
 				const serviceId = data.service?.id

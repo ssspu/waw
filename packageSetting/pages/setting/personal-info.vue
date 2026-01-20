@@ -1,25 +1,18 @@
 <template>
 	<view class="setting-detail-page">
 		<view class="main-content">
-			<!-- 怉有项目卡片 -->
+			<!-- 所有项目卡片 -->
 			<view class="settings-card">
 				<view class="card-content">
 					<!-- 头像 -->
 					<view class="setting-item-wrapper">
-						<view class="setting-item" @tap="handleAvatarClick">
+						<view class="setting-item">
 							<text class="setting-label">头像</text>
 							<view class="setting-right">
-								<image 
-									class="avatar-preview" 
-									:src="userInfo.avatar"
+								<image
+									class="avatar-preview"
+									:src="userInfo.avatar || 'https://bioflex.cn/static/avatar/avatar.png'"
 								></image>
-								<view class="action-button">
-									<image 
-										class="button-icon" 
-										src="https://bioflex.cn/static/icon/gengduo.png" 
-										mode="aspectFit"
-									></image>
-								</view>
 							</view>
 						</view>
 					</view>
@@ -29,17 +22,10 @@
 
 					<!-- 昵称 -->
 					<view class="setting-item-wrapper">
-						<view class="setting-item" @tap="handleItemClick(basicInfoItems[0])">
+						<view class="setting-item">
 							<text class="setting-label">昵称</text>
 							<view class="setting-right">
-								<text class="right-text">{{ userInfo.nickname }}</text>
-								<view class="action-button">
-									<image 
-										class="button-icon" 
-										src="https://bioflex.cn/static/icon/gengduo.png" 
-										mode="aspectFit"
-									></image>
-								</view>
+								<text class="right-text">{{ userInfo.nickname || '微信用户' }}</text>
 							</view>
 						</view>
 					</view>
@@ -49,14 +35,20 @@
 
 					<!-- 性别 -->
 					<view class="setting-item-wrapper">
-						<view class="setting-item" @tap="handleItemClick(basicInfoItems[1])">
+						<view class="setting-item" @tap="handleItemClick(basicInfoItems[0])">
 							<text class="setting-label">性别</text>
 							<view class="setting-right">
+								<view v-if="userInfo.gender === '男'" class="gender-badge gender-male">
+									<image class="gender-icon" src="/static/icon/nanxing.png" mode="aspectFit"></image>
+								</view>
+								<view v-else-if="userInfo.gender === '女'" class="gender-badge gender-female">
+									<image class="gender-icon" src="/static/icon/nvxing.png" mode="aspectFit"></image>
+								</view>
 								<text class="right-text">{{ userInfo.gender }}</text>
 								<view class="action-button">
-									<image 
-										class="button-icon" 
-										src="https://bioflex.cn/static/icon/gengduo.png" 
+									<image
+										class="button-icon"
+										src="https://bioflex.cn/static/icon/gengduo.png"
 										mode="aspectFit"
 									></image>
 								</view>
@@ -89,7 +81,7 @@
 
 					<!-- 职业 -->
 					<view class="setting-item-wrapper">
-						<view class="setting-item" @tap="handleItemClick(basicInfoItems[2])">
+						<view class="setting-item" @tap="handleItemClick(basicInfoItems[1])">
 							<text class="setting-label">职业</text>
 							<view class="setting-right">
 								<text class="right-text" :class="{ 'bio-placeholder': !userInfo.profession }">{{ userInfo.profession || '请选择职业' }}</text>
@@ -109,7 +101,7 @@
 
 					<!-- 地区 -->
 					<view class="setting-item-wrapper">
-						<view class="setting-item" @tap="handleItemClick(basicInfoItems[3])">
+						<view class="setting-item" @tap="handleItemClick(basicInfoItems[2])">
 							<text class="setting-label">地区</text>
 							<view class="setting-right">
 								<text class="right-text">{{ userInfo.region }}</text>
@@ -180,7 +172,6 @@ export default {
 	data() {
 		return {
 			basicInfoItems: [
-				{ label: '昵称', key: 'nickname' },
 				{ label: '性别', key: 'gender' },
 				{ label: '职业', key: 'profession' },
 				{ label: '地区', key: 'region' }
@@ -205,21 +196,33 @@ export default {
 		async fetchUserInfo() {
 			if (this.loading) return
 			this.loading = true
+
+			// 先从本地存储读取用户信息
+			const localUserInfo = uni.getStorageSync('userInfo') || {}
+
 			try {
 				const res = await api.user.getInfo()
 				if (res.code === 200) {
 					const data = res.data || {}
 					this.userInfo = {
-						avatar: data.avatar || 'https://bioflex.cn/static/avatar/avatar.png',
-						nickname: data.nickname || '',
+						// 优先使用接口返回的数据，其次使用本地存储的数据
+						avatar: data.avatar || localUserInfo.avatar || 'https://bioflex.cn/static/avatar/avatar.png',
+						nickname: data.nickname || localUserInfo.nickname || '',
 						gender: data.gender || '保密',
 						profession: data.profession || '',
 						region: data.region || '',
 						bio: data.signature || data.bio || ''
 					}
+				} else {
+					// 接口失败时使用本地存储的数据
+					this.userInfo.avatar = localUserInfo.avatar || this.userInfo.avatar
+					this.userInfo.nickname = localUserInfo.nickname || this.userInfo.nickname
 				}
 			} catch (err) {
 				console.error('获取用户信息失败:', err)
+				// 接口异常时使用本地存储的数据
+				this.userInfo.avatar = localUserInfo.avatar || this.userInfo.avatar
+				this.userInfo.nickname = localUserInfo.nickname || this.userInfo.nickname
 			} finally {
 				this.loading = false
 			}
@@ -240,92 +243,14 @@ export default {
 				return false
 			}
 		},
-		handleAvatarClick() {
-			uni.showActionSheet({
-				itemList: ['拍照', '从相册选择'],
-				success: (res) => {
-					if (res.tapIndex === 0) {
-						
-						uni.chooseImage({
-							count: 1,
-							sourceType: ['camera'],
-							success: async (result) => {
-								const tempPath = result.tempFilePaths[0]
-								
-								const oldAvatar = this.userInfo.avatar
-								this.userInfo.avatar = tempPath
-								
-								try {
-									const uploadRes = await api.user.uploadAvatar(tempPath)
-									if (uploadRes.code === 0) {
-										this.userInfo.avatar = uploadRes.data.url || tempPath
-										uni.showToast({ title: '头像已更新', icon: 'success' })
-									} else {
-										this.userInfo.avatar = oldAvatar
-										uni.showToast({ title: '上传失败', icon: 'none' })
-									}
-								} catch (err) {
-									this.userInfo.avatar = oldAvatar
-									uni.showToast({ title: '上传失败', icon: 'none' })
-								}
-							}
-						})
-					} else if (res.tapIndex === 1) {
-						
-						uni.chooseImage({
-							count: 1,
-							sourceType: ['album'],
-							success: async (result) => {
-								const tempPath = result.tempFilePaths[0]
-								const oldAvatar = this.userInfo.avatar
-								this.userInfo.avatar = tempPath
-								try {
-									const uploadRes = await api.user.uploadAvatar(tempPath)
-									if (uploadRes.code === 0) {
-										this.userInfo.avatar = uploadRes.data.url || tempPath
-										uni.showToast({ title: '头像已更新', icon: 'success' })
-									} else {
-										this.userInfo.avatar = oldAvatar
-										uni.showToast({ title: '上传失败', icon: 'none' })
-									}
-								} catch (err) {
-									this.userInfo.avatar = oldAvatar
-									uni.showToast({ title: '上传失败', icon: 'none' })
-								}
-							}
-						})
-					}
-				}
-			})
-		},
 		handleItemClick(item) {
-			if (item.key === 'nickname') {
-				this.editNickname()
-			} else if (item.key === 'gender') {
+			if (item.key === 'gender') {
 				this.editGender()
 			} else if (item.key === 'profession') {
 				this.editProfession()
 			} else if (item.key === 'region') {
 				this.editRegion()
 			}
-		},
-		editNickname() {
-			uni.showModal({
-				title: '修改昵称',
-				editable: true,
-				placeholderText: '请输入昵称',
-				content: this.userInfo.nickname,
-				success: async (res) => {
-					if (res.confirm && res.content) {
-						const oldValue = this.userInfo.nickname
-						this.userInfo.nickname = res.content
-						const success = await this.updateUserInfo('nickname', res.content)
-						if (!success) {
-							this.userInfo.nickname = oldValue
-						}
-					}
-				}
-			})
 		},
 		editGender() {
 			uni.showActionSheet({
@@ -335,7 +260,14 @@ export default {
 					const oldValue = this.userInfo.gender
 					this.userInfo.gender = genders[res.tapIndex]
 					const success = await this.updateUserInfo('gender', genders[res.tapIndex])
-					if (!success) {
+					if (success) {
+						// 同步更新本地存储
+						const localUserInfo = uni.getStorageSync('userInfo') || {}
+						localUserInfo.gender = genders[res.tapIndex]
+						uni.setStorageSync('userInfo', localUserInfo)
+						// 通知我的页面刷新
+						uni.$emit('refreshMineUserInfo')
+					} else {
 						this.userInfo.gender = oldValue
 					}
 				}
@@ -505,6 +437,38 @@ export default {
 .bio-placeholder {
 	color: #a6a6a6;
 	font-size: 26rpx;
+}
+
+.gender-icon {
+	width: 20rpx;
+	height: 20rpx;
+	flex-shrink: 0;
+}
+
+.gender-badge {
+	width: 32rpx;
+	height: 32rpx;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+.gender-male {
+	background-color: #DBE8FF;
+}
+
+.gender-male .gender-icon {
+	filter: invert(45%) sepia(70%) saturate(600%) hue-rotate(190deg) brightness(95%);
+}
+
+.gender-female {
+	background-color: #FFE4EC;
+}
+
+.gender-female .gender-icon {
+	filter: invert(55%) sepia(80%) saturate(500%) hue-rotate(310deg) brightness(95%);
 }
 
 .avatar-preview {

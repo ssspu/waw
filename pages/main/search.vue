@@ -624,13 +624,13 @@ export default {
 				this.sortOptions = ['推荐排序', '距离近', '评分高', '服务多', '价格低']
 
 				
-				this.designerStarOptions = ['不限', '二星/中级', '三星/高级', '四星/导师', '五星/名师']
+				this.designerStarOptions = ['不限', '初级', '中级', '高级', '技师', '高级技师']
 
 				
-				this.merchantDiamondOptions = ['不限', '钻石', '二星/中级', '三星/高级', '四星/导师', '五星/名师']
+				this.merchantDiamondOptions = ['不限', '二星/经济', '三星/舒适', '四星/高档', '五星/精品']
 
 				
-				this.storeTypeOptions = ['不限', '独立设计师', '工作室', '专业店', '综合店', '连锁店', '品牌店']
+				this.storeTypeOptions = ['不限', '专业店', '品牌店', '工作室', '综合店']
 
 				
 				this.locationRegions = this.getDefaultLocationRegions()
@@ -690,7 +690,7 @@ export default {
 							title: '推荐商圈',
 							items: [
 								{ label: '双林路', value: 'nearby-shuanglin' },
-								{ label: '电子科怊大学', value: 'nearby-uestc' },
+								{ label: '电子科技大学', value: 'nearby-uestc' },
 								{ label: '新华公园', value: 'nearby-xinhua' },
 								{ label: '万象城', value: 'nearby-wanxiang' },
 								{ label: '抚琴', value: 'nearby-fuqin' },
@@ -883,7 +883,7 @@ export default {
 				name: data.real_name || data.name || '未知设计师',
 				level: data.level || this.getLevelText(data.professional_level),
 				role: `${data.position || ''}｜从业${data.work_years || data.experience || 0}年`,
-				specialties: data.expertise ? data.expertise.split(/[,]/).slice(0, 3) : (data.specialties || []),
+				specialties: data.expertise ? data.expertise.replace(/[\[\]"']/g, '').split(/[,，]/).map(s => s.trim()).filter(s => s).slice(0, 3) : (data.specialties || []),
 				rating: String(data.rating || 0),
 				services: String(data.total_appointments || data.appointmentCount || 0),
 				works: String(data.worksCount || 0),
@@ -896,13 +896,24 @@ export default {
 
 		
 		formatBrandData(data) {
-			
-			const level = data.brand_type || data.business_mode || ''
+			// 将 business_mode 映射到 categoryItems 中的四个类型
+			const businessModeMap = {
+				'单店经营': '专业店',
+				'专业店': '专业店',
+				'连锁经营': '品牌店',
+				'品牌直营': '品牌店',
+				'工作室': '工作室',
+				'商场店': '综合店',
+				'街边店': '综合店',
+				'写字楼店': '综合店',
+				'创意园': '综合店'
+			}
+			const level = businessModeMap[data.business_mode] || data.brand_type || '专业店'
 			return {
 				id: data.id,
 				name: data.brand_intro || data.name || '未知品牌',
-				tag: level, 
-				type: `${data.brand_type || data.business_mode || '专业店'}｜${data.established_date ? new Date(data.established_date).getFullYear() + '年值业' : ''}`,
+				tag: level,
+				type: `${level}｜${data.established_date ? new Date(data.established_date).getFullYear() + '年开业' : ''}`,
 				rating: String(data.rating || 0),
 				designers: `${data.designer_count || 0}人`,
 				services: String(data.appointment_count || 0),
@@ -916,14 +927,16 @@ export default {
 
 		
 		getLevelText(level) {
+			let levelNum = Number(level)
+			if (levelNum > 5) levelNum = 5
 			const levelMap = {
 				1: '初级',
 				2: '中级',
 				3: '高级',
-				4: '导师',
-				5: '名师'
+				4: '技师',
+				5: '高级技师'
 			}
-			return levelMap[level] || '普通'
+			return levelMap[levelNum] || '初级'
 		},
 
 		
@@ -1633,7 +1646,6 @@ export default {
 }
 
 .brand-list {
-	margin-top: 12rpx;
 	display: flex;
 	flex-direction: column;
 	gap: 12rpx;
@@ -1677,7 +1689,6 @@ export default {
 	width: 100%;
 	align-items: flex-start;
 	gap: 12rpx;
-	margin-top: 12rpx;
 	box-sizing: border-box;
 }
 

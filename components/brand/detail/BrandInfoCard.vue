@@ -32,7 +32,7 @@
 							<image class="verify-icon" :src="designerInfo.verifyIcon" mode="aspectFit"></image>
 						</view>
 						<view class="role-row">
-							<text class="role">{{ designerInfo.role }}</text>
+							<text class="role">舒适</text>
 							<text class="divider">｜</text>
 							<view class="cert-badge">
 								<image class="cert-icon" src="/static/icon/renzheng.png" mode="aspectFit"></image>
@@ -165,15 +165,6 @@ export default {
 		designerInfo: {
 			type: Object,
 			default: () => ({
-				// avatar: "https://c.animaapp.com/mi5d4lp0csJxnR/img/rectangle-153.png",
-				
-				// verifyIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2110.svg",
-				
-				// certIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-2.svg",
-				
-				// certDot: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg",
-				
-				
 			})
 		},
 		serviceBadges: {
@@ -207,11 +198,6 @@ export default {
 		rightStats: {
 			type: Object,
 			default: () => ({
-				// serviceIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-1.svg",
-				// serviceCount: "281",
-				// workIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame-4.svg",
-				// workCount: "234",
-				// dotIcon: "https://c.animaapp.com/mi5d4lp0csJxnR/img/frame.svg"
 			})
 		}
 	},
@@ -241,8 +227,9 @@ export default {
 <style scoped lang="scss">
 .designer-info-card {
 	position: relative;
-	width: calc(100% + 24rpx);
-	margin: 0 -12rpx 18rpx -12rpx;
+	width: 100%;
+	box-sizing: border-box;
+	margin-bottom: 18rpx;
 }
 
 .card-wrapper {
@@ -253,7 +240,7 @@ export default {
 .follow-btn {
 	position: absolute;
 	top: 108rpx;
-	right: 0;
+	right: 12rpx;
 	width: 200rpx;
 	height: 100rpx;
 	z-index: 2;
@@ -407,6 +394,8 @@ export default {
 	font-size: 22rpx;
 	height: 36rpx;
 	line-height: 36rpx;
+	padding: 0 8rpx;
+	border-radius: 4rpx;
 }
 
 .divider {
@@ -509,7 +498,14 @@ export default {
 	color: #666666;
 	font-size: 24rpx;
 	line-height: 42rpx;
+	height: 84rpx;
+	min-height: 84rpx;
 	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
 }
 
 .more-btn {
@@ -772,6 +768,7 @@ export default {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	max-width: 10em;
 }
 
 .shop-distance {

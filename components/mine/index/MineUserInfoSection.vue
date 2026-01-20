@@ -16,26 +16,32 @@
 				<text class="vip-chip-desc">建设中...</text>
 			</view>
 
-			<view class="user-header">
+			<view class="user-header" @tap="handleUserClick">
 				<view class="avatar-wrapper">
 					<image
 						class="avatar"
-						:src="userInfo.avatar || 'https://c.animaapp.com/mi5lwd2pQMRb0W/img/ellipse-77.svg'"
+						:src="isLogin && userInfo.avatar ? userInfo.avatar : 'https://c.animaapp.com/mi5lwd2pQMRb0W/img/ellipse-77.svg'"
 						mode="aspectFill"
 					></image>
 				</view>
 
 				<view class="user-details">
-					<view class="name-row">
-						<text class="user-name">{{ userInfo.nickname || '未登录' }}</text>
-						<image
-							class="verify-icon"
-							src="https://c.animaapp.com/mi5lwd2pQMRb0W/img/frame-2110.svg"
-							mode="aspectFit"
-						></image>
+					<view class="name-row" v-if="isLogin">
+						<text class="user-name">{{ userInfo.nickname || '未设置昵称' }}</text>
+						<view v-if="userInfo.gender === '男'" class="gender-badge gender-male">
+							<image class="verify-icon" src="/static/icon/nanxing.png" mode="aspectFit"></image>
+						</view>
+						<view v-else-if="userInfo.gender === '女'" class="gender-badge gender-female">
+							<image class="verify-icon" src="/static/icon/nvxing.png" mode="aspectFit"></image>
+						</view>
 					</view>
-					<text class="user-level">{{ vipLevelText }}</text>
-					<text class="user-bio">{{ userInfo.signature || '这个人很懒，什么都没留下~' }}</text>
+					<view class="login-row" v-else>
+						<text class="login-text">点击登录</text>
+						<image class="login-arrow" src="https://bioflex.cn/static/icon/right.png" mode="aspectFit"></image>
+					</view>
+					<text class="user-level" v-if="isLogin">{{ vipLevelText }}</text>
+					<text class="user-bio" v-if="isLogin">{{ userInfo.signature || '这个人很懒，什么都没留下~' }}</text>
+					<text class="login-tip" v-else>登录后享受更多服务</text>
 				</view>
 			</view>
 			
@@ -73,15 +79,18 @@
 
 <script>
 import api from '@/api'
+import { isLoggedIn } from '@/api/request.js'
 
 export default {
 	data() {
 		return {
+			isLogin: false,
 			userInfo: {
 				nickname: '',
 				avatar: '',
 				vipLevel: 0,
-				signature: ''
+				signature: '',
+				gender: ''
 			},
 			statsData: [
 				{ value: "0", label: "关注", key: "followCount" },
@@ -98,12 +107,22 @@ export default {
 		}
 	},
 	mounted() {
-		// 先从本地存储加载用户信息
-		this.loadLocalUserInfo()
-		// 然后从API获取最新信息
-		this.fetchUserInfo()
+		this.refreshData()
+		// 监听页面显示事件，刷新数据
+		uni.$on('refreshMineUserInfo', this.refreshData)
+	},
+	beforeDestroy() {
+		uni.$off('refreshMineUserInfo', this.refreshData)
 	},
 	methods: {
+		// 刷新数据
+		refreshData() {
+			this.isLogin = isLoggedIn()
+			this.loadLocalUserInfo()
+			if (this.isLogin) {
+				this.fetchUserInfo()
+			}
+		},
 		// 从本地存储加载用户信息
 		loadLocalUserInfo() {
 			try {
@@ -113,7 +132,8 @@ export default {
 						nickname: localUserInfo.nickname || localUserInfo.nickName || '',
 						avatar: localUserInfo.avatar || localUserInfo.avatarUrl || '',
 						vipLevel: localUserInfo.vipLevel || 0,
-						signature: localUserInfo.signature || ''
+						signature: localUserInfo.signature || '',
+						gender: localUserInfo.gender || ''
 					}
 				}
 			} catch (err) {
@@ -124,13 +144,19 @@ export default {
 		async fetchUserInfo() {
 			try {
 				const res = await api.user.getInfo()
+				// 检查是否需要登录（token过期）
+				if (res.needLogin || res.code === 401) {
+					this.handleTokenExpired()
+					return
+				}
 				if (res.code === 200 && res.data) {
 					// 更新用户信息
 					this.userInfo = {
 						nickname: res.data.nickname || res.data.nickName || this.userInfo.nickname || '',
 						avatar: res.data.avatar || res.data.avatarUrl || this.userInfo.avatar || '',
 						vipLevel: res.data.vipLevel || 0,
-						signature: res.data.signature || ''
+						signature: res.data.signature || '',
+						gender: res.data.gender || this.userInfo.gender || ''
 					}
 
 					// 同步更新本地存储
@@ -143,9 +169,40 @@ export default {
 				}
 			} catch (err) {
 				console.error('获取用户信息失败:', err)
+				// 检查错误是否为token过期
+				if (err.code === 401 || err.needLogin) {
+					this.handleTokenExpired()
+				}
 			}
 
-			this.fetchTerritoryDesigners()
+			if (this.isLogin) {
+				this.fetchTerritoryDesigners()
+			}
+		},
+
+		// 处理token过期
+		handleTokenExpired() {
+			// 清除token
+			uni.removeStorageSync('waw_token')
+			uni.removeStorageSync('waw_refresh_token')
+			// 清除用户信息
+			uni.removeStorageSync('userInfo')
+			// 重置登录状态
+			this.isLogin = false
+			// 重置用户信息
+			this.userInfo = {
+				nickname: '',
+				avatar: '',
+				vipLevel: 0,
+				signature: '',
+				gender: ''
+			}
+			// 重置统计数据
+			this.statsData[0].value = '0'
+			this.statsData[1].value = '0'
+			this.statsData[2].value = '0'
+			// 重置领地头像
+			this.territoryAvatars = []
 		},
 		
 		async fetchTerritoryDesigners() {
@@ -159,6 +216,11 @@ export default {
 			}
 		},
 		handleStatClick(stat) {
+			// 未登录时跳转登录页
+			if (!this.isLogin) {
+				uni.navigateTo({ url: '/pages/login/index' })
+				return
+			}
 			if (stat.label === '关注') {
 				uni.navigateTo({ url: '/packageMine/pages/mine/follow-list' })
 			} else if (stat.label === '浏览') {
@@ -168,7 +230,21 @@ export default {
 			}
 		},
 		handleTerritoryClick() {
+			// 未登录时跳转登录页
+			if (!this.isLogin) {
+				uni.navigateTo({ url: '/pages/login/index' })
+				return
+			}
 			uni.navigateTo({ url: '/packageOthers/pages/territory/index' })
+		},
+		handleUserClick() {
+			// 未登录时跳转登录页
+			if (!this.isLogin) {
+				uni.navigateTo({ url: '/pages/login/index' })
+				return
+			}
+			// 已登录可跳转个人信息页
+			uni.navigateTo({ url: '/packageSetting/pages/setting/personal-info' })
 		},
 		handleQrClick() {
 			console.log('QR code clicked')
@@ -195,23 +271,23 @@ export default {
 }
 
 .user-card {
-	width: 690rpx;
+	width: 710rpx;
+	border-radius: 12rpx;
 	padding: 40rpx 30rpx 36rpx;
 	position: relative;
 	box-sizing: border-box;
-	margin: -60rpx auto 0;
+	margin: -80rpx 0 0rpx;
 }
 
 .user-card::before {
 	content: '';
 	position: absolute;
-	top:0rpx;
+	top: 0;
 	left: 0;
-	width:100%;
+	width: 100%;
 	height: 100%;
 	background-image: url('https://bioflex.cn/static/background-image/mine_info_bg.png');
-	background-size: contain;
-	// background-position: center 58rpx;
+	background-size: 100% auto;
 	background-repeat: no-repeat;
 	z-index: -1;
 	pointer-events: none;
@@ -226,7 +302,8 @@ export default {
 	pointer-events: none;
 
 	&.disabled {
-		opacity: 0.6;
+		filter: grayscale(100%);
+		opacity: 0.7;
 	}
 }
 
@@ -251,7 +328,8 @@ export default {
 	padding: 20rpx 28rpx 24rpx 32rpx;
 
 	&.disabled {
-		opacity: 0.6;
+		filter: grayscale(100%);
+		opacity: 0.7;
 		pointer-events: none;
 	}
 }
@@ -338,6 +416,29 @@ export default {
 	gap: 8rpx;
 }
 
+.login-row {
+	display: flex;
+	align-items: center;
+	gap: 8rpx;
+}
+
+.login-text {
+	font-size: 40rpx;
+	color: #000;
+	font-family: 'PingFang_SC-Semibold', Helvetica;
+}
+
+.login-arrow {
+	width: 32rpx;
+	height: 32rpx;
+}
+
+.login-tip {
+	font-size: 24rpx;
+	color: #a6a6a6;
+	margin-top: 8rpx;
+}
+
 .user-name {
 	font-size: 40rpx;
 	color: #000;
@@ -345,8 +446,33 @@ export default {
 }
 
 .verify-icon {
+	width: 24rpx;
+	height: 24rpx;
+}
+
+.gender-badge {
 	width: 36rpx;
 	height: 36rpx;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.gender-male {
+	background-color: #DBE8FF;
+}
+
+.gender-male .verify-icon {
+	filter: invert(45%) sepia(70%) saturate(600%) hue-rotate(190deg) brightness(95%);
+}
+
+.gender-female {
+	background-color: #FFE4EC;
+}
+
+.gender-female .verify-icon {
+	filter: invert(55%) sepia(80%) saturate(500%) hue-rotate(310deg) brightness(95%);
 }
 
 .user-level {

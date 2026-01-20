@@ -23,11 +23,7 @@
 			<view class="content-section">
 				<brand-info-services-section :active-tab="activeTab" :brand-id="brandId"></brand-info-services-section>
 			</view>
-
-			<!-- 底部指示器 -->
-			<view class="footer-indicator">
-				<view class="indicator-dot"></view>
-			</view>
+			
 		</scroll-view>
 	</view>
 </template>
@@ -46,8 +42,10 @@ export default {
 			statusBarHeight: 44,
 			activeTab: 'designer',
 			scrollTop: 0,
+			scrollIntoViewId: '',
 			oldScrollTop: 0,
-			brandId: ''
+			brandId: '',
+			isScrolling: false
 		}
 	},
 	onLoad(options) {
@@ -59,24 +57,45 @@ export default {
 	methods: {
 		handleTabChange(tab) {
 			this.activeTab = tab
-			this.scrollToSection(tab)
+			this.isScrolling = true
+
+			// 使用 selector 获取目标元素位置并滚动
+			const query = uni.createSelectorQuery().in(this)
+			query.select(`#${tab}`).boundingClientRect()
+			query.select('.main-content').scrollOffset()
+			query.exec((res) => {
+				if (res[0] && res[1]) {
+					const targetTop = res[1].scrollTop + res[0].top
+					this.scrollTop = this.scrollTop === targetTop ? targetTop + 0.1 : targetTop
+				}
+				setTimeout(() => {
+					this.isScrolling = false
+				}, 500)
+			})
 		},
 		onScroll(e) {
 			this.oldScrollTop = e.detail.scrollTop
 		},
-		scrollToSection(sectionId) {
+		updateActiveTabByScroll() {
+			const sections = ['designer', 'service', 'environment']
 			const query = uni.createSelectorQuery().in(this)
-			query.select(`#${sectionId}`).boundingClientRect(rect => {
-				if (rect) {
-					// 计算目标滚动位置
-					const targetTop = this.oldScrollTop + rect.top - 20
-					// 先重置再设置，确保触发滚动
-					this.scrollTop = this.oldScrollTop
-					this.$nextTick(() => {
-						this.scrollTop = targetTop > 0 ? targetTop : 0
-					})
+			query.select('#designer').boundingClientRect()
+			query.select('#service').boundingClientRect()
+			query.select('#environment').boundingClientRect()
+			query.exec(results => {
+				if (!results || results.every(r => !r)) return
+				const systemInfo = uni.getSystemInfoSync()
+				const threshold = systemInfo.windowHeight / 3
+				for (let i = results.length - 1; i >= 0; i--) {
+					const rect = results[i]
+					if (rect && rect.top <= threshold) {
+						if (this.activeTab !== sections[i]) {
+							this.activeTab = sections[i]
+						}
+						break
+					}
 				}
-			}).exec()
+			})
 		}
 	}
 }
@@ -122,13 +141,6 @@ export default {
 	padding: 0;
 }
 
-.footer-indicator {
-	display: flex;
-	width: 100%;
-	align-items: center;
-	justify-content: center;
-	padding: 40rpx 0;
-}
 
 .indicator-dot {
 	width: 268rpx;

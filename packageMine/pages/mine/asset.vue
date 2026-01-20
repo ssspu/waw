@@ -43,23 +43,23 @@
 				</view>
 			</view>
 
-			<!-- 结算信息卡片 -->
+			<!-- 提现信息卡片 -->
 			<view class="settlement-card">
-				<text class="card-title">结算信息</text>
+				<text class="card-title">提现</text>
 				<view class="settlement-content">
-					<view class="bank-card-item" @tap="handleBankCard">
+					<view class="bank-card-item" @tap="handleWithdraw">
 						<view class="bank-card-left">
 							<view class="bank-icon-wrapper">
 								<image
 									class="bank-icon"
-									src="https://bioflex.cn/static/icon/vector-2.svg"
+									src="/static/icon/tixian.png"
 									mode="aspectFit"
 								></image>
 							</view>
-							<text class="bank-label">银行卡</text>
+							<text class="bank-label">提现到微信</text>
 						</view>
 						<view class="bank-card-right">
-							<text class="bank-status">{{ bankCardStatus }}</text>
+							<text class="bank-status">微信零钱</text>
 							<image
 								class="arrow-right-icon"
 								src="https://bioflex.cn/static/icon/vector-4.svg"
@@ -86,8 +86,7 @@ export default {
 				platformReward: 0,
 				promotion: 0,
 				beans: 0
-			},
-			bankCardStatus: '未绑定'
+			}
 		}
 	},
 	onLoad() {
@@ -102,13 +101,11 @@ export default {
 			if (this.loading) return
 			this.loading = true
 			try {
-				
-				const [balanceRes, beansRes, promotionRes, rewardRes, bankRes] = await Promise.all([
+				const [balanceRes, beansRes, promotionRes, rewardRes] = await Promise.all([
 					api.user.getBalance(),
 					api.user.getBeans(),
 					api.user.getPromotion(),
-					api.user.getPlatformReward(),
-					api.user.getBankCards()
+					api.user.getPlatformReward()
 				])
 
 				if (balanceRes.code === 0) {
@@ -123,12 +120,7 @@ export default {
 				if (rewardRes.code === 0) {
 					this.assetInfo.platformReward = rewardRes.data.availableReward || 0
 				}
-				if (bankRes.code === 0) {
-					const cards = bankRes.data || []
-					this.bankCardStatus = cards.length > 0 ? '已绑定' : '未绑定'
-				}
 
-				
 				this.assetInfo.totalAsset = this.assetInfo.balance + this.assetInfo.platformReward + this.assetInfo.promotion + this.assetInfo.beans
 			} catch (err) {
 				console.error('获取资产数据失败:', err)
@@ -137,9 +129,9 @@ export default {
 				this.loading = false
 			}
 		},
-				handleBankCard() {
+				handleWithdraw() {
 			uni.navigateTo({
-				url: '/packageSetting/pages/setting/bank-cards'
+				url: '/packageMine/pages/mine/withdraw'
 			})
 		},
 		handleAssetDetail() {
@@ -320,8 +312,16 @@ export default {
 	display: flex;
 	flex-direction: column;
 	gap: 4rpx;
-	width: 146rpx;
+	flex: 1;
 	align-items: center;
+
+	&:first-child {
+		align-items: flex-start;
+	}
+
+	&:last-child {
+		align-items: flex-end;
+	}
 }
 
 .item-label {

@@ -81,7 +81,7 @@
 							<view class="item-content">
 								<view class="item-info">
 									<text class="item-title">教育拍档</text>
-									<text class="item-desc">职业教育合作，美业怊能培训，职业证书认证</text>
+									<text class="item-desc">职业教育合作，美业技能培训，职业证书认证</text>
 								</view>
 								<image
 									class="arrow-icon"
@@ -201,6 +201,7 @@ export default {
 }
 
 .apply-section {
+width: 100%;
 	display: inline-flex;
 	flex-direction: column;
 	gap: 12rpx;

@@ -14,11 +14,12 @@
 		</view>
 
 		<!-- 主内容 -->
-		<scroll-view 
-			class="main-content" 
-			scroll-y 
-			:scroll-into-view="scrollIntoView"
+		<scroll-view
+			class="main-content"
+			scroll-y
+			:scroll-top="scrollTop"
 			scroll-with-animation
+			@scroll="onScroll"
 		>
 			<!-- 详细内容 -->
 			<view class="content-section">
@@ -29,10 +30,6 @@
 				></designer-info-services-section>
 			</view>
 			
-			<!-- 底部指示器 -->
-			<view class="footer-indicator">
-				<view class="indicator-dot"></view>
-			</view>
 		</scroll-view>
 	</view>
 </template>
@@ -52,7 +49,10 @@ export default {
 			statusBarHeight: 44,
 			designerId: '',
 			activeTab: 'designer',
-			scrollIntoView: '',
+			scrollTop: 0,
+			scrollIntoViewId: '',
+			oldScrollTop: 0,
+			isScrolling: false,
 			designerInfo: {},
 			serviceBadges: [],
 			statsData: [],
@@ -78,7 +78,45 @@ export default {
 		},
 		handleTabChange(tab) {
 			this.activeTab = tab
-			this.scrollIntoView = tab
+			this.isScrolling = true
+
+			// 使用 selector 获取目标元素位置并滚动
+			const query = uni.createSelectorQuery().in(this)
+			query.select(`#${tab}`).boundingClientRect()
+			query.select('.main-content').scrollOffset()
+			query.exec((res) => {
+				if (res[0] && res[1]) {
+					const targetTop = res[1].scrollTop + res[0].top
+					this.scrollTop = this.scrollTop === targetTop ? targetTop + 0.1 : targetTop
+				}
+				setTimeout(() => {
+					this.isScrolling = false
+				}, 500)
+			})
+		},
+		onScroll(e) {
+			this.oldScrollTop = e.detail.scrollTop
+		},
+		updateActiveTabByScroll() {
+			const sections = ['designer', 'service', 'environment']
+			const query = uni.createSelectorQuery().in(this)
+			query.select('#designer').boundingClientRect()
+			query.select('#service').boundingClientRect()
+			query.select('#environment').boundingClientRect()
+			query.exec(results => {
+				if (!results || results.every(r => !r)) return
+				const systemInfo = uni.getSystemInfoSync()
+				const threshold = systemInfo.windowHeight / 3
+				for (let i = results.length - 1; i >= 0; i--) {
+					const rect = results[i]
+					if (rect && rect.top <= threshold) {
+						if (this.activeTab !== sections[i]) {
+							this.activeTab = sections[i]
+						}
+						break
+					}
+				}
+			})
 		},
 		async fetchDesignerDetail() {
 			if (!this.designerId) return
@@ -257,7 +295,6 @@ export default {
 
 .navbar-tabs {
 	flex: 1;
-	margin-left: 20rpx;
 }
 
 .main-content {
@@ -265,20 +302,13 @@ export default {
 	flex: 1;
 	box-sizing: border-box;
 	padding-bottom: 40rpx;
-	min-height: 0; /* 重要：确保 flex 子元素可以收缩并滚动 */
+	min-height: 0;
 }
 
 .content-section {
 	padding: 0;
 }
 
-.footer-indicator {
-	display: flex;
-	width: 100%;
-	align-items: center;
-	justify-content: center;
-	padding: 40rpx 0;
-}
 
 .indicator-dot {
 	width: 268rpx;

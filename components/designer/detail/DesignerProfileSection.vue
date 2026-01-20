@@ -289,18 +289,33 @@ export default {
 			this.selectedSecondary = id
 		},
 		toggleExpand(serviceId) {
-			
+			const service = this.services.find(s => s.id === serviceId)
+
+			// 如果服务没有多个品牌选项，直接预约不需要二次选择
+			if (!service || !service.brandOptions || service.brandOptions.length <= 1) {
+				// 设置默认选项
+				if (!this.selectedHairLengths[serviceId]) {
+					this.$set(this.selectedHairLengths, serviceId, 'short')
+				}
+				if (!this.selectedBrands[serviceId] && service.brandOptions && service.brandOptions.length > 0) {
+					this.$set(this.selectedBrands, serviceId, service.brandOptions[0].id)
+				}
+				// 直接预约
+				this.handleBook(service)
+				return
+			}
+
+			// 有多个品牌选项，展开二次选择
 			const index = this.expandedServices.indexOf(serviceId)
 			if (index > -1) {
 				this.expandedServices.splice(index, 1)
 			} else {
 				this.expandedServices.push(serviceId)
-				
+
 				if (!this.selectedHairLengths[serviceId]) {
 					this.$set(this.selectedHairLengths, serviceId, 'short')
 				}
 				if (!this.selectedBrands[serviceId]) {
-					const service = this.services.find(s => s.id === serviceId)
 					if (service && service.brandOptions && service.brandOptions.length > 0) {
 						this.$set(this.selectedBrands, serviceId, service.brandOptions[0].id)
 					}
@@ -393,6 +408,7 @@ export default {
 }
 
 .services-list {
+	margin-bottom: 12rpx;
 	display: flex;
 	flex-direction: column;
 	width: 100%;

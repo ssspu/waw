@@ -55,6 +55,7 @@ export default {
 	box-shadow: none;
 	padding: 20rpx 0rpx 0rpx 0rpx;
 	box-sizing: border-box;
+	border-radius: 12rpx;
 	// margin-left: -20rpx;
 	// background-color: #fcc;
 	

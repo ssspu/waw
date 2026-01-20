@@ -28,7 +28,11 @@
 
 				<!-- 商品信息 -->
 				<view class="product-section">
-					<view class="product-image-placeholder"></view>
+					<image
+						class="product-image"
+						:src="orderData.product.image || 'https://bioflex.cn/static/icon/rectangle-169.png'"
+						mode="aspectFill"
+					></image>
 					<view class="product-info">
 						<view class="product-left">
 							<text class="product-name">{{ orderData.product.name }}</text>
@@ -120,7 +124,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import api from '@/api'
 
 // 订单ID
@@ -250,12 +255,12 @@ const formatDateTime = (dateStr) => {
 }
 
 // 页面加载
-const onLoad = (options) => {
+onLoad((options) => {
 	if (options && options.orderId) {
 		orderId.value = options.orderId
 		fetchOrderDetail(options.orderId)
 	}
-}
+})
 
 // 复制退款编号
 const handleCopy = () => {
@@ -306,11 +311,6 @@ const handleContact = () => {
 		}
 	})
 }
-
-// 暴露方法给页面
-defineExpose({
-	onLoad
-})
 </script>
 
 <style scoped lang="scss">
@@ -412,10 +412,9 @@ defineExpose({
 	gap: 16rpx;
 }
 
-.product-image-placeholder {
+.product-image {
 	width: 132rpx;
 	height: 132rpx;
-	background-color: #d9d9d9;
 	border-radius: 8rpx;
 	flex-shrink: 0;
 }

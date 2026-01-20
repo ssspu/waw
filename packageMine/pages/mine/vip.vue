@@ -40,7 +40,7 @@
 						</view>
 					</view>
 
-					<text class="vip-card-footnote">本活动怜终解释权归本平台怉有</text>
+					<text class="vip-card-footnote">本活动怜终解释权归本平台所有</text>
 					<image class="vip-diamond" src="https://bioflex.cn/static/vip/3d-vip-194815565-1.png" mode="aspectFit" />
 				</view>
 			</view>

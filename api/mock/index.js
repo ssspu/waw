@@ -17,7 +17,7 @@ import settlementMock from './modules/settlement.js'
 import chatMock from './modules/chat.js'
 import portfolioMock from './modules/portfolio.js'
 
-// 合并怉有 mock 数据
+// 合并所有 mock 数据
 const mockData = {
   auth: authMock,
   user: userMock,
@@ -34,7 +34,7 @@ const mockData = {
   portfolio: portfolioMock
 }
 
-// 合并怉有路由处理
+// 合并所有路由处理
 const mockRoutes = {
   ...authMock.routes,
   ...userMock.routes,

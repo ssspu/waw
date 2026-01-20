@@ -354,13 +354,14 @@ export default {
 		},
 		
 		getLevelText(level) {
-			const levelNum = Number(level)
+			let levelNum = Number(level)
+			if (levelNum > 5) levelNum = 5
 			const levelMap = {
 				1: '初级',
 				2: '中级',
 				3: '高级',
-				4: '导师',
-				5: '名师'
+				4: '技师',
+				5: '高级技师'
 			}
 			return levelMap[levelNum] || '初级'
 		},
@@ -388,7 +389,7 @@ export default {
 				serviceCount: data.total_appointments || 0,
 				worksCount: data.worksCount || 0,
 				distance: distance,
-				specialties: data.expertise ? data.expertise.split(/[,]/).map(s => s.trim()) : [],
+				specialties: this.parseSpecialties(data.expertise),
 				tags: data.service_features ? String(data.service_features).split(/[,]/).map(t => t.trim()) : [],
 				_originalData: data // 保存原始数据以便更新距离
 			}
@@ -462,6 +463,17 @@ export default {
 		
 		deg2rad(deg) {
 			return deg * (Math.PI / 180)
+		},
+		parseSpecialties(expertise) {
+			if (!expertise) return []
+			// 如果已经是数组，直接返回
+			if (Array.isArray(expertise)) {
+				return expertise.map(s => String(s).trim()).filter(s => s)
+			}
+			// 如果是字符串，去除引号和中括号后分割
+			let str = String(expertise)
+			str = str.replace(/[\[\]"']/g, '')
+			return str.split(/[,，]/).map(s => s.trim()).filter(s => s)
 		},
 	}
 }
@@ -688,11 +700,11 @@ export default {
 
 .ranking-swiper {
 	width: 100%;
-	height: 600rpx;
+	height: 460rpx;
 }
 
 .ranking-swiper-item {
-	height: 100%;
+	height: 460rpx;
 	display: flex;
 	flex-direction: column;
 }
@@ -781,7 +793,6 @@ export default {
 	display: flex;
 	align-items: center;
 	gap: 6rpx;
-	width: 100%;
 }
 
 .rating-score {
@@ -792,17 +803,15 @@ export default {
 }
 
 .star-icon {
-	width: 20rpx;
-	height: 20rpx;
+	width: 16rpx;
+	height: 16rpx;
 	filter: brightness(0) invert(1);
 }
 
 .pagination-dots {
+	margin-bottom: 24rpx;
 	display: flex;
 	align-items: center;
-	gap: 6rpx;
-	padding: 0 20rpx;
-	margin-bottom: 24rpx;
 	justify-content: center;
 }
 

@@ -312,7 +312,6 @@ export default {
 
 .header {
 	background-color: #ffffff;
-	padding-top: 88rpx;
 }
 
 .nav-bar {

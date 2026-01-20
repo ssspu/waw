@@ -196,7 +196,7 @@ export const routes = {
     return success(null, '已批量标记为已读')
   },
 
-  // 标记怉有消息为已读
+  // 标记所有消息为已读
   'PUT /api/message/read-all': () => {
     messages.forEach(m => m.unread = false)
     return success(null, '已全部标记为已读')

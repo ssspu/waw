@@ -10,11 +10,7 @@
 		<order-service-list 
 			:active-tab="activeTab"
 		></order-service-list>
-		
-		<!-- 底部指示器 -->
-		<view class="footer-indicator">
-			<!-- <view class="indicator-bar"></view> -->
-		</view>
+	
 	</view>
 </template>
 
@@ -78,18 +74,7 @@ export default {
 	z-index: 1;
 }
 
-.footer-indicator {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	align-items: center;
-	justify-content: flex-end;
-	gap: 20rpx;
-	padding: 16rpx 240rpx;
-	margin-top: auto;
-	flex-shrink: 0;
-	box-sizing: border-box;
-}
+
 
 .indicator-bar {
 	width: 268rpx;

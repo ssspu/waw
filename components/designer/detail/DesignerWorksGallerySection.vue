@@ -1,8 +1,9 @@
 <template>
 	<view class="gallery-section">
 		<view class="section-container">
-			<!-- 选择器卡片 -->
-			<view class="filter-card">
+			<!-- 筛选抽屉 -->
+			<view class="filter-drawer" :class="{ show: showFilter }">
+				<view class="filter-card">
 				<view class="filter-content">
 					<!-- 脸型选择 -->
 					<view class="filter-row">
@@ -64,8 +65,8 @@
 					<view class="filter-row">
 						<text class="filter-label">{{ hairAttributes[2].label }}</text>
 						<view class="toggle-group">
-							<view 
-								v-for="(option, index) in hairAttributes[2].options" 
+							<view
+								v-for="(option, index) in hairAttributes[2].options"
 								:key="option.value"
 								class="toggle-item"
 								:class="{ active: hairThickness === option.value }"
@@ -78,8 +79,85 @@
 						</view>
 					</view>
 				</view>
+
+				<!-- 底部按钮 -->
+				<view class="filter-footer">
+					<view class="reset-btn" @tap="handleReset">
+						<text class="reset-text">重置</text>
+					</view>
+					<view class="confirm-btn" @tap="handleConfirmFilter">
+						<text class="confirm-text">确定</text>
+					</view>
+				</view>
+				</view>
 			</view>
-			
+
+			<!-- 筛选标签 -->
+			<view class="filter-tags-card" v-if="showFilterTags">
+				<view class="filter-tags-content">
+					<view class="filter-tag-wrapper">
+						<view class="filter-tag-item" @tap="handleTagClick('face')">
+							<text class="tag-label">脸型</text>
+							<image class="tag-face-icon" :src="selectedFaceIcon" mode="aspectFit"></image>
+							<image class="tag-arrow-icon" :class="{ rotate: activeTagDropdown === 'face' }" src="https://bioflex.cn/static/icon/down.png" mode="aspectFit"></image>
+						</view>
+						<view class="tag-dropdown" v-if="activeTagDropdown === 'face'">
+							<view class="face-options">
+								<view
+									v-for="(face, index) in faceTypes"
+									:key="face.id"
+									class="face-option-item"
+									:class="{ active: selectedFace === face.id }"
+									@tap.stop="handleFaceSelect(face.id)"
+								>
+									<image class="face-option-icon" :src="face.icon" mode="aspectFit"></image>
+								</view>
+							</view>
+						</view>
+					</view>
+					<view class="filter-tag-wrapper">
+						<view class="filter-tag-item" @tap="handleTagClick('volume')">
+							<text class="tag-label">发量</text>
+							<text class="tag-value">{{ selectedVolumeLabel }}</text>
+							<image class="tag-arrow-icon" :class="{ rotate: activeTagDropdown === 'volume' }" src="https://bioflex.cn/static/icon/down.png" mode="aspectFit"></image>
+						</view>
+						<view class="tag-dropdown" v-if="activeTagDropdown === 'volume'">
+							<view class="text-options">
+								<view
+									v-for="(option, index) in hairAttributes[0].options"
+									:key="option.value"
+									class="text-option-item"
+									:class="{ active: hairVolume === option.value }"
+									@tap.stop="handleVolumeSelect(option.value)"
+								>
+									<text class="option-text">{{ option.label }}</text>
+								</view>
+							</view>
+						</view>
+					</view>
+					<view class="filter-tag-wrapper">
+						<view class="filter-tag-item" @tap="handleTagClick('quality')">
+							<text class="tag-label">发质</text>
+							<text class="tag-value">{{ selectedQualityLabel }}</text>
+							<image class="tag-arrow-icon" :class="{ rotate: activeTagDropdown === 'quality' }" src="https://bioflex.cn/static/icon/down.png" mode="aspectFit"></image>
+						</view>
+						<view class="tag-dropdown" v-if="activeTagDropdown === 'quality'">
+							<view class="text-options">
+								<view
+									v-for="(option, index) in hairAttributes[1].options"
+									:key="option.value"
+									class="text-option-item"
+									:class="{ active: hairQuality === option.value }"
+									@tap.stop="handleQualitySelect(option.value)"
+								>
+									<text class="option-text">{{ option.label }}</text>
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+
 			<!-- 空数据状态 -->
 			<view v-if="!loading && galleryImages.length === 0" class="empty-state">
 				<image class="empty-icon" src="https://bioflex.cn/static/icon/empty-works.png" mode="aspectFit"></image>
@@ -126,6 +204,10 @@ export default {
 		activeSubTab: {
 			type: String,
 			default: 'female'
+		},
+		showFilter: {
+			type: Boolean,
+			default: true
 		}
 	},
 	data() {
@@ -133,9 +215,11 @@ export default {
 			loading: false,
 			scrollHeight: 0,
 			selectedFace: 'oval',
-			hairVolume: 'less',
-			hairQuality: 'soft',
-			hairThickness: 'fine',
+			hairVolume: 'normal',
+			hairQuality: 'normal',
+			hairThickness: 'normal',
+			showFilterTags: false,
+			activeTagDropdown: '',
 			
 			faceTypes: [
 				{ id: 'oval', icon: 'https://bioflex.cn/static/icon/face-oval.png', activeIcon: 'https://bioflex.cn/static/icon/face-oval-active.png' },
@@ -172,6 +256,19 @@ export default {
 				}
 			],
 			galleryImages: []
+		}
+	},
+	computed: {
+		selectedFaceIcon() {
+			return `https://bioflex.cn/static/icon/face-${this.selectedFace}-mini.png`
+		},
+		selectedVolumeLabel() {
+			const option = this.hairAttributes[0].options.find(o => o.value === this.hairVolume)
+			return option ? option.label : '正常'
+		},
+		selectedQualityLabel() {
+			const option = this.hairAttributes[1].options.find(o => o.value === this.hairQuality)
+			return option ? option.label : '正常'
 		}
 	},
 	watch: {
@@ -238,6 +335,40 @@ export default {
 		},
 		handleScrollToBottom() {
 			console.log('已滚动到底部')
+		},
+		handleReset() {
+			this.selectedFace = 'oval'
+			this.hairVolume = 'normal'
+			this.hairQuality = 'normal'
+			this.hairThickness = 'normal'
+			this.showFilterTags = false
+			this.fetchWorks()
+		},
+		handleConfirmFilter() {
+			this.$emit('filter-confirm', {
+				faceType: this.selectedFace,
+				hairVolume: this.hairVolume,
+				hairQuality: this.hairQuality,
+				hairThickness: this.hairThickness
+			})
+			this.$emit('update:showFilter', false)
+			this.showFilterTags = true
+			this.fetchWorks()
+		},
+		handleTagClick(tag) {
+			this.activeTagDropdown = this.activeTagDropdown === tag ? '' : tag
+		},
+		handleFaceSelect(value) {
+			this.selectedFace = value
+			this.activeTagDropdown = ''
+		},
+		handleVolumeSelect(value) {
+			this.hairVolume = value
+			this.activeTagDropdown = ''
+		},
+		handleQualitySelect(value) {
+			this.hairQuality = value
+			this.activeTagDropdown = ''
 		}
 	}
 }
@@ -259,8 +390,19 @@ export default {
 .section-container {
 	display: flex;
 	flex-direction: column;
-	gap: 20rpx;
 	width: 100%;
+}
+
+.filter-drawer {
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.3s ease;
+	background-color: #ffffff;
+	border-radius: 8rpx;
+}
+
+.filter-drawer.show {
+	max-height: 800rpx;
 }
 
 .filter-card {
@@ -268,6 +410,7 @@ export default {
 	background-color: #ffffff;
 	border-radius: 8rpx;
 	box-sizing: border-box;
+	padding: 20rpx 30rpx;
 }
 
 .filter-content {
@@ -275,7 +418,6 @@ export default {
 	flex-direction: column;
 	align-items: flex-start;
 	gap: 30rpx;
-	padding: 18rpx 20rpx 20rpx;
 	box-sizing: border-box;
 }
 
@@ -289,7 +431,7 @@ export default {
 
 .filter-label {
 	width: fit-content;
-	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-family: 'PingFang SC';
 	font-weight: normal;
 	color: #a6a6a6;
 	font-size: 24rpx;
@@ -338,7 +480,7 @@ export default {
 	border: 0;
 	cursor: pointer;
 	box-sizing: border-box;
-	
+
 	&.active {
 		background-color: #333333;
 		border-radius: 4rpx;
@@ -348,18 +490,180 @@ export default {
 .toggle-text {
 	width: fit-content;
 	margin-top: -3rpx;
-	font-family: 'PingFang_SC-Regular', Helvetica;
+	font-family: 'PingFang SC';
 	font-weight: normal;
 	color: #666666;
 	font-size: 22rpx;
 	text-align: center;
 	white-space: nowrap;
-	
+
 	&.active {
-		font-family: 'PingFang_SC-Semibold', Helvetica;
-		font-weight: normal;
+		font-weight: 600;
 		color: #ffffff;
 	}
+}
+
+.filter-footer {
+	display: flex;
+	align-items: center;
+	gap: 24rpx;
+	margin-top: 30rpx;
+	padding-bottom: 20rpx;
+}
+
+.reset-btn,
+.confirm-btn {
+	flex: 1;
+	height: 80rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 40rpx;
+}
+
+.reset-btn {
+	border: 2rpx solid #333333;
+	background-color: #ffffff;
+}
+
+.confirm-btn {
+	background-color: #333333;
+}
+
+.reset-text {
+	font-family: 'PingFang SC';
+	font-size: 28rpx;
+	font-weight: 500;
+	color: #333333;
+}
+
+.confirm-text {
+	font-family: 'PingFang SC';
+	font-size: 28rpx;
+	font-weight: 500;
+	color: #ffffff;
+}
+
+.filter-tags-card {
+	padding: 0;
+}
+
+.filter-tags-content {
+	display: flex;
+	align-items: flex-start;
+	gap: 16rpx;
+	margin-bottom: 12rpx;
+	margin-top: 12rpx;
+}
+
+.filter-tag-wrapper {
+	position: relative;
+}
+
+.filter-tag-item {
+	display: flex;
+	align-items: center;
+	gap: 6rpx;
+	padding: 0 16rpx;
+	height: 48rpx;
+	background-color: #ffffff;
+	border-radius: 6rpx;
+}
+
+.tag-label {
+	font-family: 'PingFang SC';
+	font-size: 22rpx;
+	color: #a6a6a6;
+}
+
+.tag-face-icon {
+	width: 24rpx;
+	height: 24rpx;
+}
+
+.tag-value {
+	font-family: 'PingFang SC';
+	font-size: 22rpx;
+	color: #333333;
+	font-weight: 500;
+}
+
+.tag-arrow-icon {
+	width: 20rpx;
+	height: 20rpx;
+	opacity: 0.5;
+	transition: transform 0.3s ease;
+}
+
+.tag-arrow-icon.rotate {
+	transform: rotate(180deg);
+}
+
+.tag-dropdown {
+	position: absolute;
+	top: 56rpx;
+	left: 0;
+	padding: 16rpx;
+	background-color: #ffffff;
+	border-radius: 6rpx;
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+	z-index: 200;
+}
+
+.face-options {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
+}
+
+.face-option-item {
+	width: 56rpx;
+	height: 56rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 6rpx;
+	background-color: #f6f6f6;
+}
+
+.face-option-item.active {
+	background-color: #333333;
+}
+
+.face-option-icon {
+	width: 40rpx;
+	height: 40rpx;
+}
+
+.text-options {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
+}
+
+.text-option-item {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 20rpx;
+	height: 48rpx;
+	background-color: #f6f6f6;
+	border-radius: 6rpx;
+}
+
+.text-option-item.active {
+	background-color: #333333;
+}
+
+.option-text {
+	font-family: 'PingFang SC';
+	font-size: 22rpx;
+	color: #666666;
+	white-space: nowrap;
+}
+
+.text-option-item.active .option-text {
+	color: #ffffff;
 }
 
 .gallery-scroll {

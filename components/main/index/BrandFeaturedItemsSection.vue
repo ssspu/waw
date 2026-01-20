@@ -418,17 +418,10 @@ export default {
 			}
 		},
 		handleCategoryClick(item) {
-			if (this.activeBrandType === item.brandType) {
-				this.activeBrandType = ''
-				this.activeCategory = '品牌馆'
-			} else {
-				this.activeBrandType = item.brandType
-				this.activeCategory = item.title
-			}
-			
-			if (this.allBrands.length > 0) {
-				this.classifyBrandsByTab(this.allBrands)
-			}
+			// 跳转到搜索页的品牌馆tab，带上关键词
+			uni.navigateTo({
+				url: `/pages/main/search?tab=brand&keyword=${encodeURIComponent(item.title)}`
+			})
 		},
 		switchTab(index) {
 			const tab = this.tabItems[index]
@@ -674,7 +667,7 @@ export default {
 	top: 9.41%;
 	left: 0;
 	background-color: #f6f6f6;
-	border-radius: 8rpx;
+	border-radius: 12rpx;
 }
 
 .store-image {
@@ -684,6 +677,7 @@ export default {
 	top: 0;
 	left: 0;
 	object-fit: cover;
+	border-radius: 12rpx;
 }
 
 .store-overlay {
@@ -846,7 +840,7 @@ export default {
 	padding: 4rpx 16rpx;
 	top: 9.41%;
 	right: 0;
-	border-radius: 0 4rpx 0 8rpx;
+	border-radius: 0 12rpx 0 16rpx;
 	background-color: #dacbb1;
 	color: #645e57;
 	font-size: 20rpx;
