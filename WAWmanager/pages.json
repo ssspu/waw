@@ -1,0 +1,322 @@
+{
+  "pages": [
+    {
+      "path": "pages/auth/login",
+      "style": {
+        "navigationBarTitleText": "登录",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/role-select",
+      "style": {
+        "navigationBarTitleText": "员工角色"
+      }
+    },
+    {
+      "path": "pages/manage/index",
+      "style": {
+        "navigationBarTitleText": "管理中心",
+        "navigationStyle": "custom"
+      }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "pages/data",
+      "pages": [
+        {
+          "path": "index",
+          "style": { "navigationBarTitleText": "数据统计" }
+        }
+      ]
+    },
+    {
+      "root": "pages/shop",
+      "pages": [
+        {
+          "path": "manage",
+          "style": { "navigationBarTitleText": "店铺管理" }
+        },
+        {
+          "path": "store-qrcode",
+          "style": { "navigationBarTitleText": "店铺二维码", "navigationStyle": "custom" }
+        },
+        {
+          "path": "center",
+          "style": { "navigationBarTitleText": "作品上传" }
+        },
+        {
+          "path": "decoration",
+          "style": { "navigationBarTitleText": "店铺装修" }
+        },
+        {
+          "path": "store-link",
+          "style": { "navigationBarTitleText": "店铺装修" }
+        },
+        {
+          "path": "store-add",
+          "style": { "navigationBarTitleText": "添加线下服务门店" }
+        },
+        {
+          "path": "info",
+          "style": { "navigationBarTitleText": "店铺信息" }
+        },
+        {
+          "path": "promotion",
+          "style": { "navigationBarTitleText": "店铺推广", "navigationStyle": "custom" }
+        }
+      ]
+    },
+    {
+      "root": "pages/service",
+      "pages": [
+        {
+          "path": "list",
+          "style": { "navigationBarTitleText": "服务管理", "enablePullDownRefresh": true }
+        },
+        {
+          "path": "edit",
+          "style": { "navigationBarTitleText": "编辑服务" }
+        },
+        {
+          "path": "include",
+          "style": { "navigationBarTitleText": "服务包含" }
+        },
+        {
+          "path": "matters",
+          "style": { "navigationBarTitleText": "服务事项" }
+        },
+        {
+          "path": "detail-edit",
+          "style": { "navigationBarTitleText": "服务详情" }
+        }
+      ]
+    },
+    {
+      "root": "pages/customer",
+      "pages": [
+        {
+          "path": "list",
+          "style": { "navigationBarTitleText": "客户列表", "enablePullDownRefresh": true }
+        },
+        {
+          "path": "profile",
+          "style": { "navigationBarTitleText": "客户档案" }
+        },
+        {
+          "path": "dye-plan",
+          "style": { "navigationBarTitleText": "染发方案" }
+        },
+        {
+          "path": "perm-plan",
+          "style": { "navigationBarTitleText": "烫发方案" }
+        }
+      ]
+    },
+    {
+      "root": "pages/staff",
+      "pages": [
+        {
+          "path": "list",
+          "style": { "navigationBarTitleText": "员工列表" }
+        },
+        {
+          "path": "add",
+          "style": { "navigationBarTitleText": "添加员工" }
+        },
+        {
+          "path": "detail",
+          "style": { "navigationBarTitleText": "员工信息" }
+        },
+        {
+          "path": "role-select",
+          "style": { "navigationBarTitleText": "员工角色" }
+        }
+      ]
+    },
+    {
+      "root": "pages/technician",
+      "pages": [
+        {
+          "path": "list",
+          "style": { "navigationBarTitleText": "技师管理" }
+        },
+        {
+          "path": "profile",
+          "style": { "navigationBarTitleText": "技师档案" }
+        },
+        {
+          "path": "invite",
+          "style": { "navigationBarTitleText": "邀请加入", "navigationStyle": "custom" }
+        },
+        {
+          "path": "apply",
+          "style": { "navigationBarTitleText": "申请加入", "navigationStyle": "custom" }
+        }
+      ]
+    },
+    {
+      "root": "pages/order",
+      "pages": [
+        {
+          "path": "list",
+          "style": { "navigationBarTitleText": "订单管理", "enablePullDownRefresh": true }
+        },
+        {
+          "path": "detail",
+          "style": { "navigationBarTitleText": "订单详情" }
+        },
+        {
+          "path": "review",
+          "style": { "navigationBarTitleText": "服务点评" }
+        }
+      ]
+    },
+    {
+      "root": "pages/finance",
+      "pages": [
+        {
+          "path": "assets",
+          "style": { "navigationBarTitleText": "资产总览" }
+        },
+        {
+          "path": "assets-home",
+          "style": { "navigationBarTitleText": "资产收入" }
+        },
+        {
+          "path": "balance",
+          "style": { "navigationBarTitleText": "余额" }
+        },
+        {
+          "path": "balance-detail",
+          "style": { "navigationBarTitleText": "余额明细" }
+        },
+        {
+          "path": "order-income",
+          "style": { "navigationBarTitleText": "订单收入" }
+        },
+        {
+          "path": "bank-card",
+          "style": { "navigationBarTitleText": "银行卡管理" }
+        },
+        {
+          "path": "withdraw",
+          "style": { "navigationBarTitleText": "交易详情" }
+        },
+        {
+          "path": "order-transfer",
+          "style": { "navigationBarTitleText": "转出" }
+        },
+        {
+          "path": "order-income-detail",
+          "style": { "navigationBarTitleText": "订单收入详情" }
+        },
+        {
+          "path": "transaction-detail",
+          "style": { "navigationBarTitleText": "交易详情" }
+        },
+        {
+          "path": "recharge",
+          "style": { "navigationBarTitleText": "充值" }
+        },
+        {
+          "path": "bank-card-add",
+          "style": { "navigationBarTitleText": "添加银行卡" }
+        },
+        {
+          "path": "bank-card-info",
+          "style": { "navigationBarTitleText": "填写银行卡信息" }
+        },
+        {
+          "path": "promotion-income",
+          "style": { "navigationBarTitleText": "推广佣金" }
+        },
+        {
+          "path": "promotion-transfer",
+          "style": { "navigationBarTitleText": "转出" }
+        },
+        {
+          "path": "promotion-income-detail",
+          "style": { "navigationBarTitleText": "推广收入详情" }
+        }
+      ]
+    },
+    {
+      "root": "pages/marketing",
+      "pages": [
+        {
+          "path": "index",
+          "style": { "navigationBarTitleText": "营销中心" }
+        },
+        {
+          "path": "birthday-wish",
+          "style": { "navigationBarTitleText": "生日祝福" }
+        },
+        {
+          "path": "member-sync",
+          "style": { "navigationBarTitleText": "会员同步" }
+        },
+        {
+          "path": "coupon/list",
+          "style": { "navigationBarTitleText": "优惠券" }
+        },
+        {
+          "path": "coupon/add",
+          "style": { "navigationBarTitleText": "添加优惠券" }
+        },
+        {
+          "path": "distribution/index",
+          "style": { "navigationBarTitleText": "分销管理" }
+        }
+      ]
+    },
+    {
+      "root": "pages/time",
+      "pages": [
+        {
+          "path": "manage",
+          "style": { "navigationBarTitleText": "营业时间" }
+        }
+      ]
+    },
+    {
+      "root": "pages/message",
+      "pages": [
+        {
+          "path": "list",
+          "style": { "navigationBarTitleText": "消息通知", "navigationStyle": "custom" }
+        },
+        {
+          "path": "detail",
+          "style": { "navigationBarTitleText": "消息详情" }
+        }
+      ]
+    },
+    {
+      "root": "pages/verify",
+      "pages": [
+        {
+          "path": "index",
+          "style": { "navigationBarTitleText": "验证核销" }
+        }
+      ]
+    },
+    {
+      "root": "pages/visitor",
+      "pages": [
+        {
+          "path": "record",
+          "style": { "navigationBarTitleText": "访客记录" }
+        }
+      ]
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "美发管理",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#f6f6f6",
+    "backgroundTextStyle": "light"
+  }
+}

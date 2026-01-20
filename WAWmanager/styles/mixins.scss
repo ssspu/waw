@@ -1,0 +1,143 @@
+// Flexbox
+@mixin flex($direction: row, $justify: flex-start, $align: stretch) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// 文字省略
+@mixin ellipsis($lines: 1) {
+  @if $lines == 1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  } @else {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $lines;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// 清除浮动
+@mixin clearfix {
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+// 绝对定位居中
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// 固定定位全屏
+@mixin fixed-full {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+// 安全区域底部内边距
+@mixin safe-area-bottom($extra: 0rpx) {
+  padding-bottom: calc(#{$extra} + env(safe-area-inset-bottom));
+}
+
+// 安全区域顶部内边距
+@mixin safe-area-top($extra: 0rpx) {
+  padding-top: calc(#{$extra} + env(safe-area-inset-top));
+}
+
+// 1px 边框
+@mixin border-1px($color: $border-color, $position: bottom) {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    background-color: $color;
+
+    @if $position == bottom {
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 1px;
+      transform: scaleY(0.5);
+    } @else if $position == top {
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 1px;
+      transform: scaleY(0.5);
+    } @else if $position == left {
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 1px;
+      transform: scaleX(0.5);
+    } @else if $position == right {
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 1px;
+      transform: scaleX(0.5);
+    } @else if $position == all {
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      border: 1px solid $color;
+      transform: scale(0.5);
+      transform-origin: 0 0;
+      width: 200%;
+      height: 200%;
+      border-radius: inherit;
+    }
+  }
+}
+
+// 按钮点击效果
+@mixin button-active($scale: 0.98) {
+  &:active {
+    transform: scale($scale);
+    opacity: 0.8;
+  }
+}
+
+// 渐变背景
+@mixin gradient-bg($start: $primary-color, $end: $primary-color-light, $direction: to right) {
+  background: linear-gradient($direction, $start, $end);
+}
+
+// 卡片样式
+@mixin card($radius: $border-radius-large) {
+  background-color: $bg-white;
+  border-radius: $radius;
+  box-shadow: $shadow-base;
+}

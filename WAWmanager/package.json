@@ -1,0 +1,24 @@
+{
+  "name": "waw-manager",
+  "version": "1.0.0",
+  "description": "美发管理系统",
+  "main": "main.js",
+  "scripts": {
+    "dev": "uni",
+    "dev:h5": "uni --platform h5",
+    "build": "uni build",
+    "build:h5": "uni build --platform h5",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug"
+  },
+  "dependencies": {
+    "echarts": "^6.0.0",
+    "pinia": "^2.1.7",
+    "pinia-plugin-persistedstate": "^3.2.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "sass": "^1.69.5"
+  }
+}
